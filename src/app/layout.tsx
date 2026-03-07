@@ -3,6 +3,7 @@ import { Red_Hat_Display } from "next/font/google";
 import { ScrollHeader } from "@/components/ScrollHeader";
 import { CookieBanner } from "@/components/CookieBanner";
 import { LoadingScreen } from "@/components/LoadingScreen";
+import { LegalPageTheme } from "@/components/LegalPageTheme";
 import "./globals.css";
 
 const redHatDisplay = Red_Hat_Display({
@@ -18,6 +19,7 @@ export const viewport = {
 
 export const metadata: Metadata = {
   title: "Erik von Gregory | KI für Brauereien & Gastronomie",
+  robots: { index: false, follow: false },
   description:
     "Erik von Gregory – bündig, direkt. KI für Brauereien, Gastronomie und Getränkehersteller. Automatisierte Marketing, Content & Verkauf.",
   openGraph: {
@@ -44,6 +46,7 @@ export default function RootLayout({
         </a>
         <LoadingScreen />
         <CookieBanner />
+        <LegalPageTheme />
         <ScrollHeader />
         {children}
         <footer id="contact" className="relative border-t border-white/15 bg-transparent py-12 sm:py-16">

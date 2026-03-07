@@ -140,7 +140,7 @@ export function HeroWithScatter() {
             className="hero-portrait-float relative h-[260px] w-[180px] origin-bottom sm:h-[380px] sm:w-[260px] md:h-[450px] md:w-[300px] lg:h-[800px] lg:w-[640px]"
             style={{
               transform: `scale(${1 + portraitZoomProgress * 0.35})`,
-              transition: "transform 0.12s cubic-bezier(0.33, 1, 0.68, 1)",
+              transition: "transform 0.033s cubic-bezier(0.33, 1, 0.68, 1)",
             }}
           >
             <img

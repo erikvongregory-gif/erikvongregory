@@ -43,6 +43,40 @@ body {
   font-family: "Red Hat Display", var(--font-almarena), sans-serif;
 }
 
+/* Rechtliche Seiten – Impressum & Datenschutz (Mobile + Desktop) */
+/* Body-Hintergrund auf rechtlichen Seiten: gleicher Farbverlauf wie Standard-Hintergrund */
+body[data-legal-page="true"] {
+  background: linear-gradient(165deg, #0a0f14 0%, #0f172a 35%, #0c1222 70%, #05100d 100%) !important;
+  color: white;
+}
+
+.legal-page {
+  background: linear-gradient(165deg, #0a0f14 0%, #0f172a 35%, #0c1222 70%, #05100d 100%);
+  min-height: 100vh;
+}
+
+.legal-article {
+  padding-bottom: 3rem;
+}
+
+.legal-content h2 {
+  scroll-margin-top: 6rem;
+}
+
+.legal-content h3 {
+  scroll-margin-top: 6rem;
+}
+
+.legal-content a {
+  word-break: break-all;
+}
+
+@media (min-width: 768px) {
+  .legal-article {
+    padding-bottom: 4rem;
+  }
+}
+
 /* AKQ-Karten – Spielkarten-Look 1:1 wie Vorlage */
 .card-akq {
   border-radius: 1.25rem;
@@ -198,8 +232,68 @@ body {
   animation: mobile-hero-portrait-reveal 1s cubic-bezier(0.22, 1, 0.36, 1) 0.35s both;
 }
 
+/* In MobileLayout: nach LoadingScreen (2s) starten */
+.mobile-hero-synced .mobile-hero-portrait-reveal {
+  animation-delay: 2s;
+}
+
 @media (prefers-reduced-motion: reduce) {
   .mobile-hero-portrait-reveal {
+    animation: none;
+    opacity: 1;
+  }
+}
+
+/* Mobile Hero – gestaffelte Slide-Ins (nach LoadingScreen ~2.2s) */
+@keyframes mobile-slide-up {
+  from {
+    opacity: 0;
+    transform: translateY(28px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.mobile-slide-in {
+  animation: mobile-slide-up 0.65s cubic-bezier(0.22, 1, 0.36, 1) both;
+}
+
+.mobile-slide-in-0 { animation-delay: 2s; }
+.mobile-slide-in-1 { animation-delay: 2.15s; }
+.mobile-slide-in-2 { animation-delay: 2.3s; }
+.mobile-slide-in-3 { animation-delay: 2.45s; }
+.mobile-slide-in-4 { animation-delay: 2.6s; }
+.mobile-slide-in-5 { animation-delay: 2.75s; }
+.mobile-slide-in-6 { animation-delay: 2.9s; }
+.mobile-slide-in-7 { animation-delay: 3.05s; }
+
+@media (prefers-reduced-motion: reduce) {
+  .mobile-slide-in {
+    animation: none;
+    opacity: 1;
+  }
+}
+
+/* Mobile Sections – Scroll-Reveal Slide */
+@keyframes mobile-reveal-up {
+  from {
+    opacity: 0;
+    transform: translateY(36px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.mobile-reveal-in {
+  animation: mobile-reveal-up 0.7s cubic-bezier(0.22, 1, 0.36, 1) forwards;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .mobile-reveal-in {
     animation: none;
     opacity: 1;
   }
@@ -232,6 +326,94 @@ body {
     0 4px 20px rgba(0, 0, 0, 0.1),
     0 0 30px rgba(34, 197, 94, 0.5),
     0 0 60px rgba(34, 197, 94, 0.3);
+}
+
+/* Mobile CTA – dezenter Puls & Glow, zieht Aufmerksamkeit */
+@keyframes mobile-cta-pulse {
+  0%, 100% {
+    box-shadow:
+      0 0 0 1px rgba(255, 255, 255, 0.1) inset,
+      0 4px 20px rgba(0, 0, 0, 0.1),
+      0 0 20px rgba(34, 197, 94, 0.2);
+    transform: scale(1);
+  }
+  50% {
+    box-shadow:
+      0 0 0 1px rgba(255, 255, 255, 0.2) inset,
+      0 4px 24px rgba(0, 0, 0, 0.12),
+      0 0 35px rgba(34, 197, 94, 0.4),
+      0 0 50px rgba(34, 197, 94, 0.15);
+    transform: scale(1.02);
+  }
+}
+
+@media (max-width: 768px) {
+  .hero-cta-btn.mobile-cta-animate {
+    animation: mobile-cta-pulse 2.5s ease-in-out infinite;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .hero-cta-btn.mobile-cta-animate {
+    animation: none;
+  }
+}
+
+/* Mobile Sticky CTA – Catcher beim Scrollen */
+.mobile-sticky-cta-btn {
+  background: linear-gradient(135deg, rgba(20, 83, 45, 0.95) 0%, rgba(22, 101, 52, 0.9) 100%);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  box-shadow:
+    0 0 0 1px rgba(255, 255, 255, 0.1) inset,
+    0 8px 32px rgba(0, 0, 0, 0.3),
+    0 0 40px rgba(34, 197, 94, 0.2);
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.mobile-sticky-cta-btn:active {
+  transform: scale(0.98);
+}
+
+.mobile-sticky-cta-btn:hover {
+  box-shadow:
+    0 0 0 1px rgba(255, 255, 255, 0.15) inset,
+    0 12px 40px rgba(0, 0, 0, 0.35),
+    0 0 60px rgba(34, 197, 94, 0.35);
+}
+
+/* Dezenter Shine-Sweep auf dem Sticky CTA – zieht den Blick */
+@keyframes mobile-sticky-shine {
+  0% { transform: translateX(-100%) skewX(-15deg); opacity: 0; }
+  20% { opacity: 0.4; }
+  100% { transform: translateX(200%) skewX(-15deg); opacity: 0; }
+}
+
+.mobile-sticky-cta-btn {
+  position: relative;
+  overflow: hidden;
+}
+
+.mobile-sticky-cta-btn::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(
+    90deg,
+    transparent 0%,
+    rgba(255, 255, 255, 0.15) 50%,
+    transparent 100%
+  );
+  width: 50%;
+  animation: mobile-sticky-shine 3s ease-in-out infinite;
+  pointer-events: none;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .mobile-sticky-cta-btn::before {
+    animation: none;
+  }
 }
 
 /* macOS Dock Magnification – transform-origin & GPU-Beschleunigung */
@@ -567,6 +749,11 @@ body {
   50% { border-radius: 30% 70% 70% 30% / 60% 40% 60% 40%; }
 }
 
+/* GPU-Beschleunigung für 60fps Scroll – eigener Compositing-Layer */
+.liquid-scroll-layer {
+  will-change: transform;
+}
+
 .liquid-blob {
   position: absolute;
   filter: blur(80px);
@@ -574,6 +761,7 @@ body {
   animation-duration: 14s;
   animation-timing-function: ease-in-out;
   animation-iteration-count: infinite;
+  will-change: transform;
 }
 
 .liquid-blob-1 { animation-name: liquid-blob-1; }

@@ -60,14 +60,14 @@ export function FadeInSection() {
       style={{
         opacity: baseOpacity,
         pointerEvents: isVisible && zoomOutProgress < 0.98 ? "auto" : "none",
-        transition: "opacity 0.1s cubic-bezier(0.33, 1, 0.68, 1)",
+        transition: "opacity 0.033s cubic-bezier(0.33, 1, 0.68, 1)",
       }}
     >
       <div
         className="section2-card mx-auto w-full max-w-2xl text-left antialiased px-4 lg:px-6"
         style={{
           transform: `translateY(-5vh) scale(${scale})`,
-          transition: "transform 0.12s cubic-bezier(0.33, 1, 0.68, 1)",
+          transition: "transform 0.033s cubic-bezier(0.33, 1, 0.68, 1)",
         }}
       >
         <h2

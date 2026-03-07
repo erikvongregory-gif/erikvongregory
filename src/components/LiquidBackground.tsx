@@ -2,12 +2,17 @@
 
 import { useEffect, useState } from "react";
 
+/** Desktop: keine Transition für 60fps direkte Scroll-Reaktion */
+const DESKTOP_TRANSITION = "none";
+const MOBILE_TRANSITION = "transform 0.08s cubic-bezier(0.33, 1, 0.68, 1)";
+
 export function LiquidBackground() {
   const [scroll, setScroll] = useState({ dx: 0, dy: 0, rotation: 0 });
   const [isMobile, setIsMobile] = useState(false);
 
   useEffect(() => {
-    setIsMobile(window.matchMedia("(max-width: 768px)").matches);
+    const id = setTimeout(() => setIsMobile(window.matchMedia("(max-width: 768px)").matches), 0);
+    return () => clearTimeout(id);
   }, []);
 
   useEffect(() => {
@@ -37,6 +42,7 @@ export function LiquidBackground() {
   }, [isMobile]);
 
   const { dx, dy, rotation } = scroll;
+  const blobTransition = isMobile ? MOBILE_TRANSITION : DESKTOP_TRANSITION;
 
   return (
     <div className="fixed inset-0 -z-10 overflow-hidden">
@@ -49,7 +55,7 @@ export function LiquidBackground() {
         }}
       />
       <div
-        className="absolute inset-0"
+        className="absolute inset-0 liquid-scroll-layer"
         style={{
           transform: `scale(1.5) rotate(${rotation}deg)`,
           transformOrigin: "center center",
@@ -60,8 +66,8 @@ export function LiquidBackground() {
           style={{
             background:
               "linear-gradient(135deg, rgba(34, 197, 94, 0.18) 0%, #312e81 40%, #1e3a5f 100%)",
-            transform: `translate(${dx * 0.8}px, ${dy * 0.6}px)`,
-            transition: "transform 0.08s cubic-bezier(0.33, 1, 0.68, 1)",
+            transform: `translate3d(${dx * 0.8}px, ${dy * 0.6}px, 0)`,
+            transition: blobTransition,
           }}
         />
         <div
@@ -69,8 +75,8 @@ export function LiquidBackground() {
           style={{
             background:
               "linear-gradient(225deg, #4c1d95 0%, rgba(34, 197, 94, 0.12) 50%, #312e81 100%)",
-            transform: `translate(${-dx * 0.6}px, ${-dy * 0.5}px)`,
-            transition: "transform 0.08s cubic-bezier(0.33, 1, 0.68, 1)",
+            transform: `translate3d(${-dx * 0.6}px, ${-dy * 0.5}px, 0)`,
+            transition: blobTransition,
           }}
         />
         <div
@@ -78,8 +84,8 @@ export function LiquidBackground() {
           style={{
             background:
               "linear-gradient(180deg, #0e4d6b 0%, #312e81 45%, rgba(34, 197, 94, 0.1) 100%)",
-            transform: `translate(calc(-50% + ${dx}px), calc(-50% + ${dy * 0.7}px))`,
-            transition: "transform 0.08s cubic-bezier(0.33, 1, 0.68, 1)",
+            transform: `translate3d(calc(-50% + ${dx}px), calc(-50% + ${dy * 0.7}px), 0)`,
+            transition: blobTransition,
           }}
         />
       </div>

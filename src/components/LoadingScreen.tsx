@@ -11,7 +11,10 @@ export function LoadingScreen() {
   const [duration, setDuration] = useState(DURATION_DESKTOP);
 
   useEffect(() => {
-    setDuration(window.matchMedia("(max-width: 768px)").matches ? DURATION_MOBILE : DURATION_DESKTOP);
+    const id = setTimeout(() => {
+      setDuration(window.matchMedia("(max-width: 768px)").matches ? DURATION_MOBILE : DURATION_DESKTOP);
+    }, 0);
+    return () => clearTimeout(id);
   }, []);
 
   useEffect(() => {

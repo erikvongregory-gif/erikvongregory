@@ -95,14 +95,14 @@ export function Section6Glaubwuerdigkeit() {
       style={{
         opacity,
         pointerEvents: isVisible ? "auto" : "none",
-        transition: "opacity 0.1s cubic-bezier(0.33, 1, 0.68, 1)",
+        transition: "opacity 0.033s cubic-bezier(0.33, 1, 0.68, 1)",
       }}
     >
       <div
         className="mx-auto w-full max-w-4xl px-4 py-4 sm:py-6 lg:px-6"
         style={{
           transform: `translateY(${translate}px) scale(${scale})`,
-          transition: "transform 0.12s cubic-bezier(0.33, 1, 0.68, 1)",
+          transition: "transform 0.033s cubic-bezier(0.33, 1, 0.68, 1)",
         }}
       >
         <div className="section2-card mx-auto max-w-2xl rounded-2xl px-6 py-8 sm:px-8 sm:py-10">

@@ -1,5 +1,6 @@
 import { DesktopLayout } from "@/components/DesktopLayout";
 import { MobileLayout } from "@/components/MobileLayout";
+import { MobileStickyCTA } from "@/components/MobileStickyCTA";
 
 export default function Home() {
   return (
@@ -9,6 +10,7 @@ export default function Home() {
         <main id="main" className="relative min-h-screen overflow-x-hidden pt-14 sm:pt-16">
           <MobileLayout />
         </main>
+        <MobileStickyCTA />
       </div>
       {/* Desktop/Tablet: ab 768px */}
       <div className="hidden md:block">

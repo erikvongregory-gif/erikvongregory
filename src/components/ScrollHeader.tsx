@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
+import Link from "next/link";
 import { smoothStep } from "@/lib/scrollConstants";
 
 /** Scroll-Distanz bis Header-Effekt vollständig */
@@ -76,7 +77,7 @@ export function ScrollHeader() {
             WebkitBackdropFilter: `blur(${backdropBlur}px)`,
           }}
         >
-          <a
+          <Link
             href="/"
             className="premium-header-logo rounded focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white/60 focus-visible:ring-offset-2 focus-visible:ring-offset-transparent"
             style={{ fontSize: `${logoFontSize}px` }}
@@ -91,7 +92,7 @@ export function ScrollHeader() {
             >
               von Gregory
             </span>
-          </a>
+          </Link>
           <nav className="premium-header-nav">
             <a
               href="#contact"

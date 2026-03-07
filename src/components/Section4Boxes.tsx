@@ -6,10 +6,13 @@ function useHasHover() {
   const [hasHover, setHasHover] = useState(true);
   useEffect(() => {
     const mq = window.matchMedia("(hover: hover)");
-    setHasHover(mq.matches);
+    const id = setTimeout(() => setHasHover(mq.matches), 0);
     const handler = () => setHasHover(mq.matches);
     mq.addEventListener("change", handler);
-    return () => mq.removeEventListener("change", handler);
+    return () => {
+      clearTimeout(id);
+      mq.removeEventListener("change", handler);
+    };
   }, []);
   return hasHover;
 }
@@ -18,7 +21,6 @@ import {
   SECTION4_FADE_END,
   SECTION4_HOLD,
   SECTION4_FADE_OUT_DURATION,
-  SECTION5_FADE_START,
   smoothStep,
 } from "@/lib/scrollConstants";
 
@@ -142,14 +144,14 @@ export function Section4Boxes() {
       style={{
         opacity,
         pointerEvents: isVisible ? "auto" : "none",
-        transition: "opacity 0.1s cubic-bezier(0.33, 1, 0.68, 1)",
+        transition: "opacity 0.033s cubic-bezier(0.33, 1, 0.68, 1)",
       }}
     >
       <div
         className="mx-auto w-full max-w-6xl overflow-visible px-4 lg:px-6"
         style={{
           transform: `translateY(${translate}px) scale(${scale})`,
-          transition: "transform 0.22s cubic-bezier(0.4, 0, 0.2, 1)",
+          transition: "transform 0.033s cubic-bezier(0.4, 0, 0.2, 1)",
         }}
       >
         <h2 className="mb-6 text-center text-xl font-bold tracking-tight text-white drop-shadow-[0_2px_12px_rgba(0,0,0,0.3)] sm:mb-8 sm:text-3xl md:text-4xl">

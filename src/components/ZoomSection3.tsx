@@ -53,14 +53,14 @@ export function ZoomSection3() {
       style={{
         opacity,
         pointerEvents: progress.in > 0.02 && progress.out < 0.98 ? "auto" : "none",
-        transition: "opacity 0.1s cubic-bezier(0.33, 1, 0.68, 1)",
+        transition: "opacity 0.033s cubic-bezier(0.33, 1, 0.68, 1)",
       }}
     >
       <div
         className="section3-card mx-auto max-w-3xl text-center antialiased px-4 lg:px-6"
         style={{
           transform: `translateY(calc(-5vh - ${pushY}px)) scale(${scale})`,
-          transition: "transform 0.12s cubic-bezier(0.33, 1, 0.68, 1)",
+          transition: "transform 0.033s cubic-bezier(0.33, 1, 0.68, 1)",
         }}
       >
         <p

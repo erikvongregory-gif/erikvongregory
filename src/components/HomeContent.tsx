@@ -14,10 +14,13 @@ export function HomeContent() {
 
   useEffect(() => {
     const mq = window.matchMedia("(max-width: 768px)");
-    setIsMobile(mq.matches);
+    const id = setTimeout(() => setIsMobile(mq.matches), 0);
     const handler = () => setIsMobile(mq.matches);
     mq.addEventListener("change", handler);
-    return () => mq.removeEventListener("change", handler);
+    return () => {
+      clearTimeout(id);
+      mq.removeEventListener("change", handler);
+    };
   }, []);
 
   if (isMobile) {

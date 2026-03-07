@@ -1,6 +1,7 @@
 "use client";
 
 import { AppleStyleButton } from "./AppleStyleButton";
+import { ScrollReveal } from "./ScrollReveal";
 
 const SECTION4_ITEMS = [
   {
@@ -46,37 +47,36 @@ export function MobileLayout() {
         }}
       />
       <div className="relative flex flex-col">
-        {/* Hero */}
-        <section className="relative flex min-h-screen flex-col items-center justify-start px-4 pb-12 pt-6 text-center">
-          {/* Portrait – an erster Stelle */}
-          <div className="mb-4 flex shrink-0 justify-center">
+        {/* Hero – gestaffelte Slide-Ins nach LoadingScreen */}
+        <section className="mobile-hero-synced relative flex min-h-screen flex-col items-center justify-start px-4 pb-12 pt-2 text-center">
+          <div className="mb-3 flex shrink-0 justify-center -mt-2">
             <img
               src="/hero-portrait.svg"
               alt="Erik von Gregory"
-              className="mobile-hero-portrait-reveal hero-portrait-blend h-[300px] w-[205px] object-contain object-bottom"
+              className="mobile-hero-portrait-reveal hero-portrait-blend h-[320px] w-[219px] object-contain object-top"
             />
           </div>
-          <p className="mb-3 text-sm font-normal uppercase tracking-widest text-white/90">
+          <p className="mobile-slide-in mobile-slide-in-1 mb-3 text-sm font-medium uppercase tracking-widest text-emerald-300/95">
             KI für Brauereien & Gastronomie
           </p>
-          <h1 className="mb-3 block text-2xl font-extrabold leading-tight tracking-tight text-white drop-shadow-md">
+          <h1 className="mobile-slide-in mobile-slide-in-2 mb-3 block text-2xl font-extrabold leading-tight tracking-tight text-white" style={{ textShadow: "0 2px 20px rgba(0,0,0,0.3), 0 0 40px rgba(34, 197, 94, 0.15)" }}>
             KI für Brauereien –{" "}
             <span
-              className="font-light italic"
-              style={{ fontFamily: "var(--font-austera)" }}
+              className="font-light italic text-emerald-200"
+              style={{ fontFamily: "var(--font-austera)", textShadow: "0 0 24px rgba(34, 197, 94, 0.5), 0 0 48px rgba(34, 197, 94, 0.2)" }}
             >
               Automatisierte
             </span>{" "}
             Marketing, Content & Verkauf
           </h1>
-          <p className="mx-auto max-w-lg text-base leading-relaxed text-white/95">
-            Nutze moderne KI, um deine Brauerei digital sichtbar zu machen. Mehr Reichweite, mehr Aufmerksamkeit – ohne klassische Marketingagentur.
+          <p className="mobile-slide-in mobile-slide-in-3 mx-auto max-w-lg text-base leading-relaxed text-white/95">
+            <span className="font-semibold text-white">Mehr Reichweite, mehr Aufmerksamkeit</span> – nutze moderne KI, um deine Brauerei digital sichtbar zu machen. Ohne klassische Marketingagentur.
           </p>
-          <p className="mx-auto mt-2 max-w-lg text-[15px] leading-relaxed text-white/80">
-            Ich helfe Brauereien, Gastronomen und Getränkeherstellern dabei, KI-gestützte Content-Systeme, Werbevideos und automatisiertes Marketing aufzubauen.
+          <p className="mobile-slide-in mobile-slide-in-4 mx-auto mt-2 max-w-lg text-[15px] leading-relaxed text-white/85">
+            Content-Systeme, Werbevideos & automatisiertes Marketing – speziell für Brauereien, Gastronomen und Getränkehersteller.
           </p>
-          <div className="mt-6 flex flex-col items-center gap-3">
-            <AppleStyleButton href="#contact">
+          <div className="mobile-slide-in mobile-slide-in-5 mt-6 flex flex-col items-center gap-3">
+            <AppleStyleButton href="#contact" className="mobile-cta-animate">
               Kostenlose KI-Strategie für Brauereien sichern
             </AppleStyleButton>
           </div>
@@ -84,7 +84,8 @@ export function MobileLayout() {
 
         {/* Section 2 */}
         <section className="relative px-4 py-16">
-          <div className="section2-card mx-auto max-w-2xl rounded-2xl px-6 py-8 text-center">
+          <ScrollReveal>
+            <div className="section2-card mx-auto max-w-2xl rounded-2xl px-6 py-8 text-center">
             <h2 className="text-2xl font-bold tracking-tight text-white drop-shadow-md">
               Warum viele Brauereien{" "}
               <span
@@ -122,10 +123,12 @@ export function MobileLayout() {
               </span>
             </p>
           </div>
+          </ScrollReveal>
         </section>
 
         {/* Section 3 */}
         <section className="relative px-4 py-16">
+          <ScrollReveal>
           <div className="section3-card mx-auto max-w-2xl rounded-2xl px-6 py-10 text-center">
             <p className="mb-3 text-sm font-medium uppercase tracking-[0.2em] text-emerald-400/90">
               Dein nächster Schritt
@@ -149,10 +152,12 @@ export function MobileLayout() {
               Sprich mit mir über deine Brauerei – unverbindlich & direkt.
             </p>
           </div>
+          </ScrollReveal>
         </section>
 
         {/* Section 4 */}
         <section className="relative px-4 py-16">
+          <ScrollReveal>
           <h2 className="mb-6 text-center text-xl font-bold tracking-tight text-white drop-shadow-md">
             Meine 5{" "}
             <span
@@ -176,11 +181,13 @@ export function MobileLayout() {
               </div>
             ))}
           </div>
+          </ScrollReveal>
         </section>
 
         {/* Section 6 */}
         <section className="relative px-4 py-16">
-          <div className="section2-card mx-auto max-w-2xl rounded-2xl px-6 py-8 text-center">
+          <ScrollReveal>
+            <div className="section2-card mx-auto max-w-2xl rounded-2xl px-6 py-8 text-center">
             <div className="mb-6 inline-flex items-center gap-2 rounded-full border border-emerald-400/30 bg-emerald-400/10 px-4 py-1.5 text-sm font-medium text-emerald-300">
               <span aria-hidden>✦</span>
               Aus der Praxis
@@ -214,9 +221,10 @@ export function MobileLayout() {
               Brauereiwissen + moderne KI = Marketing, das funktioniert.
             </p>
             <div className="flex justify-center">
-              <AppleStyleButton href="#contact">Kostenloses Erstgespräch starten</AppleStyleButton>
+              <AppleStyleButton href="#contact" className="mobile-cta-animate">Kostenloses Erstgespräch starten</AppleStyleButton>
             </div>
           </div>
+          </ScrollReveal>
         </section>
       </div>
     </>

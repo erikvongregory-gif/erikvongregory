@@ -7,10 +7,13 @@ const useIsMobile = () => {
   const [isMobile, setIsMobile] = useState(false);
   useEffect(() => {
     const mq = window.matchMedia("(max-width: 768px)");
-    setIsMobile(mq.matches);
+    const id = setTimeout(() => setIsMobile(mq.matches), 0);
     const handler = () => setIsMobile(mq.matches);
     mq.addEventListener("change", handler);
-    return () => mq.removeEventListener("change", handler);
+    return () => {
+      clearTimeout(id);
+      mq.removeEventListener("change", handler);
+    };
   }, []);
   return isMobile;
 };
@@ -42,13 +45,17 @@ export function ScatterTextOnScroll({
     const anchor = scrollAnchorRef?.current ?? containerRef.current?.closest("section");
     if (!anchor) return;
 
+    let rafId = 0;
     const updateScatter = () => {
-      const rect = anchor.getBoundingClientRect();
-      if (rect.top >= 0) {
-        setScatter(0);
-      } else {
-        setScatter(Math.min(1, -rect.top / 350));
-      }
+      if (rafId) cancelAnimationFrame(rafId);
+      rafId = requestAnimationFrame(() => {
+        const rect = anchor.getBoundingClientRect();
+        if (rect.top >= 0) {
+          setScatter(0);
+        } else {
+          setScatter(Math.min(1, -rect.top / 350));
+        }
+      });
     };
 
     const t = setTimeout(updateScatter, 150);
@@ -57,6 +64,7 @@ export function ScatterTextOnScroll({
     return () => {
       clearTimeout(t);
       window.removeEventListener("scroll", updateScatter);
+      if (rafId) cancelAnimationFrame(rafId);
     };
   }, [scrollAnchorRef]);
 
@@ -93,7 +101,7 @@ export function ScatterTextOnScroll({
           return (
             <span
               key={`${word}-${i}`}
-              className="inline-block align-baseline transition-transform duration-300 ease-out"
+              className="inline-block align-baseline transition-transform duration-75 ease-out"
               style={{
                 transform: `translate(${x * effectiveScatter}px, ${y * effectiveScatter}px) rotate(${r * effectiveScatter}deg)`,
                 opacity: 1 - effectiveScatter * 0.4,

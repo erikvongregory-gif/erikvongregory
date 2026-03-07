@@ -22,7 +22,7 @@ export function ScrollReveal({
 
     const observer = new IntersectionObserver(
       ([entry]) => {
-        if (entry.isIntersecting) setIsVisible(true);
+        setIsVisible(entry.isIntersecting);
       },
       { threshold: 0.1, rootMargin: "0px 0px -40px 0px" }
     );
@@ -34,10 +34,10 @@ export function ScrollReveal({
   return (
     <div
       ref={ref}
-      className={`transition-all duration-700 ease-out ${
+      className={`transition-all duration-700 ease-[cubic-bezier(0.22,1,0.36,1)] ${
         isVisible
           ? "translate-y-0 opacity-100"
-          : "translate-y-8 opacity-0"
+          : "translate-y-10 opacity-0"
       } ${className}`}
       style={{ transitionDelay: `${delay}ms` }}
     >
