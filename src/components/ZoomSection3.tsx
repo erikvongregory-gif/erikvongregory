@@ -15,9 +15,13 @@ export function ZoomSection3() {
 
   useEffect(() => {
     let rafId = 0;
+    let lastTick = 0;
+    const isMobile = () => window.innerWidth <= 768;
     const onScroll = () => {
       if (rafId) cancelAnimationFrame(rafId);
-      rafId = requestAnimationFrame(() => {
+      rafId = requestAnimationFrame((now) => {
+        if (isMobile() && now - lastTick < 32) return;
+        lastTick = now;
         const scrollY = window.scrollY;
         const fadeIn = Math.max(
           0,

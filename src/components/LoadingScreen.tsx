@@ -2,20 +2,26 @@
 
 import { useEffect, useState } from "react";
 
-const DURATION_MS = 4800;
 const FADE_OUT_MS = 500;
+const DURATION_DESKTOP = 4800;
+const DURATION_MOBILE = 2200;
 
 export function LoadingScreen() {
   const [phase, setPhase] = useState<"show" | "fade" | "done">("show");
+  const [duration, setDuration] = useState(DURATION_DESKTOP);
 
   useEffect(() => {
-    const t1 = setTimeout(() => setPhase("fade"), DURATION_MS - FADE_OUT_MS);
-    const t2 = setTimeout(() => setPhase("done"), DURATION_MS);
+    setDuration(window.matchMedia("(max-width: 768px)").matches ? DURATION_MOBILE : DURATION_DESKTOP);
+  }, []);
+
+  useEffect(() => {
+    const t1 = setTimeout(() => setPhase("fade"), duration - FADE_OUT_MS);
+    const t2 = setTimeout(() => setPhase("done"), duration);
     return () => {
       clearTimeout(t1);
       clearTimeout(t2);
     };
-  }, []);
+  }, [duration]);
 
   if (phase === "done") return null;
 

@@ -2,6 +2,19 @@
 
 import { useRef, useEffect, useState } from "react";
 
+/** Auf Mobile: Scatter-Effekt deaktivieren für flüssigeres Scrollen */
+const useIsMobile = () => {
+  const [isMobile, setIsMobile] = useState(false);
+  useEffect(() => {
+    const mq = window.matchMedia("(max-width: 768px)");
+    setIsMobile(mq.matches);
+    const handler = () => setIsMobile(mq.matches);
+    mq.addEventListener("change", handler);
+    return () => mq.removeEventListener("change", handler);
+  }, []);
+  return isMobile;
+};
+
 type ScatterTextOnScrollProps = {
   text: string;
   className?: string;
@@ -20,8 +33,10 @@ export function ScatterTextOnScroll({
 }: ScatterTextOnScrollProps) {
   const containerRef = useRef<HTMLDivElement>(null);
   const [scatter, setScatter] = useState(0);
+  const isMobile = useIsMobile();
 
   const words = text.split(/\s+/);
+  const effectiveScatter = isMobile ? 0 : scatter;
 
   useEffect(() => {
     const anchor = scrollAnchorRef?.current ?? containerRef.current?.closest("section");
@@ -80,8 +95,8 @@ export function ScatterTextOnScroll({
               key={`${word}-${i}`}
               className="inline-block align-baseline transition-transform duration-300 ease-out"
               style={{
-                transform: `translate(${x * scatter}px, ${y * scatter}px) rotate(${r * scatter}deg)`,
-                opacity: 1 - scatter * 0.4,
+                transform: `translate(${x * effectiveScatter}px, ${y * effectiveScatter}px) rotate(${r * effectiveScatter}deg)`,
+                opacity: 1 - effectiveScatter * 0.4,
               }}
             >
               {content}

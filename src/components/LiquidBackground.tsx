@@ -4,18 +4,27 @@ import { useEffect, useState } from "react";
 
 export function LiquidBackground() {
   const [scroll, setScroll] = useState({ dx: 0, dy: 0, rotation: 0 });
+  const [isMobile, setIsMobile] = useState(false);
+
+  useEffect(() => {
+    setIsMobile(window.matchMedia("(max-width: 768px)").matches);
+  }, []);
 
   useEffect(() => {
     let rafId = 0;
+    let lastRun = 0;
     const onScroll = () => {
       if (rafId) cancelAnimationFrame(rafId);
-      rafId = requestAnimationFrame(() => {
+      rafId = requestAnimationFrame((now) => {
+        if (isMobile && now - lastRun < 32) return;
+        lastRun = now;
         const scrollY = window.scrollY;
-        const t = scrollY * 0.002;
+        const t = scrollY * (isMobile ? 0.001 : 0.002);
+        const mult = isMobile ? 0.4 : 1;
         setScroll({
-          dx: Math.sin(t) * 80,
-          dy: Math.cos(t * 0.85) * 50,
-          rotation: scrollY * 0.08,
+          dx: Math.sin(t) * 80 * mult,
+          dy: Math.cos(t * 0.85) * 50 * mult,
+          rotation: scrollY * 0.08 * mult,
         });
       });
     };
@@ -25,7 +34,7 @@ export function LiquidBackground() {
       window.removeEventListener("scroll", onScroll);
       if (rafId) cancelAnimationFrame(rafId);
     };
-  }, []);
+  }, [isMobile]);
 
   const { dx, dy, rotation } = scroll;
 

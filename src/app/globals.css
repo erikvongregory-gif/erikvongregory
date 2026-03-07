@@ -30,6 +30,13 @@
 
 html {
   scroll-behavior: smooth;
+  -webkit-overflow-scrolling: touch;
+}
+
+@media (max-width: 768px) {
+  html {
+    overflow-x: hidden;
+  }
 }
 
 body {
@@ -111,7 +118,7 @@ body {
   animation: hero-slide-right 0.7s cubic-bezier(0.22, 1, 0.36, 1) both;
 }
 
-/* Verzögerung = Lade-Screen (4.8s) + ursprünglicher Offset */
+/* Verzögerung = Lade-Screen + Offset */
 .hero-slide-in-delay-1 { animation-delay: 4.85s; }
 .hero-slide-in-delay-2 { animation-delay: 4.9s; }
 .hero-slide-in-delay-3 { animation-delay: 5s; }
@@ -119,6 +126,16 @@ body {
 .hero-slide-in-delay-5 { animation-delay: 5.2s; }
 .hero-slide-in-delay-6 { animation-delay: 5.3s; }
 .hero-slide-in-delay-7 { animation-delay: 5.4s; }
+
+@media (max-width: 768px) {
+  .hero-slide-in-delay-1 { animation-delay: 2.25s; }
+  .hero-slide-in-delay-2 { animation-delay: 2.3s; }
+  .hero-slide-in-delay-3 { animation-delay: 2.35s; }
+  .hero-slide-in-delay-4 { animation-delay: 2.4s; }
+  .hero-slide-in-delay-5 { animation-delay: 2.45s; }
+  .hero-slide-in-delay-6 { animation-delay: 2.5s; }
+  .hero-slide-in-delay-7 { animation-delay: 2.55s; }
+}
 
 /* Hero Portrait – weiche Kreis-Schwebung (viele Keyframes = runder Pfad) */
 @keyframes hero-portrait-float {
@@ -539,6 +556,32 @@ body {
 .liquid-blob-1 { animation-name: liquid-blob-1; }
 .liquid-blob-2 { animation-name: liquid-blob-2; animation-delay: -4s; }
 .liquid-blob-3 { animation-name: liquid-blob-3; animation-delay: -8s; }
+
+/* Mobile: weniger Blur + langsamere Animation = flüssiger */
+@media (max-width: 768px) {
+  .liquid-blob {
+    filter: blur(40px);
+    animation-duration: 24s;
+  }
+  .section2-card,
+  .section3-card,
+  .flip-card-front,
+  .flip-card-back {
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+  }
+  .hero-portrait-float {
+    animation: hero-portrait-float 12s linear infinite;
+  }
+  .loading-spinner-bar {
+    animation: loading-bar-fill 2s ease-out forwards;
+  }
+  .icon-anim,
+  .section6-icon-anim,
+  .problem-x-icon {
+    animation: none;
+  }
+}
 
 /* Typing-Effekt – blinkender Cursor */
 @keyframes typing-cursor-blink {

@@ -12,12 +12,15 @@ export function HeroWithScatter() {
   const [portraitZoomProgress, setPortraitZoomProgress] = useState(0);
   useEffect(() => {
     let rafId = 0;
+    let lastTick = 0;
+    const isMobile = () => window.innerWidth <= 768;
     const onScroll = () => {
       if (rafId) cancelAnimationFrame(rafId);
-      rafId = requestAnimationFrame(() => {
+      rafId = requestAnimationFrame((now) => {
+        if (isMobile() && now - lastTick < 32) return;
+        lastTick = now;
         const scrollY = window.scrollY;
         setRaw(Math.max(0, 1 - scrollY / HERO_END));
-        // Portrait wird beim Out-Zoom zu Section 2 größer (1 → 1.35)
         const zoomRaw = Math.max(0, Math.min(1, (scrollY - HERO_END * 0.5) / (SECTION2_FADE_END - HERO_END * 0.5)));
         setPortraitZoomProgress(smoothStep(zoomRaw));
       });
