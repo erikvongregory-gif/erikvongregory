@@ -166,7 +166,17 @@ export function HeroWithScatter() {
         className="mx-auto flex w-full max-w-6xl flex-1 flex-col items-start justify-center gap-6 px-2 sm:gap-8 sm:px-4 lg:flex-row lg:items-end lg:justify-center lg:gap-12"
         style={{ transform: "translateY(-4vh)" }}
       >
-        <div className="w-full max-w-4xl text-left">
+        {/* Portrait: auf Mobile zuerst, auf Desktop rechts */}
+        <div
+          className="order-first flex w-full justify-center lg:order-last lg:w-auto"
+          style={{
+            opacity: heroItems[6].fade,
+            transform: `translateY(${(1 - heroItems[6].fade) * -40}px)`,
+          }}
+        >
+          {heroItems[6].el}
+        </div>
+        <div className="order-last w-full max-w-4xl text-left lg:order-first">
           {heroItems.slice(0, 6).map(({ fade: itemFade, el }, i) => (
             <div
               key={i}
@@ -178,15 +188,6 @@ export function HeroWithScatter() {
               {el}
             </div>
           ))}
-        </div>
-        <div
-          className="hidden sm:block"
-          style={{
-            opacity: heroItems[6].fade,
-            transform: `translateY(${(1 - heroItems[6].fade) * -40}px)`,
-          }}
-        >
-          {heroItems[6].el}
         </div>
       </div>
     </section>

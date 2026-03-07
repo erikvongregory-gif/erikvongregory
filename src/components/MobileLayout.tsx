@@ -1,6 +1,5 @@
 "use client";
 
-import { useEffect, useState } from "react";
 import { AppleStyleButton } from "./AppleStyleButton";
 
 const SECTION4_ITEMS = [
@@ -38,11 +37,6 @@ const EXPERTISE_ITEMS = [
 ];
 
 export function MobileLayout() {
-  const [mounted, setMounted] = useState(false);
-  useEffect(() => setMounted(true), []);
-
-  if (!mounted) return null;
-
   return (
     <>
       <div
@@ -53,8 +47,16 @@ export function MobileLayout() {
       />
       <div className="relative flex flex-col">
         {/* Hero */}
-        <section className="relative flex min-h-screen flex-col items-center justify-center px-4 pb-12 pt-32 text-center">
-          <p className="mb-2 text-sm font-normal uppercase tracking-widest text-white/90">
+        <section className="relative flex min-h-screen flex-col items-center justify-start px-4 pb-12 pt-6 text-center">
+          {/* Portrait – an erster Stelle */}
+          <div className="mb-4 flex shrink-0 justify-center">
+            <img
+              src="/hero-portrait.svg"
+              alt="Erik von Gregory"
+              className="mobile-hero-portrait-reveal hero-portrait-blend h-[300px] w-[205px] object-contain object-bottom"
+            />
+          </div>
+          <p className="mb-3 text-sm font-normal uppercase tracking-widest text-white/90">
             KI für Brauereien & Gastronomie
           </p>
           <h1 className="mb-3 block text-2xl font-extrabold leading-tight tracking-tight text-white drop-shadow-md">
@@ -77,13 +79,6 @@ export function MobileLayout() {
             <AppleStyleButton href="#contact">
               Kostenlose KI-Strategie für Brauereien sichern
             </AppleStyleButton>
-          </div>
-          <div className="mt-6 flex shrink-0 justify-center">
-            <img
-              src="/hero-portrait.svg"
-              alt="Erik von Gregory"
-              className="hero-portrait-blend h-[220px] w-[150px] object-contain object-bottom"
-            />
           </div>
         </section>
 

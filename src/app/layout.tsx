@@ -10,6 +10,12 @@ const redHatDisplay = Red_Hat_Display({
   weight: ["400", "500", "600", "700"],
 });
 
+export const viewport = {
+  width: "device-width",
+  initialScale: 1,
+  maximumScale: 5,
+};
+
 export const metadata: Metadata = {
   title: "Erik von Gregory | KI für Brauereien & Gastronomie",
   description:
