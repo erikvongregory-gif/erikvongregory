@@ -62,7 +62,9 @@ export function ScrollHeader() {
           className="premium-header-inner"
           style={{
             gap: `${innerGap}px`,
-            padding: `${innerPaddingV}px ${innerPaddingH + inwardShift}px`,
+            paddingTop: `${innerPaddingV}px`,
+            paddingRight: `${innerPaddingH + inwardShift}px`,
+            paddingBottom: `${innerPaddingV}px`,
             paddingLeft: `${innerPaddingLeft + inwardShift}px`,
             width: `${(1 - barShrink) * 100}%`,
             marginLeft: "auto",
