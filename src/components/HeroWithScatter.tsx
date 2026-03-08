@@ -149,6 +149,7 @@ export function HeroWithScatter() {
               alt="Erik von Gregory"
               width={640}
               height={800}
+              priority
               className="hero-portrait-blend h-full w-full object-contain object-bottom"
             />
           </div>

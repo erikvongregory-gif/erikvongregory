@@ -62,6 +62,7 @@ export function MobileLayout() {
               alt="Erik von Gregory"
               width={219}
               height={320}
+              priority
               className="mobile-hero-portrait-reveal hero-portrait-blend h-[320px] w-[219px] object-contain object-top"
             />
           </div>

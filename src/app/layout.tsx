@@ -41,9 +41,12 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="de" className="scroll-smooth">
+      <head>
+        <link rel="preload" href="/hero-portrait.svg" as="image" />
+      </head>
       <Script
         id="scroll-to-top-on-load"
-        strategy="beforeInteractive"
+        strategy="afterInteractive"
         dangerouslySetInnerHTML={{
           __html: `if('scrollRestoration'in history)history.scrollRestoration='manual';window.scrollTo(0,0);`,
         }}

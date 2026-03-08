@@ -1,17 +1,19 @@
 "use client";
 
+import dynamic from "next/dynamic";
 import { LiquidBackground } from "@/components/LiquidBackground";
-import { FadeInSection } from "@/components/FadeInSection";
 import { HeroWithScatter } from "@/components/HeroWithScatter";
-import { Section4Boxes } from "@/components/Section4Boxes";
-import { Section6Glaubwuerdigkeit } from "@/components/Section6Glaubwuerdigkeit";
-import { ZoomSection3 } from "@/components/ZoomSection3";
+
+const FadeInSection = dynamic(() => import("@/components/FadeInSection").then((m) => ({ default: m.FadeInSection })), { ssr: true });
+const ZoomSection3 = dynamic(() => import("@/components/ZoomSection3").then((m) => ({ default: m.ZoomSection3 })), { ssr: true });
+const Section4Boxes = dynamic(() => import("@/components/Section4Boxes").then((m) => ({ default: m.Section4Boxes })), { ssr: true });
+const Section6Glaubwuerdigkeit = dynamic(() => import("@/components/Section6Glaubwuerdigkeit").then((m) => ({ default: m.Section6Glaubwuerdigkeit })), { ssr: true });
 
 export function DesktopLayout() {
   return (
     <main id="main" className="relative min-h-screen overflow-x-hidden pt-14 sm:pt-16">
       <LiquidBackground />
-      <div className="relative h-[480vh] lg:h-[520vh]" aria-hidden />
+      <div className="relative h-[400vh] lg:h-[420vh]" aria-hidden />
       <HeroWithScatter />
       <FadeInSection />
       <ZoomSection3 />

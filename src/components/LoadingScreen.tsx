@@ -3,9 +3,9 @@
 import { useEffect, useState } from "react";
 import { useLoading } from "@/context/LoadingContext";
 
-const FADE_OUT_MS = 500;
-const DURATION_DESKTOP = 4800;
-const DURATION_MOBILE = 2200;
+const FADE_OUT_MS = 400;
+const DURATION_DESKTOP = 2200;
+const DURATION_MOBILE = 1200;
 
 export function LoadingScreen() {
   const { setLoadComplete } = useLoading();
