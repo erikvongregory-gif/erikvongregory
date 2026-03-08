@@ -1,6 +1,7 @@
 "use client";
 
 import Image from "next/image";
+import { useEffect, useRef, useState } from "react";
 import { useLoading } from "@/context/LoadingContext";
 import { AppleStyleButton } from "./AppleStyleButton";
 import { ProblemItem } from "./ProblemItem";
@@ -42,6 +43,28 @@ const EXPERTISE_ITEMS = [
 
 export function MobileLayout() {
   const { isLoadComplete } = useLoading();
+  const section2Ref = useRef<HTMLElement>(null);
+  const [problemResetTrigger, setProblemResetTrigger] = useState(0);
+  const wasVisibleRef = useRef(false);
+
+  useEffect(() => {
+    const el = section2Ref.current;
+    if (!el) return;
+    const obs = new IntersectionObserver(
+      ([e]) => {
+        const visible = e.intersectionRatio > 0.15;
+        if (wasVisibleRef.current && !visible) {
+          wasVisibleRef.current = false;
+          setProblemResetTrigger((t) => t + 1);
+        } else if (visible) {
+          wasVisibleRef.current = true;
+        }
+      },
+      { threshold: [0, 0.1, 0.15, 0.2] }
+    );
+    obs.observe(el);
+    return () => obs.disconnect();
+  }, []);
 
   return (
     <>
@@ -93,7 +116,7 @@ export function MobileLayout() {
         </section>
 
         {/* Section 2 */}
-        <section className="relative px-4 py-16">
+        <section ref={section2Ref} className="relative px-4 py-16">
           <ScrollReveal>
             <div className="section2-card mx-auto max-w-2xl rounded-2xl px-6 py-8 text-center">
             <h2 className="text-2xl font-bold tracking-tight text-white drop-shadow-md">
@@ -114,12 +137,12 @@ export function MobileLayout() {
             </p>
             <div className="mx-auto mt-5 flex w-full max-w-sm flex-col gap-2">
               {[
-                "Social Media wird selten gepflegt",
-                "Werbung kostet viel und bringt wenig",
-                "Content zu erstellen kostet Zeit",
-                "Websites sind veraltet",
-              ].map((text, i) => (
-                <ProblemItem key={text} text={text} index={i} showIcon />
+                { problem: "Social Media wird selten gepflegt", solution: "Mit KI: Regelmäßiger Content – automatisiert & ohne teure Agentur" },
+                { problem: "Werbung kostet viel und bringt wenig", solution: "Mit KI: Produktfotos & Werbevideos in Minuten statt Tagen" },
+                { problem: "Content zu erstellen kostet Zeit", solution: "Mit KI: Content-Systeme, die für dich arbeiten" },
+                { problem: "Websites sind veraltet", solution: "Mit KI: Moderne Websites mit starkem Storytelling" },
+              ].map(({ problem, solution }, i) => (
+                <ProblemItem key={problem} text={problem} solution={solution} index={i} showIcon resetTrigger={problemResetTrigger} />
               ))}
             </div>
             <p className="mt-5 rounded-xl border border-emerald-500/25 bg-emerald-500/10 px-4 py-3 text-base text-white/95">

@@ -45,7 +45,7 @@ export function LiquidBackground() {
   const blobTransition = isMobile ? MOBILE_TRANSITION : DESKTOP_TRANSITION;
 
   return (
-    <div className="fixed inset-0 -z-10 overflow-hidden">
+    <div className="fixed inset-0 z-0 overflow-hidden" aria-hidden>
       {/* Basis: tiefer Farbverlauf mit Emerald-Anklang */}
       <div
         className="absolute inset-0"

@@ -1,12 +1,14 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import Link from "next/link";
 
-/** Sticky Bottom CTA – erscheint beim Scrollen, bleibt sichtbar. Nur Mobile. */
+/** Sticky Bottom CTA – erscheint beim Scrollen, blendet aus bei Section 7 + Footer. Nur Mobile. */
 export function MobileStickyCTA() {
   const [visible, setVisible] = useState(false);
+  const [hideNearFooter, setHideNearFooter] = useState(false);
   const [mounted, setMounted] = useState(false);
+  const inViewRef = useRef<Set<Element>>(new Set());
 
   useEffect(() => {
     const id = setTimeout(() => setMounted(true), 0);
@@ -22,8 +24,7 @@ export function MobileStickyCTA() {
     const onScroll = () => {
       if (rafId) cancelAnimationFrame(rafId);
       rafId = requestAnimationFrame(() => {
-        const show = window.scrollY > 280;
-        setVisible(show);
+        setVisible(window.scrollY > 280);
       });
     };
     onScroll();
@@ -34,15 +35,38 @@ export function MobileStickyCTA() {
     };
   }, [mounted]);
 
+  useEffect(() => {
+    if (!mounted) return;
+    const section7 = document.getElementById("section-7");
+    const footer = document.getElementById("contact");
+    if (!section7 && !footer) return;
+    const checkHide = (entries: IntersectionObserverEntry[]) => {
+      entries.forEach((e) => {
+        if (e.intersectionRatio > 0) inViewRef.current.add(e.target);
+        else inViewRef.current.delete(e.target);
+      });
+      setHideNearFooter(inViewRef.current.size > 0);
+    };
+    const obs = new IntersectionObserver(checkHide, {
+      threshold: [0, 0.01, 0.1],
+      rootMargin: "0px 0px 80px 0px",
+    });
+    if (section7) obs.observe(section7);
+    if (footer) obs.observe(footer);
+    return () => obs.disconnect();
+  }, [mounted]);
+
+  const show = visible && !hideNearFooter;
+
   if (!mounted) return null;
 
   return (
     <div
-      className="mobile-sticky-cta fixed bottom-0 left-0 right-0 z-50 px-4 pb-[max(0.75rem,env(safe-area-inset-bottom))] pt-3 md:hidden"
+      className="mobile-sticky-cta fixed bottom-0 left-0 right-0 z-[65] px-4 pb-[max(0.75rem,env(safe-area-inset-bottom))] pt-3 md:hidden"
       style={{
-        opacity: visible ? 1 : 0,
-        pointerEvents: visible ? "auto" : "none",
-        transform: visible ? "translateY(0)" : "translateY(100%)",
+        opacity: show ? 1 : 0,
+        pointerEvents: show ? "auto" : "none",
+        transform: show ? "translateY(0)" : "translateY(100%)",
         transition: "opacity 0.4s cubic-bezier(0.22, 1, 0.36, 1), transform 0.4s cubic-bezier(0.22, 1, 0.36, 1)",
       }}
     >
