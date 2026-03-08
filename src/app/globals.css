@@ -823,6 +823,102 @@ body[data-legal-page="true"] {
 .problem-x-icon-delay-2 { animation-delay: 0.6s; }
 .problem-x-icon-delay-3 { animation-delay: 0.9s; }
 
+/* Section 2 – Problem-Item Klick-Animation (X → ✓) */
+.problem-item-tappable {
+  cursor: pointer;
+  -webkit-tap-highlight-color: transparent;
+  touch-action: manipulation;
+}
+
+.problem-item-tappable:active:not([aria-pressed="true"]) {
+  transform: scale(0.98);
+}
+
+.problem-item-tappable[aria-pressed="true"]:hover {
+  transform: none;
+}
+
+/* Burst-Effekt beim Bestätigen */
+@keyframes problem-item-burst-in {
+  0% {
+    opacity: 1;
+    transform: scale(0);
+    box-shadow: 0 0 0 0 rgba(34, 197, 94, 0.5);
+  }
+  50% {
+    opacity: 0.8;
+    box-shadow: 0 0 30px 10px rgba(34, 197, 94, 0.2);
+  }
+  100% {
+    opacity: 0;
+    transform: scale(2);
+    box-shadow: 0 0 60px 20px rgba(34, 197, 94, 0);
+  }
+}
+
+.problem-item-burst {
+  background: radial-gradient(circle, rgba(34, 197, 94, 0.3) 0%, transparent 70%);
+  animation: problem-item-burst-in 0.6s cubic-bezier(0.34, 1.2, 0.64, 1) forwards;
+  pointer-events: none;
+}
+
+/* Checkmark Pop-In */
+@keyframes problem-check-pop {
+  0% {
+    opacity: 0;
+    transform: scale(0) rotate(-90deg);
+  }
+  60% {
+    transform: scale(1.2) rotate(10deg);
+  }
+  100% {
+    opacity: 1;
+    transform: scale(1) rotate(0deg);
+  }
+}
+
+.problem-check-icon {
+  animation: problem-check-pop 0.5s cubic-bezier(0.34, 1.2, 0.64, 1) forwards;
+}
+
+/* Strikethrough zeichnet sich ein */
+.problem-item-strikethrough {
+  position: relative;
+}
+
+.problem-item-strikethrough::after {
+  content: "";
+  position: absolute;
+  left: 0;
+  top: 50%;
+  height: 2px;
+  background: linear-gradient(90deg, rgba(34, 197, 94, 0.8), rgba(34, 197, 94, 0.4));
+  width: 100%;
+  animation: problem-strikethrough-draw 0.4s cubic-bezier(0.34, 1.2, 0.64, 1) 0.15s forwards;
+  transform-origin: left center;
+}
+
+@keyframes problem-strikethrough-draw {
+  from {
+    transform: scaleX(0);
+  }
+  to {
+    transform: scaleX(1);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .problem-item-burst,
+  .problem-check-icon,
+  .problem-item-strikethrough::after {
+    animation: none;
+  }
+  .problem-check-icon {
+    opacity: 1;
+    transform: none;
+  }
+}
+
 /* Section-4 Flip Cards – Liquid-Glas, passend zu Hero & Section 2 */
 .flip-card {
   transition: transform 0.35s cubic-bezier(0.4, 0, 0.2, 1);

@@ -1,6 +1,7 @@
 "use client";
 
 import { AppleStyleButton } from "./AppleStyleButton";
+import { ProblemItem } from "./ProblemItem";
 import { ScrollReveal } from "./ScrollReveal";
 
 const SECTION4_ITEMS = [
@@ -102,19 +103,14 @@ export function MobileLayout() {
             <p className="mt-5 text-base leading-relaxed text-white/90">
               Viele Brauereien haben ein großartiges Produkt – aber online findet sie kaum jemand.
             </p>
-            <div className="mt-5 space-y-2">
+            <div className="mx-auto mt-5 flex w-full max-w-sm flex-col gap-2">
               {[
                 "Social Media wird selten gepflegt",
                 "Werbung kostet viel und bringt wenig",
                 "Content zu erstellen kostet Zeit",
                 "Websites sind veraltet",
-              ].map((text) => (
-                <div
-                  key={text}
-                  className="section2-problem-item flex items-center justify-center gap-3 rounded-xl border border-red-500/20 bg-white/5 px-4 py-3"
-                >
-                  <span className="text-sm text-white/90">{text}</span>
-                </div>
+              ].map((text, i) => (
+                <ProblemItem key={text} text={text} index={i} showIcon centered />
               ))}
             </div>
             <p className="mt-5 rounded-xl border border-emerald-500/25 bg-emerald-500/10 px-4 py-3 text-base text-white/95">

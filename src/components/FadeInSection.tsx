@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
+import { ProblemItem } from "./ProblemItem";
 import {
   SECTION2_FADE_START,
   SECTION2_FADE_END,
@@ -64,7 +65,7 @@ export function FadeInSection() {
       }}
     >
       <div
-        className="section2-card mx-auto w-full max-w-2xl text-left antialiased px-4 lg:px-6"
+        className="section2-card pointer-events-auto mx-auto w-full max-w-2xl text-left antialiased px-4 lg:px-6"
         style={{
           transform: `translateY(-5vh) scale(${scale})`,
           transition: "transform 0.033s cubic-bezier(0.33, 1, 0.68, 1)",
@@ -99,7 +100,7 @@ export function FadeInSection() {
           Viele Brauereien haben ein großartiges Produkt – aber online findet sie kaum jemand.
         </p>
         <div
-          className="mt-5 grid gap-2 sm:grid-cols-2"
+          className="relative z-10 mt-5 grid min-w-0 grid-cols-1 gap-2 sm:grid-cols-2"
           style={{
             opacity: p2Opacity,
             transform: `translateY(${p2Translate}px)`,
@@ -111,20 +112,7 @@ export function FadeInSection() {
             "Content zu erstellen kostet Zeit",
             "Websites sind veraltet",
           ].map((text, i) => (
-            <div
-              key={text}
-              className="section2-problem-item flex items-center gap-3 rounded-xl border border-red-500/20 bg-white/5 px-4 py-3 backdrop-blur-sm"
-            >
-              <span
-                aria-hidden
-                className={`problem-x-icon problem-x-icon-delay-${i} grid h-8 w-8 shrink-0 place-items-center rounded-full bg-red-500/25 text-red-300`}
-              >
-                <svg className="h-4 w-4 shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
-                  <path d="M18 6L6 18M6 6l12 12" />
-                </svg>
-              </span>
-              <span className="text-sm text-white/90 sm:text-base">{text}</span>
-            </div>
+            <ProblemItem key={text} text={text} index={i} showIcon />
           ))}
         </div>
         <p
