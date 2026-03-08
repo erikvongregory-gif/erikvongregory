@@ -4,8 +4,8 @@ import { useEffect, useState } from "react";
 import {
   SECTION5_FADE_END,
   SECTION6_FADE_END,
-  SECTION6_FADE_OUT_START,
-  SECTION6_FADE_OUT_DURATION,
+  SECTION6_SLIDE_UP_DURATION,
+  SECTION6_SLIDE_UP_START,
   smoothStep,
 } from "@/lib/scrollConstants";
 import { AppleStyleButton } from "./AppleStyleButton";
@@ -43,8 +43,7 @@ const expertiseItems = [
 ];
 
 export function Section6Glaubwuerdigkeit() {
-  const [progress, setProgress] = useState(0);
-  const [fadeOut, setFadeOut] = useState(0);
+  const [progress, setProgress] = useState({ in: 0, slideUp: 0 });
 
   useEffect(() => {
     let rafId = 0;
@@ -60,12 +59,11 @@ export function Section6Glaubwuerdigkeit() {
           0,
           Math.min(1, (scrollY - SECTION5_FADE_END) / (SECTION6_FADE_END - SECTION5_FADE_END))
         );
-        const rawOut = Math.max(
+        const rawSlide = Math.max(
           0,
-          Math.min(1, (scrollY - SECTION6_FADE_OUT_START) / SECTION6_FADE_OUT_DURATION)
+          Math.min(1, (scrollY - SECTION6_SLIDE_UP_START) / SECTION6_SLIDE_UP_DURATION)
         );
-        setProgress(smoothStep(raw6));
-        setFadeOut(smoothStep(rawOut));
+        setProgress({ in: smoothStep(raw6), slideUp: smoothStep(rawSlide) });
       });
     };
     onScroll();
@@ -76,16 +74,17 @@ export function Section6Glaubwuerdigkeit() {
     };
   }, []);
 
-  const opacity = progress * (1 - fadeOut);
+  const opacity = progress.in;
   const isVisible = opacity > 0.02;
-  const translateIn = (1 - progress) * 50;
-  const translateOut = fadeOut * -80;
-  const translate = translateIn + translateOut;
-  const scale = 0.98 + progress * 0.02 - fadeOut * 0.03;
+  const hasSlidUp = progress.slideUp > 0.9; // Klicks durchlassen, wenn Box nach oben weg ist
+  const translateIn = (1 - progress.in) * 50;
+  const translateUp = progress.slideUp * -1100; // px – Box schiebt nach oben aus dem Bild
+  const translate = translateIn + translateUp;
+  const scale = 0.98 + progress.in * 0.02 - progress.slideUp * 0.02;
 
   const getItemProgress = (index: number) => {
     const start = index * 0.2;
-    const raw = Math.max(0, Math.min(1, (progress - start) / 0.3));
+    const raw = Math.max(0, Math.min(1, (progress.in - start) / 0.3));
     return smoothStep(raw);
   };
 
@@ -94,7 +93,7 @@ export function Section6Glaubwuerdigkeit() {
       className="pointer-events-none fixed inset-0 top-0 z-[60] flex min-h-screen items-center justify-center overflow-y-auto py-12 sm:py-16 md:py-24"
       style={{
         opacity,
-        pointerEvents: isVisible ? "auto" : "none",
+        pointerEvents: isVisible && !hasSlidUp ? "auto" : "none",
         transition: "opacity 0.033s cubic-bezier(0.33, 1, 0.68, 1)",
       }}
     >

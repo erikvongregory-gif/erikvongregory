@@ -1,5 +1,6 @@
 "use client";
 
+import Image from "next/image";
 import { useRef, useEffect, useState } from "react";
 import { ScatterTextOnScroll } from "./ScatterTextOnScroll";
 import { AppleStyleButton } from "./AppleStyleButton";
@@ -143,9 +144,11 @@ export function HeroWithScatter() {
               transition: "transform 0.033s cubic-bezier(0.33, 1, 0.68, 1)",
             }}
           >
-            <img
+            <Image
               src="/hero-portrait.svg"
               alt="Erik von Gregory"
+              width={640}
+              height={800}
               className="hero-portrait-blend h-full w-full object-contain object-bottom"
             />
           </div>

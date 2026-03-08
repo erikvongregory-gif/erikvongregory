@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import { Red_Hat_Display } from "next/font/google";
+import Script from "next/script";
 import { ScrollHeader } from "@/components/ScrollHeader";
 import { CookieBanner } from "@/components/CookieBanner";
 import { ContactFunnel } from "@/components/ContactFunnel";
@@ -40,6 +41,13 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="de" className="scroll-smooth">
+      <Script
+        id="scroll-to-top-on-load"
+        strategy="beforeInteractive"
+        dangerouslySetInnerHTML={{
+          __html: `if('scrollRestoration'in history)history.scrollRestoration='manual';window.scrollTo(0,0);`,
+        }}
+      />
       <body className={`${redHatDisplay.className} overflow-x-hidden bg-[#0a0f14] text-neutral-900 antialiased`}>
         <LoadingProvider>
         <a
@@ -54,7 +62,7 @@ export default function RootLayout({
         <LegalPageTheme />
         <ScrollHeader />
         {children}
-        <footer id="contact" className="relative border-t border-white/15 bg-transparent py-12 sm:py-16">
+        <footer id="contact" className="relative z-[70] border-t border-white/15 bg-transparent py-12 sm:py-16">
           <div className="mx-auto max-w-6xl px-4 sm:px-6">
             <div className="grid gap-8 sm:gap-12 md:grid-cols-2 lg:grid-cols-4">
               <div>
@@ -70,13 +78,17 @@ export default function RootLayout({
                 <p className="text-sm font-semibold text-white">Social</p>
                 <div className="mt-2 flex gap-4">
                   <a
-                    href="#"
+                    href="https://www.linkedin.com/in/erik-freiherr-von-gregory-22852b329"
+                    target="_blank"
+                    rel="noopener noreferrer"
                     className="text-sm text-white/70 transition-colors hover:text-emerald-400 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-emerald-400 focus-visible:ring-offset-2 focus-visible:ring-offset-transparent rounded"
                   >
                     LinkedIn
                   </a>
                   <a
-                    href="#"
+                    href="https://x.com"
+                    target="_blank"
+                    rel="noopener noreferrer"
                     className="text-sm text-white/70 transition-colors hover:text-emerald-400 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-emerald-400 focus-visible:ring-offset-2 focus-visible:ring-offset-transparent rounded"
                   >
                     X

@@ -1,5 +1,6 @@
 "use client";
 
+import Image from "next/image";
 import { useLoading } from "@/context/LoadingContext";
 import { AppleStyleButton } from "./AppleStyleButton";
 import { ProblemItem } from "./ProblemItem";
@@ -56,9 +57,11 @@ export function MobileLayout() {
           className={`mobile-hero-synced relative flex min-h-screen flex-col items-center justify-start px-4 pb-12 pt-2 text-center ${isLoadComplete ? "hero-ready" : ""}`}
         >
           <div className="mb-3 flex shrink-0 justify-center -mt-2">
-            <img
+            <Image
               src="/hero-portrait.svg"
               alt="Erik von Gregory"
+              width={219}
+              height={320}
               className="mobile-hero-portrait-reveal hero-portrait-blend h-[320px] w-[219px] object-contain object-top"
             />
           </div>
@@ -115,7 +118,7 @@ export function MobileLayout() {
                 "Content zu erstellen kostet Zeit",
                 "Websites sind veraltet",
               ].map((text, i) => (
-                <ProblemItem key={text} text={text} index={i} showIcon centered />
+                <ProblemItem key={text} text={text} index={i} showIcon />
               ))}
             </div>
             <p className="mt-5 rounded-xl border border-emerald-500/25 bg-emerald-500/10 px-4 py-3 text-base text-white/95">

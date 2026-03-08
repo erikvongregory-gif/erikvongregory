@@ -11,7 +11,7 @@ export function DesktopLayout() {
   return (
     <main id="main" className="relative min-h-screen overflow-x-hidden pt-14 sm:pt-16">
       <LiquidBackground />
-      <div className="relative h-[600vh] lg:h-[850vh]" aria-hidden />
+      <div className="relative h-[480vh] lg:h-[520vh]" aria-hidden />
       <HeroWithScatter />
       <FadeInSection />
       <ZoomSection3 />

@@ -69,17 +69,20 @@ export function ContactFunnel() {
   };
 
   const handleSubmit = () => {
-    const subject = encodeURIComponent(`Kontaktanfrage von ${data.name}`);
+    const name = data.name.trim().slice(0, 100);
+    const email = data.email.trim().slice(0, 254);
+    const message = data.message.trim().slice(0, 2000);
+    const subject = encodeURIComponent(`Kontaktanfrage von ${name}`);
     const body = encodeURIComponent(
-      `Name: ${data.name}\nE-Mail: ${data.email}\n\nNachricht:\n${data.message}`
+      `Name: ${name}\nE-Mail: ${email}\n\nNachricht:\n${message}`
     );
     window.location.href = `mailto:${LEGAL.email}?subject=${subject}&body=${body}`;
     setSubmitted(true);
   };
 
   const canProceed = () => {
-    if (step === 0) return data.name.trim().length >= 2;
-    if (step === 1) return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(data.email.trim());
+    if (step === 0) return data.name.trim().length >= 2 && data.name.trim().length <= 100;
+    if (step === 1) return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(data.email.trim()) && data.email.trim().length <= 254;
     return true;
   };
 
@@ -174,9 +177,10 @@ export function ContactFunnel() {
                       <textarea
                         id={`funnel-${s.id}`}
                         value={data[s.id]}
-                        onChange={(e) => setData((d) => ({ ...d, [s.id]: e.target.value }))}
+                        onChange={(e) => setData((d) => ({ ...d, [s.id]: e.target.value.slice(0, 2000) }))}
                         placeholder={s.placeholder}
                         rows={3}
+                        maxLength={2000}
                         className="contact-funnel-input w-full resize-none rounded-xl border border-white/15 bg-white/5 px-4 py-3 text-white placeholder:text-white/40 focus:border-emerald-500/50 focus:outline-none focus:ring-2 focus:ring-emerald-500/30"
                       />
                     ) : (
@@ -184,9 +188,15 @@ export function ContactFunnel() {
                         id={`funnel-${s.id}`}
                         type={s.id === "email" ? "email" : "text"}
                         value={data[s.id]}
-                        onChange={(e) => setData((d) => ({ ...d, [s.id]: e.target.value }))}
+                        onChange={(e) =>
+                          setData((d) => ({
+                            ...d,
+                            [s.id]: e.target.value.slice(0, s.id === "email" ? 254 : 100),
+                          }))
+                        }
                         placeholder={s.placeholder}
                         autoComplete={s.id === "email" ? "email" : "name"}
+                        maxLength={s.id === "email" ? 254 : 100}
                         className="contact-funnel-input w-full rounded-xl border border-white/15 bg-white/5 px-4 py-3 text-white placeholder:text-white/40 focus:border-emerald-500/50 focus:outline-none focus:ring-2 focus:ring-emerald-500/30"
                       />
                     )}

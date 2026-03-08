@@ -320,6 +320,13 @@ body[data-legal-page="true"] {
           drop-shadow(0 0 100px rgba(255, 255, 255, 0.25));
 }
 
+@media (max-width: 768px) {
+  .hero-portrait-blend {
+    filter: drop-shadow(0 0 20px rgba(255, 255, 255, 0.25))
+            drop-shadow(0 0 40px rgba(255, 255, 255, 0.12));
+  }
+}
+
 /* Hero CTA Button – Glas-Button mit grünem Glow bei Hover */
 .hero-cta-btn {
   position: relative;

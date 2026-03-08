@@ -1,0 +1,391 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>KI für Brauereien – Playbook | Erik von Gregory</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,600;0,700;1,400&family=Red+Hat+Display:wght@400;500;600;700&display=swap" rel="stylesheet" />
+  <style>
+    :root {
+      --akq-green: #14532d;
+      --akq-green-hover: #166534;
+      --bg-gradient: linear-gradient(165deg, #0a0f14 0%, #0f172a 35%, #0c1222 70%, #05100d 100%);
+      --text: rgba(255,255,255,0.95);
+      --text-muted: rgba(255,255,255,0.7);
+      --emerald-light: #a7f3d0;
+      --font-body: "Red Hat Display", sans-serif;
+      --font-display: "Playfair Display", serif;
+    }
+
+    * { box-sizing: border-box; }
+    body {
+      margin: 0;
+      padding: 0;
+      font-family: var(--font-body);
+      background: var(--bg-gradient);
+      color: var(--text);
+      line-height: 1.65;
+      -webkit-font-smoothing: antialiased;
+    }
+
+    .ebook {
+      max-width: 720px;
+      margin: 0 auto;
+      padding: 3rem 1.5rem 4rem;
+    }
+
+    /* Cover – Titelseite wie Playbook */
+    .cover {
+      text-align: center;
+      padding: 4rem 0 5rem;
+      border-bottom: 1px solid rgba(255,255,255,0.12);
+    }
+    .cover-badge {
+      display: inline-block;
+      font-size: 0.7rem;
+      font-weight: 700;
+      letter-spacing: 0.25em;
+      text-transform: uppercase;
+      color: var(--emerald-light);
+      margin-bottom: 2rem;
+    }
+    .cover h1 {
+      font-family: var(--font-display);
+      font-size: 2.25rem;
+      font-weight: 400;
+      font-style: italic;
+      margin: 0 0 0.75rem;
+      text-shadow: 0 0 24px rgba(34, 197, 94, 0.4);
+      color: var(--emerald-light);
+    }
+    .cover-subtitle {
+      font-size: 1.25rem;
+      font-weight: 600;
+      margin: 0 0 2.5rem;
+      color: var(--text-muted);
+    }
+    .cover-meta {
+      font-size: 0.9rem;
+      color: var(--text-muted);
+    }
+    .cover-author { font-weight: 600; color: rgba(255,255,255,0.9); }
+
+    /* Inhaltsverzeichnis */
+    .toc {
+      margin: 3rem 0;
+      padding: 2rem 1.5rem;
+      background: rgba(255, 255, 255, 0.06);
+      backdrop-filter: blur(24px);
+      -webkit-backdrop-filter: blur(24px);
+      border: 1px solid rgba(255, 255, 255, 0.12);
+      border-radius: 1.5rem;
+      box-shadow:
+        0 0 0 1px rgba(255, 255, 255, 0.05) inset,
+        0 8px 32px rgba(0, 0, 0, 0.2),
+        0 0 60px rgba(34, 197, 94, 0.06);
+    }
+    .toc-title {
+      font-family: var(--font-display);
+      font-size: 1.25rem;
+      font-weight: 400;
+      font-style: italic;
+      color: rgba(167, 243, 208, 0.95);
+      margin: 0 0 1.5rem;
+    }
+    .toc-list { list-style: none; padding: 0; margin: 0; }
+    .toc-list li {
+      margin-bottom: 0.75rem;
+      padding-left: 0;
+    }
+    .toc-list a {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      color: var(--text);
+      text-decoration: none;
+      padding: 0.5rem 0;
+      border-bottom: 1px solid rgba(255,255,255,0.06);
+      transition: color 0.2s;
+    }
+    .toc-list a:hover { color: var(--emerald-light); }
+    .toc-num { font-size: 0.8rem; color: var(--text-muted); }
+
+    /* Kapitel */
+    .chapter {
+      margin: 3.5rem 0;
+      padding: 2.5rem 1.5rem;
+      background: rgba(255, 255, 255, 0.06);
+      backdrop-filter: blur(24px);
+      -webkit-backdrop-filter: blur(24px);
+      border: 1px solid rgba(255, 255, 255, 0.12);
+      border-radius: 1.5rem;
+      box-shadow:
+        0 0 0 1px rgba(255, 255, 255, 0.05) inset,
+        0 8px 32px rgba(0, 0, 0, 0.2),
+        0 0 60px rgba(34, 197, 94, 0.06);
+    }
+    .chapter-num {
+      font-size: 0.75rem;
+      font-weight: 700;
+      letter-spacing: 0.2em;
+      text-transform: uppercase;
+      color: var(--emerald-light);
+      margin-bottom: 0.5rem;
+    }
+    .chapter h2 {
+      font-family: var(--font-display);
+      font-size: 1.5rem;
+      font-weight: 400;
+      font-style: italic;
+      margin: 0 0 1.25rem;
+      color: rgba(167, 243, 208, 0.95);
+      text-shadow: 0 0 20px rgba(34, 197, 94, 0.3);
+    }
+    .chapter h3 {
+      font-size: 1rem;
+      font-weight: 600;
+      margin: 1.75rem 0 0.5rem;
+      color: white;
+    }
+    .chapter p {
+      margin: 0 0 1rem;
+      color: var(--text);
+    }
+    .chapter p:last-of-type { margin-bottom: 0; }
+
+    /* Highlight / Merksatz */
+    .highlight {
+      background: rgba(34, 197, 94, 0.1);
+      border: 1px solid rgba(34, 197, 94, 0.25);
+      border-radius: 0.75rem;
+      padding: 1.25rem;
+      margin: 1.5rem 0;
+    }
+    .highlight-title {
+      font-size: 0.7rem;
+      font-weight: 700;
+      letter-spacing: 0.15em;
+      text-transform: uppercase;
+      color: var(--emerald-light);
+      margin-bottom: 0.5rem;
+    }
+    .highlight p { margin: 0; font-weight: 500; color: rgba(255,255,255,0.95); }
+
+    /* Checkliste */
+    .checklist {
+      margin: 1.5rem 0;
+      padding: 0;
+      list-style: none;
+    }
+    .checklist li {
+      display: flex;
+      align-items: flex-start;
+      gap: 0.75rem;
+      margin-bottom: 0.75rem;
+      color: var(--text);
+    }
+    .checklist input[type="checkbox"] {
+      width: 1.25rem;
+      height: 1.25rem;
+      accent-color: var(--akq-green);
+      flex-shrink: 0;
+      margin-top: 0.2rem;
+    }
+
+    /* Listen */
+    ul:not(.toc-list):not(.checklist) {
+      margin: 1rem 0;
+      padding-left: 1.5rem;
+      color: var(--text);
+    }
+    ul:not(.toc-list):not(.checklist) li { margin-bottom: 0.5rem; }
+    ul:not(.toc-list):not(.checklist) li::marker { color: #22c55e; }
+
+    /* Über den Autor */
+    .author-box {
+      margin: 3rem 0;
+      padding: 2rem 1.5rem;
+      background: rgba(255, 255, 255, 0.06);
+      border: 1px solid rgba(255, 255, 255, 0.12);
+      border-radius: 1.5rem;
+      display: flex;
+      gap: 1.5rem;
+      align-items: flex-start;
+    }
+    .author-box h3 {
+      font-family: var(--font-display);
+      font-size: 1.1rem;
+      font-style: italic;
+      color: rgba(167, 243, 208, 0.95);
+      margin: 0 0 0.5rem;
+    }
+    .author-box p { margin: 0; font-size: 0.95rem; }
+
+    /* CTA */
+    .cta {
+      text-align: center;
+      margin: 4rem 0 2rem;
+      padding: 2rem;
+    }
+    .cta a {
+      display: inline-block;
+      padding: 0.875rem 1.75rem;
+      background: var(--akq-green);
+      color: white;
+      text-decoration: none;
+      font-weight: 600;
+      font-size: 0.95rem;
+      border-radius: 9999px;
+      transition: background 0.2s, transform 0.2s;
+    }
+    .cta a:hover {
+      background: var(--akq-green-hover);
+      transform: scale(1.02);
+    }
+
+    /* Footer */
+    .ebook-footer {
+      margin-top: 4rem;
+      padding-top: 2rem;
+      border-top: 1px solid rgba(255,255,255,0.12);
+      text-align: center;
+      font-size: 0.85rem;
+      color: var(--text-muted);
+    }
+    .ebook-footer a { color: #22c55e; text-decoration: none; }
+
+    @media print {
+      body { background: #0a0f14; }
+      .chapter, .toc { break-inside: avoid; }
+    }
+  </style>
+</head>
+<body>
+  <div class="ebook">
+    <!-- Titelseite -->
+    <header class="cover">
+      <p class="cover-badge">Kostenloses Playbook</p>
+      <h1>KI für Brauereien</h1>
+      <p class="cover-subtitle">5 Ideen für den Einstieg – ohne teure Agentur</p>
+      <p class="cover-meta"><span class="cover-author">Erik von Gregory</span><br />KI für Brauereien & Gastronomie</p>
+    </header>
+
+    <!-- Inhaltsverzeichnis -->
+    <nav class="toc" id="inhalt">
+      <h2 class="toc-title">Inhaltsverzeichnis</h2>
+      <ol class="toc-list">
+        <li><a href="#einleitung">Einleitung <span class="toc-num">S. 1</span></a></li>
+        <li><a href="#kapitel1">Das Problem: Warum viele Brauereien online unsichtbar bleiben <span class="toc-num">Kapitel 1</span></a></li>
+        <li><a href="#kapitel2">Idee 1: KI-Produktfotos für Bier & Getränke <span class="toc-num">Kapitel 2</span></a></li>
+        <li><a href="#kapitel3">Idee 2: KI-Werbevideos für Social Media <span class="toc-num">Kapitel 3</span></a></li>
+        <li><a href="#kapitel4">Idee 3: Automatisiertes Social Media Marketing <span class="toc-num">Kapitel 4</span></a></li>
+        <li><a href="#kapitel5">Idee 4: Moderne Websites mit Storytelling <span class="toc-num">Kapitel 5</span></a></li>
+        <li><a href="#kapitel6">Idee 5: KI-Content für Instagram, TikTok & Ads <span class="toc-num">Kapitel 6</span></a></li>
+        <li><a href="#checkliste">Deine nächsten Schritte <span class="toc-num">Checkliste</span></a></li>
+        <li><a href="#autor">Über den Autor <span class="toc-num">—</span></a></li>
+      </ol>
+    </nav>
+
+    <main>
+      <!-- Einleitung -->
+      <section class="chapter" id="einleitung">
+        <p class="chapter-num">Einleitung</p>
+        <h2>Willkommen im KI-Playbook für Brauereien</h2>
+        <p>Dieses Playbook gibt dir einen klaren Einstieg, wie Brauereien und Getränkemarken moderne KI für Marketing und Vertrieb nutzen können – ohne teure Agenturen, ohne monatelange Schulungen.</p>
+        <p>Du erhältst 5 konkrete Ideen, die du Schritt für Schritt umsetzen kannst. Am Ende findest du eine Checkliste für deine nächsten Schritte.</p>
+      </section>
+
+      <!-- Kapitel 1 -->
+      <section class="chapter" id="kapitel1">
+        <p class="chapter-num">Kapitel 1</p>
+        <h2>Das Problem: Warum viele Brauereien online unsichtbar bleiben</h2>
+        <p>Viele Brauereien haben ein großartiges Produkt – aber online findet sie kaum jemand. Social Media wird selten gepflegt, Werbung kostet viel und bringt wenig, Content zu erstellen kostet Zeit, und Websites sind veraltet.</p>
+        <div class="highlight">
+          <p class="highlight-title">Merksatz</p>
+          <p><strong>Währenddessen gewinnen moderne Marken täglich neue Kunden über TikTok, Instagram und Google.</strong></p>
+        </div>
+        <p>Moderne KI verändert das Spiel: Du kannst hochwertigen Content erzeugen, ohne monatelange Schulungen oder teure Agenturen.</p>
+      </section>
+
+      <!-- Kapitel 2 -->
+      <section class="chapter" id="kapitel2">
+        <p class="chapter-num">Kapitel 2</p>
+        <h2>Idee 1: KI-Produktfotos für Bier & Getränke</h2>
+        <p>Hochwertige Produktbilder für Flaschen, Dosen und Gläser – erstellt mit moderner KI. Perfekt für Website, Online-Shop, Werbung und Social Media, ohne teure Fotoshootings.</p>
+        <h3>Vorteile auf einen Blick</h3>
+        <ul>
+          <li>Kein Studio nötig – Bilder aus wenigen Referenzfotos</li>
+          <li>Konsistente Ästhetik für deine Marke</li>
+          <li>Schnell umsetzbar für neue Produkte oder Aktionen</li>
+        </ul>
+      </section>
+
+      <!-- Kapitel 3 -->
+      <section class="chapter" id="kapitel3">
+        <p class="chapter-num">Kapitel 3</p>
+        <h2>Idee 2: KI-Werbevideos für Social Media</h2>
+        <p>Cinematische Werbevideos für Bier, Brauereien und Getränke – produziert mit KI. Ideal für TikTok, Instagram und Ads.</p>
+        <ul>
+          <li>Motion-Grafik und Clips in wenigen Stunden</li>
+          <li>Adaptierbar für verschiedene Plattformen</li>
+          <li>Weniger Aufwand als klassische Video-Produktion</li>
+        </ul>
+      </section>
+
+      <!-- Kapitel 4 -->
+      <section class="chapter" id="kapitel4">
+        <p class="chapter-num">Kapitel 4</p>
+        <h2>Idee 3: Automatisiertes Social Media Marketing</h2>
+        <p>Ein System, das regelmäßig Content für deine Brauerei veröffentlicht. Mehr Reichweite, mehr Sichtbarkeit und weniger Aufwand für dein Team.</p>
+      </section>
+
+      <!-- Kapitel 5 -->
+      <section class="chapter" id="kapitel5">
+        <p class="chapter-num">Kapitel 5</p>
+        <h2>Idee 4: Moderne Websites mit Storytelling</h2>
+        <p>Websites, die deine Brauerei perfekt präsentieren und Besucher zu Kunden machen. Modernes Design, starke Bilder und eine klare Story rund um deine Marke.</p>
+      </section>
+
+      <!-- Kapitel 6 -->
+      <section class="chapter" id="kapitel6">
+        <p class="chapter-num">Kapitel 6</p>
+        <h2>Idee 5: KI-Content für Instagram, TikTok & Ads</h2>
+        <p>Regelmäßiger Content speziell für Brauereien und Getränkemarken. Posts, Videos und Kampagnen, die Reichweite aufbauen und deine Marke sichtbar machen.</p>
+      </section>
+
+      <!-- Checkliste -->
+      <section class="chapter" id="checkliste">
+        <p class="chapter-num">Deine nächsten Schritte</p>
+        <h2>Checkliste für den Einstieg</h2>
+        <p>Nutze diese Liste, um dein KI-Marketing für die Brauerei zu starten:</p>
+        <ul class="checklist">
+          <li><input type="checkbox" id="c1" /><label for="c1">Eine der 5 Ideen auswählen und priorisieren</label></li>
+          <li><input type="checkbox" id="c2" /><label for="c2">Ressourcen prüfen (Zeit, Budget, Team)</label></li>
+          <li><input type="checkbox" id="c3" /><label for="c3">Referenzmaterial sammeln (Fotos, Logos, Texte)</label></li>
+          <li><input type="checkbox" id="c4" /><label for="c4">Erstes Pilotprojekt definieren (z.B. 5 Produktfotos)</label></li>
+          <li><input type="checkbox" id="c5" /><label for="c5">Kostenloses Erstgespräch buchen</label></li>
+        </ul>
+      </section>
+
+      <!-- Über den Autor -->
+      <section class="author-box" id="autor">
+        <div>
+          <h3>Über den Autor</h3>
+          <p><strong>Erik von Gregory</strong> – Von der Brauerei für die Brauerei. Brauereiwissen + moderne KI = Marketing, das funktioniert. Ich arbeite selbst in einer Brauerei und kenne die Branche aus erster Hand.</p>
+        </div>
+      </section>
+
+      <div class="cta">
+        <a href="https://erikvongregory.com/#contact">Kostenloses Erstgespräch starten</a>
+      </div>
+    </main>
+
+    <footer class="ebook-footer">
+      <p>© Erik von Gregory · KI für Brauereien & Gastronomie</p>
+      <p><a href="https://erikvongregory.com">erikvongregory.com</a> · <a href="mailto:kontakt@erikvongregory.de">kontakt@erikvongregory.de</a></p>
+    </footer>
+  </div>
+</body>
+</html>

@@ -23,14 +23,13 @@ export const SECTION4_FADE_OUT_DURATION = 200;
 /** Section 5 */
 export const SECTION5_FADE_START = SECTION4_FADE_END + SECTION4_HOLD + SECTION4_FADE_OUT_DURATION;
 export const SECTION5_FADE_END = SECTION5_FADE_START + 220;
-/** Section 6 */
-export const SECTION6_NOTHING_GAP = 60;
+/** Section 6 – bleibt sichtbar, schiebt sich beim Footer nach oben weg */
+export const SECTION6_NOTHING_GAP = 40;
 export const SECTION6_FADE_START = SECTION5_FADE_END + SECTION6_NOTHING_GAP;
 export const SECTION6_FADE_END = SECTION6_FADE_START + 220;
-/** Section 6 blendet aus, bevor der Footer erscheint */
-export const SECTION6_HOLD = 700;
-export const SECTION6_FADE_OUT_START = SECTION6_FADE_END + SECTION6_HOLD;
-export const SECTION6_FADE_OUT_DURATION = 400;
+/** Section 6 schiebt nach oben, bevor Footer überlappt */
+export const SECTION6_SLIDE_UP_START = SECTION6_FADE_END + 100;
+export const SECTION6_SLIDE_UP_DURATION = 350;
 
 export function smoothStep(t: number) {
   return t * t * (3 - 2 * t);
