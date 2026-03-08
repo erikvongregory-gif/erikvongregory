@@ -1,8 +1,16 @@
 "use client";
 
 import { useEffect, useState } from "react";
+import confetti from "canvas-confetti";
 import { LEGAL } from "@/lib/legal";
-import { SITE } from "@/lib/siteConfig";
+
+const fireConfetti = () => {
+  const count = 80;
+  const defaults = { origin: { y: 0.6 }, colors: ["#22c55e", "#14532d", "#a7f3d0", "#166534", "#ffffff"] };
+  confetti({ ...defaults, particleCount: count * 0.5, spread: 60 });
+  confetti({ ...defaults, particleCount: count * 0.4, spread: 100, scalar: 0.9 });
+  confetti({ ...defaults, particleCount: count * 0.3, spread: 120, scalar: 0.8 });
+};
 
 const STEPS = [
   { id: "name", label: "Dein Name", placeholder: "z.B. Max Mustermann" },
@@ -15,7 +23,6 @@ export function ContactFunnel() {
   const [step, setStep] = useState(0);
   const [data, setData] = useState({ name: "", email: "", message: "" });
   const [submitted, setSubmitted] = useState(false);
-  const [submittedViaFormspree, setSubmittedViaFormspree] = useState(false);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
@@ -60,7 +67,6 @@ export function ContactFunnel() {
       setStep(0);
       setData({ name: "", email: "", message: "" });
       setSubmitted(false);
-      setSubmittedViaFormspree(false);
       setError(null);
     }, 300);
   };
@@ -78,37 +84,30 @@ export function ContactFunnel() {
     const name = data.name.trim().slice(0, 100);
     const email = data.email.trim().slice(0, 254);
     const message = data.message.trim().slice(0, 2000);
-    const formId = SITE.formspreeFormId?.trim();
 
-    if (formId) {
-      setLoading(true);
-      setError(null);
-      try {
-        const res = await fetch(`https://formspree.io/f/${formId}`, {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({
-            name,
-            email,
-            message: message || "(keine Nachricht)",
-            _subject: `Kontaktanfrage von ${name}`,
-          }),
-        });
-        if (!res.ok) throw new Error("Fehler beim Senden");
-        setSubmittedViaFormspree(true);
-        setSubmitted(true);
-      } catch {
-        setError("Die Nachricht konnte nicht gesendet werden. Bitte versuche es später erneut oder schreibe direkt an die E-Mail im Impressum.");
-      } finally {
-        setLoading(false);
-      }
-    } else {
-      const subject = encodeURIComponent(`Kontaktanfrage von ${name}`);
-      const body = encodeURIComponent(
-        `Name: ${name}\nE-Mail: ${email}\n\nNachricht:\n${message}`
-      );
-      window.location.href = `mailto:${LEGAL.email}?subject=${subject}&body=${body}`;
+    setLoading(true);
+    setError(null);
+    try {
+      const res = await fetch(`https://formsubmit.co/ajax/${LEGAL.email}`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json", Accept: "application/json" },
+        body: JSON.stringify({
+          name,
+          email,
+          message: message || "(keine Nachricht)",
+          _subject: `Kontaktanfrage von ${name}`,
+          _replyto: email,
+        }),
+      });
+      if (!res.ok) throw new Error("Fehler beim Senden");
+      fireConfetti();
       setSubmitted(true);
+    } catch {
+      setError(
+        "Die Nachricht konnte nicht gesendet werden. Bitte versuche es später erneut oder schreibe direkt an die E-Mail im Impressum."
+      );
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -168,9 +167,7 @@ export function ContactFunnel() {
                 Vielen Dank!
               </h2>
               <p className="mt-2 text-white/70">
-                {submittedViaFormspree
-                  ? "Deine Nachricht wurde gesendet. Ich melde mich bald bei dir."
-                  : "Dein E-Mail-Programm öffnet sich – sende die Nachricht ab und ich melde mich bald."}
+                Deine Nachricht wurde gesendet. Ich melde mich bald bei dir.
               </p>
               <button
                 type="button"

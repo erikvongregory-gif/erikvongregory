@@ -27,7 +27,4 @@ export const SITE = {
 
   /** Google Search Console – Code von search.google.com/search-console eintragen, z.B. "abc123xyz" */
   googleSiteVerification: "",
-
-  /** FormSpree Form-ID für Kontaktformular – kostenlos bei formspree.io, z.B. "xyzwabcd" */
-  formspreeFormId: "",
 } as const;
