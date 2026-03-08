@@ -1,5 +1,6 @@
 "use client";
 
+import { useLoading } from "@/context/LoadingContext";
 import { AppleStyleButton } from "./AppleStyleButton";
 import { ProblemItem } from "./ProblemItem";
 import { ScrollReveal } from "./ScrollReveal";
@@ -39,6 +40,8 @@ const EXPERTISE_ITEMS = [
 ];
 
 export function MobileLayout() {
+  const { isLoadComplete } = useLoading();
+
   return (
     <>
       <div
@@ -49,7 +52,9 @@ export function MobileLayout() {
       />
       <div className="relative flex flex-col">
         {/* Hero – gestaffelte Slide-Ins nach LoadingScreen */}
-        <section className="mobile-hero-synced relative flex min-h-screen flex-col items-center justify-start px-4 pb-12 pt-2 text-center">
+        <section
+          className={`mobile-hero-synced relative flex min-h-screen flex-col items-center justify-start px-4 pb-12 pt-2 text-center ${isLoadComplete ? "hero-ready" : ""}`}
+        >
           <div className="mb-3 flex shrink-0 justify-center -mt-2">
             <img
               src="/hero-portrait.svg"

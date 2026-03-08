@@ -53,7 +53,7 @@ export function ProblemItem({ text, index, showIcon = true, centered = false, cl
         >
           {acknowledged ? (
             <svg
-              className="problem-check-icon h-5 w-5"
+              className="problem-check-icon block h-5 w-5 shrink-0"
               viewBox="0 0 24 24"
               fill="none"
               stroke="currentColor"
@@ -65,7 +65,7 @@ export function ProblemItem({ text, index, showIcon = true, centered = false, cl
             </svg>
           ) : (
             <svg
-              className="h-4 w-4 shrink-0"
+              className="block h-4 w-4 shrink-0"
               viewBox="0 0 24 24"
               fill="none"
               stroke="currentColor"

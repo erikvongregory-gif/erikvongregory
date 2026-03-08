@@ -1,12 +1,14 @@
 "use client";
 
 import { useEffect, useState } from "react";
+import { useLoading } from "@/context/LoadingContext";
 
 const FADE_OUT_MS = 500;
 const DURATION_DESKTOP = 4800;
 const DURATION_MOBILE = 2200;
 
 export function LoadingScreen() {
+  const { setLoadComplete } = useLoading();
   const [phase, setPhase] = useState<"show" | "fade" | "done">("show");
   const [duration, setDuration] = useState(DURATION_DESKTOP);
 
@@ -19,12 +21,15 @@ export function LoadingScreen() {
 
   useEffect(() => {
     const t1 = setTimeout(() => setPhase("fade"), duration - FADE_OUT_MS);
-    const t2 = setTimeout(() => setPhase("done"), duration);
+    const t2 = setTimeout(() => {
+      setLoadComplete();
+      setPhase("done");
+    }, duration);
     return () => {
       clearTimeout(t1);
       clearTimeout(t2);
     };
-  }, [duration]);
+  }, [duration, setLoadComplete]);
 
   if (phase === "done") return null;
 
@@ -34,14 +39,21 @@ export function LoadingScreen() {
         phase === "fade" ? "pointer-events-none opacity-0" : "opacity-100"
       }`}
     >
-      <p className="text-2xl font-bold tracking-tight text-white sm:text-3xl">
+      <p
+        className="loading-name-text-shimmer animate-loading-shimmer-text text-2xl font-bold tracking-tight sm:text-3xl"
+        style={{
+          background: "linear-gradient(90deg, #ffffff 0%, #ffffff 25%, #a7f3d0 50%, #ffffff 75%, #ffffff 100%)",
+          backgroundSize: "200% 100%",
+          WebkitBackgroundClip: "text",
+          backgroundClip: "text",
+          color: "transparent",
+          textShadow: "0 0 20px rgba(34, 197, 94, 0.5), 0 0 40px rgba(34, 197, 94, 0.25)",
+        }}
+      >
         Erik{" "}
         <span
           className="font-light italic"
-          style={{
-            fontFamily: "var(--font-austera)",
-            textShadow: "0 0 20px rgba(34, 197, 94, 0.5), 0 0 40px rgba(34, 197, 94, 0.25)",
-          }}
+          style={{ fontFamily: "var(--font-austera)" }}
         >
           von Gregory
         </span>

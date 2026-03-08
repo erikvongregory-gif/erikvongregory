@@ -2,8 +2,10 @@ import type { Metadata } from "next";
 import { Red_Hat_Display } from "next/font/google";
 import { ScrollHeader } from "@/components/ScrollHeader";
 import { CookieBanner } from "@/components/CookieBanner";
+import { ContactFunnel } from "@/components/ContactFunnel";
 import { LoadingScreen } from "@/components/LoadingScreen";
 import { LegalPageTheme } from "@/components/LegalPageTheme";
+import { LoadingProvider } from "@/context/LoadingContext";
 import "./globals.css";
 
 const redHatDisplay = Red_Hat_Display({
@@ -39,6 +41,7 @@ export default function RootLayout({
   return (
     <html lang="de" className="scroll-smooth">
       <body className={`${redHatDisplay.className} overflow-x-hidden bg-[#0a0f14] text-neutral-900 antialiased`}>
+        <LoadingProvider>
         <a
           href="#main"
           className="sr-only focus:not-sr-only focus:fixed focus:left-4 focus:top-4 focus:z-[100] focus:rounded-lg focus:bg-[#14532d] focus:px-4 focus:py-2 focus:text-white focus:outline-none focus:ring-2 focus:ring-white"
@@ -46,6 +49,7 @@ export default function RootLayout({
           Zum Inhalt springen
         </a>
         <LoadingScreen />
+        <ContactFunnel />
         <CookieBanner />
         <LegalPageTheme />
         <ScrollHeader />
@@ -85,7 +89,7 @@ export default function RootLayout({
                   Kostenloses Erstgespräch – unverbindlich & direkt.
                 </p>
                 <a
-                  href="mailto:kontakt@erikvongregory.de"
+                  href="#contact"
                   className="mt-3 inline-flex items-center gap-2 rounded-lg bg-[#14532d] px-4 py-2.5 text-sm font-medium text-white transition-all duration-200 hover:bg-[#166534] hover:scale-[1.02] active:scale-[0.98] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-emerald-400 focus-visible:ring-offset-2 focus-visible:ring-offset-[#05100d]"
                 >
                   E-Mail schreiben
@@ -110,6 +114,7 @@ export default function RootLayout({
             <p className="mt-8 text-center text-sm text-white/60 sm:mt-12">© Erik von Gregory</p>
           </div>
         </footer>
+        </LoadingProvider>
       </body>
     </html>
   );
