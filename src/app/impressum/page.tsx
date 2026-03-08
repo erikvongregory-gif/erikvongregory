@@ -1,11 +1,14 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import { LEGAL } from "@/lib/legal";
+import { SITE } from "@/lib/siteConfig";
 
 export const metadata: Metadata = {
-  title: "Impressum | Erik von Gregory",
+  title: "Impressum",
   description:
-    "Impressum und rechtliche Angaben – Erik von Gregory, KI für Brauereien & Gastronomie.",
+    "Impressum und rechtliche Angaben – Erik von Gregory, KI für Brauereien & Gastronomie. Fuchstal.",
+  alternates: { canonical: `${SITE.baseUrl}/impressum` },
+  robots: { index: true, follow: true },
 };
 
 export default function ImpressumPage() {

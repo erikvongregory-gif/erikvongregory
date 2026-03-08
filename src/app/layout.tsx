@@ -7,6 +7,8 @@ import { ContactFunnel } from "@/components/ContactFunnel";
 import { LoadingScreen } from "@/components/LoadingScreen";
 import { LegalPageTheme } from "@/components/LegalPageTheme";
 import { LoadingProvider } from "@/context/LoadingContext";
+import { JsonLd } from "@/components/JsonLd";
+import { SITE } from "@/lib/siteConfig";
 import "./globals.css";
 
 const redHatDisplay = Red_Hat_Display({
@@ -22,16 +24,41 @@ export const viewport = {
 };
 
 export const metadata: Metadata = {
-  title: "Erik von Gregory | KI für Brauereien & Gastronomie",
-  robots: { index: false, follow: false },
-  description:
-    "Erik von Gregory – bündig, direkt. KI für Brauereien, Gastronomie und Getränkehersteller. Automatisierte Marketing, Content & Verkauf.",
-  openGraph: {
-    title: "Erik von Gregory | KI für Brauereien & Gastronomie",
-    description:
-      "KI für Brauereien, Gastronomie und Getränkehersteller. Automatisierte Marketing, Content & Verkauf.",
-    type: "website",
+  metadataBase: new URL(SITE.baseUrl),
+  title: {
+    default: SITE.defaultTitle,
+    template: "%s | Erik von Gregory",
   },
+  description: SITE.defaultDescription,
+  keywords: [...SITE.keywords],
+  authors: [{ name: "Erik von Gregory", url: SITE.baseUrl }],
+  creator: "Erik von Gregory",
+  publisher: "Erik von Gregory",
+  robots: {
+    index: true,
+    follow: true,
+    googleBot: { index: true, follow: true },
+  },
+  alternates: { canonical: SITE.baseUrl },
+  openGraph: {
+    type: "website",
+    locale: "de_DE",
+    url: SITE.baseUrl,
+    siteName: SITE.name,
+    title: SITE.defaultTitle,
+    description: SITE.defaultDescription,
+    images: SITE.ogImage ? [{ url: SITE.ogImage, width: 1200, height: 630, alt: SITE.name }] : undefined,
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: SITE.defaultTitle,
+    description: SITE.defaultDescription,
+  },
+  category: "Business",
+  manifest: "/manifest.json",
+  ...(SITE.googleSiteVerification?.trim() && {
+    verification: { google: SITE.googleSiteVerification.trim() },
+  }),
 };
 
 export default function RootLayout({
@@ -52,6 +79,7 @@ export default function RootLayout({
         }}
       />
       <body className={`${redHatDisplay.className} overflow-x-hidden bg-[#0a0f14] text-neutral-900 antialiased`}>
+        <JsonLd />
         <LoadingProvider>
         <a
           href="#main"

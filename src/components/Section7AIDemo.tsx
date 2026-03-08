@@ -43,7 +43,7 @@ export function Section7AIDemo() {
     <section
       id="section-7"
       ref={sectionRef}
-      className="relative z-[70] border-t border-white/10 bg-[#0a0f14] px-4 py-16 sm:py-20 md:py-24"
+      className="relative z-[70] border-t border-white/10 bg-transparent px-4 py-16 sm:py-20 md:py-24"
       style={{
         opacity: fadeIn,
         transform: `translateY(${(1 - fadeIn) * 24}px)`,

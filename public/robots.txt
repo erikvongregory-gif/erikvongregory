@@ -1,2 +1,6 @@
+# https://erikvongregory.de/robots.txt
 User-agent: *
-Disallow: /
+Allow: /
+
+# Sitemap (wird beim Build aktualisiert)
+Sitemap: https://erikvongregory.de/sitemap.xml

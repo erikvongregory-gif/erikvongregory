@@ -2,6 +2,7 @@
 
 import { useEffect, useState } from "react";
 import { LEGAL } from "@/lib/legal";
+import { SITE } from "@/lib/siteConfig";
 
 const STEPS = [
   { id: "name", label: "Dein Name", placeholder: "z.B. Max Mustermann" },
@@ -14,6 +15,9 @@ export function ContactFunnel() {
   const [step, setStep] = useState(0);
   const [data, setData] = useState({ name: "", email: "", message: "" });
   const [submitted, setSubmitted] = useState(false);
+  const [submittedViaFormspree, setSubmittedViaFormspree] = useState(false);
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState<string | null>(null);
 
   // Alle #contact Klicks abfangen → Funnel öffnen
   useEffect(() => {
@@ -56,6 +60,8 @@ export function ContactFunnel() {
       setStep(0);
       setData({ name: "", email: "", message: "" });
       setSubmitted(false);
+      setSubmittedViaFormspree(false);
+      setError(null);
     }, 300);
   };
 
@@ -68,16 +74,42 @@ export function ContactFunnel() {
     if (step > 0) setStep(step - 1);
   };
 
-  const handleSubmit = () => {
+  const handleSubmit = async () => {
     const name = data.name.trim().slice(0, 100);
     const email = data.email.trim().slice(0, 254);
     const message = data.message.trim().slice(0, 2000);
-    const subject = encodeURIComponent(`Kontaktanfrage von ${name}`);
-    const body = encodeURIComponent(
-      `Name: ${name}\nE-Mail: ${email}\n\nNachricht:\n${message}`
-    );
-    window.location.href = `mailto:${LEGAL.email}?subject=${subject}&body=${body}`;
-    setSubmitted(true);
+    const formId = SITE.formspreeFormId?.trim();
+
+    if (formId) {
+      setLoading(true);
+      setError(null);
+      try {
+        const res = await fetch(`https://formspree.io/f/${formId}`, {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            name,
+            email,
+            message: message || "(keine Nachricht)",
+            _subject: `Kontaktanfrage von ${name}`,
+          }),
+        });
+        if (!res.ok) throw new Error("Fehler beim Senden");
+        setSubmittedViaFormspree(true);
+        setSubmitted(true);
+      } catch {
+        setError("Die Nachricht konnte nicht gesendet werden. Bitte versuche es später erneut oder schreibe direkt an die E-Mail im Impressum.");
+      } finally {
+        setLoading(false);
+      }
+    } else {
+      const subject = encodeURIComponent(`Kontaktanfrage von ${name}`);
+      const body = encodeURIComponent(
+        `Name: ${name}\nE-Mail: ${email}\n\nNachricht:\n${message}`
+      );
+      window.location.href = `mailto:${LEGAL.email}?subject=${subject}&body=${body}`;
+      setSubmitted(true);
+    }
   };
 
   const canProceed = () => {
@@ -136,7 +168,9 @@ export function ContactFunnel() {
                 Vielen Dank!
               </h2>
               <p className="mt-2 text-white/70">
-                Dein E-Mail-Programm öffnet sich – sende die Nachricht ab und ich melde mich bald.
+                {submittedViaFormspree
+                  ? "Deine Nachricht wurde gesendet. Ich melde mich bald bei dir."
+                  : "Dein E-Mail-Programm öffnet sich – sende die Nachricht ab und ich melde mich bald."}
               </p>
               <button
                 type="button"
@@ -160,6 +194,11 @@ export function ContactFunnel() {
               </h2>
               <p className="mt-1 text-sm text-white/60">Unverbindlich & direkt.</p>
 
+              {error && (
+                <p className="mt-4 rounded-xl border border-red-500/30 bg-red-500/10 px-4 py-3 text-sm text-red-300">
+                  {error}
+                </p>
+              )}
               <div className="relative mt-6 min-h-[140px]">
                 {STEPS.map((s, i) => (
                   <div
@@ -217,10 +256,14 @@ export function ContactFunnel() {
                 <button
                   type="button"
                   onClick={handleNext}
-                  disabled={!canProceed()}
+                  disabled={!canProceed() || loading}
                   className="flex-1 rounded-xl bg-[#14532d] px-5 py-3 text-sm font-medium text-white transition-all hover:bg-[#166534] disabled:cursor-not-allowed disabled:opacity-50 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-emerald-400"
                 >
-                  {step < STEPS.length - 1 ? "Weiter" : "E-Mail öffnen"}
+                  {loading
+                    ? "Wird gesendet…"
+                    : step < STEPS.length - 1
+                      ? "Weiter"
+                      : "Nachricht senden"}
                 </button>
               </div>
             </>

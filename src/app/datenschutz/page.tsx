@@ -1,11 +1,14 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import { LEGAL } from "@/lib/legal";
+import { SITE } from "@/lib/siteConfig";
 
 export const metadata: Metadata = {
-  title: "Datenschutzerklärung | Erik von Gregory",
+  title: "Datenschutzerklärung",
   description:
-    "Datenschutzerklärung – Erik von Gregory, KI für Brauereien & Gastronomie. Informationen zur Verarbeitung personenbezogener Daten.",
+    "Datenschutzerklärung – Erik von Gregory, KI für Brauereien & Gastronomie. Informationen zur Verarbeitung personenbezogener Daten und Cookies.",
+  alternates: { canonical: `${SITE.baseUrl}/datenschutz` },
+  robots: { index: true, follow: true },
 };
 
 export default function DatenschutzPage() {
