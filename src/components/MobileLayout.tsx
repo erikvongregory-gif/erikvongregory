@@ -155,7 +155,7 @@ export function MobileLayout() {
                 <ProblemItem key={problem} text={problem} solution={solution} index={i} showIcon resetTrigger={problemResetTrigger} />
               ))}
             </div>
-            <p className="mt-5 rounded-xl border border-emerald-500/25 bg-emerald-500/10 px-4 py-3 text-base text-white/95">
+            <p className="text-box-shine mt-5 rounded-xl border border-emerald-500/25 bg-emerald-500/10 px-4 py-3 text-base text-white/95">
               <span className="font-bold italic">
                 Währenddessen gewinnen moderne Marken täglich neue Kunden über TikTok, Instagram und Google.
               </span>

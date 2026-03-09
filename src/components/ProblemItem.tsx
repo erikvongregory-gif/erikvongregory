@@ -20,16 +20,27 @@ type ProblemItemProps = {
 export function ProblemItem({ text, solution, index, showIcon = true, centered = false, className = "", resetTrigger = 0 }: ProblemItemProps) {
   const [revealed, setRevealed] = useState(false);
   const [isClicking, setIsClicking] = useState(false);
+  const [isClosing, setIsClosing] = useState(false);
 
   useEffect(() => {
     setRevealed(false);
+    setIsClosing(false);
   }, [resetTrigger]);
 
   const handleClick = () => {
-    if (revealed) return;
-    setIsClicking(true);
-    setRevealed(true);
-    setTimeout(() => setIsClicking(false), 350);
+    if (revealed) {
+      setIsClosing(true);
+      setIsClicking(true);
+      setTimeout(() => {
+        setRevealed(false);
+        setIsClosing(false);
+        setIsClicking(false);
+      }, 280);
+    } else {
+      setIsClicking(true);
+      setRevealed(true);
+      setTimeout(() => setIsClicking(false), 350);
+    }
   };
 
   return (
@@ -42,9 +53,9 @@ export function ProblemItem({ text, solution, index, showIcon = true, centered =
         revealed
           ? "border-emerald-500/40 bg-emerald-500/15 shadow-[0_0_24px_rgba(34,197,94,0.2)]"
           : "border-red-500/20 bg-white/5 hover:border-red-500/30 hover:bg-white/8"
-      } ${isClicking ? "problem-item-click-bounce" : ""} ${className}`}
+      } ${!revealed ? "problem-item-hint-pulse" : ""} ${isClicking ? (revealed ? "problem-item-close-bounce" : "problem-item-click-bounce") : ""} ${className}`}
       aria-pressed={revealed}
-      aria-label={revealed ? `${text} – Lösung angezeigt` : `${text} – antippen um Lösung anzuzeigen`}
+      aria-label={revealed ? `${text} – antippen zum Schließen` : `${text} – antippen um Lösung anzuzeigen`}
     >
       {/* Ripple-Burst beim Klick */}
       {revealed && (
@@ -92,16 +103,25 @@ export function ProblemItem({ text, solution, index, showIcon = true, centered =
         )}
 
         <span
-          className={`text-sm transition-all duration-300 sm:text-base ${
+          className={`min-w-0 flex-1 text-sm transition-all duration-300 sm:text-base ${
             revealed ? "text-white/85" : "text-white/90"
           }`}
         >
           {text}
         </span>
+        {!revealed && (
+          <span className="shrink-0 text-xs font-medium text-white/50 transition-opacity group-hover:text-white/70">
+            Tippen
+          </span>
+        )}
       </div>
 
-      {revealed && solution && (
-        <p className="problem-solution-in problem-solution-in-delayed relative z-10 ml-11 text-sm font-medium text-emerald-300/95 sm:text-base">
+      {(revealed || isClosing) && solution && (
+        <p
+          className={`relative z-10 ml-11 text-sm font-medium text-emerald-300/95 sm:text-base transition-all duration-250 ease-out ${
+            isClosing ? "problem-solution-out" : "problem-solution-in problem-solution-in-delayed"
+          }`}
+        >
           → {solution}
         </p>
       )}

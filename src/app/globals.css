@@ -404,6 +404,33 @@ body[data-legal-page="true"] {
     0 0 60px rgba(34, 197, 94, 0.35);
 }
 
+/* Shine-Sweep – wiederverwendbar für Text-Boxen */
+.text-box-shine {
+  position: relative;
+  overflow: hidden;
+}
+
+.text-box-shine::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(
+    90deg,
+    transparent 0%,
+    rgba(255, 255, 255, 0.15) 50%,
+    transparent 100%
+  );
+  width: 50%;
+  animation: mobile-sticky-shine 3s ease-in-out infinite;
+  pointer-events: none;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .text-box-shine::before {
+    animation: none;
+  }
+}
+
 /* Dezenter Shine-Sweep auf dem Sticky CTA – zieht den Blick */
 @keyframes mobile-sticky-shine {
   0% { transform: translateX(-100%) skewX(-15deg); opacity: 0; }
@@ -849,7 +876,7 @@ body[data-legal-page="true"] {
   cursor: pointer;
   -webkit-tap-highlight-color: transparent;
   touch-action: manipulation;
-  transition: transform 0.2s cubic-bezier(0.34, 1.2, 0.64, 1), box-shadow 0.3s ease, border-color 0.3s ease, background 0.3s ease;
+  transition: transform 0.25s cubic-bezier(0.34, 1.4, 0.64, 1), box-shadow 0.3s ease, border-color 0.3s ease, background 0.3s ease;
 }
 
 .problem-item-tappable:active:not([aria-pressed="true"]) {
@@ -870,11 +897,57 @@ body[data-legal-page="true"] {
 }
 
 .problem-item-click-bounce {
-  animation: problem-item-click-bounce 0.35s cubic-bezier(0.34, 1.2, 0.64, 1) forwards;
+  animation: problem-item-click-bounce 0.35s cubic-bezier(0.34, 1.56, 0.64, 1) forwards;
+}
+
+/* Schließen – weicher, haptischer Rückfedern */
+@keyframes problem-item-close-bounce {
+  0% {
+    transform: scale(1);
+  }
+  30% {
+    transform: scale(0.97);
+  }
+  65% {
+    transform: scale(1.01);
+  }
+  100% {
+    transform: scale(1);
+  }
+}
+
+.problem-item-close-bounce {
+  animation: problem-item-close-bounce 0.28s cubic-bezier(0.34, 1.56, 0.64, 1) forwards;
+}
+
+/* Lösung ausblenden – sanft nach oben */
+.problem-solution-out {
+  opacity: 0;
+  transform: translateY(-6px);
 }
 
 .problem-item-tappable[aria-pressed="true"]:hover {
   transform: none;
+}
+
+/* Hinweis: Karte ist klickbar – dezenter Puls */
+@keyframes problem-item-hint-pulse {
+  0%, 100% {
+    box-shadow:
+      0 0 0 1px rgba(239, 68, 68, 0.1),
+      0 0 20px rgba(239, 68, 68, 0.15),
+      0 0 40px rgba(239, 68, 68, 0.08);
+  }
+  50% {
+    box-shadow:
+      0 0 0 1px rgba(239, 68, 68, 0.15),
+      0 0 24px rgba(239, 68, 68, 0.25),
+      0 0 48px rgba(239, 68, 68, 0.12);
+  }
+}
+
+.problem-item-hint-pulse {
+  animation: problem-item-hint-pulse 2s ease-in-out infinite;
 }
 
 /* Burst-Effekt beim Bestätigen */
@@ -917,7 +990,7 @@ body[data-legal-page="true"] {
 }
 
 .problem-check-icon {
-  animation: problem-check-pop 0.5s cubic-bezier(0.34, 1.2, 0.64, 1) forwards;
+  animation: problem-check-pop 0.45s cubic-bezier(0.34, 1.4, 0.64, 1) forwards;
 }
 
 @keyframes problem-solution-in {
@@ -970,7 +1043,9 @@ body[data-legal-page="true"] {
   .problem-item-burst,
   .problem-check-icon,
   .problem-item-strikethrough::after,
-  .problem-item-click-bounce {
+  .problem-item-click-bounce,
+  .problem-item-close-bounce,
+  .problem-item-hint-pulse {
     animation: none;
   }
   .problem-check-icon {

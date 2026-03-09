@@ -116,14 +116,6 @@ export default function RootLayout({
                   >
                     LinkedIn
                   </a>
-                  <a
-                    href="https://x.com"
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="text-sm text-white/70 transition-colors hover:text-emerald-400 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-emerald-400 focus-visible:ring-offset-2 focus-visible:ring-offset-transparent rounded"
-                  >
-                    X
-                  </a>
                 </div>
               </div>
               <div>
