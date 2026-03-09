@@ -18,12 +18,26 @@ const useIsMobile = () => {
   return isMobile;
 };
 
+const SHIMMER_STYLE = {
+  background: "linear-gradient(90deg, #ffffff 0%, #ffffff 25%, #a7f3d0 50%, #ffffff 75%, #ffffff 100%)",
+  backgroundSize: "200% 100%",
+  WebkitBackgroundClip: "text" as const,
+  backgroundClip: "text" as const,
+  color: "transparent",
+  /* Dezenter Glow – weniger Blur = schärferer Text auf Desktop */
+  textShadow: "0 0 8px rgba(34, 197, 94, 0.4), 0 0 16px rgba(34, 197, 94, 0.2)",
+  WebkitFontSmoothing: "subpixel-antialiased" as const,
+  textRendering: "geometricPrecision" as const,
+};
+
 type ScatterTextOnScrollProps = {
   text: string;
   className?: string;
   as?: "h1" | "h2" | "p" | "span";
   italicWords?: string[];
   scrollAnchorRef?: React.RefObject<HTMLElement | null>;
+  /** Shimmer/Lighting-Effekt wie im Loading-Screen */
+  shimmer?: boolean;
 };
 
 /** Zerstreut die Wörter beim Rausscrollen der Hero-Section */
@@ -33,12 +47,13 @@ export function ScatterTextOnScroll({
   as: Tag = "h1",
   italicWords = [],
   scrollAnchorRef,
+  shimmer = false,
 }: ScatterTextOnScrollProps) {
   const containerRef = useRef<HTMLDivElement>(null);
   const [scatter, setScatter] = useState(0);
   const isMobile = useIsMobile();
 
-  const words = text.split(/\s+/);
+  const lines = text.split("\n");
   const effectiveScatter = isMobile ? 0 : scatter;
 
   useEffect(() => {
@@ -79,36 +94,52 @@ export function ScatterTextOnScroll({
     };
   };
 
+  let wordIndex = 0;
   return (
-    <div ref={containerRef} className="inline">
-      <Tag className={className} style={{ overflow: "visible" }}>
-        {words.map((word, i) => {
-          const { x, y, r } = getOffset(i);
-          const isItalic = italicWords.includes(word);
-          const content = isItalic ? (
-            <span
-              className="font-light italic"
-              style={{
-                fontFamily: "var(--font-austera)",
-                textShadow: "0 0 20px rgba(34, 197, 94, 0.35), 0 0 40px rgba(34, 197, 94, 0.2), 0 0 60px rgba(34, 197, 94, 0.1)",
-              }}
-            >
-              {word}
-            </span>
-          ) : (
-            word
-          );
+    <div ref={containerRef} className="block w-full">
+      <Tag
+        className={`${className} ${shimmer ? "hero-headline-shimmer" : ""}`}
+        style={{ overflow: "visible", ...(shimmer ? SHIMMER_STYLE : {}) }}
+      >
+        {lines.map((line, lineIdx) => {
+          const words = line.trim().split(/\s+/).filter(Boolean);
           return (
-            <span
-              key={`${word}-${i}`}
-              className="inline-block align-baseline transition-transform duration-75 ease-out"
-              style={{
-                transform: `translate(${x * effectiveScatter}px, ${y * effectiveScatter}px) rotate(${r * effectiveScatter}deg)`,
-                opacity: 1 - effectiveScatter * 0.4,
-              }}
-            >
-              {content}
-              {i < words.length - 1 ? "\u00A0" : ""}
+            <span key={lineIdx} className="block">
+              {words.map((word, i) => {
+                const idx = wordIndex++;
+                const { x, y, r } = getOffset(idx);
+                const isItalic = italicWords.includes(word);
+                const content = isItalic ? (
+                  <span
+                    className="font-light italic"
+                    style={{
+                      fontFamily: "var(--font-austera)",
+                      textShadow: "0 0 8px rgba(34, 197, 94, 0.3), 0 0 16px rgba(34, 197, 94, 0.15)",
+                    }}
+                  >
+                    {word}
+                  </span>
+                ) : (
+                  word
+                );
+                return (
+                  <span
+                    key={`${word}-${idx}`}
+                    className="inline-block align-baseline transition-transform duration-75 ease-out"
+                    style={{
+                      transform:
+                        effectiveScatter > 0
+                          ? `translate(${Math.round(x * effectiveScatter)}px, ${Math.round(y * effectiveScatter)}px) rotate(${r * effectiveScatter}deg)`
+                          : "none",
+                      opacity: 1 - effectiveScatter * 0.4,
+                    }}
+                  >
+                    {content}
+                    {i < words.length - 1 ? "\u00A0" : ""}
+                  </span>
+                );
+              })}
+              {lineIdx < lines.length - 1 ? <br /> : null}
             </span>
           );
         })}

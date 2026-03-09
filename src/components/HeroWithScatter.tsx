@@ -43,17 +43,18 @@ export function HeroWithScatter() {
 
   const heroItems = [
     { fade: getFade(0), el: (
-      <p className="hero-slide-in hero-slide-in-delay-1 mb-2 text-sm font-normal uppercase tracking-widest text-white/90">
+      <p className="hero-slide-in hero-slide-in-delay-1 mb-2 text-sm font-normal uppercase tracking-widest text-white/95">
         KI für Brauereien & Gastronomie
       </p>
     )},
     { fade: getFade(1), el: (
       <ScatterTextOnScroll
-        text="KI für Brauereien – Automatisierte Marketing, Content & Verkauf"
+        text={"Die erste KI\u2011Marketinglösung\nspeziell für Brauereien."}
         as="h1"
-        italicWords={["Automatisierte"]}
+        italicWords={["erste"]}
         scrollAnchorRef={heroRef}
-        className="hero-slide-in hero-slide-in-delay-2 block text-[2rem] font-extrabold leading-[1.15] tracking-tight text-white drop-shadow-md sm:text-4xl md:text-[2.75rem] lg:text-5xl xl:text-[3.25rem]"
+        shimmer
+        className="hero-slide-in hero-slide-in-delay-2 block text-[2rem] font-extrabold leading-[1.25] tracking-tight drop-shadow-md sm:text-4xl md:text-[2.75rem] lg:text-5xl xl:text-[3.25rem]"
       />
     )},
     { fade: getFade(2), el: (
@@ -163,7 +164,7 @@ export function HeroWithScatter() {
   return (
     <section
       ref={heroRef}
-      className="pointer-events-none fixed inset-0 top-0 z-10 flex min-h-screen flex-col items-center justify-center px-4 pb-8 pt-40 sm:px-6 sm:pb-12 sm:pt-28 md:pt-20"
+      className="pointer-events-none fixed inset-0 top-0 z-20 flex min-h-screen flex-col items-center justify-center px-4 pb-8 pt-40 sm:px-6 sm:pb-12 sm:pt-32 md:pt-28"
       style={{ pointerEvents: anyVisible ? "auto" : "none" }}
     >
       <div

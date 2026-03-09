@@ -1204,13 +1204,19 @@ body[data-legal-page="true"] {
   animation: loading-shimmer-text 2.5s ease-in-out infinite;
 }
 
+/* Hero-Headline – langsamer Shimmer nur auf "Die…Brauereien." */
+.hero-headline-shimmer {
+  animation: loading-shimmer-text 8s ease-in-out infinite;
+}
+
 @keyframes loading-shimmer-text {
   0% { background-position: 200% 0; }
   100% { background-position: -200% 0; }
 }
 
 @media (prefers-reduced-motion: reduce) {
-  .animate-loading-shimmer-text {
+  .animate-loading-shimmer-text,
+  .hero-headline-shimmer {
     animation: none;
   }
 }

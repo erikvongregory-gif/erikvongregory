@@ -48,7 +48,6 @@ export function ScrollHeader() {
   const borderOpacity = progress;
   const borderRadius = isMobile ? 9999 : 9999 - progress * (9999 - 16);
   const logoFontSize = isMobile ? 18 : 24 - progress * 4;
-  const backdropBlur = progress * 8; // 0 → 8px
 
   return (
     <header
@@ -71,35 +70,62 @@ export function ScrollHeader() {
             marginRight: "auto",
             borderRadius: `${borderRadius}px`,
             borderColor: `rgba(255, 255, 255, ${0.35 * borderOpacity})`,
+            backgroundColor: progress > 0 ? `rgba(10, 15, 20, ${0.5 * progress})` : "transparent",
+            backdropFilter: progress > 0 ? `blur(${8 + progress * 8}px)` : "none",
+            WebkitBackdropFilter: progress > 0 ? `blur(${8 + progress * 8}px)` : "none",
             boxShadow:
               progress > 0
                 ? `0 0 0 1px rgba(255, 255, 255, ${0.12 * borderOpacity}), 0 0 24px rgba(255, 255, 255, ${0.04 * borderOpacity})`
                 : "none",
-            backdropFilter: `blur(${backdropBlur}px)`,
-            WebkitBackdropFilter: `blur(${backdropBlur}px)`,
           }}
         >
-          <Link
-            href="/"
-            className="premium-header-logo rounded focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white/60 focus-visible:ring-offset-2 focus-visible:ring-offset-transparent"
-            style={{ fontSize: `${logoFontSize}px` }}
-          >
-            Erik{" "}
-            <span
-              className="font-light italic"
-              style={{
-                fontFamily: "var(--font-austera)",
-                textShadow: "0 0 20px rgba(34, 197, 94, 0.5), 0 0 40px rgba(34, 197, 94, 0.25)",
-              }}
+          <div className="flex flex-col items-start gap-px">
+            <Link
+              href="/"
+              className="premium-header-logo rounded focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white/60 focus-visible:ring-offset-2 focus-visible:ring-offset-transparent"
+              style={{ fontSize: `${logoFontSize}px` }}
             >
-              von Gregory
-            </span>
-          </Link>
+              Erik{" "}
+              <span
+                className="font-light italic"
+                style={{
+                  fontFamily: "var(--font-austera)",
+                  textShadow: "0 0 20px rgba(34, 197, 94, 0.5), 0 0 40px rgba(34, 197, 94, 0.25)",
+                }}
+              >
+                von Gregory
+              </span>
+            </Link>
+            {isMobile && (
+              <span
+                className="text-[10px] font-medium leading-none tracking-wider text-emerald-400/90"
+                style={{
+                  textShadow: "0 0 8px rgba(34, 197, 94, 0.3)",
+                }}
+              >
+                KI für Brauereien
+              </span>
+            )}
+          </div>
           <nav className="premium-header-nav">
             <a
               href="#contact"
-              className="premium-header-link rounded focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white/60 focus-visible:ring-offset-2 focus-visible:ring-offset-transparent"
+              className="premium-header-link flex items-center gap-1.5 rounded focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white/60 focus-visible:ring-offset-2 focus-visible:ring-offset-transparent"
             >
+              {isMobile && (
+                <svg
+                  className="h-3.5 w-3.5 shrink-0 text-white/70"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  strokeWidth="2"
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  aria-hidden
+                >
+                  <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z" />
+                </svg>
+              )}
               Kontakt
             </a>
           </nav>

@@ -89,18 +89,28 @@ export function MobileLayout() {
               className="mobile-hero-portrait-reveal hero-portrait-blend h-[320px] w-[219px] object-contain object-top"
             />
           </div>
-          <p className="mobile-slide-in mobile-slide-in-1 mb-3 text-sm font-medium uppercase tracking-widest text-emerald-300/95">
+          <p className="mobile-slide-in mobile-slide-in-1 mb-3 text-sm font-medium uppercase tracking-widest text-white/95">
             KI für Brauereien & Gastronomie
           </p>
-          <h1 className="mobile-slide-in mobile-slide-in-2 mb-3 block text-2xl font-extrabold leading-tight tracking-tight text-white" style={{ textShadow: "0 2px 20px rgba(0,0,0,0.3), 0 0 40px rgba(34, 197, 94, 0.15)" }}>
-            KI für Brauereien –{" "}
+          <h1
+            className="mobile-slide-in mobile-slide-in-2 mb-3 block text-2xl font-extrabold leading-tight tracking-tight hero-headline-shimmer"
+            style={{
+              background: "linear-gradient(90deg, #ffffff 0%, #ffffff 25%, #a7f3d0 50%, #ffffff 75%, #ffffff 100%)",
+              backgroundSize: "200% 100%",
+              WebkitBackgroundClip: "text",
+              backgroundClip: "text",
+              color: "transparent",
+              textShadow: "0 0 8px rgba(34, 197, 94, 0.4), 0 0 16px rgba(34, 197, 94, 0.2)",
+            }}
+          >
+            Die{" "}
             <span
-              className="font-light italic text-emerald-200"
-              style={{ fontFamily: "var(--font-austera)", textShadow: "0 0 24px rgba(34, 197, 94, 0.5), 0 0 48px rgba(34, 197, 94, 0.2)" }}
+              className="font-light italic"
+              style={{ fontFamily: "var(--font-austera)" }}
             >
-              Automatisierte
+              erste
             </span>{" "}
-            Marketing, Content & Verkauf
+            KI‑Marketinglösung speziell für Brauereien.
           </h1>
           <p className="mobile-slide-in mobile-slide-in-3 mx-auto max-w-lg text-base leading-relaxed text-white/95">
             <span className="font-semibold text-white">Mehr Reichweite, mehr Aufmerksamkeit</span> – nutze moderne KI, um deine Brauerei digital sichtbar zu machen. Ohne klassische Marketingagentur.
