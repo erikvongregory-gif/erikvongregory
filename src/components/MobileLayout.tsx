@@ -196,6 +196,12 @@ export function MobileLayout() {
         {/* Section 4 */}
         <section className="relative px-4 py-16">
           <ScrollReveal>
+          <div className="mb-6 inline-flex w-full justify-center">
+            <span className="section4-badge-pulse inline-flex items-center gap-2 rounded-full border border-emerald-400/30 bg-emerald-400/10 px-4 py-1.5 text-sm font-medium text-emerald-300">
+              <span aria-hidden>✦</span>
+              Meine Angebote
+            </span>
+          </div>
           <h2 className="mb-6 text-center text-xl font-bold tracking-tight text-white drop-shadow-md">
             Meine 5{" "}
             <span
@@ -208,14 +214,57 @@ export function MobileLayout() {
               Lösungen
             </span>
           </h2>
-          <div className="mx-auto max-w-2xl space-y-4">
-            {SECTION4_ITEMS.map((item) => (
+          <div className="mx-auto max-w-2xl space-y-3">
+            {SECTION4_ITEMS.map((item, i) => (
               <div
                 key={item.title}
-                className="section2-card rounded-xl border border-white/15 bg-white/5 px-5 py-4 text-center"
+                className="section4-mobile-card group flex items-start gap-4 rounded-xl border border-white/15 bg-white/5 px-4 py-4 transition-all duration-300 active:scale-[0.98]"
               >
-                <h3 className="text-base font-semibold text-white">{item.title}</h3>
-                <p className="mt-2 text-sm leading-relaxed text-white/85">{item.text}</p>
+                <span
+                  className={`section4-icon-wrap flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-emerald-500/15 text-emerald-400 ring-1 ring-emerald-400/20 transition-colors group-active:bg-emerald-500/25 section4-icon-${item.icon}`}
+                  aria-hidden
+                >
+                  {item.icon === "camera" && (
+                    <svg className="h-5 w-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                      <path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z" />
+                      <circle cx="12" cy="13" r="4" />
+                    </svg>
+                  )}
+                  {item.icon === "video" && (
+                    <svg className="h-5 w-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                      <polygon points="23 7 16 12 23 17 23 7" />
+                      <rect x="1" y="5" width="15" height="14" rx="2" ry="2" />
+                    </svg>
+                  )}
+                  {item.icon === "chart" && (
+                    <svg className="h-5 w-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                      <line x1="18" y1="20" x2="18" y2="10" />
+                      <line x1="12" y1="20" x2="12" y2="4" />
+                      <line x1="6" y1="20" x2="6" y2="14" />
+                    </svg>
+                  )}
+                  {item.icon === "globe" && (
+                    <svg className="h-5 w-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                      <circle cx="12" cy="12" r="10" />
+                      <line x1="2" y1="12" x2="22" y2="12" />
+                      <path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z" />
+                    </svg>
+                  )}
+                  {item.icon === "sparkle" && (
+                    <svg className="h-5 w-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                      <path d="m12 3-1.912 5.813a2 2 0 0 1-1.275 1.275L3 12l5.813 1.912a2 2 0 0 1 1.275 1.275L12 21l1.912-5.813a2 2 0 0 1 1.275-1.275L21 12l-5.813-1.912a2 2 0 0 1-1.275-1.275L12 3Z" />
+                    </svg>
+                  )}
+                </span>
+                <div className="min-w-0 flex-1 text-left">
+                  <h3 className="text-base font-semibold text-white">{item.title}</h3>
+                  <p className="mt-1 text-sm leading-relaxed text-white/80">{item.text}</p>
+                </div>
+                <span className="mt-1 shrink-0 text-emerald-400/60" aria-hidden>
+                  <svg className="h-4 w-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                    <path d="M9 18l6-6-6-6" />
+                  </svg>
+                </span>
               </div>
             ))}
           </div>
