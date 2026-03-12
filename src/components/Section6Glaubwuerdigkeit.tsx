@@ -74,7 +74,7 @@ export function Section6Glaubwuerdigkeit() {
     };
   }, []);
 
-  const opacity = progress.in;
+  const opacity = progress.slideUp > 0 ? 0 : progress.in;
   const isVisible = opacity > 0.02;
   const hasSlidUp = progress.slideUp > 0.9; // Klicks durchlassen, wenn Box nach oben weg ist
   const translateIn = (1 - progress.in) * 50;
@@ -147,7 +147,7 @@ export function Section6Glaubwuerdigkeit() {
           <p className="mb-6 text-center text-base font-medium leading-relaxed text-white/95 sm:text-lg">
             Brauereiwissen + moderne KI = Marketing, das funktioniert.
           </p>
-          <div className="flex justify-center">
+          <div className="mt-8 flex justify-center">
             <AppleStyleButton href="#contact">Kostenloses Erstgespräch starten</AppleStyleButton>
           </div>
         </div>

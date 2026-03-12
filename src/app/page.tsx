@@ -1,6 +1,7 @@
 import { DesktopLayout } from "@/components/DesktopLayout";
 import { MobileLayout } from "@/components/MobileLayout";
 import { MobileStickyCTA } from "@/components/MobileStickyCTA";
+import { PricingSection } from "@/components/PricingSection";
 import { Section7AIDemo } from "@/components/Section7AIDemo";
 
 export default function Home() {
@@ -17,6 +18,7 @@ export default function Home() {
       <div className="hidden md:block">
         <DesktopLayout />
       </div>
+      <PricingSection />
       <Section7AIDemo />
     </>
   );

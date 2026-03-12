@@ -4,7 +4,7 @@
  */
 export const SITE = {
   name: "Erik von Gregory",
-  baseUrl: "https://erikvongregory.de",
+  baseUrl: "https://www.erikvongregory.com",
   defaultTitle: "Erik von Gregory | KI für Brauereien & Gastronomie",
   defaultDescription:
     "KI für Brauereien – Automatisierte Marketing, Content & Verkauf. Erik von Gregory hilft Brauereien, Gastronomen und Getränkeherstellern, mit KI sichtbar zu werden. Kostenloses Erstgespräch.",
