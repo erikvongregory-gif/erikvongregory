@@ -51,18 +51,22 @@ const PRICING_PACKAGES = [
 
 export function PricingBoxes() {
   return (
-    <section className="mt-10">
-      <div className="mb-5 text-center">
-        <p className="text-sm uppercase tracking-[0.18em] text-emerald-300/90">Aktuelle Angebote</p>
-        <h3 className="mt-2 text-2xl font-bold text-white sm:text-3xl">Pakete & Preise</h3>
+    <section className="mt-10 overflow-hidden">
+      <div className="mb-8 flex flex-col items-center gap-4 text-center">
+        <span className="pricing-section-badge section4-badge-pulse inline-flex items-center gap-2 rounded-full border border-emerald-400/30 bg-emerald-400/10 px-4 py-1.5 text-sm font-medium text-emerald-300 pricing-slide-in">
+          <span aria-hidden>✦</span>
+          Aktuelle Angebote
+        </span>
+        <h3 className="pricing-slide-in pricing-slide-in-delay-1 text-2xl font-bold text-white sm:text-3xl">
+          Pakete & Preise
+        </h3>
       </div>
 
       <div className="grid gap-4 md:grid-cols-3">
         {PRICING_PACKAGES.map((pkg, index) => (
           <article
             key={pkg.name}
-            className="pricing-card pricing-card-enter relative flex h-full flex-col rounded-2xl border border-white/15 bg-[#0b1620]/80 p-5 shadow-[0_12px_40px_rgba(0,0,0,0.35)] backdrop-blur-sm"
-            style={{ animationDelay: `${0.12 + index * 0.14}s` }}
+            className={`pricing-card pricing-card-slide-${index} relative flex h-full flex-col rounded-2xl border border-white/15 bg-[#0b1620]/80 p-5 shadow-[0_12px_40px_rgba(0,0,0,0.35)] backdrop-blur-sm`}
           >
             <span className="pricing-sale-badge absolute right-3 top-3 rounded-full border border-red-400/50 bg-red-500/20 px-2.5 py-1 text-[11px] font-semibold tracking-wide text-red-300">
               SALE
@@ -87,6 +91,7 @@ export function PricingBoxes() {
             <p className="mt-4 text-sm font-medium text-emerald-300">Lieferzeit: {pkg.delivery}</p>
             <a
               href="#contact"
+              data-paket={pkg.name}
               className="pricing-cta mt-5 inline-flex w-full items-center justify-center rounded-xl border border-emerald-400/40 bg-emerald-500/15 px-4 py-2.5 text-sm font-semibold text-emerald-200 transition hover:bg-emerald-500/25"
             >
               {pkg.cta}

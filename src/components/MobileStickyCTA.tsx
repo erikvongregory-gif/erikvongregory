@@ -3,7 +3,7 @@
 import { useEffect, useRef, useState } from "react";
 import Link from "next/link";
 
-/** Sticky Bottom CTA – erscheint beim Scrollen, blendet aus bei Section 7 + Footer. Nur Mobile. */
+/** Sticky Bottom CTA – erscheint beim Scrollen, blendet aus bei Pakete & Preise, Section 7 und Footer. Nur Mobile. */
 export function MobileStickyCTA() {
   const [visible, setVisible] = useState(false);
   const [hideNearFooter, setHideNearFooter] = useState(false);
@@ -37,9 +37,11 @@ export function MobileStickyCTA() {
 
   useEffect(() => {
     if (!mounted) return;
+    const pricing = document.getElementById("pakete-preise");
     const section7 = document.getElementById("section-7");
     const footer = document.getElementById("contact");
-    if (!section7 && !footer) return;
+    const sections = [pricing, section7, footer].filter(Boolean);
+    if (sections.length === 0) return;
     const checkHide = (entries: IntersectionObserverEntry[]) => {
       entries.forEach((e) => {
         if (e.intersectionRatio > 0) inViewRef.current.add(e.target);
@@ -51,8 +53,7 @@ export function MobileStickyCTA() {
       threshold: [0, 0.01, 0.1],
       rootMargin: "0px 0px 80px 0px",
     });
-    if (section7) obs.observe(section7);
-    if (footer) obs.observe(footer);
+    sections.forEach((el) => el && obs.observe(el));
     return () => obs.disconnect();
   }, [mounted]);
 

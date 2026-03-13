@@ -22,17 +22,20 @@ export function ContactFunnel() {
   const [isOpen, setIsOpen] = useState(false);
   const [step, setStep] = useState(0);
   const [data, setData] = useState({ name: "", email: "", message: "" });
+  const [selectedOffer, setSelectedOffer] = useState<string | null>(null);
   const [submitted, setSubmitted] = useState(false);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
-  // Alle #contact Klicks abfangen → Funnel öffnen
+  // Alle #contact Klicks abfangen → Funnel öffnen, Angebot aus data-paket übernehmen
   useEffect(() => {
     const handleClick = (e: MouseEvent) => {
       const target = e.target as HTMLElement;
       const link = target.closest('a[href="#contact"]');
       if (link) {
         e.preventDefault();
+        const paket = link.getAttribute("data-paket");
+        setSelectedOffer(paket || null);
         setIsOpen(true);
       }
     };
@@ -66,6 +69,7 @@ export function ContactFunnel() {
     setTimeout(() => {
       setStep(0);
       setData({ name: "", email: "", message: "" });
+      setSelectedOffer(null);
       setSubmitted(false);
       setError(null);
     }, 300);
@@ -88,6 +92,9 @@ export function ContactFunnel() {
     setLoading(true);
     setError(null);
     try {
+      const subject = selectedOffer
+        ? `Anfrage: ${selectedOffer} – von ${name}`
+        : `Kontaktanfrage von ${name}`;
       const res = await fetch(`https://formsubmit.co/ajax/${LEGAL.email}`, {
         method: "POST",
         headers: { "Content-Type": "application/json", Accept: "application/json" },
@@ -95,7 +102,8 @@ export function ContactFunnel() {
           name,
           email,
           message: message || "(keine Nachricht)",
-          _subject: `Kontaktanfrage von ${name}`,
+          gewünschtes_angebot: selectedOffer || "(nicht angegeben)",
+          _subject: subject,
           _replyto: email,
         }),
       });
@@ -189,7 +197,13 @@ export function ContactFunnel() {
               >
                 Kostenloses Erstgespräch
               </h2>
-              <p className="mt-1 text-sm text-white/60">Unverbindlich & direkt.</p>
+              <p className="mt-1 text-sm text-white/60">
+                {selectedOffer ? (
+                  <>Anfrage für: <span className="text-emerald-300">{selectedOffer}</span></>
+                ) : (
+                  "Unverbindlich & direkt."
+                )}
+              </p>
 
               {error && (
                 <p className="mt-4 rounded-xl border border-red-500/30 bg-red-500/10 px-4 py-3 text-sm text-red-300">
