@@ -404,6 +404,54 @@ body[data-legal-page="true"] {
   }
 }
 
+/* Desktop – Fade-In beim Scrollen ins Viewport */
+.desktop-fade-in-view {
+  opacity: 0;
+  transform: translateY(32px);
+  transition: opacity 0.8s cubic-bezier(0.05, 1, 0.08, 1), transform 0.8s cubic-bezier(0.05, 1, 0.08, 1);
+}
+
+.desktop-fade-in-view--visible {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+@media (max-width: 767px) {
+  .desktop-fade-in-view {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .desktop-fade-in-view {
+    opacity: 1;
+    transform: none;
+    transition: none;
+  }
+}
+
+/* Hero Section 1 – Pill-Icons Animation */
+@keyframes hero-pill-icon-float {
+  0%, 100% { transform: translateY(0) scale(1); opacity: 1; }
+  50% { transform: translateY(-3px) scale(1.08); opacity: 0.95; }
+}
+
+.hero-pill-icon-anim {
+  animation: hero-pill-icon-float 2.5s ease-in-out infinite;
+}
+
+.hero-highlight-pill:nth-child(1) .hero-pill-icon-anim { animation-delay: 0s; }
+.hero-highlight-pill:nth-child(2) .hero-pill-icon-anim { animation-delay: 0.3s; }
+.hero-highlight-pill:nth-child(3) .hero-pill-icon-anim { animation-delay: 0.6s; }
+.hero-highlight-pill:nth-child(4) .hero-pill-icon-anim { animation-delay: 0.9s; }
+
+@media (prefers-reduced-motion: reduce) {
+  .hero-pill-icon-anim {
+    animation: none;
+  }
+}
+
 /* Portrait – blendet mit Liquid, weicher weißer Glow */
 .hero-portrait-blend {
   display: block;

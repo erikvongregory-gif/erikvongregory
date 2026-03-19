@@ -16,20 +16,20 @@ export function LiquidBackground() {
   }, []);
 
   useEffect(() => {
+    if (!isMobile) return;
     let rafId = 0;
     let lastRun = 0;
     const onScroll = () => {
       if (rafId) cancelAnimationFrame(rafId);
       rafId = requestAnimationFrame((now) => {
-        if (isMobile && now - lastRun < 32) return;
+        if (now - lastRun < 32) return;
         lastRun = now;
         const scrollY = window.scrollY;
-        const t = scrollY * (isMobile ? 0.001 : 0.002);
-        const mult = isMobile ? 0.4 : 1;
+        const t = scrollY * 0.001;
         setScroll({
-          dx: Math.sin(t) * 80 * mult,
-          dy: Math.cos(t * 0.85) * 50 * mult,
-          rotation: scrollY * 0.08 * mult,
+          dx: Math.sin(t) * 32,
+          dy: Math.cos(t * 0.85) * 20,
+          rotation: scrollY * 0.032,
         });
       });
     };

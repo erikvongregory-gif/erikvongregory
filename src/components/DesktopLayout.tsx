@@ -1,24 +1,32 @@
 "use client";
 
-import dynamic from "next/dynamic";
 import { LiquidBackground } from "@/components/LiquidBackground";
-import { HeroWithScatter } from "@/components/HeroWithScatter";
+import { DesktopHero } from "@/components/DesktopHero";
+import { DesktopSection2 } from "@/components/DesktopSection2";
+import { DesktopSection3 } from "@/components/DesktopSection3";
+import { DesktopSection4 } from "@/components/DesktopSection4";
+import { DesktopFadeInView } from "@/components/DesktopFadeInView";
 import { Section6Clean } from "@/components/Section6Clean";
-
-const FadeInSection = dynamic(() => import("@/components/FadeInSection").then((m) => ({ default: m.FadeInSection })), { ssr: true });
-const ZoomSection3 = dynamic(() => import("@/components/ZoomSection3").then((m) => ({ default: m.ZoomSection3 })), { ssr: true });
-const Section4Boxes = dynamic(() => import("@/components/Section4Boxes").then((m) => ({ default: m.Section4Boxes })), { ssr: true });
 
 export function DesktopLayout() {
   return (
     <main id="main" className="relative min-h-screen overflow-x-hidden pt-14 sm:pt-16">
       <LiquidBackground />
-      <div className="relative h-[400vh] lg:h-[420vh]" aria-hidden />
-      <HeroWithScatter />
-      <FadeInSection />
-      <ZoomSection3 />
-      <Section4Boxes />
-      <Section6Clean />
+      <DesktopFadeInView>
+        <DesktopHero />
+      </DesktopFadeInView>
+      <DesktopFadeInView>
+        <DesktopSection2 />
+      </DesktopFadeInView>
+      <DesktopFadeInView delay={100}>
+        <DesktopSection3 />
+      </DesktopFadeInView>
+      <DesktopFadeInView delay={150}>
+        <DesktopSection4 />
+      </DesktopFadeInView>
+      <DesktopFadeInView delay={100}>
+        <Section6Clean />
+      </DesktopFadeInView>
     </main>
   );
 }

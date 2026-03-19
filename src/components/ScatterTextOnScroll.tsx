@@ -106,6 +106,35 @@ export function ScatterTextOnScroll({
           return (
             <span key={lineIdx} className="block">
               {words.map((word, i) => {
+                /* "für" und "Brauereien" zusammenhalten – kein Umbruch dazwischen */
+                const nextWord = words[i + 1];
+                const keepWithNext = word === "für" && nextWord?.startsWith("Brauereien");
+                if (keepWithNext) {
+                  const idx = wordIndex++;
+                  const idx2 = wordIndex++;
+                  const { x, y, r } = getOffset(idx);
+                  const { x: x2, y: y2, r: r2 } = getOffset(idx2);
+                  const avgX = (x + x2) / 2;
+                  const avgY = (y + y2) / 2;
+                  const avgR = (r + r2) / 2;
+                  return (
+                    <span
+                      key={`für-brauereien-${idx}`}
+                      className="inline-block shrink-0 align-baseline whitespace-nowrap transition-transform duration-75 ease-out"
+                      style={{
+                        transform:
+                          effectiveScatter > 0
+                            ? `translate(${Math.round(avgX * effectiveScatter)}px, ${Math.round(avgY * effectiveScatter)}px) rotate(${avgR * effectiveScatter}deg)`
+                            : "none",
+                        opacity: 1 - effectiveScatter * 0.4,
+                      }}
+                    >
+                      für{"\u00A0"}
+                      {nextWord}
+                    </span>
+                  );
+                }
+                if (i > 0 && words[i - 1] === "für" && word.startsWith("Brauereien")) return null;
                 const idx = wordIndex++;
                 const { x, y, r } = getOffset(idx);
                 const isItalic = italicWords.includes(word);
