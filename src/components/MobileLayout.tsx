@@ -87,6 +87,7 @@ export function MobileLayout() {
               height={320}
               priority
               className="mobile-hero-portrait-reveal hero-portrait-blend h-[320px] w-[219px] object-contain object-top"
+              style={{ opacity: isLoadComplete ? undefined : 0 }}
             />
           </div>
           <h1 className="-mt-2 mb-8 block leading-none tracking-tight">

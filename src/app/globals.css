@@ -388,17 +388,14 @@ body[data-legal-page="true"] {
   display: block;
   background: transparent;
   mix-blend-mode: screen;
-  /* Entfernt dunkle Matte im SVG, ohne das Motiv zu verfälschen */
-  filter: brightness(1.28) contrast(1.22)
-          drop-shadow(0 0 42px rgba(255, 255, 255, 0.45))
-          drop-shadow(0 0 90px rgba(255, 255, 255, 0.2));
+  filter: brightness(1.05) contrast(1.1)
+          drop-shadow(0 0 20px rgba(255, 255, 255, 0.15));
 }
 
 @media (max-width: 768px) {
   .hero-portrait-blend {
-    filter: brightness(1.22) contrast(1.16)
-            drop-shadow(0 0 18px rgba(255, 255, 255, 0.22))
-            drop-shadow(0 0 34px rgba(255, 255, 255, 0.1));
+    filter: brightness(1.05) contrast(1.1)
+            drop-shadow(0 0 14px rgba(255, 255, 255, 0.12));
   }
 }
 
