@@ -89,36 +89,59 @@ export function MobileLayout() {
               className="mobile-hero-portrait-reveal hero-portrait-blend h-[320px] w-[219px] object-contain object-top"
             />
           </div>
-          <p className="mobile-slide-in mobile-slide-in-1 mb-3 text-sm font-medium uppercase tracking-widest text-white/95">
+          <h1 className="-mt-2 mb-8 block leading-none tracking-tight">
+            {/* Erste Zeile: Buchstabe für Buchstabe mit Blur */}
+            <span className="block text-xl font-extrabold">
+              {"die erste KI‑Marketinglösung".split("").map((char, i) => (
+                <span
+                  key={i}
+                  className="mobile-word-blur-in inline-block"
+                  style={{
+                    background: "linear-gradient(90deg, #ffffff 0%, #ffffff 25%, #a7f3d0 50%, #ffffff 75%, #ffffff 100%)",
+                    backgroundSize: "200% 100%",
+                    WebkitBackgroundClip: "text",
+                    backgroundClip: "text",
+                    color: "transparent",
+                    animationDelay: `${i * 0.025}s`,
+                    whiteSpace: "pre",
+                  }}
+                >
+                  {char}
+                </span>
+              ))}
+            </span>
+            {/* Zweite Zeile: Buchstabe für Buchstabe mit Blur, Austera */}
+            <span className="block text-4xl font-light italic -mt-2">
+              {"speziell für Brauereien".split("").map((char, i) => (
+                <span
+                  key={i}
+                  className="mobile-word-blur-in inline-block"
+                  style={{
+                    fontFamily: "var(--font-austera)",
+                    background: "linear-gradient(90deg, #ffffff 0%, #a7f3d0 50%, #ffffff 100%)",
+                    backgroundSize: "200% 100%",
+                    WebkitBackgroundClip: "text",
+                    backgroundClip: "text",
+                    color: "transparent",
+                    animationDelay: `${("die erste KI‑Marketinglösung".length * 0.025) + i * 0.025}s`,
+                    whiteSpace: "pre",
+                  }}
+                >
+                  {char}
+                </span>
+              ))}
+            </span>
+          </h1>
+          <p className="mobile-slide-in mobile-slide-in-0 mb-0 text-xl font-light italic text-white/95" style={{ fontFamily: "var(--font-austera)" }}>
             KI für Brauereien & Gastronomie
           </p>
-          <h1
-            className="mobile-slide-in mobile-slide-in-2 mb-3 block text-2xl font-extrabold leading-tight tracking-tight hero-headline-shimmer"
-            style={{
-              background: "linear-gradient(90deg, #ffffff 0%, #ffffff 25%, #a7f3d0 50%, #ffffff 75%, #ffffff 100%)",
-              backgroundSize: "200% 100%",
-              WebkitBackgroundClip: "text",
-              backgroundClip: "text",
-              color: "transparent",
-              textShadow: "0 0 8px rgba(34, 197, 94, 0.4), 0 0 16px rgba(34, 197, 94, 0.2)",
-            }}
-          >
-            Die{" "}
-            <span
-              className="font-light italic"
-              style={{ fontFamily: "var(--font-austera)" }}
-            >
-              erste
-            </span>{" "}
-            KI‑Marketinglösung speziell für Brauereien.
-          </h1>
-          <p className="mobile-slide-in mobile-slide-in-3 mx-auto max-w-lg text-base leading-relaxed text-white/95">
+          <p className="mobile-slide-in mobile-slide-in-0 mx-auto max-w-lg text-base leading-relaxed text-white/95">
             <span className="font-semibold text-white">Mehr Reichweite, mehr Aufmerksamkeit</span> – nutze moderne KI, um deine Brauerei digital sichtbar zu machen. Ohne klassische Marketingagentur.
           </p>
-          <p className="mobile-slide-in mobile-slide-in-4 mx-auto mt-2 max-w-lg text-[15px] leading-relaxed text-white/85">
+          <p className="mobile-slide-in mobile-slide-in-0 mx-auto mt-2 max-w-lg text-[15px] leading-relaxed text-white/85">
             Content-Systeme, Werbevideos & automatisiertes Marketing – speziell für Brauereien, Gastronomen und Getränkehersteller.
           </p>
-          <div className="mobile-slide-in mobile-slide-in-5 mt-6 flex flex-col items-center gap-3">
+          <div className="mobile-slide-in mobile-slide-in-0 mt-6 flex flex-col items-center gap-3">
             <AppleStyleButton href="#contact" className="mobile-cta-animate">
               Kostenlose KI-Strategie für Brauereien sichern
             </AppleStyleButton>

@@ -250,11 +250,11 @@ body[data-legal-page="true"] {
   }
 }
 
-/* Mobile Hero – gestaffelte Slide-Ins (erst wenn .hero-ready nach LoadingScreen) */
+/* Mobile Hero – Slide-Ins von oben (erst wenn .hero-ready nach LoadingScreen) */
 @keyframes mobile-slide-up {
   from {
     opacity: 0;
-    transform: translateY(28px);
+    transform: translateY(-28px);
   }
   to {
     opacity: 1;
@@ -262,14 +262,39 @@ body[data-legal-page="true"] {
   }
 }
 
+@keyframes mobile-slide-from-top {
+  from {
+    opacity: 0;
+    transform: translateY(-48px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* Wort-für-Wort Blur-Typing-Effekt für die Headline */
+@keyframes word-blur-in {
+  from {
+    opacity: 0;
+    filter: blur(14px);
+    transform: translateY(-14px);
+  }
+  to {
+    opacity: 1;
+    filter: blur(0px);
+    transform: translateY(0);
+  }
+}
+
 /* Ohne .hero-ready: versteckt */
 .mobile-hero-synced .mobile-slide-in {
   opacity: 0;
-  transform: translateY(28px);
+  transform: translateY(-28px);
 }
 
 .mobile-hero-synced.hero-ready .mobile-slide-in {
-  animation: mobile-slide-up 0.65s cubic-bezier(0.22, 1, 0.36, 1) both;
+  animation: mobile-slide-up 0.75s cubic-bezier(0.16, 1, 0.3, 1) both;
 }
 
 .mobile-hero-synced.hero-ready .mobile-slide-in-0 { animation-delay: 0s; }
@@ -281,11 +306,31 @@ body[data-legal-page="true"] {
 .mobile-hero-synced.hero-ready .mobile-slide-in-6 { animation-delay: 0.9s; }
 .mobile-hero-synced.hero-ready .mobile-slide-in-7 { animation-delay: 1.05s; }
 
+.mobile-hero-synced .mobile-slide-from-top {
+  opacity: 0;
+  transform: translateY(-48px);
+}
+.mobile-hero-synced.hero-ready .mobile-slide-from-top {
+  animation: mobile-slide-from-top 0.85s cubic-bezier(0.16, 1, 0.3, 1) 0s both;
+}
+
+/* Word-Blur: initial versteckt */
+.mobile-hero-synced .mobile-word-blur-in {
+  opacity: 0;
+}
+.mobile-hero-synced.hero-ready .mobile-word-blur-in {
+  animation: word-blur-in 0.65s cubic-bezier(0.16, 1, 0.3, 1) both;
+}
+/* Delays werden per inline-style gesetzt (animationDelay) */
+
 @media (prefers-reduced-motion: reduce) {
   .mobile-hero-synced .mobile-slide-in,
-  .mobile-hero-synced.hero-ready .mobile-slide-in {
+  .mobile-hero-synced.hero-ready .mobile-slide-in,
+  .mobile-hero-synced .mobile-word-blur-in,
+  .mobile-hero-synced.hero-ready .mobile-word-blur-in {
     animation: none;
     opacity: 1;
+    filter: none;
     transform: none;
   }
 }
