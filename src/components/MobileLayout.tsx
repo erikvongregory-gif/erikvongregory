@@ -90,8 +90,7 @@ export function MobileLayout() {
             />
           </div>
           <h1 className="-mt-2 mb-8 block leading-none tracking-tight">
-            {/* Erste Zeile: Buchstabe für Buchstabe mit Blur */}
-            <span className="block text-xl font-extrabold">
+            <div className="block text-xl font-extrabold">
               {"die erste KI‑Marketinglösung".split("").map((char, i) => (
                 <span
                   key={i}
@@ -102,16 +101,15 @@ export function MobileLayout() {
                     WebkitBackgroundClip: "text",
                     backgroundClip: "text",
                     color: "transparent",
-                    animationDelay: `${i * 0.025}s`,
+                    ["--char-delay" as string]: `${i * 0.02}s`,
                     whiteSpace: "pre",
                   }}
                 >
                   {char}
                 </span>
               ))}
-            </span>
-            {/* Zweite Zeile: Buchstabe für Buchstabe mit Blur, Austera */}
-            <span className="block text-4xl font-light italic -mt-2">
+            </div>
+            <div className="block -mt-2 text-4xl font-light italic">
               {"speziell für Brauereien".split("").map((char, i) => (
                 <span
                   key={i}
@@ -123,25 +121,25 @@ export function MobileLayout() {
                     WebkitBackgroundClip: "text",
                     backgroundClip: "text",
                     color: "transparent",
-                    animationDelay: `${("die erste KI‑Marketinglösung".length * 0.025) + i * 0.025}s`,
+                    ["--char-delay" as string]: `${("die erste KI‑Marketinglösung".length * 0.02) + i * 0.02}s`,
                     whiteSpace: "pre",
                   }}
                 >
                   {char}
                 </span>
               ))}
-            </span>
+            </div>
           </h1>
-          <p className="mobile-slide-in mobile-slide-in-0 mb-0 text-xl font-light italic text-white/95" style={{ fontFamily: "var(--font-austera)" }}>
+          <p className="mobile-slide-up-in mobile-slide-up-in-0 mb-0 text-xl font-light italic text-white/95" style={{ fontFamily: "var(--font-austera)" }}>
             KI für Brauereien & Gastronomie
           </p>
-          <p className="mobile-slide-in mobile-slide-in-0 mx-auto max-w-lg text-base leading-relaxed text-white/95">
+          <p className="mobile-slide-up-in mobile-slide-up-in-1 mx-auto max-w-lg text-base leading-relaxed text-white/95">
             <span className="font-semibold text-white">Mehr Reichweite, mehr Aufmerksamkeit</span> – nutze moderne KI, um deine Brauerei digital sichtbar zu machen. Ohne klassische Marketingagentur.
           </p>
-          <p className="mobile-slide-in mobile-slide-in-0 mx-auto mt-2 max-w-lg text-[15px] leading-relaxed text-white/85">
+          <p className="mobile-slide-up-in mobile-slide-up-in-2 mx-auto mt-2 max-w-lg text-[15px] leading-relaxed text-white/85">
             Content-Systeme, Werbevideos & automatisiertes Marketing – speziell für Brauereien, Gastronomen und Getränkehersteller.
           </p>
-          <div className="mobile-slide-in mobile-slide-in-0 mt-6 flex flex-col items-center gap-3">
+          <div className="mobile-slide-up-in mobile-slide-up-in-3 mt-6 flex flex-col items-center gap-3">
             <AppleStyleButton href="#contact" className="mobile-cta-animate">
               Kostenlose KI-Strategie für Brauereien sichern
             </AppleStyleButton>

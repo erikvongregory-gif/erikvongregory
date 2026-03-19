@@ -314,20 +314,45 @@ body[data-legal-page="true"] {
   animation: mobile-slide-from-top 0.85s cubic-bezier(0.16, 1, 0.3, 1) 0s both;
 }
 
+/* Von unten einfliegen – erst schnell, dann smooth ausbremsen */
+@keyframes mobile-slide-bottom {
+  from {
+    opacity: 0;
+    transform: translateY(48px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.mobile-hero-synced .mobile-slide-up-in {
+  opacity: 0;
+  transform: translateY(48px);
+}
+.mobile-hero-synced.hero-ready .mobile-slide-up-in {
+  animation: mobile-slide-bottom 0.9s cubic-bezier(0.22, 0.97, 0.36, 1) both;
+}
+.mobile-hero-synced.hero-ready .mobile-slide-up-in-0 { animation-delay: 1.7s; }
+.mobile-hero-synced.hero-ready .mobile-slide-up-in-1 { animation-delay: 1.82s; }
+.mobile-hero-synced.hero-ready .mobile-slide-up-in-2 { animation-delay: 1.94s; }
+.mobile-hero-synced.hero-ready .mobile-slide-up-in-3 { animation-delay: 2.06s; }
+
 /* Word-Blur: initial versteckt */
 .mobile-hero-synced .mobile-word-blur-in {
   opacity: 0;
 }
 .mobile-hero-synced.hero-ready .mobile-word-blur-in {
-  animation: word-blur-in 0.65s cubic-bezier(0.16, 1, 0.3, 1) both;
+  animation: word-blur-in 0.65s cubic-bezier(0.16, 1, 0.3, 1) var(--char-delay, 0s) both;
 }
-/* Delays werden per inline-style gesetzt (animationDelay) */
 
 @media (prefers-reduced-motion: reduce) {
   .mobile-hero-synced .mobile-slide-in,
   .mobile-hero-synced.hero-ready .mobile-slide-in,
   .mobile-hero-synced .mobile-word-blur-in,
-  .mobile-hero-synced.hero-ready .mobile-word-blur-in {
+  .mobile-hero-synced.hero-ready .mobile-word-blur-in,
+  .mobile-hero-synced .mobile-slide-up-in,
+  .mobile-hero-synced.hero-ready .mobile-slide-up-in {
     animation: none;
     opacity: 1;
     filter: none;
