@@ -110,7 +110,7 @@ export function MobileLayout() {
                 </span>
               ))}
             </div>
-            <div className="block -mt-2 text-4xl font-light italic">
+            <div className="block -mt-2 text-4xl font-light italic" style={{ filter: "drop-shadow(0 0 10px rgba(34, 197, 94, 0.45))" }}>
               {"speziell für Brauereien".split("").map((char, i) => (
                 <span
                   key={i}
