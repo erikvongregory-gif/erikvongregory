@@ -42,7 +42,7 @@ const EXPERTISE_ITEMS = [
 ];
 
 export function MobileLayout() {
-  const { isLoadComplete } = useLoading();
+  const { heroReady } = useLoading();
   const section2Ref = useRef<HTMLElement>(null);
   const [problemResetTrigger, setProblemResetTrigger] = useState(0);
   const wasVisibleRef = useRef(false);
@@ -77,7 +77,7 @@ export function MobileLayout() {
       <div className="relative flex flex-col">
         {/* Hero – gestaffelte Slide-Ins nach LoadingScreen */}
         <section
-          className={`mobile-hero-synced relative flex min-h-screen flex-col items-center justify-start px-4 pb-12 pt-2 text-center ${isLoadComplete ? "hero-ready" : ""}`}
+          className={`mobile-hero-synced relative flex min-h-screen flex-col items-center justify-start px-4 pb-12 pt-2 text-center ${heroReady ? "hero-ready" : ""}`}
         >
           <div className="mb-3 flex shrink-0 justify-center -mt-2">
             <Image
@@ -87,7 +87,7 @@ export function MobileLayout() {
               height={320}
               priority
               className="mobile-hero-portrait-reveal hero-portrait-blend h-[320px] w-[219px] object-contain object-top"
-              style={{ opacity: isLoadComplete ? undefined : 0 }}
+              style={{ opacity: heroReady ? undefined : 0 }}
             />
           </div>
           <h1 className="mobile-slide-up-in -mt-2 mb-8 block leading-none tracking-tight">
@@ -140,7 +140,7 @@ export function MobileLayout() {
           <p className="mobile-slide-up-in mobile-slide-up-in-2 mx-auto mt-2 max-w-lg text-[15px] leading-relaxed text-white/85">
             Content-Systeme, Werbevideos & automatisiertes Marketing – speziell für Brauereien, Gastronomen und Getränkehersteller.
           </p>
-          <div className="mobile-slide-up-in mobile-slide-up-in-3 mt-6 flex flex-col items-center gap-3">
+          <div className="mobile-slide-up-from-bottom mt-6 flex flex-col items-center gap-3">
             <AppleStyleButton href="#contact" className="mobile-cta-animate">
               Kostenlose KI-Strategie für Brauereien sichern
             </AppleStyleButton>

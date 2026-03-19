@@ -2,11 +2,13 @@
 
 import { useEffect, useState } from "react";
 import Link from "next/link";
+import { useLoading } from "@/context/LoadingContext";
 
 const COOKIE_CONSENT_KEY = "cookie-consent";
 
 export function CookieBanner() {
   const [visible, setVisible] = useState(false);
+  const { setCookieConsentGiven } = useLoading();
 
   useEffect(() => {
     const consent = localStorage.getItem(COOKIE_CONSENT_KEY);
@@ -18,11 +20,13 @@ export function CookieBanner() {
 
   const handleAccept = () => {
     localStorage.setItem(COOKIE_CONSENT_KEY, "accepted");
+    setCookieConsentGiven();
     setVisible(false);
   };
 
   const handleDecline = () => {
     localStorage.setItem(COOKIE_CONSENT_KEY, "declined");
+    setCookieConsentGiven();
     setVisible(false);
   };
 
