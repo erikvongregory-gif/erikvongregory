@@ -90,7 +90,7 @@ export function MobileLayout() {
               style={{ opacity: isLoadComplete ? undefined : 0 }}
             />
           </div>
-          <h1 className="-mt-2 mb-8 block leading-none tracking-tight">
+          <h1 className="mobile-slide-up-in -mt-2 mb-8 block leading-none tracking-tight">
             <div className="block text-xl font-extrabold">
               {"die erste KI‑Marketinglösung".split("").map((char, i) => (
                 <span
