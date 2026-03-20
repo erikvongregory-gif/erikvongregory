@@ -110,25 +110,35 @@ export function MobileLayout() {
                 </span>
               ))}
             </div>
-            <div className="block -mt-2 text-4xl font-light italic" style={{ filter: "drop-shadow(0 0 10px rgba(34, 197, 94, 0.45))" }}>
-              {"speziell für Brauereien".split("").map((char, i) => (
-                <span
-                  key={i}
-                  className="mobile-word-blur-in inline-block"
-                  style={{
-                    fontFamily: "var(--font-austera)",
-                    background: "linear-gradient(90deg, #ffffff 0%, #a7f3d0 50%, #ffffff 100%)",
-                    backgroundSize: "200% 100%",
-                    WebkitBackgroundClip: "text",
-                    backgroundClip: "text",
-                    color: "transparent",
-                    ["--char-delay" as string]: `${("die erste KI‑Marketinglösung".length * 0.02) + i * 0.02}s`,
-                    whiteSpace: "pre",
-                  }}
-                >
-                  {char}
-                </span>
-              ))}
+            <div className="block -mt-2 text-4xl font-light italic" style={{ fontFamily: "var(--font-austera)" }}>
+              {(() => {
+                const len = "speziell für Brauereien".length;
+                const lerp = (c1: string, c2: string, t: number) => {
+                  const [r1, g1, b1] = [parseInt(c1.slice(1, 3), 16), parseInt(c1.slice(3, 5), 16), parseInt(c1.slice(5, 7), 16)];
+                  const [r2, g2, b2] = [parseInt(c2.slice(1, 3), 16), parseInt(c2.slice(3, 5), 16), parseInt(c2.slice(5, 7), 16)];
+                  const r = Math.round(r1 + (r2 - r1) * t);
+                  const g = Math.round(g1 + (g2 - g1) * t);
+                  const b = Math.round(b1 + (b2 - b1) * t);
+                  return `rgb(${r},${g},${b})`;
+                };
+                return "speziell für Brauereien".split("").map((char, i) => {
+                  const t = i / (len - 1 || 1);
+                  const color = lerp("#a7f3d0", "#059669", t);
+                  return (
+                  <span
+                    key={i}
+                    className="mobile-word-blur-in inline-block"
+                    style={{
+                      color,
+                      ["--char-delay" as string]: `${("die erste KI‑Marketinglösung".length * 0.02) + i * 0.02}s`,
+                      whiteSpace: "pre",
+                    }}
+                  >
+                    {char}
+                  </span>
+                );
+              });
+              })()}
             </div>
           </h1>
           <p className="mobile-slide-up-in mobile-slide-up-in-0 mb-0 text-xl font-light italic text-white/95" style={{ fontFamily: "var(--font-austera)" }}>

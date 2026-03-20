@@ -52,6 +52,7 @@ export function HeroWithScatter() {
         text={"Die erste KI\u2011Marketinglösung\nspeziell für Brauereien."}
         as="h1"
         italicWords={["erste"]}
+        fadeWords={["speziell", "für", "Brauereien"]}
         scrollAnchorRef={heroRef}
         shimmer
         className="hero-slide-in hero-slide-in-delay-2 block text-[2rem] font-extrabold leading-[1.25] tracking-tight drop-shadow-md sm:text-4xl md:text-[2.75rem] lg:text-5xl xl:text-[3.25rem]"
@@ -137,7 +138,7 @@ export function HeroWithScatter() {
     {
       fade: getFade(6),
       el: (
-        <div className="hero-slide-in hero-slide-in-delay-7 flex shrink-0 items-center justify-center" style={{ marginBottom: "-16px" }}>
+        <div className="hero-portrait-slide-up flex shrink-0 items-center justify-center" style={{ marginBottom: "-16px" }}>
           <div
             className="hero-portrait-float relative h-[260px] w-[180px] origin-bottom sm:h-[380px] sm:w-[260px] md:h-[450px] md:w-[300px] lg:h-[800px] lg:w-[640px]"
             style={{

@@ -1,13 +1,23 @@
 @import "tailwindcss";
 
-/* Austera Text Light Italic – Font-Datei in public/fonts/ ablegen */
+/* News Gothic SH Light – Hauptschrift (Font-Datei in public/fonts/ ablegen) */
 @font-face {
-  font-family: "Austera Text";
-  font-style: italic;
+  font-family: "News Gothic SH Light";
+  font-style: normal;
   font-weight: 300;
   font-display: swap;
-  src: url("/fonts/AusteraText-LightItalic.woff2") format("woff2"),
-       url("/fonts/AusteraText-LightItalic.woff") format("woff");
+  src: url("/fonts/NewsGothicSH-Light.woff2") format("woff2"),
+       url("/fonts/NewsGothicSH-Light.woff") format("woff");
+}
+
+/* Kudryashev Italic Regular – Akzent-Schrift (Font-Datei in public/fonts/ ablegen) */
+@font-face {
+  font-family: "Kudryashev Italic";
+  font-style: italic;
+  font-weight: 400;
+  font-display: swap;
+  src: url("/fonts/Kudryashev-Italic-Regular.woff2") format("woff2"),
+       url("/fonts/Kudryashev-Italic-Regular.woff") format("woff");
 }
 
 /* Almarena Display Regular – Font-Datei in public/fonts/ ablegen */
@@ -22,7 +32,8 @@
 
 :root {
   --akq-green: #14532d;
-  --font-austera: "Austera Text", serif;
+  --font-main: "News Gothic SH Light", system-ui, sans-serif;
+  --font-austera: "Kudryashev Italic", serif;
   --font-almarena: "Almarena Display", sans-serif;
   --akq-green-hover: #166534;
   --akq-green-light: #dcfce7;
@@ -41,7 +52,7 @@ html {
 }
 
 body {
-  font-family: "Red Hat Display", var(--font-almarena), sans-serif;
+  font-family: var(--font-main);
   background: #0a0f14;
 }
 
@@ -138,11 +149,11 @@ body[data-legal-page="true"] {
   border-color: var(--akq-green);
 }
 
-/* Hero Slide-In von links beim Seitenöffnen */
+/* Hero Slide-In – sanftes Einblenden beim Seitenöffnen */
 @keyframes hero-slide-right {
   from {
     opacity: 0;
-    transform: translateX(-40px);
+    transform: translateX(-20px);
   }
   to {
     opacity: 1;
@@ -150,27 +161,45 @@ body[data-legal-page="true"] {
   }
 }
 
-.hero-slide-in {
-  animation: hero-slide-right 0.7s cubic-bezier(0.22, 1, 0.36, 1) both;
+/* Hero Portrait – kommt von unten */
+@keyframes hero-portrait-slide-up {
+  from {
+    opacity: 0;
+    transform: translateY(40px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
 }
 
-/* Verzögerung = Lade-Screen + Offset (abgestimmt auf kürzeren LoadingScreen) */
-.hero-slide-in-delay-1 { animation-delay: 1.5s; }
-.hero-slide-in-delay-2 { animation-delay: 1.6s; }
-.hero-slide-in-delay-3 { animation-delay: 1.7s; }
-.hero-slide-in-delay-4 { animation-delay: 1.8s; }
-.hero-slide-in-delay-5 { animation-delay: 1.9s; }
-.hero-slide-in-delay-6 { animation-delay: 2s; }
-.hero-slide-in-delay-7 { animation-delay: 2.1s; }
+.hero-slide-in {
+  animation: hero-slide-right 0.9s cubic-bezier(0.16, 1, 0.3, 1) both;
+}
+
+.hero-portrait-slide-up {
+  animation: hero-portrait-slide-up 0.9s cubic-bezier(0.16, 1, 0.3, 1) both;
+}
+
+/* Verzögerung – Headline gestaffelt, Textabschnitt zusammen */
+.hero-slide-in-delay-1 { animation-delay: 1.4s; }
+.hero-slide-in-delay-2 { animation-delay: 1.5s; } /* Headline: wie vorher */
+.hero-slide-in-delay-3,
+.hero-slide-in-delay-4,
+.hero-slide-in-delay-5,
+.hero-slide-in-delay-6 { animation-delay: 1.6s; } /* Textabschnitt: zusammen */
+.hero-slide-in-delay-7 { animation-delay: 1.6s; } /* Portrait */
+.hero-portrait-slide-up { animation-delay: 1.6s; }
 
 @media (max-width: 768px) {
-  .hero-slide-in-delay-1 { animation-delay: 0.6s; }
-  .hero-slide-in-delay-2 { animation-delay: 0.65s; }
-  .hero-slide-in-delay-3 { animation-delay: 0.7s; }
-  .hero-slide-in-delay-4 { animation-delay: 0.75s; }
-  .hero-slide-in-delay-5 { animation-delay: 0.8s; }
-  .hero-slide-in-delay-6 { animation-delay: 0.85s; }
-  .hero-slide-in-delay-7 { animation-delay: 0.9s; }
+  .hero-slide-in-delay-1 { animation-delay: 0.5s; }
+  .hero-slide-in-delay-2 { animation-delay: 0.55s; } /* Headline */
+  .hero-slide-in-delay-3,
+  .hero-slide-in-delay-4,
+  .hero-slide-in-delay-5,
+  .hero-slide-in-delay-6,
+  .hero-slide-in-delay-7 { animation-delay: 0.5s; }
+  .hero-portrait-slide-up { animation-delay: 0.5s; }
 }
 
 /* Hero Portrait – weiche Kreis-Schwebung (viele Keyframes = runder Pfad) */
@@ -218,11 +247,11 @@ body[data-legal-page="true"] {
   }
 }
 
-/* Mobile Hero Portrait – professionelle Einblendung */
+/* Mobile Hero Portrait – kommt von unten */
 @keyframes mobile-hero-portrait-reveal {
   from {
     opacity: 0;
-    transform: scale(0.96) translateY(20px);
+    transform: scale(0.98) translateY(40px);
   }
   to {
     opacity: 1;
@@ -233,15 +262,20 @@ body[data-legal-page="true"] {
 /* Ohne .hero-ready: versteckt, bis LoadingScreen weg ist */
 .mobile-hero-synced .mobile-hero-portrait-reveal {
   opacity: 0;
-  transform: scale(0.96) translateY(20px);
+  transform: scale(0.98) translateY(40px);
 }
 
 .mobile-hero-synced.hero-ready .mobile-hero-portrait-reveal {
   opacity: 1;
-  animation: mobile-hero-portrait-reveal 1s cubic-bezier(0.22, 1, 0.36, 1) 0.1s both;
+  animation: mobile-hero-portrait-reveal 1.2s cubic-bezier(0.16, 1, 0.3, 1) 0s both;
 }
 
 @media (prefers-reduced-motion: reduce) {
+  .hero-portrait-slide-up {
+    animation: none;
+    opacity: 1;
+    transform: none;
+  }
   .mobile-hero-synced .mobile-hero-portrait-reveal,
   .mobile-hero-synced.hero-ready .mobile-hero-portrait-reveal {
     animation: none;
@@ -297,14 +331,14 @@ body[data-legal-page="true"] {
   animation: mobile-slide-up 0.75s cubic-bezier(0.16, 1, 0.3, 1) both;
 }
 
-.mobile-hero-synced.hero-ready .mobile-slide-in-0 { animation-delay: 0s; }
-.mobile-hero-synced.hero-ready .mobile-slide-in-1 { animation-delay: 0.15s; }
-.mobile-hero-synced.hero-ready .mobile-slide-in-2 { animation-delay: 0.3s; }
-.mobile-hero-synced.hero-ready .mobile-slide-in-3 { animation-delay: 0.45s; }
-.mobile-hero-synced.hero-ready .mobile-slide-in-4 { animation-delay: 0.6s; }
-.mobile-hero-synced.hero-ready .mobile-slide-in-5 { animation-delay: 0.75s; }
-.mobile-hero-synced.hero-ready .mobile-slide-in-6 { animation-delay: 0.9s; }
-.mobile-hero-synced.hero-ready .mobile-slide-in-7 { animation-delay: 1.05s; }
+.mobile-hero-synced.hero-ready .mobile-slide-in-0,
+.mobile-hero-synced.hero-ready .mobile-slide-in-1,
+.mobile-hero-synced.hero-ready .mobile-slide-in-2,
+.mobile-hero-synced.hero-ready .mobile-slide-in-3,
+.mobile-hero-synced.hero-ready .mobile-slide-in-4,
+.mobile-hero-synced.hero-ready .mobile-slide-in-5,
+.mobile-hero-synced.hero-ready .mobile-slide-in-6,
+.mobile-hero-synced.hero-ready .mobile-slide-in-7 { animation-delay: 0s; }
 
 .mobile-hero-synced .mobile-slide-from-top {
   opacity: 0;
@@ -352,10 +386,10 @@ body[data-legal-page="true"] {
 .mobile-hero-synced.hero-ready .mobile-slide-up-from-bottom {
   animation: mobile-slide-from-bottom 1.2s cubic-bezier(0.05, 1, 0.08, 1) both;
 }
-.mobile-hero-synced.hero-ready .mobile-slide-up-in-0 { animation-delay: 1.7s; }
-.mobile-hero-synced.hero-ready .mobile-slide-up-in-1 { animation-delay: 1.82s; }
-.mobile-hero-synced.hero-ready .mobile-slide-up-in-2 { animation-delay: 1.94s; }
-.mobile-hero-synced.hero-ready .mobile-slide-up-from-bottom { animation-delay: 2.06s; }
+.mobile-hero-synced.hero-ready .mobile-slide-up-in-0,
+.mobile-hero-synced.hero-ready .mobile-slide-up-in-1,
+.mobile-hero-synced.hero-ready .mobile-slide-up-in-2,
+.mobile-hero-synced.hero-ready .mobile-slide-up-from-bottom { animation-delay: 0s; }
 
 /* Word-Blur: initial versteckt */
 .mobile-hero-synced .mobile-word-blur-in {

@@ -30,11 +30,23 @@ const SHIMMER_STYLE = {
   textRendering: "geometricPrecision" as const,
 };
 
+const lerpGreen = (t: number) => {
+  const c1 = [0xa7, 0xf3, 0xd0];
+  const c2 = [0x05, 0x96, 0x69];
+  const r = Math.round(c1[0] + (c2[0] - c1[0]) * t);
+  const g = Math.round(c1[1] + (c2[1] - c1[1]) * t);
+  const b = Math.round(c1[2] + (c2[2] - c1[2]) * t);
+  return `rgb(${r},${g},${b})`;
+};
+const FADE_BASE = { fontFamily: "var(--font-austera)", fontStyle: "italic" as const, fontWeight: 300, textShadow: "none" as const };
+
 type ScatterTextOnScrollProps = {
   text: string;
   className?: string;
   as?: "h1" | "h2" | "p" | "span";
   italicWords?: string[];
+  /** Wörter mit grünem Fade statt Glow (z. B. speziell für Brauereien) */
+  fadeWords?: string[];
   scrollAnchorRef?: React.RefObject<HTMLElement | null>;
   /** Shimmer/Lighting-Effekt wie im Loading-Screen */
   shimmer?: boolean;
@@ -46,6 +58,7 @@ export function ScatterTextOnScroll({
   className = "",
   as: Tag = "h1",
   italicWords = [],
+  fadeWords = [],
   scrollAnchorRef,
   shimmer = false,
 }: ScatterTextOnScrollProps) {
@@ -117,6 +130,7 @@ export function ScatterTextOnScroll({
                   const avgX = (x + x2) / 2;
                   const avgY = (y + y2) / 2;
                   const avgR = (r + r2) / 2;
+                  const useFade = fadeWords.includes("für") || fadeWords.includes(nextWord);
                   return (
                     <span
                       key={`für-brauereien-${idx}`}
@@ -129,8 +143,14 @@ export function ScatterTextOnScroll({
                         opacity: 1 - effectiveScatter * 0.4,
                       }}
                     >
-                      für{"\u00A0"}
-                      {nextWord}
+                      {useFade ? (
+                        <>
+                          <span style={{ ...FADE_BASE, color: lerpGreen(0.35) }}>für{"\u00A0"}</span>
+                          <span style={{ ...FADE_BASE, color: lerpGreen(0.85) }}>{nextWord}</span>
+                        </>
+                      ) : (
+                        <>für{"\u00A0"}{nextWord}</>
+                      )}
                     </span>
                   );
                 }
@@ -138,7 +158,13 @@ export function ScatterTextOnScroll({
                 const idx = wordIndex++;
                 const { x, y, r } = getOffset(idx);
                 const isItalic = italicWords.includes(word);
-                const content = isItalic ? (
+                const isFade = fadeWords.includes(word);
+                const fadeT = word === "speziell" ? 0 : word === "für" ? 0.35 : 0.85;
+                const content = isFade ? (
+                  <span className="font-light italic" style={{ ...FADE_BASE, color: lerpGreen(fadeT) }}>
+                    {word}
+                  </span>
+                ) : isItalic ? (
                   <span
                     className="font-light italic"
                     style={{

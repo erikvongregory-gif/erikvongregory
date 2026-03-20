@@ -1,5 +1,4 @@
 import type { Metadata } from "next";
-import { Red_Hat_Display } from "next/font/google";
 import Script from "next/script";
 import { ScrollHeader } from "@/components/ScrollHeader";
 import { CookieBanner } from "@/components/CookieBanner";
@@ -10,11 +9,6 @@ import { LoadingProvider } from "@/context/LoadingContext";
 import { JsonLd } from "@/components/JsonLd";
 import { SITE } from "@/lib/siteConfig";
 import "./globals.css";
-
-const redHatDisplay = Red_Hat_Display({
-  subsets: ["latin"],
-  weight: ["400", "500", "600", "700"],
-});
 
 export const viewport = {
   width: "device-width",
@@ -78,7 +72,7 @@ export default function RootLayout({
           __html: `if('scrollRestoration'in history)history.scrollRestoration='manual';window.scrollTo(0,0);`,
         }}
       />
-      <body className={`${redHatDisplay.className} overflow-x-hidden bg-[#0a0f14] text-neutral-900 antialiased`}>
+      <body className="overflow-x-hidden bg-[#0a0f14] text-neutral-900 antialiased">
         <JsonLd />
         <LoadingProvider>
         <a
