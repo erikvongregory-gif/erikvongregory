@@ -40,9 +40,11 @@ export function LoadingScreen() {
       }`}
     >
       <p
-        className="loading-name-text-shimmer animate-loading-shimmer-text text-2xl font-bold tracking-tight sm:text-3xl"
+        className="loading-name-text-shimmer animate-loading-shimmer-text text-2xl font-light tracking-tight sm:text-3xl"
         style={{
-          fontFamily: "var(--font-main)",
+          fontFamily: "var(--font-austera)",
+          fontStyle: "italic",
+          fontWeight: 300,
           background: "linear-gradient(90deg, #ffffff 0%, #ffffff 25%, #a7f3d0 50%, #ffffff 75%, #ffffff 100%)",
           backgroundSize: "200% 100%",
           WebkitBackgroundClip: "text",
