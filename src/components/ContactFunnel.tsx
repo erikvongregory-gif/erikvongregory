@@ -189,11 +189,7 @@ export function ContactFunnel() {
             <>
               <h2
                 id="contact-funnel-title"
-                className="text-xl font-light italic text-white sm:text-2xl"
-                style={{
-                  fontFamily: "var(--font-austera)",
-                  textShadow: "0 0 20px rgba(34, 197, 94, 0.3)",
-                }}
+                className="text-xl font-light italic font-austera-green-fade sm:text-2xl"
               >
                 Kostenloses Erstgespräch
               </h2>

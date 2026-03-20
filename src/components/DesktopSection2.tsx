@@ -15,13 +15,7 @@ export function DesktopSection2() {
       >
         <h2 className="text-2xl font-bold tracking-tight text-white drop-shadow-md sm:text-3xl md:text-4xl min-h-[1.2em]">
           Warum viele Brauereien{" "}
-          <span
-            className="font-light italic"
-            style={{
-              fontFamily: "var(--font-austera)",
-              textShadow: "0 0 20px rgba(34, 197, 94, 0.5), 0 0 40px rgba(34, 197, 94, 0.25)",
-            }}
-          >
+          <span className="font-light italic font-austera-green-fade">
             online unsichtbar
           </span>{" "}
           bleiben

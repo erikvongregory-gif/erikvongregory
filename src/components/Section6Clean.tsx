@@ -15,15 +15,9 @@ export function Section6Clean() {
           Aus der Praxis
         </div>
         <h2 className="mb-4 text-2xl font-bold tracking-tight text-white drop-shadow-md sm:text-3xl md:text-4xl">
-          Von der Brauerei -{" "}
-          <span
-            className="font-light italic"
-            style={{
-              fontFamily: "var(--font-austera)",
-              textShadow: "0 0 20px rgba(34, 197, 94, 0.5), 0 0 40px rgba(34, 197, 94, 0.25)",
-            }}
-          >
-            fur die Brauerei
+          Von der Brauerei –{" "}
+          <span className="font-light italic font-austera-green-fade">
+            für die Brauerei
           </span>
         </h2>
         <p className="mb-8 text-base leading-relaxed text-white/90 sm:text-lg">

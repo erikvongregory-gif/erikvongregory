@@ -1,10 +1,147 @@
 @import "tailwindcss";
 
+/* Work Sans – lokal, public/fonts/ (weights 300–700, latin + latin-ext) */
+@font-face {
+  font-family: "Work Sans";
+  font-style: normal;
+  font-weight: 300;
+  font-display: swap;
+  src: local("Work Sans Light"), local("WorkSans-Light"),
+       url("/fonts/work-sans-latin-300-normal.woff2") format("woff2");
+  unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
+}
+@font-face {
+  font-family: "Work Sans";
+  font-style: normal;
+  font-weight: 300;
+  font-display: swap;
+  src: local("Work Sans Light"), local("WorkSans-Light"),
+       url("/fonts/work-sans-latin-ext-300-normal.woff2") format("woff2");
+  unicode-range: U+0100-02BA, U+02BD-02C5, U+02C7-02CC, U+02CE-02D7, U+02DD-02FF, U+0304, U+0308, U+0329, U+1D00-1DBF, U+1E00-1E9F, U+1EF2-1EFF, U+2020, U+20A0-20AB, U+20AD-20C0, U+2113, U+2C60-2C7F, U+A720-A7FF;
+}
+@font-face {
+  font-family: "Work Sans";
+  font-style: normal;
+  font-weight: 400;
+  font-display: swap;
+  src: local("Work Sans"), local("WorkSans-Regular"),
+       url("/fonts/work-sans-latin-400-normal.woff2") format("woff2");
+  unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
+}
+@font-face {
+  font-family: "Work Sans";
+  font-style: normal;
+  font-weight: 400;
+  font-display: swap;
+  src: local("Work Sans"), local("WorkSans-Regular"),
+       url("/fonts/work-sans-latin-ext-400-normal.woff2") format("woff2");
+  unicode-range: U+0100-02BA, U+02BD-02C5, U+02C7-02CC, U+02CE-02D7, U+02DD-02FF, U+0304, U+0308, U+0329, U+1D00-1DBF, U+1E00-1E9F, U+1EF2-1EFF, U+2020, U+20A0-20AB, U+20AD-20C0, U+2113, U+2C60-2C7F, U+A720-A7FF;
+}
+@font-face {
+  font-family: "Work Sans";
+  font-style: italic;
+  font-weight: 400;
+  font-display: swap;
+  src: local("Work Sans Italic"), local("WorkSans-Italic"),
+       url("/fonts/work-sans-latin-400-italic.woff2") format("woff2");
+  unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
+}
+@font-face {
+  font-family: "Work Sans";
+  font-style: italic;
+  font-weight: 400;
+  font-display: swap;
+  src: local("Work Sans Italic"), local("WorkSans-Italic"),
+       url("/fonts/work-sans-latin-ext-400-italic.woff2") format("woff2");
+  unicode-range: U+0100-02BA, U+02BD-02C5, U+02C7-02CC, U+02CE-02D7, U+02DD-02FF, U+0304, U+0308, U+0329, U+1D00-1DBF, U+1E00-1E9F, U+1EF2-1EFF, U+2020, U+20A0-20AB, U+20AD-20C0, U+2113, U+2C60-2C7F, U+A720-A7FF;
+}
+@font-face {
+  font-family: "Work Sans";
+  font-style: normal;
+  font-weight: 500;
+  font-display: swap;
+  src: local("Work Sans Medium"), local("WorkSans-Medium"),
+       url("/fonts/work-sans-latin-500-normal.woff2") format("woff2");
+  unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
+}
+@font-face {
+  font-family: "Work Sans";
+  font-style: normal;
+  font-weight: 500;
+  font-display: swap;
+  src: local("Work Sans Medium"), local("WorkSans-Medium"),
+       url("/fonts/work-sans-latin-ext-500-normal.woff2") format("woff2");
+  unicode-range: U+0100-02BA, U+02BD-02C5, U+02C7-02CC, U+02CE-02D7, U+02DD-02FF, U+0304, U+0308, U+0329, U+1D00-1DBF, U+1E00-1E9F, U+1EF2-1EFF, U+2020, U+20A0-20AB, U+20AD-20C0, U+2113, U+2C60-2C7F, U+A720-A7FF;
+}
+@font-face {
+  font-family: "Work Sans";
+  font-style: normal;
+  font-weight: 600;
+  font-display: swap;
+  src: local("Work Sans SemiBold"), local("WorkSans-SemiBold"),
+       url("/fonts/work-sans-latin-600-normal.woff2") format("woff2");
+  unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
+}
+@font-face {
+  font-family: "Work Sans";
+  font-style: normal;
+  font-weight: 600;
+  font-display: swap;
+  src: local("Work Sans SemiBold"), local("WorkSans-SemiBold"),
+       url("/fonts/work-sans-latin-ext-600-normal.woff2") format("woff2");
+  unicode-range: U+0100-02BA, U+02BD-02C5, U+02C7-02CC, U+02CE-02D7, U+02DD-02FF, U+0304, U+0308, U+0329, U+1D00-1DBF, U+1E00-1E9F, U+1EF2-1EFF, U+2020, U+20A0-20AB, U+20AD-20C0, U+2113, U+2C60-2C7F, U+A720-A7FF;
+}
+@font-face {
+  font-family: "Work Sans";
+  font-style: normal;
+  font-weight: 700;
+  font-display: swap;
+  src: local("Work Sans Bold"), local("WorkSans-Bold"),
+       url("/fonts/work-sans-latin-700-normal.woff2") format("woff2");
+  unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
+}
+@font-face {
+  font-family: "Work Sans";
+  font-style: normal;
+  font-weight: 700;
+  font-display: swap;
+  src: local("Work Sans Bold"), local("WorkSans-Bold"),
+       url("/fonts/work-sans-latin-ext-700-normal.woff2") format("woff2");
+  unicode-range: U+0100-02BA, U+02BD-02C5, U+02C7-02CC, U+02CE-02D7, U+02DD-02FF, U+0304, U+0308, U+0329, U+1D00-1DBF, U+1E00-1E9F, U+1EF2-1EFF, U+2020, U+20A0-20AB, U+20AD-20C0, U+2113, U+2C60-2C7F, U+A720-A7FF;
+}
+
+/* Cormorant Garamond Italic – lokal installiert oder public/fonts/ */
+@font-face {
+  font-family: "Cormorant Garamond";
+  font-style: italic;
+  font-weight: 400;
+  font-display: swap;
+  src: local("Cormorant Garamond Italic"),
+       local("Cormorant Garamond"),
+       local("CormorantGaramond-Italic"),
+       url("/fonts/CormorantGaramond-Italic.woff2") format("woff2"),
+       url("/fonts/CormorantGaramond-Italic.woff") format("woff"),
+       url("/fonts/CormorantGaramond-Italic.ttf") format("truetype");
+}
+
+/* Cormorant Garamond – grüner Fade (hell→dunkel) für alle Akzent-Texte */
+.font-austera-green-fade {
+  font-family: var(--font-austera);
+  font-style: italic;
+  font-weight: 300;
+  background: linear-gradient(90deg, #a7f3d0 0%, #86c59d 50%, #059669 100%);
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+  color: transparent;
+}
+
 :root {
   --akq-green: #14532d;
-  --font-main: var(--font-work-sans), "Work Sans", system-ui, sans-serif;
-  --font-austera: var(--font-cormorant), "Cormorant Garamond", Georgia, serif;
-  --font-almarena: var(--font-work-sans), "Work Sans", system-ui, sans-serif;
+  --font-work-sans: "Work Sans", system-ui, sans-serif;
+  --font-main: var(--font-work-sans);
+  --font-austera: "Cormorant Garamond", Georgia, serif;
+  --font-almarena: var(--font-work-sans);
   --akq-green-hover: #166534;
   --akq-green-light: #dcfce7;
 }
@@ -1668,11 +1805,15 @@ body[data-legal-page="true"] {
 }
 
 .pricing-slide-in {
+  opacity: 0;
+  transform: translateY(32px);
+}
+.pricing-in-view .pricing-slide-in {
   animation: pricing-slide-up 0.6s cubic-bezier(0.22, 1, 0.36, 1) both;
 }
 
-.pricing-slide-in-delay-1 {
-  animation-delay: 0.12s;
+.pricing-in-view .pricing-slide-in-delay-1 {
+  animation: pricing-slide-up 0.55s cubic-bezier(0.22, 1, 0.36, 1) 0.7s both;
 }
 
 /* Pricing Section - staged reveal + sales motion */
@@ -1687,53 +1828,52 @@ body[data-legal-page="true"] {
   }
 }
 
-/* Karten: gestaffelter Slide von unten, links/rechts mit leichtem horizontalen Start */
-@keyframes pricing-card-slide-left {
+/* Karten: abwechselnd von links/rechts einfliegen */
+@keyframes pricing-card-from-left {
   from {
     opacity: 0;
-    transform: translateY(48px) translateX(-24px) scale(0.96);
+    transform: translateX(-56px);
   }
   to {
     opacity: 1;
-    transform: translateY(0) translateX(0) scale(1);
+    transform: translateX(0);
   }
 }
 
-@keyframes pricing-card-slide-center {
+@keyframes pricing-card-from-right {
   from {
     opacity: 0;
-    transform: translateY(48px) scale(0.96);
+    transform: translateX(56px);
   }
   to {
     opacity: 1;
-    transform: translateY(0) scale(1);
+    transform: translateX(0);
   }
 }
 
-@keyframes pricing-card-slide-right {
-  from {
-    opacity: 0;
-    transform: translateY(48px) translateX(24px) scale(0.96);
-  }
-  to {
-    opacity: 1;
-    transform: translateY(0) translateX(0) scale(1);
-  }
-}
-
+/* Initial state – versteckt, bis Section sichtbar */
 .pricing-card-slide-0 {
   opacity: 0;
-  animation: pricing-card-slide-left 0.7s cubic-bezier(0.22, 1, 0.36, 1) forwards;
+  transform: translateX(-56px);
 }
-
 .pricing-card-slide-1 {
   opacity: 0;
-  animation: pricing-card-slide-center 0.7s cubic-bezier(0.22, 1, 0.36, 1) 0.1s forwards;
+  transform: translateX(56px);
 }
-
 .pricing-card-slide-2 {
   opacity: 0;
-  animation: pricing-card-slide-right 0.7s cubic-bezier(0.22, 1, 0.36, 1) 0.2s forwards;
+  transform: translateX(-56px);
+}
+
+/* Animation startet erst beim Scrollen ins Viewport – nacheinander gestaffelt */
+.pricing-in-view .pricing-card-slide-0 {
+  animation: pricing-card-from-left 0.55s cubic-bezier(0.22, 1, 0.36, 1) 1.2s forwards;
+}
+.pricing-in-view .pricing-card-slide-1 {
+  animation: pricing-card-from-right 0.55s cubic-bezier(0.22, 1, 0.36, 1) 1.7s forwards;
+}
+.pricing-in-view .pricing-card-slide-2 {
+  animation: pricing-card-from-left 0.55s cubic-bezier(0.22, 1, 0.36, 1) 2.2s forwards;
 }
 
 @keyframes pricing-sale-badge-pulse {

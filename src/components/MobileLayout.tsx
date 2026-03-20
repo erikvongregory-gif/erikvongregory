@@ -110,7 +110,7 @@ export function MobileLayout() {
                 </span>
               ))}
             </div>
-            <div className="block -mt-2 text-4xl font-light italic" style={{ fontFamily: "var(--font-austera)" }}>
+            <div className="block -mt-2 text-5xl font-light italic" style={{ fontFamily: "var(--font-austera)" }}>
               {(() => {
                 const len = "speziell für Brauereien".length;
                 const lerp = (c1: string, c2: string, t: number) => {
@@ -125,19 +125,19 @@ export function MobileLayout() {
                   const t = i / (len - 1 || 1);
                   const color = lerp("#a7f3d0", "#059669", t);
                   return (
-                  <span
-                    key={i}
-                    className="mobile-word-blur-in inline-block"
-                    style={{
-                      color,
-                      ["--char-delay" as string]: `${("die erste KI‑Marketinglösung".length * 0.02) + i * 0.02}s`,
-                      whiteSpace: "pre",
-                    }}
-                  >
-                    {char}
-                  </span>
-                );
-              });
+                    <span
+                      key={i}
+                      className="mobile-word-blur-in inline-block"
+                      style={{
+                        color,
+                        ["--char-delay" as string]: `${("die erste KI‑Marketinglösung".length * 0.02) + i * 0.02}s`,
+                        whiteSpace: "pre",
+                      }}
+                    >
+                      {char}
+                    </span>
+                  );
+                });
               })()}
             </div>
           </h1>
@@ -163,13 +163,7 @@ export function MobileLayout() {
             <div className="section2-card mx-auto max-w-2xl rounded-2xl px-6 py-8 text-center">
             <h2 className="text-2xl font-bold tracking-tight text-white drop-shadow-md">
               Warum viele Brauereien{" "}
-              <span
-                className="font-light italic"
-                style={{
-                  fontFamily: "var(--font-austera)",
-                  textShadow: "0 0 20px rgba(34, 197, 94, 0.5)",
-                }}
-              >
+              <span className="font-light italic font-austera-green-fade">
                 online unsichtbar
               </span>{" "}
               bleiben
@@ -206,13 +200,7 @@ export function MobileLayout() {
             <h2 className="text-3xl font-extrabold tracking-tight text-white drop-shadow-md">
               Bist du{" "}
               <a href="#contact" className="section3-cta-link">
-                <span
-                  style={{
-                    fontFamily: "var(--font-austera)",
-                    fontStyle: "italic",
-                    fontWeight: 300,
-                  }}
-                >
+                <span className="font-austera-green-fade">
                   bereit
                 </span>
               </a>
@@ -236,13 +224,7 @@ export function MobileLayout() {
           </div>
           <h2 className="mb-6 text-center text-xl font-bold tracking-tight text-white drop-shadow-md">
             Meine 5{" "}
-            <span
-              className="font-light italic"
-              style={{
-                fontFamily: "var(--font-austera)",
-                textShadow: "0 0 20px rgba(34, 197, 94, 0.5)",
-              }}
-            >
+            <span className="font-light italic font-austera-green-fade">
               Lösungen
             </span>
           </h2>
@@ -313,13 +295,7 @@ export function MobileLayout() {
             </div>
             <h2 className="mb-4 text-2xl font-bold tracking-tight text-white drop-shadow-md">
               Von der Brauerei –{" "}
-              <span
-                className="font-light italic"
-                style={{
-                  fontFamily: "var(--font-austera)",
-                  textShadow: "0 0 20px rgba(34, 197, 94, 0.5)",
-                }}
-              >
+              <span className="font-light italic font-austera-green-fade">
                 für die Brauerei
               </span>
             </h2>

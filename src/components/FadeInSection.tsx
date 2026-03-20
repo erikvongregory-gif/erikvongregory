@@ -92,13 +92,7 @@ export function FadeInSection() {
           }}
         >
           Warum viele Brauereien{" "}
-          <span
-            className="font-light italic"
-            style={{
-              fontFamily: "var(--font-austera)",
-              textShadow: "0 0 20px rgba(34, 197, 94, 0.5), 0 0 40px rgba(34, 197, 94, 0.25)",
-            }}
-          >
+          <span className="font-light italic font-austera-green-fade">
             online unsichtbar
           </span>{" "}
           bleiben

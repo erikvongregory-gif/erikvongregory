@@ -33,7 +33,7 @@ export function DesktopHero() {
             <span className="block text-xl font-extrabold text-white drop-shadow-md sm:text-2xl md:text-3xl lg:text-4xl">
               die erste KI‑Marketinglösung
             </span>
-            <span className="block text-4xl font-light italic sm:text-5xl md:text-5xl lg:text-6xl" style={{ fontFamily: "var(--font-austera)" }}>
+            <span className="block text-5xl font-light italic sm:text-6xl md:text-6xl lg:text-7xl" style={{ fontFamily: "var(--font-austera)" }}>
               <span style={{ color: "rgb(167,243,208)" }}>speziell </span>
               <span style={{ color: "rgb(86,197,157)" }}>für </span>
               <span style={{ color: "rgb(5,150,105)" }}>Brauereien</span>

@@ -1,3 +1,7 @@
+"use client";
+
+import { useRef, useEffect, useState } from "react";
+
 const PRICING_PACKAGES = [
   {
     icon: "🍺",
@@ -50,8 +54,22 @@ const PRICING_PACKAGES = [
 ];
 
 export function PricingBoxes() {
+  const sectionRef = useRef<HTMLElement>(null);
+  const [inView, setInView] = useState(false);
+
+  useEffect(() => {
+    const el = sectionRef.current;
+    if (!el) return;
+    const observer = new IntersectionObserver(
+      ([entry]) => setInView(entry.isIntersecting),
+      { threshold: 0.1, rootMargin: "50px 0px 0px 0px" }
+    );
+    observer.observe(el);
+    return () => observer.disconnect();
+  }, []);
+
   return (
-    <section className="mt-10 overflow-hidden">
+    <section ref={sectionRef} className={`mt-10 overflow-hidden ${inView ? "pricing-in-view" : ""}`}>
       <div className="mb-8 flex flex-col items-center gap-4 text-center">
         <span className="pricing-section-badge section4-badge-pulse inline-flex items-center gap-2 rounded-full border border-emerald-400/30 bg-emerald-400/10 px-4 py-1.5 text-sm font-medium text-emerald-300 pricing-slide-in">
           <span aria-hidden>✦</span>

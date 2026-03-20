@@ -75,14 +75,7 @@ export function ZoomSection3() {
             href="#contact"
             className="section3-cta-link pointer-events-auto relative inline-block transition-all duration-300 hover:scale-105"
           >
-            <span
-              className="section3-bereit-glow relative z-10"
-              style={{
-                fontFamily: "var(--font-austera)",
-                fontStyle: "italic",
-                fontWeight: 300,
-              }}
-            >
+            <span className="font-austera-green-fade section3-bereit-glow relative z-10">
               bereit
             </span>
           </a>

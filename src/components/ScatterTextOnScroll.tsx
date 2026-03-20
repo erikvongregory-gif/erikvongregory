@@ -165,13 +165,7 @@ export function ScatterTextOnScroll({
                     {word}
                   </span>
                 ) : isItalic ? (
-                  <span
-                    className="font-light italic"
-                    style={{
-                      fontFamily: "var(--font-austera)",
-                      textShadow: "0 0 8px rgba(34, 197, 94, 0.3), 0 0 16px rgba(34, 197, 94, 0.15)",
-                    }}
-                  >
+                  <span className="font-light italic font-austera-green-fade">
                     {word}
                   </span>
                 ) : (

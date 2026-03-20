@@ -51,10 +51,7 @@ export function LoadingScreen() {
         }}
       >
         Erik{" "}
-        <span
-          className="font-light italic"
-          style={{ fontFamily: "var(--font-austera)" }}
-        >
+        <span className="font-light italic font-austera-green-fade">
           von Gregory
         </span>
       </p>

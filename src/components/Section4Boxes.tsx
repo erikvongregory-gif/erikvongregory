@@ -156,13 +156,7 @@ export function Section4Boxes() {
       >
         <h2 className="mb-6 text-center text-xl font-bold tracking-tight text-white drop-shadow-[0_2px_12px_rgba(0,0,0,0.3)] sm:mb-8 sm:text-3xl md:text-4xl">
           Meine 5{" "}
-          <span
-            className="font-light italic"
-            style={{
-              fontFamily: "var(--font-austera)",
-              textShadow: "0 0 20px rgba(34, 197, 94, 0.5), 0 0 40px rgba(34, 197, 94, 0.25)",
-            }}
-          >
+          <span className="font-light italic font-austera-green-fade">
             Lösungen
           </span>
         </h2>
