@@ -110,7 +110,7 @@ export function MobileLayout() {
                 </span>
               ))}
             </div>
-            <div className="block -mt-2 text-5xl font-light italic" style={{ fontFamily: "var(--font-austera)" }}>
+            <div className="block -mt-2 text-4xl font-light italic" style={{ fontFamily: "var(--font-austera)" }}>
               {(() => {
                 const len = "speziell für Brauereien".length;
                 const lerp = (c1: string, c2: string, t: number) => {
