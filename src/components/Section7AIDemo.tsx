@@ -3,10 +3,16 @@
 import Image from "next/image";
 import { useRef, useEffect, useState } from "react";
 
+const KI_BEISPIELE = [
+  { src: "/ki-beispiel-1.svg", alt: "KI-Werbebild Beispiel 1 – Lünebräu" },
+  { src: "/ki-beispiel-2.svg", alt: "KI-Werbebild Beispiel 2 – Lünebräu" },
+  { src: "/ki-beispiel-3.svg", alt: "KI-Werbebild Beispiel 3 – Lünebräu" },
+  { src: "/ki-beispiel-4.svg", alt: "KI-Werbebild Beispiel 4 – Lünebräu" },
+];
+
 export function Section7AIDemo() {
-  const [isUnlocking, setIsUnlocking] = useState(false);
-  const [isUnlocked, setIsUnlocked] = useState(false);
   const [fadeIn, setFadeIn] = useState(0);
+  const [lightboxIndex, setLightboxIndex] = useState<number | null>(null);
   const sectionRef = useRef<HTMLElement>(null);
 
   useEffect(() => {
@@ -18,11 +24,6 @@ export function Section7AIDemo() {
         if (!e) return;
         const ratio = Math.min(1, Math.max(0, (e.intersectionRatio - 0.15) / 0.5));
         setFadeIn(ratio);
-        // Beim We scrollen weg: wieder sperren
-        if (e.intersectionRatio < 0.1) {
-          setIsUnlocked(false);
-          setIsUnlocking(false);
-        }
       },
       { threshold: [0, 0.05, 0.1, 0.15, 0.3, 0.5, 0.7, 1], rootMargin: "0px" }
     );
@@ -30,14 +31,16 @@ export function Section7AIDemo() {
     return () => obs.disconnect();
   }, []);
 
-  const handleUnlock = () => {
-    if (isUnlocked || isUnlocking) return;
-    setIsUnlocking(true);
-    setTimeout(() => {
-      setIsUnlocked(true);
-      setIsUnlocking(false);
-    }, 550);
-  };
+  useEffect(() => {
+    const onKey = (e: KeyboardEvent) => {
+      if (lightboxIndex === null) return;
+      if (e.key === "Escape") setLightboxIndex(null);
+      if (e.key === "ArrowLeft") setLightboxIndex((i) => (i === null ? null : (i - 1 + KI_BEISPIELE.length) % KI_BEISPIELE.length));
+      if (e.key === "ArrowRight") setLightboxIndex((i) => (i === null ? null : (i + 1) % KI_BEISPIELE.length));
+    };
+    window.addEventListener("keydown", onKey);
+    return () => window.removeEventListener("keydown", onKey);
+  }, [lightboxIndex]);
 
   return (
     <section
@@ -57,92 +60,102 @@ export function Section7AIDemo() {
             KI-Demo
           </span>
           <h2 className="mt-4 text-2xl font-bold tracking-tight text-white drop-shadow-md sm:text-3xl md:text-4xl">
-            Erkennst du{" "}
+            Echte Beispiele{" "}
             <span className="font-light italic font-austera-green-fade">
-              den Unterschied
+              aus der Praxis
             </span>
-            ?
           </h2>
           <p className="mx-auto mt-3 max-w-2xl text-base leading-relaxed text-white/90 sm:text-lg">
-            Dieses Werbebild – früher hätte ein Grafikdesigner Stunden bis Tage dafür gebraucht.
-            Heute entsteht so etwas mit KI in Minuten – und ist dadurch deutlich günstiger.
+            Produktvisualisierungen und Werbebilder wie diese – mit KI in Minuten erstellt statt in Tagen.
+            Klicke dich durch die Beispiele und überzeuge dich selbst von der Qualität.
           </p>
         </div>
 
         <div className="section2-card overflow-hidden rounded-2xl border border-white/15 p-4 sm:p-6">
-          <button
-            type="button"
-            onClick={handleUnlock}
-            disabled={isUnlocked}
-            className={`group relative block w-full ${!isUnlocked ? "cursor-pointer" : "cursor-default"}`}
-            aria-expanded={isUnlocked}
-            aria-label={isUnlocked ? "Bild angezeigt" : "Klicken zum Entsperren und Anzeigen des Bildes"}
-          >
-            <div
-              className={`relative aspect-[4/3] w-full overflow-hidden rounded-xl sm:aspect-video transition-[filter] duration-500 ease-out ${
-                isUnlocked ? "blur-0" : "blur-xl"
-              }`}
-            >
-              <Image
-                src="/ai-beispiel-sunburst.png"
-                alt="KI-generiertes Werbebild: SUNBURST CITRUS Saft – Beispiel für professionelle Marketing-Grafik"
-                fill
-                className="object-contain"
-                sizes="(max-width: 768px) 100vw, 896px"
-              />
-            </div>
-
-            {(!isUnlocked || isUnlocking) && (
-              <div
-                className={`absolute inset-0 flex flex-col items-center justify-center rounded-xl bg-black/40 transition-opacity duration-300 ${
-                  isUnlocking ? "section7-lock-overlay-exit" : "group-hover:bg-black/30"
-                }`}
-                aria-hidden
+          <div className="grid grid-cols-2 gap-3 sm:gap-4">
+            {KI_BEISPIELE.map((img, i) => (
+              <button
+                key={img.src}
+                type="button"
+                onClick={() => setLightboxIndex(i)}
+                className="group relative aspect-[4/3] overflow-hidden rounded-xl border border-white/10 bg-black/30 transition-all duration-200 hover:border-emerald-400/40 hover:scale-[1.02] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-emerald-400 focus-visible:ring-offset-2 focus-visible:ring-offset-[#0a0f14]"
+                aria-label={`${img.alt} – zum Vergrößern klicken`}
               >
-                {isUnlocking && (
-                  <div className="section7-green-burst absolute inset-0 rounded-xl" aria-hidden />
-                )}
-                <div
-                  className={`relative flex h-16 w-16 items-center justify-center rounded-full border-2 ${
-                    isUnlocking
-                      ? "section7-lock-open border-emerald-400/60 bg-emerald-500/20"
-                      : "border-red-500/70 bg-red-500/15 transition-transform duration-300 group-hover:scale-110"
-                  }`}
-                >
-                  <svg
-                    className={`h-8 w-8 ${
-                      isUnlocking ? "text-emerald-400" : "text-red-400"
-                    } ${isUnlocking ? "" : "transition-transform duration-300 group-hover:scale-110"}`}
-                    viewBox="0 0 24 24"
-                    fill="none"
-                    stroke="currentColor"
-                    strokeWidth="2"
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    aria-hidden
-                  >
-                    <rect x="3" y="11" width="18" height="11" rx="2" ry="2" />
-                    <path d="M7 11V7a5 5 0 0 1 10 0v4" />
-                  </svg>
-                </div>
-                <p className="relative mt-4 text-sm font-medium text-white/95">
-                  {isUnlocking ? "Entsperrt …" : "Klicken zum Entsperren"}
-                </p>
-              </div>
-            )}
-          </button>
+                <Image
+                  src={img.src}
+                  alt={img.alt}
+                  fill
+                  className="object-contain transition-transform duration-300 group-hover:scale-105"
+                  sizes="(max-width: 640px) 50vw, 400px"
+                />
+                <div className="absolute inset-0 bg-black/0 transition-colors group-hover:bg-black/10" aria-hidden />
+              </button>
+            ))}
+          </div>
 
           <p className="mt-4 text-center text-sm text-white/70 sm:mt-6 sm:text-base">
-            {isUnlocked
-              ? "Könntest du erkennen, dass das durch KI erstellt wurde?"
-              : "Klicke auf das Schloss, um das Bild anzuzeigen."}
+            Bild anklicken zum Vergrößern – Pfeiltasten zum Durchblättern.
           </p>
         </div>
 
         <p className="mt-6 text-center text-base font-medium text-white/90 sm:text-lg">
-          Moderne KI macht professionelles Marketing für Brauereien und Gastronomie zugänglich – schnell, günstig, überzeugend.
+          So kann auch deine Brauerei mit professionellen Bildern und Werbematerial überzeugen – schnell, günstig und ohne Grafikdesigner.
         </p>
       </div>
+
+      {/* Lightbox */}
+      {lightboxIndex !== null && (
+        <div
+          className="fixed inset-0 z-[9999] flex items-center justify-center bg-black/90 p-4"
+          role="dialog"
+          aria-modal="true"
+          aria-label="Bild vergrößert anzeigen"
+        >
+          <button
+            type="button"
+            onClick={() => setLightboxIndex(null)}
+            className="absolute right-4 top-4 rounded-full bg-white/10 p-2 text-white transition hover:bg-white/20 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white"
+            aria-label="Schließen"
+          >
+            <svg className="h-6 w-6" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+              <path d="M18 6L6 18M6 6l12 12" />
+            </svg>
+          </button>
+          <button
+            type="button"
+            onClick={() => setLightboxIndex((i) => (i! - 1 + KI_BEISPIELE.length) % KI_BEISPIELE.length)}
+            className="absolute left-2 top-1/2 -translate-y-1/2 rounded-full bg-white/10 p-2 text-white transition hover:bg-white/20 sm:left-4 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white"
+            aria-label="Vorheriges Bild"
+          >
+            <svg className="h-8 w-8" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+              <path d="M15 18l-6-6 6-6" />
+            </svg>
+          </button>
+          <button
+            type="button"
+            onClick={() => setLightboxIndex((i) => (i! + 1) % KI_BEISPIELE.length)}
+            className="absolute right-2 top-1/2 -translate-y-1/2 rounded-full bg-white/10 p-2 text-white transition hover:bg-white/20 sm:right-4 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white"
+            aria-label="Nächstes Bild"
+          >
+            <svg className="h-8 w-8" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+              <path d="M9 18l6-6-6-6" />
+            </svg>
+          </button>
+          <div className="relative h-full max-h-[85vh] w-full max-w-4xl" onClick={() => setLightboxIndex(null)}>
+            <Image
+              src={KI_BEISPIELE[lightboxIndex].src}
+              alt={KI_BEISPIELE[lightboxIndex].alt}
+              fill
+              className="object-contain"
+              sizes="100vw"
+              onClick={(e) => e.stopPropagation()}
+            />
+          </div>
+          <p className="absolute bottom-4 left-1/2 -translate-x-1/2 text-sm text-white/70">
+            {lightboxIndex + 1} / {KI_BEISPIELE.length}
+          </p>
+        </div>
+      )}
     </section>
   );
 }
