@@ -42,6 +42,7 @@ export function LoadingScreen() {
       <p
         className="loading-name-text-shimmer animate-loading-shimmer-text text-2xl font-bold tracking-tight sm:text-3xl"
         style={{
+          fontFamily: "var(--font-main)",
           background: "linear-gradient(90deg, #ffffff 0%, #ffffff 25%, #a7f3d0 50%, #ffffff 75%, #ffffff 100%)",
           backgroundSize: "200% 100%",
           WebkitBackgroundClip: "text",
@@ -50,10 +51,7 @@ export function LoadingScreen() {
           textShadow: "0 0 20px rgba(34, 197, 94, 0.5), 0 0 40px rgba(34, 197, 94, 0.25)",
         }}
       >
-        Erik{" "}
-        <span className="font-light italic font-austera-green-fade">
-          von Gregory
-        </span>
+        Erik von Gregory
       </p>
       <div className="loading-spinner h-1 w-24 overflow-hidden rounded-full bg-neutral-800">
         <div className="loading-spinner-bar h-full w-0 rounded-full bg-emerald-500" />
