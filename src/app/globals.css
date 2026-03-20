@@ -1,40 +1,10 @@
 @import "tailwindcss";
 
-/* News Gothic SH Light – Hauptschrift (Font-Datei in public/fonts/ ablegen) */
-@font-face {
-  font-family: "News Gothic SH Light";
-  font-style: normal;
-  font-weight: 300;
-  font-display: swap;
-  src: url("/fonts/NewsGothicSH-Light.woff2") format("woff2"),
-       url("/fonts/NewsGothicSH-Light.woff") format("woff");
-}
-
-/* Kudryashev Italic Regular – Akzent-Schrift (Font-Datei in public/fonts/ ablegen) */
-@font-face {
-  font-family: "Kudryashev Italic";
-  font-style: italic;
-  font-weight: 400;
-  font-display: swap;
-  src: url("/fonts/Kudryashev-Italic-Regular.woff2") format("woff2"),
-       url("/fonts/Kudryashev-Italic-Regular.woff") format("woff");
-}
-
-/* Almarena Display Regular – Font-Datei in public/fonts/ ablegen */
-@font-face {
-  font-family: "Almarena Display";
-  font-style: normal;
-  font-weight: 400;
-  font-display: swap;
-  src: url("/fonts/AlmarenaDisplay-Regular.woff2") format("woff2"),
-       url("/fonts/AlmarenaDisplay-Regular.woff") format("woff");
-}
-
 :root {
   --akq-green: #14532d;
-  --font-main: "News Gothic SH Light", system-ui, sans-serif;
-  --font-austera: "Kudryashev Italic", serif;
-  --font-almarena: "Almarena Display", sans-serif;
+  --font-main: var(--font-work-sans), "Work Sans", system-ui, sans-serif;
+  --font-austera: var(--font-cormorant), "Cormorant Garamond", Georgia, serif;
+  --font-almarena: var(--font-work-sans), "Work Sans", system-ui, sans-serif;
   --akq-green-hover: #166534;
   --akq-green-light: #dcfce7;
 }
@@ -43,6 +13,13 @@ html {
   scroll-behavior: smooth;
   -webkit-overflow-scrolling: touch;
   background: #0a0f14;
+}
+
+/* Desktop: Native Scroll – kein smooth, verhindert Buckling */
+@media (hover: hover) {
+  html {
+    scroll-behavior: auto;
+  }
 }
 
 @media (max-width: 768px) {

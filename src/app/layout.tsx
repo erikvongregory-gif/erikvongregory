@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import { Work_Sans, Cormorant_Garamond } from "next/font/google";
 import Script from "next/script";
 import { ScrollHeader } from "@/components/ScrollHeader";
 import { CookieBanner } from "@/components/CookieBanner";
@@ -9,6 +10,18 @@ import { LoadingProvider } from "@/context/LoadingContext";
 import { JsonLd } from "@/components/JsonLd";
 import { SITE } from "@/lib/siteConfig";
 import "./globals.css";
+
+const workSans = Work_Sans({
+  subsets: ["latin"],
+  weight: ["300", "400", "500", "600", "700"],
+  variable: "--font-work-sans",
+});
+const cormorant = Cormorant_Garamond({
+  subsets: ["latin"],
+  weight: ["400"],
+  style: ["italic"],
+  variable: "--font-cormorant",
+});
 
 export const viewport = {
   width: "device-width",
@@ -61,7 +74,7 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="de" className="scroll-smooth">
+    <html lang="de">
       <head>
         <link rel="preload" href="/hero-portrait.svg" as="image" />
       </head>
@@ -72,7 +85,7 @@ export default function RootLayout({
           __html: `if('scrollRestoration'in history)history.scrollRestoration='manual';window.scrollTo(0,0);`,
         }}
       />
-      <body className="overflow-x-hidden bg-[#0a0f14] text-neutral-900 antialiased">
+      <body className={`${workSans.variable} ${cormorant.variable} overflow-x-hidden bg-[#0a0f14] text-neutral-900 antialiased`}>
         <JsonLd />
         <LoadingProvider>
         <a

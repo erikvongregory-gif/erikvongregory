@@ -9,17 +9,29 @@ import { launch } from "puppeteer";
 import { createServer } from "http";
 import { readFileSync } from "fs";
 import { fileURLToPath } from "url";
-import { dirname, join } from "path";
+import { dirname, join, resolve, sep } from "path";
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
 const projectRoot = join(__dirname, "..");
-const publicDir = join(projectRoot, "public");
-const pdfPath = join(projectRoot, "public", "ebook", "ki-fuer-brauereien.pdf");
+const publicDir = resolve(projectRoot, "public");
+const pdfPath = join(publicDir, "ebook", "ki-fuer-brauereien.pdf");
 
 // Minimaler HTTP-Server damit Fonts/Styles laden
 const server = createServer((req, res) => {
   const path = req.url === "/" ? "/ebook/ki-fuer-brauereien.html" : req.url;
-  const file = join(publicDir, path.replace(/^\//, "").replace(/\?.*$/, ""));
+  const relativePath = path.replace(/^\//, "").replace(/\?.*$/, "");
+  if (relativePath.includes("..")) {
+    res.statusCode = 403;
+    res.end("Forbidden");
+    return;
+  }
+  const file = resolve(publicDir, relativePath);
+  const publicResolved = resolve(publicDir);
+  if (!file.startsWith(publicResolved + sep) && file !== publicResolved) {
+    res.statusCode = 403;
+    res.end("Forbidden");
+    return;
+  }
   try {
     const data = readFileSync(file);
     const ext = file.split(".").pop();
