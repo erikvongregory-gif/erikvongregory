@@ -72,6 +72,13 @@ export default function RootLayout({
           __html: `if('scrollRestoration'in history)history.scrollRestoration='manual';window.scrollTo(0,0);`,
         }}
       />
+      <Script
+        id="chunk-load-error-handler"
+        strategy="afterInteractive"
+        dangerouslySetInnerHTML={{
+          __html: `(function(){function isChunkError(e){var m=e&&(e.message||e.reason&&e.reason.message||'');return /Loading chunk|ChunkLoadError|Failed to load chunk|Loading CSS chunk/i.test(m)||(m&&m.indexOf('_next/static')!==-1);}function tryReload(){if(!sessionStorage.getItem('chunkReload')){sessionStorage.setItem('chunkReload','1');location.reload();}}window.addEventListener('error',function(ev){if(isChunkError(ev)){ev.preventDefault();tryReload();}},true);window.addEventListener('unhandledrejection',function(ev){if(isChunkError(ev.reason)){ev.preventDefault();tryReload();}});setTimeout(function(){sessionStorage.removeItem('chunkReload');},3000);})();`,
+        }}
+      />
       <body className="overflow-x-hidden bg-[#0a0f14] text-neutral-900 antialiased">
         <JsonLd />
         <LoadingProvider>
