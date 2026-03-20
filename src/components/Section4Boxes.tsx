@@ -184,11 +184,10 @@ export function Section4Boxes() {
                 opacity: boxProg,
                 transform:
                   hasHover && hoveredIndex === i
-                    ? `translateY(${slideUp}px) scale(1.08)`
-                    : hasHover && hoveredIndex !== null
-                      ? `translateY(${slideUp}px) scale(0.92)`
-                      : `translateY(${slideUp}px)`,
-                transition: "transform 0.2s cubic-bezier(0.33, 1, 0.68, 1), opacity 0.2s cubic-bezier(0.33, 1, 0.68, 1)",
+                    ? `translateY(${slideUp}px) scale(1.03)`
+                    : `translateY(${slideUp}px)`,
+                transformOrigin: "center center",
+                transition: "transform 0.25s cubic-bezier(0.22, 1, 0.36, 1), opacity 0.2s cubic-bezier(0.33, 1, 0.68, 1)",
               }}
               onMouseEnter={() => setHoveredIndex(i)}
               onMouseLeave={() => setHoveredIndex(null)}

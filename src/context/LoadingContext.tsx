@@ -28,8 +28,7 @@ export function LoadingProvider({ children }: { children: React.ReactNode }) {
 
   const setCookieConsentGiven = useCallback(() => setCookieConsentGivenState(true), []);
 
-  /* Hero zeigt sich, sobald Lade-Screen fertig ist (unabhängig von Cookie-Consent) */
-  const heroReady = isLoadComplete;
+  const heroReady = isLoadComplete && cookieConsentGiven;
 
   return (
     <LoadingContext.Provider
