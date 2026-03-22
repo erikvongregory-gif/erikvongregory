@@ -27,7 +27,7 @@ export function DesktopSection4() {
     setFlippedIndex((prev: number | null) => (prev === index ? null : index));
   };
 
-  const iconClass = "w-6 h-6 shrink-0";
+  const iconClass = "w-7 h-7 shrink-0";
   const items: Array<{ icon: React.ReactNode; title: string; text: string; iconType: string }> = [
     {
       iconType: "camera",
@@ -96,7 +96,7 @@ export function DesktopSection4() {
             Lösungen
           </span>
         </h2>
-        <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 sm:gap-5 lg:grid-cols-5 auto-rows-fr px-3 py-4 overflow-visible sm:px-4 sm:py-6">
+        <div className="grid grid-cols-1 gap-5 sm:grid-cols-2 sm:gap-6 lg:grid-cols-5 auto-rows-fr px-3 py-4 overflow-visible sm:px-4 sm:py-6">
           {items.map((item, i) => {
             const isFlipped = flippedIndex === i;
             return (
@@ -107,7 +107,7 @@ export function DesktopSection4() {
                 onClick={() => handleCardInteraction(i)}
                 onKeyDown={(e) => e.key === "Enter" && handleCardInteraction(i)}
                 aria-pressed={isFlipped}
-                className={`flip-card text-neutral-900 min-h-[300px] sm:min-h-[340px] lg:min-h-[380px] transition-transform duration-200 ${isFlipped ? "flip-card-flipped" : ""} ${
+                className={`flip-card text-neutral-900 min-h-[340px] sm:min-h-[400px] lg:min-h-[460px] transition-transform duration-200 ${isFlipped ? "flip-card-flipped" : ""} ${
                   hasHover && hoveredIndex === i ? "scale-[1.08]" : hasHover && hoveredIndex !== null ? "scale-[0.92]" : ""
                 }`}
                 onMouseEnter={() => setHoveredIndex(i)}
@@ -129,8 +129,8 @@ export function DesktopSection4() {
                   <div className="flip-card-back">
                     <div className="flip-card-back-content">
                       <div className={`flip-card-icon-wrap mb-4 icon-anim icon-anim-${item.iconType}`} data-icon={item.iconType}>{item.icon}</div>
-                      <h3 className="text-sm font-semibold tracking-tight text-neutral-900 sm:text-base">{item.title}</h3>
-                      <p className="mt-2 text-sm leading-relaxed text-neutral-700">{item.text}</p>
+                      <h3 className="text-base font-semibold tracking-tight text-neutral-900 sm:text-lg">{item.title}</h3>
+                      <p className="mt-2 text-sm leading-relaxed text-neutral-700 sm:text-base">{item.text}</p>
                     </div>
                   </div>
                 </div>

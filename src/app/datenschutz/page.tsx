@@ -6,7 +6,7 @@ import { SITE } from "@/lib/siteConfig";
 export const metadata: Metadata = {
   title: "Datenschutzerklärung",
   description:
-    "Datenschutzerklärung – Erik von Gregory, KI für Brauereien & Gastronomie. Informationen zur Verarbeitung personenbezogener Daten und Cookies.",
+    "Datenschutzerklärung – EvGlabs, KI für Brauereien & Gastronomie. Informationen zur Verarbeitung personenbezogener Daten und Cookies.",
   alternates: { canonical: `${SITE.baseUrl}/datenschutz` },
   robots: { index: true, follow: true },
 };
@@ -101,6 +101,26 @@ export default function DatenschutzPage() {
               der Hosting-Partner gespeichert. Das Hosting erfolgt ausschließlich in der
               Europäischen Union bzw. im Europäischen Wirtschaftsraum.
             </p>
+
+            <h3 className="mb-2 mt-5 text-base font-medium text-white">
+              Externe Schriftarten (Google Fonts)
+            </h3>
+            <p className="text-white/90">
+              Diese Seite lädt Schriftarten von Google Fonts (fonts.googleapis.com). Beim Aufruf
+              einer Seite wird eine Verbindung zu Servern von Google hergestellt. Dabei kann
+              Google Ihre IP-Adresse erfassen. Weitere Informationen finden Sie in der
+              Datenschutzerklärung von Google:{" "}
+              <a
+                href="https://policies.google.com/privacy"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="text-emerald-400 underline decoration-emerald-400/50 underline-offset-2 transition-colors hover:text-emerald-300"
+              >
+                policies.google.com/privacy
+              </a>
+              . <strong>Rechtsgrundlage:</strong> Art. 6 Abs. 1 lit. f DSGVO (berechtigtes
+              Interesse an einer einheitlichen Darstellung der Schriftarten).
+            </p>
           </section>
 
           <section>
@@ -125,9 +145,39 @@ export default function DatenschutzPage() {
           </section>
 
           <section>
-            <h2 className="mb-3 text-lg font-semibold text-white">5. Kontaktaufnahme per E-Mail</h2>
+            <h2 className="mb-3 text-lg font-semibold text-white">5. Kontaktformular</h2>
             <p className="text-white/90">
-              Wenn Sie uns per E-Mail kontaktieren, werden Ihre Angaben (E-Mail-Adresse,
+              Über das Kontaktformular auf dieser Website können Sie uns eine Nachricht senden.
+              Dabei werden folgende Angaben erhoben: Name, E-Mail-Adresse und optional Ihre
+              Nachricht. Die Daten werden über den Dienst FormSubmit (FormSubmit.co) an uns
+              übermittelt und anschließend per E-Mail an uns weitergeleitet.
+            </p>
+            <p className="mt-3 text-white/90">
+              <strong>Rechtsgrundlage:</strong> Art. 6 Abs. 1 lit. b DSGVO (Vertragsanbahnung
+              bzw. Vertragserfüllung) oder Art. 6 Abs. 1 lit. f DSGVO (berechtigtes Interesse an
+              der Bearbeitung Ihrer Anfrage).
+            </p>
+            <p className="mt-3 text-white/90">
+              Die Daten werden gelöscht, sobald sie für die Erreichung des Zweckes ihrer
+              Erhebung nicht mehr erforderlich sind und keine gesetzlichen Aufbewahrungspflichten
+              entgegenstehen. Weitere Informationen zum Datenschutz bei FormSubmit finden Sie
+              unter{" "}
+              <a
+                href="https://formsubmit.co/privacy"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="text-emerald-400 underline decoration-emerald-400/50 underline-offset-2 transition-colors hover:text-emerald-300"
+              >
+                formsubmit.co/privacy
+              </a>
+              .
+            </p>
+          </section>
+
+          <section>
+            <h2 className="mb-3 text-lg font-semibold text-white">6. Kontaktaufnahme per E-Mail</h2>
+            <p className="text-white/90">
+              Wenn Sie uns direkt per E-Mail kontaktieren, werden Ihre Angaben (E-Mail-Adresse,
               Nachrichtentext, ggf. Name) zum Zwecke der Bearbeitung Ihrer Anfrage bei uns
               gespeichert.
             </p>
@@ -144,7 +194,7 @@ export default function DatenschutzPage() {
           </section>
 
           <section>
-            <h2 className="mb-3 text-lg font-semibold text-white">6. Ihre Rechte</h2>
+            <h2 className="mb-3 text-lg font-semibold text-white">7. Ihre Rechte</h2>
             <p className="text-white/90">
               Sie haben gegenüber uns folgende Rechte hinsichtlich der Sie betreffenden
               personenbezogenen Daten:
@@ -192,7 +242,7 @@ export default function DatenschutzPage() {
           </section>
 
           <section>
-            <h2 className="mb-3 text-lg font-semibold text-white">7. SSL- bzw. TLS-Verschlüsselung</h2>
+            <h2 className="mb-3 text-lg font-semibold text-white">8. SSL- bzw. TLS-Verschlüsselung</h2>
             <p className="text-white/90">
               Diese Seite nutzt aus Sicherheitsgründen und zum Schutz der Übertragung
               vertraulicher Inhalte (z. B. Anfragen, die Sie an uns senden) eine SSL- bzw.
@@ -203,7 +253,7 @@ export default function DatenschutzPage() {
           </section>
 
           <section>
-            <h2 className="mb-3 text-lg font-semibold text-white">8. Änderungen dieser Datenschutzerklärung</h2>
+            <h2 className="mb-3 text-lg font-semibold text-white">9. Änderungen dieser Datenschutzerklärung</h2>
             <p className="text-white/90">
               Wir behalten uns vor, diese Datenschutzerklärung anzupassen, um sie an geänderte
               Rechtslagen oder bei Änderungen des Dienstes sowie der Datenverarbeitung

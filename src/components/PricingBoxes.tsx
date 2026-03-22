@@ -84,7 +84,7 @@ export function PricingBoxes() {
         {PRICING_PACKAGES.map((pkg, index) => (
           <article
             key={pkg.name}
-            className={`pricing-card pricing-card-slide-${index} relative flex h-full flex-col rounded-2xl border border-white/15 bg-[#0b1620]/80 p-5 shadow-[0_12px_40px_rgba(0,0,0,0.35)] backdrop-blur-sm`}
+            className={`pricing-card pricing-card-slide-${index} relative flex h-full flex-col rounded-2xl border border-white/15 bg-[#0b1620]/80 p-5 shadow-[0_12px_40px_rgba(0,0,0,0.35),0_0_40px_rgba(224,122,64,0.12)] backdrop-blur-sm`}
           >
             <span className="pricing-sale-badge absolute right-3 top-3 rounded-full border border-red-400/50 bg-red-500/20 px-2.5 py-1 text-[11px] font-semibold tracking-wide text-red-300">
               SALE

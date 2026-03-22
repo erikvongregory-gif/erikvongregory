@@ -10,7 +10,7 @@ export function DesktopHero() {
       <div className="relative z-10 mx-auto flex w-full max-w-6xl flex-1 flex-col items-start justify-center gap-6 px-2 sm:gap-8 sm:px-4 lg:ml-8 lg:mr-auto">
         <div className="w-full max-w-2xl text-left">
           {/* Headline: Wie Referenz – bold Sans + light Serif italic */}
-          <h1 className="block leading-tight tracking-tight" style={{ fontFamily: "'Montserrat', sans-serif" }}>
+          <h1 className="section1-fade section1-fade-0 block leading-tight tracking-tight" style={{ fontFamily: "'Montserrat', sans-serif" }}>
             <span className="block whitespace-nowrap text-3xl font-semibold text-neutral-900 sm:text-4xl md:text-5xl lg:text-[3rem] xl:text-[3.5rem]">
               die erste{" "}KI‑Marketinglösung
             </span>
@@ -23,7 +23,7 @@ export function DesktopHero() {
           </h1>
 
           {/* Absätze wie im Beispiel – mehrere Blöcke mit Abstand */}
-          <div className="mt-8 max-w-xl space-y-5" style={{ fontFamily: "'Montserrat', sans-serif" }}>
+          <div className="section1-fade section1-fade-1 mt-8 max-w-xl space-y-5" style={{ fontFamily: "'Montserrat', sans-serif" }}>
             <p className="text-base leading-[1.7] text-neutral-600 sm:text-lg lg:text-xl">
               Nutze moderne KI, um deine Brauerei digital sichtbar zu machen.
             </p>
@@ -33,7 +33,7 @@ export function DesktopHero() {
           </div>
 
           {/* CTAs: Schwarzer Primary-Button + Secondary mit Play */}
-          <div className="mt-8 flex flex-wrap items-center gap-4">
+          <div className="section1-fade section1-fade-2 mt-8 flex flex-wrap items-center gap-4">
             <a
               href="#contact"
               className="inline-flex items-center justify-center rounded-full bg-neutral-900 px-6 py-2.5 text-sm font-semibold text-white shadow-lg shadow-neutral-900/20 transition-all hover:bg-neutral-800 hover:shadow-xl focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-neutral-900 focus-visible:ring-offset-2"
@@ -56,7 +56,7 @@ export function DesktopHero() {
           </div>
 
           {/* Trust-Bar: KI-Produktfotos, Werbevideos, Social Media, Automatisiert mit Icons */}
-          <div className="hero-trust-pills mt-12 flex flex-wrap items-center gap-3">
+          <div className="section1-fade section1-fade-3 hero-trust-pills mt-12 flex flex-wrap items-center gap-3">
             {[
               {
                 label: "KI-Produktfotos",

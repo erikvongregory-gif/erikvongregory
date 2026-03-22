@@ -82,7 +82,7 @@ export function MobileLayout() {
           <div className="mb-3 flex shrink-0 justify-center -mt-2">
             <Image
               src="/hero-portrait.svg"
-              alt="Erik von Gregory"
+              alt="EvGlabs"
               width={219}
               height={320}
               priority
@@ -228,51 +228,51 @@ export function MobileLayout() {
               Lösungen
             </span>
           </h2>
-          <div className="mx-auto max-w-2xl space-y-3">
+          <div className="mx-auto max-w-2xl space-y-4">
             {SECTION4_ITEMS.map((item, i) => (
               <div
                 key={item.title}
-                className="section4-mobile-card group flex items-start gap-4 rounded-xl border border-white/15 bg-white/5 px-4 py-4 transition-all duration-300 active:scale-[0.98]"
+                className="section4-mobile-card group flex items-start gap-5 rounded-xl border border-white/15 bg-white/5 px-5 py-5 transition-all duration-300 active:scale-[0.98]"
               >
                 <span
-                  className={`section4-icon-wrap flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-orange-500/15 text-orange-400 ring-1 ring-orange-400/20 transition-colors group-active:bg-orange-500/25 section4-icon-${item.icon}`}
+                  className={`section4-icon-wrap flex h-12 w-12 shrink-0 items-center justify-center rounded-xl bg-orange-500/15 text-orange-400 ring-1 ring-orange-400/20 transition-colors group-active:bg-orange-500/25 section4-icon-${item.icon}`}
                   aria-hidden
                 >
                   {item.icon === "camera" && (
-                    <svg className="h-5 w-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                    <svg className="h-6 w-6" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
                       <path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z" />
                       <circle cx="12" cy="13" r="4" />
                     </svg>
                   )}
                   {item.icon === "video" && (
-                    <svg className="h-5 w-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                    <svg className="h-6 w-6" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
                       <polygon points="23 7 16 12 23 17 23 7" />
                       <rect x="1" y="5" width="15" height="14" rx="2" ry="2" />
                     </svg>
                   )}
                   {item.icon === "chart" && (
-                    <svg className="h-5 w-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                    <svg className="h-6 w-6" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
                       <line x1="18" y1="20" x2="18" y2="10" />
                       <line x1="12" y1="20" x2="12" y2="4" />
                       <line x1="6" y1="20" x2="6" y2="14" />
                     </svg>
                   )}
                   {item.icon === "globe" && (
-                    <svg className="h-5 w-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                    <svg className="h-6 w-6" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
                       <circle cx="12" cy="12" r="10" />
                       <line x1="2" y1="12" x2="22" y2="12" />
                       <path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z" />
                     </svg>
                   )}
                   {item.icon === "sparkle" && (
-                    <svg className="h-5 w-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                    <svg className="h-6 w-6" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
                       <path d="m12 3-1.912 5.813a2 2 0 0 1-1.275 1.275L3 12l5.813 1.912a2 2 0 0 1 1.275 1.275L12 21l1.912-5.813a2 2 0 0 1 1.275-1.275L21 12l-5.813-1.912a2 2 0 0 1-1.275-1.275L12 3Z" />
                     </svg>
                   )}
                 </span>
                 <div className="min-w-0 flex-1 text-left">
-                  <h3 className="text-base font-semibold text-white">{item.title}</h3>
-                  <p className="mt-1 text-sm leading-relaxed text-white/80">{item.text}</p>
+                  <h3 className="text-lg font-semibold text-white">{item.title}</h3>
+                  <p className="mt-2 text-base leading-relaxed text-white/80">{item.text}</p>
                 </div>
                 <span className="mt-1 shrink-0 text-orange-400/60" aria-hidden>
                   <svg className="h-4 w-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">

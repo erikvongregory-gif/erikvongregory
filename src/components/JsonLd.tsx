@@ -61,7 +61,7 @@ export function JsonLd() {
     mainEntity: [
       {
         "@type": "Question",
-        name: "Was bietet Erik von Gregory für Brauereien?",
+        name: "Was bietet EvGlabs für Brauereien?",
         acceptedAnswer: {
           "@type": "Answer",
           text: "KI-gestützte Content-Systeme, Werbevideos, automatisiertes Marketing, KI-Produktfotos und moderne Websites für Brauereien, Gastronomen und Getränkehersteller.",

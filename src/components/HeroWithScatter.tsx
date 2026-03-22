@@ -149,7 +149,7 @@ export function HeroWithScatter() {
           >
             <Image
               src="/hero-portrait.svg"
-              alt="Erik von Gregory"
+              alt="EvGlabs"
               width={640}
               height={800}
               priority

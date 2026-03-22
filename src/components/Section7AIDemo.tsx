@@ -42,6 +42,17 @@ export function Section7AIDemo() {
     return () => window.removeEventListener("keydown", onKey);
   }, [lightboxIndex]);
 
+  /* Scroll sperren, solange Lightbox geöffnet */
+  useEffect(() => {
+    if (lightboxIndex !== null) {
+      const prev = document.body.style.overflow;
+      document.body.style.overflow = "hidden";
+      return () => {
+        document.body.style.overflow = prev;
+      };
+    }
+  }, [lightboxIndex]);
+
   return (
     <section
       id="section-7"

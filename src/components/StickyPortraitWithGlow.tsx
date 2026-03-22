@@ -31,8 +31,8 @@ export function StickyPortraitWithGlow() {
   }, []);
 
   return (
-    <div className="sticky-portrait-col relative z-20 hidden lg:block lg:sticky lg:top-20 lg:-mt-16 lg:self-start">
-      <div className="relative flex shrink-0 items-start justify-end">
+    <div className="sticky-portrait-col relative z-20 hidden lg:block lg:sticky lg:top-20 lg:self-start">
+      <div className="relative flex shrink-0 items-start justify-end lg:-translate-y-[180px]">
         {/* Glow: rotiert mit Scroll */}
         <div
           className="pointer-events-none absolute -inset-[40%] -z-10"
@@ -52,7 +52,7 @@ export function StickyPortraitWithGlow() {
         >
           <Image
             src="/hero-portrait.svg"
-            alt="Erik von Gregory"
+            alt="EvGlabs"
             width={640}
             height={800}
             priority
