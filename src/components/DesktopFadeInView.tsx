@@ -7,6 +7,8 @@ type DesktopFadeInViewProps = {
   className?: string;
   delay?: number;
   rootMargin?: string;
+  /** Bei true: sichtbar zurücksetzen wenn aus dem Viewport – Animation spielt beim erneuten Einblenden wieder */
+  resetOnExit?: boolean;
 };
 
 /** Blendet Kinder ein, sobald sie in den Viewport kommen (nur Desktop) */
@@ -15,6 +17,7 @@ export function DesktopFadeInView({
   className = "",
   delay = 0,
   rootMargin = "0px 0px -80px 0px",
+  resetOnExit = false,
 }: DesktopFadeInViewProps) {
   const ref = useRef<HTMLDivElement>(null);
   const [visible, setVisible] = useState(false);
@@ -35,8 +38,11 @@ export function DesktopFadeInView({
         if (entry.isIntersecting) {
           timeoutId = window.setTimeout(() => {
             setVisible(true);
-            obs.disconnect();
+            if (!resetOnExit) obs.disconnect();
           }, delay);
+        } else if (resetOnExit) {
+          if (timeoutId) clearTimeout(timeoutId);
+          setVisible(false);
         }
       },
       { threshold: 0.08, rootMargin }
@@ -46,7 +52,7 @@ export function DesktopFadeInView({
       obs.disconnect();
       if (timeoutId) clearTimeout(timeoutId);
     };
-  }, [delay, rootMargin]);
+  }, [delay, rootMargin, resetOnExit]);
 
   return (
     <div

@@ -79,7 +79,7 @@ export default function RootLayout({
           __html: `(function(){function isChunkError(e){var m=e&&(e.message||e.reason&&e.reason.message||'');return /Loading chunk|ChunkLoadError|Failed to load chunk|Loading CSS chunk/i.test(m)||(m&&m.indexOf('_next/static')!==-1);}function tryReload(){if(!sessionStorage.getItem('chunkReload')){sessionStorage.setItem('chunkReload','1');location.reload();}}window.addEventListener('error',function(ev){if(isChunkError(ev)){ev.preventDefault();tryReload();}},true);window.addEventListener('unhandledrejection',function(ev){if(isChunkError(ev.reason)){ev.preventDefault();tryReload();}});setTimeout(function(){sessionStorage.removeItem('chunkReload');},3000);})();`,
         }}
       />
-      <body className="overflow-x-hidden bg-[#0a0f14] text-neutral-900 antialiased">
+      <body className="bg-[#0a0f14] text-neutral-900 antialiased">
         <JsonLd />
         <LoadingProvider>
         <a
@@ -99,7 +99,7 @@ export default function RootLayout({
             <div className="grid gap-8 sm:gap-12 md:grid-cols-2 lg:grid-cols-4">
               <div>
                 <p className="font-bold text-white">Erik von Gregory</p>
-                <p className="mt-1 text-sm font-medium text-emerald-200/80">
+                <p className="mt-1 text-sm font-medium text-orange-200/90">
                   KI für Brauereien & Gastronomie
                 </p>
                 <p className="mt-4 text-sm leading-relaxed text-white/75">
@@ -113,7 +113,7 @@ export default function RootLayout({
                     href="https://www.linkedin.com/in/erik-freiherr-von-gregory-22852b329"
                     target="_blank"
                     rel="noopener noreferrer"
-                    className="text-sm text-white/70 transition-colors hover:text-emerald-400 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-emerald-400 focus-visible:ring-offset-2 focus-visible:ring-offset-transparent rounded"
+                    className="text-sm text-white/70 transition-colors hover:text-orange-400 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-orange-400 focus-visible:ring-offset-2 focus-visible:ring-offset-transparent rounded"
                   >
                     LinkedIn
                   </a>
@@ -126,7 +126,7 @@ export default function RootLayout({
                 </p>
                 <a
                   href="#contact"
-                  className="mt-3 inline-flex items-center gap-2 rounded-lg bg-[#14532d] px-4 py-2.5 text-sm font-medium text-white transition-all duration-200 hover:bg-[#166534] hover:scale-[1.02] active:scale-[0.98] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-emerald-400 focus-visible:ring-offset-2 focus-visible:ring-offset-[#05100d]"
+                  className="mt-3 inline-flex items-center gap-2 rounded-lg bg-[#c65a20] px-4 py-2.5 text-sm font-medium text-white transition-all duration-200 hover:bg-[#d46830] hover:scale-[1.02] active:scale-[0.98] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-orange-400 focus-visible:ring-offset-2 focus-visible:ring-offset-transparent rounded"
                 >
                   E-Mail schreiben
                 </a>
@@ -134,14 +134,14 @@ export default function RootLayout({
               <div>
                 <a
                   href="/impressum"
-                  className="text-sm text-white/70 transition-colors hover:text-emerald-400 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-emerald-400 focus-visible:ring-offset-2 focus-visible:ring-offset-transparent rounded"
+                  className="text-sm text-white/70 transition-colors hover:text-orange-400 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-orange-400 focus-visible:ring-offset-2 focus-visible:ring-offset-transparent rounded"
                 >
                   Impressum
                 </a>
                 <span className="mx-2 text-white/40">·</span>
                 <a
                   href="/datenschutz"
-                  className="text-sm text-white/70 transition-colors hover:text-emerald-400 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-emerald-400 focus-visible:ring-offset-2 focus-visible:ring-offset-transparent rounded"
+                  className="text-sm text-white/70 transition-colors hover:text-orange-400 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-orange-400 focus-visible:ring-offset-2 focus-visible:ring-offset-transparent rounded"
                 >
                   Datenschutz
                 </a>

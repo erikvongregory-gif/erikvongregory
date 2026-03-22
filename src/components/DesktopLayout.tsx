@@ -6,27 +6,35 @@ import { DesktopSection2 } from "@/components/DesktopSection2";
 import { DesktopSection3 } from "@/components/DesktopSection3";
 import { DesktopSection4 } from "@/components/DesktopSection4";
 import { DesktopFadeInView } from "@/components/DesktopFadeInView";
-import { Section6Clean } from "@/components/Section6Clean";
+import { StickyPortraitWithGlow } from "@/components/StickyPortraitWithGlow";
 
 export function DesktopLayout() {
   return (
-    <main id="main" className="relative min-h-screen overflow-x-hidden pt-14 sm:pt-16">
+    <main id="main" className="desktop-light-theme relative min-h-screen overflow-x-hidden pt-14 sm:pt-16">
       <LiquidBackground />
-      <DesktopFadeInView>
-        <DesktopHero />
-      </DesktopFadeInView>
-      <DesktopFadeInView>
-        <DesktopSection2 />
-      </DesktopFadeInView>
-      <DesktopFadeInView delay={100}>
-        <DesktopSection3 />
-      </DesktopFadeInView>
-      <DesktopFadeInView delay={150}>
-        <DesktopSection4 />
-      </DesktopFadeInView>
-      <DesktopFadeInView delay={100}>
-        <Section6Clean />
-      </DesktopFadeInView>
+      {/* Hero-Zeile: Content links, Portrait rechts (oben) */}
+      <div className="lg:grid lg:grid-cols-[1fr_minmax(320px,40%)] lg:gap-0">
+        <div className="min-w-0">
+          <DesktopFadeInView>
+            <DesktopHero />
+          </DesktopFadeInView>
+        </div>
+        <div className="relative hidden lg:block">
+          <StickyPortraitWithGlow />
+        </div>
+      </div>
+      {/* Sections: volle Breite, Inhalte zentriert */}
+      <div className="flex w-full flex-col">
+        <DesktopFadeInView className="section2-slide-trigger" resetOnExit>
+          <DesktopSection2 />
+        </DesktopFadeInView>
+        <DesktopFadeInView delay={100}>
+          <DesktopSection3 />
+        </DesktopFadeInView>
+        <DesktopFadeInView delay={150}>
+          <DesktopSection4 />
+        </DesktopFadeInView>
+      </div>
     </main>
   );
 }

@@ -71,7 +71,7 @@ export function PricingBoxes() {
   return (
     <section ref={sectionRef} className={`mt-10 overflow-hidden ${inView ? "pricing-in-view" : ""}`}>
       <div className="mb-8 flex flex-col items-center gap-4 text-center">
-        <span className="pricing-section-badge section4-badge-pulse inline-flex items-center gap-2 rounded-full border border-emerald-400/30 bg-emerald-400/10 px-4 py-1.5 text-sm font-medium text-emerald-300 pricing-slide-in">
+        <span className="pricing-section-badge section4-badge-pulse inline-flex items-center gap-2 rounded-full border border-orange-400/30 bg-orange-400/10 px-4 py-1.5 text-sm font-medium text-orange-300 pricing-slide-in">
           <span aria-hidden>✦</span>
           Aktuelle Angebote
         </span>
@@ -106,11 +106,11 @@ export function PricingBoxes() {
               ))}
             </ul>
 
-            <p className="mt-4 text-sm font-medium text-emerald-300">Lieferzeit: {pkg.delivery}</p>
+            <p className="mt-4 text-sm font-medium text-orange-300">Lieferzeit: {pkg.delivery}</p>
             <a
               href="#contact"
               data-paket={pkg.name}
-              className="pricing-cta mt-5 inline-flex w-full items-center justify-center rounded-xl border border-emerald-400/40 bg-emerald-500/15 px-4 py-2.5 text-sm font-semibold text-emerald-200 transition hover:bg-emerald-500/25"
+              className="pricing-cta mt-5 inline-flex w-full items-center justify-center rounded-xl border border-orange-400/40 bg-orange-500/15 px-4 py-2.5 text-sm font-semibold text-orange-200 transition hover:bg-orange-500/25"
             >
               {pkg.cta}
             </a>

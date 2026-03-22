@@ -53,6 +53,7 @@ export function HeroWithScatter() {
         as="h1"
         italicWords={["erste"]}
         fadeWords={["speziell", "für", "Brauereien"]}
+        fadeFontFamily="var(--font-playfair)"
         scrollAnchorRef={heroRef}
         shimmer
         className="hero-slide-in hero-slide-in-delay-2 block text-[2rem] font-extrabold leading-[1.25] tracking-tight drop-shadow-md sm:text-4xl md:text-[2.75rem] lg:text-5xl xl:text-[3.25rem]"

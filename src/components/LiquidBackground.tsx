@@ -46,12 +46,11 @@ export function LiquidBackground() {
 
   return (
     <div className="fixed inset-0 z-0 overflow-hidden" aria-hidden>
-      {/* Basis: tiefer Farbverlauf mit Emerald-Anklang */}
+      {/* Basis: sauber hell wie Referenz */}
       <div
         className="absolute inset-0"
         style={{
-          background:
-            "linear-gradient(165deg, #0a0f14 0%, #0f172a 35%, #0c1222 70%, #05100d 100%)",
+          background: "#cbcbcb",
         }}
       />
       <div
@@ -65,7 +64,7 @@ export function LiquidBackground() {
           className="liquid-blob liquid-blob-1 absolute h-[70vh] w-[70vh] -left-[15%] top-[10%]"
           style={{
             background:
-              "linear-gradient(135deg, rgba(34, 197, 94, 0.18) 0%, #312e81 40%, #1e3a5f 100%)",
+              "linear-gradient(135deg, rgba(255, 220, 190, 0.15) 0%, rgba(255, 235, 205, 0.08) 40%, transparent 100%)",
             transform: `translate3d(${dx * 0.8}px, ${dy * 0.6}px, 0)`,
             transition: blobTransition,
           }}
@@ -74,7 +73,7 @@ export function LiquidBackground() {
           className="liquid-blob liquid-blob-2 absolute h-[60vh] w-[60vh] -right-[10%] bottom-[5%]"
           style={{
             background:
-              "linear-gradient(225deg, #4c1d95 0%, rgba(34, 197, 94, 0.12) 50%, #312e81 100%)",
+              "linear-gradient(225deg, rgba(255, 220, 190, 0.1) 0%, rgba(255, 235, 205, 0.06) 50%, transparent 100%)",
             transform: `translate3d(${-dx * 0.6}px, ${-dy * 0.5}px, 0)`,
             transition: blobTransition,
           }}
@@ -83,25 +82,25 @@ export function LiquidBackground() {
           className="liquid-blob liquid-blob-3 absolute h-[50vh] w-[50vh] left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2"
           style={{
             background:
-              "linear-gradient(180deg, #0e4d6b 0%, #312e81 45%, rgba(34, 197, 94, 0.1) 100%)",
+              "linear-gradient(180deg, rgba(255, 235, 205, 0.06) 0%, transparent 50%)",
             transform: `translate3d(calc(-50% + ${dx}px), calc(-50% + ${dy * 0.7}px), 0)`,
             transition: blobTransition,
           }}
         />
       </div>
-      {/* Vignette + dezenter Glow */}
+      {/* Vignette – auf hellem Desktop dezent */}
       <div
         className="absolute inset-0"
         style={{
           background:
-            "radial-gradient(ellipse 80% 70% at 50% 40%, transparent 25%, rgba(0,0,0,0.25) 70%, rgba(0,0,0,0.6) 100%)",
+            "radial-gradient(ellipse 80% 70% at 50% 40%, transparent 40%, rgba(0,0,0,0.03) 100%)",
         }}
       />
       <div
         className="absolute inset-0 pointer-events-none"
         style={{
           background:
-            "radial-gradient(ellipse 50% 40% at 30% 30%, rgba(34, 197, 94, 0.03) 0%, transparent 60%)",
+            "radial-gradient(ellipse 180% 220% at 85% 30%, rgba(255, 200, 160, 0.25) 0%, rgba(255, 220, 190, 0.08) 6%, rgba(255, 235, 205, 0.02) 14%, transparent 22%)",
         }}
       />
     </div>

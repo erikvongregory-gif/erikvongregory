@@ -49,23 +49,23 @@ export function Section7AIDemo() {
       className="relative z-[70] border-t border-white/10 bg-transparent px-4 py-16 sm:py-20 md:py-24"
       style={{
         opacity: fadeIn,
-        transform: `translateY(${(1 - fadeIn) * 24}px)`,
-        transition: "opacity 0.5s cubic-bezier(0.22, 1, 0.36, 1), transform 0.5s cubic-bezier(0.22, 1, 0.36, 1)",
+        transform: `translateY(${(1 - fadeIn) * 20}px)`,
+        transition: "opacity 0.6s cubic-bezier(0.22, 1, 0.36, 1), transform 0.6s cubic-bezier(0.22, 1, 0.36, 1)",
       }}
     >
       <div className="mx-auto max-w-4xl">
         <div className="mb-8 text-center">
-          <span className="section7-badge-pulse inline-flex items-center gap-2 rounded-full border border-emerald-400/30 bg-emerald-400/10 px-4 py-1.5 text-sm font-medium text-emerald-300">
+          <span className="section7-badge section7-badge-pulse inline-flex items-center gap-2 rounded-full border border-emerald-400/30 bg-emerald-400/10 px-4 py-1.5 text-sm font-medium text-emerald-300">
             <span aria-hidden>✦</span>
             KI-Demo
           </span>
-          <h2 className="mt-4 text-2xl font-bold tracking-tight text-white drop-shadow-md sm:text-3xl md:text-4xl">
+          <h2 className="section7-headline mt-4 text-2xl font-bold tracking-tight text-white drop-shadow-md sm:text-3xl md:text-4xl">
             Echte Beispiele{" "}
             <span className="font-light italic font-austera-green-fade">
               aus der Praxis
             </span>
           </h2>
-          <p className="mx-auto mt-3 max-w-2xl text-base leading-relaxed text-white/90 sm:text-lg">
+          <p className="section7-desc mx-auto mt-3 max-w-2xl text-base leading-relaxed text-white/90 sm:text-lg">
             Produktvisualisierungen und Werbebilder wie diese – mit KI in Minuten erstellt statt in Tagen.
             Klicke dich durch die Beispiele und überzeuge dich selbst von der Qualität.
           </p>
@@ -93,12 +93,12 @@ export function Section7AIDemo() {
             ))}
           </div>
 
-          <p className="mt-4 text-center text-sm text-white/70 sm:mt-6 sm:text-base">
+          <p className="section7-hint mt-4 text-center text-sm text-white/70 sm:mt-6 sm:text-base">
             Bild anklicken zum Vergrößern – Pfeiltasten zum Durchblättern.
           </p>
         </div>
 
-        <p className="mt-6 text-center text-base font-medium text-white/90 sm:text-lg">
+        <p className="section7-footer mt-6 text-center text-base font-medium text-white/90 sm:text-lg">
           So kann auch deine Brauerei mit professionellen Bildern und Werbematerial überzeugen – schnell, günstig und ohne Grafikdesigner.
         </p>
       </div>

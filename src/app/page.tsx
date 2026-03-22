@@ -8,7 +8,7 @@ export default function Home() {
   return (
     <>
       {/* Mobile: reines CSS (unter 768px) – portrait oben */}
-      <div className="block md:hidden">
+      <div className="mobile-root block md:hidden">
         <main id="main" className="relative min-h-screen overflow-x-hidden pt-14 sm:pt-16">
           <MobileLayout />
         </main>

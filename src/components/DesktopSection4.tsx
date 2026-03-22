@@ -88,9 +88,9 @@ export function DesktopSection4() {
   ];
 
   return (
-    <section className="relative z-20 flex min-h-screen items-center justify-center overflow-x-hidden py-12 sm:py-16 md:py-24">
+    <section className="relative z-20 flex w-full min-h-screen items-center justify-center overflow-x-hidden py-12 sm:py-16 md:py-24">
       <div className="mx-auto w-full max-w-6xl overflow-visible px-4 lg:px-6">
-        <h2 className="mb-6 text-center text-xl font-bold tracking-tight text-white drop-shadow-[0_2px_12px_rgba(0,0,0,0.3)] sm:mb-8 sm:text-3xl md:text-4xl">
+        <h2 className="mb-6 text-center text-xl font-bold tracking-tight text-neutral-900 drop-shadow-sm sm:mb-8 sm:text-3xl md:text-4xl">
           Meine 5{" "}
           <span className="font-light italic font-austera-green-fade">
             Lösungen
@@ -107,7 +107,7 @@ export function DesktopSection4() {
                 onClick={() => handleCardInteraction(i)}
                 onKeyDown={(e) => e.key === "Enter" && handleCardInteraction(i)}
                 aria-pressed={isFlipped}
-                className={`flip-card text-white min-h-[300px] sm:min-h-[340px] lg:min-h-[380px] transition-transform duration-200 ${isFlipped ? "flip-card-flipped" : ""} ${
+                className={`flip-card text-neutral-900 min-h-[300px] sm:min-h-[340px] lg:min-h-[380px] transition-transform duration-200 ${isFlipped ? "flip-card-flipped" : ""} ${
                   hasHover && hoveredIndex === i ? "scale-[1.08]" : hasHover && hoveredIndex !== null ? "scale-[0.92]" : ""
                 }`}
                 onMouseEnter={() => setHoveredIndex(i)}
@@ -129,8 +129,8 @@ export function DesktopSection4() {
                   <div className="flip-card-back">
                     <div className="flip-card-back-content">
                       <div className={`flip-card-icon-wrap mb-4 icon-anim icon-anim-${item.iconType}`} data-icon={item.iconType}>{item.icon}</div>
-                      <h3 className="text-sm font-semibold tracking-tight text-white sm:text-base">{item.title}</h3>
-                      <p className="mt-2 text-sm leading-relaxed text-white/85">{item.text}</p>
+                      <h3 className="text-sm font-semibold tracking-tight text-neutral-900 sm:text-base">{item.title}</h3>
+                      <p className="mt-2 text-sm leading-relaxed text-neutral-700">{item.text}</p>
                     </div>
                   </div>
                 </div>

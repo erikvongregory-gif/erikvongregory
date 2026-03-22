@@ -1,4 +1,16 @@
 @import "tailwindcss";
+@import url("https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600;700;800&family=Playfair+Display:ital,wght@0,400;0,600;1,300;1,400&display=swap");
+
+/* SK Reykjavik Rounded Regular – Hauptschrift */
+@font-face {
+  font-family: "SK Reykjavik Rounded Regular";
+  font-style: normal;
+  font-weight: 400;
+  font-display: swap;
+  src: url("https://db.onlinewebfonts.com/t/16e715573b2b3072037cf4ab26fc8bb8.woff2") format("woff2"),
+       url("https://db.onlinewebfonts.com/t/16e715573b2b3072037cf4ab26fc8bb8.woff") format("woff"),
+       url("https://db.onlinewebfonts.com/t/16e715573b2b3072037cf4ab26fc8bb8.ttf") format("truetype");
+}
 
 /* Work Sans – lokal, public/fonts/ (weights 300–700, latin + latin-ext) */
 @font-face {
@@ -124,23 +136,104 @@
        url("/fonts/CormorantGaramond-Italic.ttf") format("truetype");
 }
 
-/* Cormorant Garamond – grüner Fade (hell→dunkel) für alle Akzent-Texte */
+/* Cormorant Garamond – orange Fade (hell→dunkel) für alle Akzent-Texte */
 .font-austera-green-fade {
   font-family: var(--font-austera);
   font-style: italic;
   font-weight: 300;
-  background: linear-gradient(90deg, #a7f3d0 0%, #86c59d 50%, #059669 100%);
+  background: linear-gradient(90deg, #ffc090 0%, #e07a40 50%, #d46830 100%);
   -webkit-background-clip: text;
   background-clip: text;
   -webkit-text-fill-color: transparent;
   color: transparent;
 }
 
+/* Playfair Display – orange Fade für „speziell für Brauereien“ */
+.font-playfair-green-fade {
+  font-family: var(--font-playfair);
+  font-style: italic;
+  font-weight: 400;
+  background: linear-gradient(90deg, #ffc090 0%, #e07a40 50%, #d46830 100%);
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+  color: transparent;
+}
+
+/* Mobile – Schriftart wie Desktop (Montserrat + Playfair für Akzente) */
+@media (max-width: 768px) {
+  .mobile-root h1,
+  .mobile-root h2,
+  .mobile-root h3,
+  .mobile-root p,
+  .mobile-root .section2-card,
+  .mobile-root .section3-card,
+  .mobile-root .section4-mobile-card,
+  .mobile-root .section6-expertise-item,
+  .mobile-root .mobile-sticky-cta-btn {
+    font-family: var(--font-main), sans-serif;
+  }
+}
+
+/* Mobile – Orange-Akzente angepasst für dunklen Hintergrund */
+@media (max-width: 768px) {
+  .font-austera-green-fade,
+  .font-playfair-green-fade {
+    background: linear-gradient(90deg, #ffd4a8 0%, #ec8e55 50%, #e27e45 100%);
+    -webkit-background-clip: text;
+    background-clip: text;
+    -webkit-text-fill-color: transparent;
+    color: transparent;
+  }
+  .hero-cta-btn,
+  .hero-cta-btn.mobile-cta-animate {
+    background: linear-gradient(135deg, #d46830 0%, #e07a40 100%) !important;
+    box-shadow:
+      0 0 0 1px rgba(255, 255, 255, 0.12) inset,
+      0 4px 20px rgba(0, 0, 0, 0.2),
+      0 0 24px rgba(224, 122, 64, 0.28);
+  }
+  .mobile-sticky-cta-btn {
+    background: linear-gradient(135deg, rgba(212, 104, 48, 0.98) 0%, rgba(224, 122, 64, 0.95) 100%);
+    box-shadow:
+      0 0 0 1px rgba(255, 255, 255, 0.15) inset,
+      0 8px 32px rgba(0, 0, 0, 0.25),
+      0 0 48px rgba(224, 122, 64, 0.3);
+  }
+  .mobile-sticky-cta-btn:hover {
+    box-shadow:
+      0 0 0 1px rgba(255, 255, 255, 0.2) inset,
+      0 12px 40px rgba(0, 0, 0, 0.3),
+      0 0 56px rgba(224, 122, 64, 0.35);
+  }
+  #section-7 .section7-badge {
+    background: rgba(224, 122, 64, 0.2) !important;
+    border-color: rgba(224, 122, 64, 0.45) !important;
+    color: #f4a574 !important;
+  }
+  #section-7 .section7-badge.section7-badge-pulse {
+    animation: section7-badge-pulse-orange 2.5s ease-in-out infinite;
+  }
+  #section-7 button.group:hover {
+    --tw-border-opacity: 0.4;
+    border-color: rgba(224, 122, 64, 0.4);
+  }
+  #section-7 button:focus-visible {
+    --tw-ring-color: rgba(224, 122, 64, 0.6);
+  }
+}
+
+@keyframes section7-badge-pulse-orange {
+  0%, 100% { box-shadow: 0 0 0 0 rgba(224, 122, 64, 0.3); }
+  50% { box-shadow: 0 0 20px 2px rgba(224, 122, 64, 0.4); }
+}
+
 :root {
   --akq-green: #14532d;
   --font-work-sans: "Work Sans", system-ui, sans-serif;
-  --font-main: var(--font-work-sans);
-  --font-austera: "Cormorant Garamond", Georgia, serif;
+  --font-main: "Montserrat", sans-serif;
+  --font-austera: "Playfair Display", Georgia, serif;
+  --font-playfair: "Playfair Display", Georgia, serif;
   --font-almarena: var(--font-work-sans);
   --akq-green-hover: #166534;
   --akq-green-light: #dcfce7;
@@ -168,6 +261,8 @@ html {
 body {
   font-family: var(--font-main);
   background: #0a0f14;
+  /* overflow-x: clip statt hidden – verhindert Scroll-Buckling auf Desktop */
+  overflow-x: clip;
 }
 
 /* Rechtliche Seiten – Impressum & Datenschutz (Mobile + Desktop) */
@@ -552,11 +647,11 @@ body[data-legal-page="true"] {
   }
 }
 
-/* Desktop – Fade-In beim Scrollen ins Viewport */
+/* Desktop – cleane Fade-In beim Scrollen */
 .desktop-fade-in-view {
   opacity: 0;
-  transform: translateY(32px);
-  transition: opacity 0.8s cubic-bezier(0.05, 1, 0.08, 1), transform 0.8s cubic-bezier(0.05, 1, 0.08, 1);
+  transform: translateY(20px);
+  transition: opacity 0.6s cubic-bezier(0.22, 1, 0.36, 1), transform 0.6s cubic-bezier(0.22, 1, 0.36, 1);
 }
 
 .desktop-fade-in-view--visible {
@@ -576,6 +671,78 @@ body[data-legal-page="true"] {
     opacity: 1;
     transform: none;
     transition: none;
+  }
+}
+
+/* Section 2 – mega cleane Einblendung von unten */
+@keyframes section2-box-slide-up {
+  from {
+    opacity: 0;
+    transform: translateY(64px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.section2-box-slide {
+  animation: section2-box-slide-up 1.4s cubic-bezier(0.16, 1, 0.3, 1) both;
+  animation-play-state: paused;
+  display: flex;
+  min-height: 0;
+}
+
+.section2-boxes-grid .section2-box-slide .section2-card {
+  flex: 1;
+  min-height: 0;
+  display: flex;
+  flex-direction: column;
+}
+
+.desktop-fade-in-view--visible .section2-box-slide {
+  animation-play-state: running;
+}
+
+/* Section 2: Boxen zurücksetzen wenn aus dem Viewport – Animation spielt beim erneuten Einblenden wieder */
+.section2-slide-trigger:not(.desktop-fade-in-view--visible) .section2-box-slide {
+  animation: none;
+  opacity: 0;
+  transform: translateY(64px);
+}
+
+/* Section 2 Wrapper: kein Fade, nur Trigger für Box-Animation */
+.section2-slide-trigger.desktop-fade-in-view {
+  opacity: 1;
+  transform: none;
+  transition: none;
+}
+
+.section2-box-left {
+  animation-delay: 0s;
+}
+
+.section2-box-right {
+  animation-delay: 0.18s;
+}
+
+@media (max-width: 767px) {
+  .section2-box-slide {
+    animation: none;
+    opacity: 1;
+    transform: none;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .section2-box-slide {
+    animation: none;
+    opacity: 1;
+    transform: none;
+  }
+  .section2-slide-trigger:not(.desktop-fade-in-view--visible) .section2-box-slide {
+    opacity: 1;
+    transform: none;
   }
 }
 
@@ -600,6 +767,35 @@ body[data-legal-page="true"] {
   }
 }
 
+/* Hero Trust-Bar – Icon-Animation (sanftes Float) */
+@keyframes hero-trust-pill-icon-float {
+  0%, 100% { transform: translateY(0) rotate(0deg); opacity: 1; }
+  50% { transform: translateY(-2px) rotate(2deg); opacity: 0.9; }
+}
+
+.hero-trust-pill-icon {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  animation: hero-trust-pill-icon-float 2.8s ease-in-out infinite;
+}
+
+.hero-trust-pill-1 .hero-trust-pill-icon { animation-delay: 0s; }
+.hero-trust-pill-2 .hero-trust-pill-icon { animation-delay: 0.35s; }
+.hero-trust-pill-3 .hero-trust-pill-icon { animation-delay: 0.7s; }
+.hero-trust-pill-4 .hero-trust-pill-icon { animation-delay: 1.05s; }
+
+@media (prefers-reduced-motion: reduce) {
+  .hero-trust-pill-icon {
+    animation: none;
+  }
+}
+
+/* Hero – Brauereien-Highlight (Orange passend zum Glow) */
+.hero-brauereien-highlight {
+  color: #e07a40;
+}
+
 /* Portrait – blendet mit Liquid, weicher weißer Glow */
 .hero-portrait-blend {
   display: block;
@@ -616,14 +812,14 @@ body[data-legal-page="true"] {
   }
 }
 
-/* Hero CTA Button – Glas-Button mit grünem Glow bei Hover */
+/* Hero CTA Button – Orange (wie Brauereien-Highlight) */
 .hero-cta-btn {
   position: relative;
-  background: rgba(255, 255, 255, 0.15);
+  background: linear-gradient(135deg, #c65a20 0%, #d46830 100%) !important;
   backdrop-filter: blur(20px);
   -webkit-backdrop-filter: blur(20px);
-  color: #fff;
-  border: 1px solid rgba(255, 255, 255, 0.3);
+  color: #fff !important;
+  border: 1px solid rgba(0, 0, 0, 0.15);
   box-shadow:
     0 0 0 1px rgba(255, 255, 255, 0.1) inset,
     0 4px 20px rgba(0, 0, 0, 0.1);
@@ -634,8 +830,8 @@ body[data-legal-page="true"] {
   box-shadow:
     0 0 0 1px rgba(255, 255, 255, 0.1) inset,
     0 4px 20px rgba(0, 0, 0, 0.1),
-    0 0 30px rgba(34, 197, 94, 0.5),
-    0 0 60px rgba(34, 197, 94, 0.3);
+    0 0 30px rgba(224, 122, 64, 0.5),
+    0 0 60px rgba(224, 122, 64, 0.3);
 }
 
 /* Mobile CTA – dezenter Puls & Glow, zieht Aufmerksamkeit */
@@ -644,15 +840,15 @@ body[data-legal-page="true"] {
     box-shadow:
       0 0 0 1px rgba(255, 255, 255, 0.1) inset,
       0 4px 20px rgba(0, 0, 0, 0.1),
-      0 0 20px rgba(34, 197, 94, 0.2);
+      0 0 20px rgba(224, 122, 64, 0.2);
     transform: scale(1);
   }
   50% {
     box-shadow:
       0 0 0 1px rgba(255, 255, 255, 0.2) inset,
       0 4px 24px rgba(0, 0, 0, 0.12),
-      0 0 35px rgba(34, 197, 94, 0.4),
-      0 0 50px rgba(34, 197, 94, 0.15);
+      0 0 35px rgba(224, 122, 64, 0.4),
+      0 0 50px rgba(224, 122, 64, 0.15);
     transform: scale(1.02);
   }
 }
@@ -671,14 +867,14 @@ body[data-legal-page="true"] {
 
 /* Mobile Sticky CTA – Catcher beim Scrollen */
 .mobile-sticky-cta-btn {
-  background: linear-gradient(135deg, rgba(20, 83, 45, 0.95) 0%, rgba(22, 101, 52, 0.9) 100%);
+  background: linear-gradient(135deg, rgba(198, 90, 32, 0.95) 0%, rgba(212, 104, 48, 0.9) 100%);
   backdrop-filter: blur(20px);
   -webkit-backdrop-filter: blur(20px);
   border: 1px solid rgba(255, 255, 255, 0.2);
   box-shadow:
     0 0 0 1px rgba(255, 255, 255, 0.1) inset,
     0 8px 32px rgba(0, 0, 0, 0.3),
-    0 0 40px rgba(34, 197, 94, 0.2);
+    0 0 40px rgba(224, 122, 64, 0.2);
   transition: transform 0.2s ease, box-shadow 0.2s ease;
 }
 
@@ -690,7 +886,7 @@ body[data-legal-page="true"] {
   box-shadow:
     0 0 0 1px rgba(255, 255, 255, 0.15) inset,
     0 12px 40px rgba(0, 0, 0, 0.35),
-    0 0 60px rgba(34, 197, 94, 0.35);
+    0 0 60px rgba(224, 122, 64, 0.35);
 }
 
 /* Shine-Sweep – wiederverwendbar für Text-Boxen */
@@ -848,11 +1044,11 @@ body[data-legal-page="true"] {
 /* Section 4 Mobile – Badge Puls */
 @keyframes section4-badge-pulse {
   0%, 100% {
-    box-shadow: 0 0 0 0 rgba(34, 197, 94, 0.2);
+    box-shadow: 0 0 0 0 rgba(224, 122, 64, 0.2);
     transform: scale(1);
   }
   50% {
-    box-shadow: 0 0 12px 2px rgba(34, 197, 94, 0.25);
+    box-shadow: 0 0 12px 2px rgba(224, 122, 64, 0.25);
     transform: scale(1.02);
   }
 }
@@ -901,9 +1097,9 @@ body[data-legal-page="true"] {
   .section4-badge-pulse { transform: scale(1); }
 }
 
-/* Section 4 Mobile – Karten mit Emerald-Akzent */
+/* Section 4 Mobile – Karten mit Orange-Akzent */
 .section4-mobile-card {
-  box-shadow: 0 0 0 1px rgba(34, 197, 94, 0.06);
+  box-shadow: 0 0 0 1px rgba(224, 122, 64, 0.08);
 }
 
 .section4-mobile-card:active {
@@ -923,19 +1119,19 @@ body[data-legal-page="true"] {
 /* Section 3 – Animationen */
 @keyframes section3-glow-pulse {
   0%, 100% {
-    text-shadow: 0 0 20px rgba(34, 197, 94, 0.5), 0 0 40px rgba(34, 197, 94, 0.25);
+    text-shadow: 0 0 20px rgba(224, 122, 64, 0.5), 0 0 40px rgba(224, 122, 64, 0.25);
   }
   50% {
-    text-shadow: 0 0 30px rgba(34, 197, 94, 0.7), 0 0 60px rgba(34, 197, 94, 0.4);
+    text-shadow: 0 0 30px rgba(224, 122, 64, 0.7), 0 0 60px rgba(224, 122, 64, 0.4);
   }
 }
 
 @keyframes section3-border-shimmer {
   0%, 100% {
-    box-shadow: 0 0 0 1px rgba(255, 255, 255, 0.05) inset, 0 8px 40px rgba(0, 0, 0, 0.25), 0 0 80px rgba(34, 197, 94, 0.08);
+    box-shadow: 0 0 0 1px rgba(255, 255, 255, 0.05) inset, 0 8px 40px rgba(0, 0, 0, 0.25), 0 0 80px rgba(224, 122, 64, 0.08);
   }
   50% {
-    box-shadow: 0 0 0 1px rgba(255, 255, 255, 0.08) inset, 0 8px 40px rgba(0, 0, 0, 0.25), 0 0 100px rgba(34, 197, 94, 0.15), 0 0 0 1px rgba(34, 197, 94, 0.2);
+    box-shadow: 0 0 0 1px rgba(255, 255, 255, 0.08) inset, 0 8px 40px rgba(0, 0, 0, 0.25), 0 0 100px rgba(224, 122, 64, 0.15), 0 0 0 1px rgba(224, 122, 64, 0.2);
   }
 }
 
@@ -958,7 +1154,7 @@ body[data-legal-page="true"] {
   box-shadow:
     0 0 0 1px rgba(255, 255, 255, 0.05) inset,
     0 8px 40px rgba(0, 0, 0, 0.25),
-    0 0 80px rgba(34, 197, 94, 0.08);
+    0 0 80px rgba(224, 122, 64, 0.08);
 }
 
 .section3-cta-link {
@@ -978,7 +1174,7 @@ body[data-legal-page="true"] {
   right: 0;
   bottom: 2px;
   height: 2px;
-  background: linear-gradient(90deg, transparent, rgba(34, 197, 94, 0.6), transparent);
+  background: linear-gradient(90deg, transparent, rgba(224, 122, 64, 0.6), transparent);
   border-radius: 1px;
   opacity: 0;
   transition: opacity 0.3s ease;
@@ -997,6 +1193,11 @@ body[data-legal-page="true"] {
   box-shadow:
     0 0 0 1px rgba(255, 255, 255, 0.15) inset,
     0 6px 24px rgba(0, 0, 0, 0.15);
+}
+
+/* Sticky Portrait – eigener Compositing-Layer für flüssiges Scroll */
+.sticky-portrait-col {
+  will-change: transform;
 }
 
 /* Premium Header – scroll-progress-basiert, 0 (oben) → 1 (Section 3) */
@@ -1075,6 +1276,245 @@ body[data-legal-page="true"] {
 
   .premium-header-link {
     flex-shrink: 0;
+  }
+}
+
+/* Desktop Light Theme – Header mit dunkler Schrift */
+.header-light-theme .premium-header-logo {
+  color: #1a1a1a;
+}
+
+.header-light-theme .premium-header-link {
+  color: #333;
+}
+
+.header-light-theme .font-austera-green-fade {
+  background: linear-gradient(90deg, #d46830 0%, #c65a20 50%, #b84d15 100%);
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+  color: transparent;
+}
+
+.header-light-theme .premium-header-logo:focus-visible,
+.header-light-theme .premium-header-link:focus-visible {
+  --tw-ring-color: rgba(0, 0, 0, 0.4);
+}
+
+/* Desktop Light Theme – Section-Boxen mit Liquid-Glas (weicher Übergang zum Hintergrund) */
+.desktop-light-theme .section2-card {
+  background: rgba(11, 22, 32, 0.72);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.2);
+}
+
+.desktop-light-theme .section3-card {
+  background: rgba(11, 22, 32, 0.72);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.2);
+}
+
+/* Section 3 Desktop – stärkerer Fokus, mehr Tiefe */
+.section3-card-desktop {
+  position: relative;
+  overflow: hidden;
+  transition: box-shadow 0.4s ease, transform 0.3s ease;
+}
+.section3-card-desktop:hover {
+  transform: translateY(-2px);
+}
+.section3-card-desktop::before {
+  content: "";
+  position: absolute;
+  inset: -1px;
+  border-radius: inherit;
+  padding: 1px;
+  background: linear-gradient(135deg, rgba(224, 122, 64, 0.3) 0%, transparent 40%, transparent 60%, rgba(224, 122, 64, 0.2) 100%);
+  -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+  mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+  -webkit-mask-composite: xor;
+  mask-composite: exclude;
+  pointer-events: none;
+}
+.desktop-light-theme .section3-card-desktop {
+  box-shadow:
+    0 8px 32px rgba(0, 0, 0, 0.2),
+    0 0 0 1px rgba(255, 255, 255, 0.12),
+    0 0 60px rgba(224, 122, 64, 0.12);
+}
+.desktop-light-theme .section3-card-desktop:hover {
+  box-shadow:
+    0 12px 40px rgba(0, 0, 0, 0.25),
+    0 0 0 1px rgba(224, 122, 64, 0.2),
+    0 0 80px rgba(224, 122, 64, 0.18);
+}
+.desktop-light-theme .section3-card-desktop .text-neutral-600,
+.desktop-light-theme .section3-card-desktop .text-neutral-500 {
+  color: rgba(255, 255, 255, 0.85) !important;
+}
+.desktop-light-theme .section3-card-desktop .text-neutral-500 {
+  color: rgba(255, 255, 255, 0.65) !important;
+}
+
+.desktop-light-theme .section2-card h2,
+.desktop-light-theme .section2-card p,
+.desktop-light-theme .section3-card h2,
+.desktop-light-theme .section3-card p {
+  color: rgba(255, 255, 255, 0.95);
+}
+
+.desktop-light-theme .section2-card .font-austera-green-fade,
+.desktop-light-theme .section3-card .font-austera-green-fade {
+  background: linear-gradient(90deg, #ffc090 0%, #e07a40 50%, #d46830 100%);
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+  color: transparent;
+}
+
+.desktop-light-theme .flip-card-front,
+.desktop-light-theme .flip-card-back {
+  background: rgba(11, 22, 32, 0.72);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.2);
+}
+
+.desktop-light-theme .flip-card:hover .flip-card-back {
+  border-color: rgba(224, 122, 64, 0.4);
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.2), 0 0 0 1px rgba(224, 122, 64, 0.2);
+}
+
+.desktop-light-theme .flip-card-front-title,
+.desktop-light-theme .flip-card-front-hint {
+  color: rgba(255, 255, 255, 0.95);
+}
+
+.desktop-light-theme .flip-card-front-hint {
+  color: rgba(255, 255, 255, 0.6);
+}
+
+.desktop-light-theme .flip-card-front-icon {
+  color: rgba(255, 200, 170, 0.9);
+  background: rgba(224, 122, 64, 0.2);
+  border-color: rgba(224, 122, 64, 0.35);
+}
+
+.desktop-light-theme .flip-card-back .flip-card-icon-wrap {
+  color: rgba(255, 200, 170, 0.9);
+}
+
+.desktop-light-theme .flip-card-back h3,
+.desktop-light-theme .flip-card-back p {
+  color: rgba(255, 255, 255, 0.95) !important;
+}
+
+.desktop-light-theme .flip-card-back p {
+  color: rgba(255, 255, 255, 0.85) !important;
+}
+
+.desktop-light-theme .section2-card .text-box-shine {
+  background: rgba(224, 122, 64, 0.15) !important;
+  border-color: rgba(224, 122, 64, 0.3) !important;
+}
+
+.desktop-light-theme .section2-card .text-box-shine span {
+  color: rgba(255, 255, 255, 0.95) !important;
+}
+
+.desktop-light-theme .section2-problem-item {
+  background: rgba(15, 23, 42, 0.45) !important;
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border: 1px solid rgba(255, 255, 255, 0.1) !important;
+}
+
+.desktop-light-theme .section2-problem-item span,
+.desktop-light-theme .section2-problem-item p {
+  color: rgba(255, 255, 255, 0.9) !important;
+}
+
+.desktop-light-theme .section2-problem-item p {
+  color: rgba(167, 243, 208, 0.95) !important;
+}
+
+.desktop-light-theme .hero-cta-btn,
+.desktop-light-theme .section2-card .hero-cta-btn,
+.desktop-light-theme .section3-card .hero-cta-btn,
+.cta-orange {
+  background: linear-gradient(135deg, #c65a20 0%, #d46830 100%) !important;
+  color: #fff !important;
+  border-color: rgba(0, 0, 0, 0.1);
+}
+
+.desktop-light-theme .hero-cta-btn:hover,
+.desktop-light-theme .section2-card .hero-cta-btn:hover,
+.desktop-light-theme .section3-card .hero-cta-btn:hover,
+.cta-orange:hover {
+  box-shadow: 0 4px 20px rgba(224, 122, 64, 0.4);
+}
+
+.desktop-light-theme .section6-expertise-item {
+  background: rgba(15, 23, 42, 0.45) !important;
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border: 1px solid rgba(255, 255, 255, 0.1) !important;
+}
+
+.desktop-light-theme .section6-expertise-item span {
+  color: rgba(255, 255, 255, 0.95) !important;
+}
+
+.desktop-light-theme .section6-expertise-item:hover {
+  background: rgba(11, 22, 32, 0.6) !important;
+  border-color: rgba(224, 122, 64, 0.4) !important;
+}
+
+.desktop-light-theme .section2-card > div.rounded-full {
+  background: rgba(224, 122, 64, 0.15) !important;
+  border-color: rgba(224, 122, 64, 0.35) !important;
+  color: rgba(255, 200, 170, 0.95) !important;
+}
+
+.desktop-light-theme .hero-portrait-blend {
+  mix-blend-mode: normal;
+  filter: none;
+}
+
+/* Section7 „Echte Beispiele aus der Praxis“ – auf Desktop dunkle Schrift (heller Hintergrund) */
+@media (min-width: 768px) {
+  #section-7 .section7-headline {
+    color: #1a1a1a !important;
+  }
+  #section-7 .section7-headline .font-austera-green-fade {
+    background: linear-gradient(90deg, #d46830 0%, #c65a20 50%, #b84d15 100%);
+    -webkit-background-clip: text;
+    background-clip: text;
+    -webkit-text-fill-color: transparent;
+    color: transparent;
+  }
+  #section-7 .section7-desc,
+  #section-7 .section7-footer {
+    color: #333 !important;
+  }
+  #section-7 .section7-badge {
+    background: rgba(224, 122, 64, 0.15) !important;
+    border-color: rgba(224, 122, 64, 0.35) !important;
+    color: #c65a20 !important;
+  }
+  #section-7 .section2-card {
+    background: rgba(11, 22, 32, 0.72);
+    backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
+    border-color: rgba(255, 255, 255, 0.12);
+  }
+  #section-7 .section2-card .section7-hint {
+    color: rgba(255, 255, 255, 0.8) !important;
   }
 }
 
@@ -1539,13 +1979,13 @@ body[data-legal-page="true"] {
 }
 
 .flip-card:hover .flip-card-back {
-  border-color: rgba(34, 197, 94, 0.35);
+  border-color: rgba(224, 122, 64, 0.35);
   box-shadow:
-    0 0 0 1px rgba(34, 197, 94, 0.12) inset,
+    0 0 0 1px rgba(224, 122, 64, 0.12) inset,
     0 0 0 1px rgba(255, 255, 255, 0.08) inset,
     0 8px 32px rgba(0, 0, 0, 0.2),
-    0 0 48px rgba(34, 197, 94, 0.2),
-    0 0 96px rgba(34, 197, 94, 0.08);
+    0 0 48px rgba(224, 122, 64, 0.2),
+    0 0 96px rgba(224, 122, 64, 0.08);
 }
 
 .flip-card-back .flip-card-back-content {
@@ -1602,7 +2042,7 @@ body[data-legal-page="true"] {
 .flip-card:nth-child(4) .icon-anim { animation-delay: 0.9s; }
 .flip-card:nth-child(5) .icon-anim { animation-delay: 1.2s; }
 
-/* Icon-Container mit Emerald-Akzent */
+/* Icon-Container mit Orange-Akzent */
 .flip-card-icon-wrap {
   display: flex;
   align-items: center;
@@ -1610,9 +2050,9 @@ body[data-legal-page="true"] {
   width: 3rem;
   height: 3rem;
   border-radius: 0.75rem;
-  background: rgba(34, 197, 94, 0.15);
-  border: 1px solid rgba(34, 197, 94, 0.25);
-  color: rgba(167, 243, 208, 0.95);
+  background: rgba(224, 122, 64, 0.15);
+  border: 1px solid rgba(224, 122, 64, 0.25);
+  color: rgba(255, 200, 170, 0.95);
   flex-shrink: 0;
 }
 
@@ -1623,6 +2063,22 @@ body[data-legal-page="true"] {
 @media (min-width: 769px) {
   .loading-spinner-bar {
     animation-duration: 2.2s;
+  }
+}
+
+/* Loading-Screen auf Mobile: dunkler Hintergrund */
+@media (max-width: 768px) {
+  .loading-screen {
+    background: #0a0f14 !important;
+  }
+  .loading-screen .text-black {
+    color: white !important;
+  }
+  .loading-screen .loading-spinner {
+    background-color: rgba(255, 255, 255, 0.2) !important;
+  }
+  .loading-screen .loading-spinner-bar {
+    background-color: #e07a40 !important;
   }
 }
 
@@ -1714,7 +2170,8 @@ body[data-legal-page="true"] {
 }
 
 @media (prefers-reduced-motion: reduce) {
-  .section7-badge-pulse {
+  .section7-badge-pulse,
+  #section-7 .section7-badge.section7-badge-pulse {
     animation: none;
   }
   .section7-lock-open,
@@ -1796,7 +2253,7 @@ body[data-legal-page="true"] {
 @keyframes pricing-slide-up {
   from {
     opacity: 0;
-    transform: translateY(32px);
+    transform: translateY(20px);
   }
   to {
     opacity: 1;
@@ -1806,7 +2263,7 @@ body[data-legal-page="true"] {
 
 .pricing-slide-in {
   opacity: 0;
-  transform: translateY(32px);
+  transform: translateY(20px);
 }
 .pricing-in-view .pricing-slide-in {
   animation: pricing-slide-up 0.6s cubic-bezier(0.22, 1, 0.36, 1) both;
@@ -1814,6 +2271,25 @@ body[data-legal-page="true"] {
 
 .pricing-in-view .pricing-slide-in-delay-1 {
   animation: pricing-slide-up 0.55s cubic-bezier(0.22, 1, 0.36, 1) 0.7s both;
+}
+
+/* Desktop: schnellere Animationen */
+@media (min-width: 768px) {
+  .pricing-section-reveal {
+    transition-duration: 0.3s !important;
+  }
+  .pricing-in-view .pricing-slide-in-delay-1 {
+    animation: pricing-slide-up 0.45s cubic-bezier(0.22, 1, 0.36, 1) 0.15s both;
+  }
+  .pricing-in-view .pricing-card-slide-0 {
+    animation: pricing-card-from-left 0.4s cubic-bezier(0.22, 1, 0.36, 1) 0.2s forwards;
+  }
+  .pricing-in-view .pricing-card-slide-1 {
+    animation: pricing-card-from-right 0.4s cubic-bezier(0.22, 1, 0.36, 1) 0.35s forwards;
+  }
+  .pricing-in-view .pricing-card-slide-2 {
+    animation: pricing-card-from-left 0.4s cubic-bezier(0.22, 1, 0.36, 1) 0.5s forwards;
+  }
 }
 
 /* Pricing Section - staged reveal + sales motion */
@@ -1907,10 +2383,10 @@ body[data-legal-page="true"] {
 
 .pricing-card:hover {
   transform: translateY(-4px) scale(1.01);
-  border-color: rgba(52, 211, 153, 0.4);
+  border-color: rgba(224, 122, 64, 0.4);
   box-shadow:
     0 14px 44px rgba(0, 0, 0, 0.35),
-    0 0 26px rgba(52, 211, 153, 0.14);
+    0 0 26px rgba(224, 122, 64, 0.14);
 }
 
 .pricing-sale-badge {
@@ -1927,7 +2403,79 @@ body[data-legal-page="true"] {
 
 .pricing-cta:hover {
   transform: translateY(-1px);
-  box-shadow: 0 8px 24px rgba(16, 185, 129, 0.22);
+  box-shadow: 0 8px 24px rgba(224, 122, 64, 0.22);
+}
+
+/* Desktop: Pakete & Preise wie Section2/Section3 – dunkles Liquid-Glas */
+@media (min-width: 768px) {
+  #pakete-preise .pricing-section-badge {
+    border-color: rgba(224, 122, 64, 0.4);
+    background: rgba(224, 122, 64, 0.12);
+    color: #c65a20 !important;
+  }
+  #pakete-preise h3 {
+    color: #1a1a1a !important;
+  }
+  #pakete-preise .pricing-card {
+    background: rgba(11, 22, 32, 0.72) !important;
+    border-color: rgba(255, 255, 255, 0.12) !important;
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.2) !important;
+  }
+  #pakete-preise .pricing-card p,
+  #pakete-preise .pricing-card li {
+    color: rgba(255, 255, 255, 0.9) !important;
+  }
+  #pakete-preise .pricing-sale-price {
+    color: #f87171 !important;
+  }
+  #pakete-preise .pricing-sale-badge {
+    border-color: rgba(248, 113, 113, 0.4);
+    background: rgba(248, 113, 113, 0.2);
+    color: #fca5a5;
+  }
+  #pakete-preise .pricing-cta {
+    border-color: rgba(224, 122, 64, 0.4) !important;
+    background: rgba(224, 122, 64, 0.15) !important;
+    color: rgba(255, 200, 170, 0.95) !important;
+  }
+  #pakete-preise .pricing-cta:hover {
+    background: rgba(224, 122, 64, 0.25) !important;
+  }
+  #pakete-preise .pricing-card p.text-orange-300 {
+    color: rgba(255, 200, 170, 0.9) !important;
+  }
+
+  /* Footer – gleiche Farbe wie Hintergrund (transparent = LiquidBackground durch) */
+  footer#contact {
+    background: transparent !important;
+    border-color: rgba(0, 0, 0, 0.06) !important;
+  }
+  footer#contact p {
+    color: #444 !important;
+  }
+  footer#contact p.font-bold,
+  footer#contact p.font-semibold {
+    color: #1a1a1a !important;
+  }
+  footer#contact p.mt-1 {
+    color: #c65a20 !important;
+  }
+  footer#contact p.text-center {
+    color: #666 !important;
+  }
+  footer#contact a[href*="linkedin"],
+  footer#contact a[href="/impressum"],
+  footer#contact a[href="/datenschutz"] {
+    color: #555 !important;
+  }
+  footer#contact a[href*="linkedin"]:hover,
+  footer#contact a[href="/impressum"]:hover,
+  footer#contact a[href="/datenschutz"]:hover {
+    color: #c65a20 !important;
+  }
+  footer#contact span {
+    color: #999 !important;
+  }
 }
 
 @media (prefers-reduced-motion: reduce) {

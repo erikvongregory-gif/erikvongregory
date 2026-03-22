@@ -1,21 +1,27 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import Link from "next/link";
 import { smoothStep } from "@/lib/scrollConstants";
 
 /** Scroll-Distanz bis Header-Effekt vollständig */
 const HEADER_TRANSITION_END = 80;
+const PROGRESS_STEP = 0.04; /* Nur State-Update wenn Progress sich merklich ändert – flüssigeres Scroll */
 
 export function ScrollHeader() {
   const [progress, setProgress] = useState(0);
   const [isMobile, setIsMobile] = useState(false);
+  const [isDesktop, setIsDesktop] = useState(false);
+  const lastProgressRef = useRef(0);
 
   useEffect(() => {
-    const checkMobile = () => setIsMobile(window.innerWidth < 640);
-    checkMobile();
-    window.addEventListener("resize", checkMobile);
-    return () => window.removeEventListener("resize", checkMobile);
+    const check = () => {
+      setIsMobile(window.innerWidth < 640);
+      setIsDesktop(window.innerWidth >= 768);
+    };
+    check();
+    window.addEventListener("resize", check);
+    return () => window.removeEventListener("resize", check);
   }, []);
 
   useEffect(() => {
@@ -25,7 +31,11 @@ export function ScrollHeader() {
       rafId = requestAnimationFrame(() => {
         const scrollY = window.scrollY;
         const raw = Math.min(1, scrollY / HEADER_TRANSITION_END);
-        setProgress(smoothStep(raw));
+        const p = smoothStep(raw);
+        if (Math.abs(p - lastProgressRef.current) >= PROGRESS_STEP) {
+          lastProgressRef.current = p;
+          setProgress(p);
+        }
       });
     };
     onScroll();
@@ -51,7 +61,7 @@ export function ScrollHeader() {
 
   return (
     <header
-      className="premium-header premium-header-progress"
+      className={`premium-header premium-header-progress ${isDesktop ? "header-light-theme" : ""}`}
       style={{
         paddingTop: `${headerPaddingTop}px`,
       }}
@@ -69,14 +79,13 @@ export function ScrollHeader() {
             marginLeft: "auto",
             marginRight: "auto",
             borderRadius: `${borderRadius}px`,
-            borderColor: `rgba(255, 255, 255, ${0.35 * borderOpacity})`,
-            backgroundColor: progress > 0 ? `rgba(10, 15, 20, ${0.5 * progress})` : "transparent",
-            backdropFilter: progress > 0 ? `blur(${8 + progress * 8}px)` : "none",
-            WebkitBackdropFilter: progress > 0 ? `blur(${8 + progress * 8}px)` : "none",
-            boxShadow:
-              progress > 0
-                ? `0 0 0 1px rgba(255, 255, 255, ${0.12 * borderOpacity}), 0 0 24px rgba(255, 255, 255, ${0.04 * borderOpacity})`
-                : "none",
+            borderColor: "transparent",
+            backgroundColor: progress > 0
+              ? (isDesktop ? "rgba(255, 255, 255, 0.65)" : "rgba(10, 15, 20, 0.7)")
+              : "transparent",
+            backdropFilter: progress > 0 ? "blur(12px)" : "none",
+            WebkitBackdropFilter: progress > 0 ? "blur(12px)" : "none",
+            boxShadow: "none",
           }}
         >
           <div className="flex flex-col items-start gap-px">
@@ -85,16 +94,13 @@ export function ScrollHeader() {
               className="premium-header-logo rounded focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white/60 focus-visible:ring-offset-2 focus-visible:ring-offset-transparent"
               style={{ fontSize: `${logoFontSize}px` }}
             >
-              Erik{" "}
-              <span className="font-light italic font-austera-green-fade">
-                von Gregory
-              </span>
+              EvG<span className="font-light italic font-austera-green-fade">labs</span>
             </Link>
             {isMobile && (
               <span
-                className="text-[10px] font-medium leading-none tracking-wider text-emerald-400/90"
+                className="text-[10px] font-medium leading-none tracking-wider text-orange-500"
                 style={{
-                  textShadow: "0 0 8px rgba(34, 197, 94, 0.3)",
+                  textShadow: "0 0 8px rgba(224, 122, 64, 0.3)",
                 }}
               >
                 KI für Brauereien

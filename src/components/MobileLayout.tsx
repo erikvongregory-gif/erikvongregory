@@ -90,14 +90,14 @@ export function MobileLayout() {
               style={{ opacity: heroReady ? undefined : 0 }}
             />
           </div>
-          <h1 className="mobile-slide-up-in -mt-2 mb-8 block leading-none tracking-tight">
+          <h1 className="mobile-slide-up-in -mt-2 mb-8 block leading-none tracking-tight" style={{ fontFamily: "'Montserrat', sans-serif" }}>
             <div className="block text-xl font-extrabold">
               {"die erste KI‑Marketinglösung".split("").map((char, i) => (
                 <span
                   key={i}
                   className="mobile-word-blur-in inline-block"
                   style={{
-                    background: "linear-gradient(90deg, #ffffff 0%, #ffffff 25%, #a7f3d0 50%, #ffffff 75%, #ffffff 100%)",
+                    background: "linear-gradient(90deg, #ffffff 0%, #ffffff 25%, #ffc090 50%, #ffffff 75%, #ffffff 100%)",
                     backgroundSize: "200% 100%",
                     WebkitBackgroundClip: "text",
                     backgroundClip: "text",
@@ -110,7 +110,7 @@ export function MobileLayout() {
                 </span>
               ))}
             </div>
-            <div className="block -mt-2 text-4xl font-light italic" style={{ fontFamily: "var(--font-austera)" }}>
+            <div className="block -mt-2 text-4xl font-light italic" style={{ fontFamily: "var(--font-playfair)" }}>
               {(() => {
                 const len = "speziell für Brauereien".length;
                 const lerp = (c1: string, c2: string, t: number) => {
@@ -123,7 +123,7 @@ export function MobileLayout() {
                 };
                 return "speziell für Brauereien".split("").map((char, i) => {
                   const t = i / (len - 1 || 1);
-                  const color = lerp("#a7f3d0", "#059669", t);
+                  const color = lerp("#ffc090", "#d46830", t);
                   return (
                     <span
                       key={i}
@@ -141,7 +141,7 @@ export function MobileLayout() {
               })()}
             </div>
           </h1>
-          <p className="mobile-slide-up-in mobile-slide-up-in-0 mb-0 text-xl font-light italic text-white/95" style={{ fontFamily: "var(--font-austera)" }}>
+          <p className="mobile-slide-up-in mobile-slide-up-in-0 mb-0 text-xl font-light italic text-white/95" style={{ fontFamily: "'Montserrat', sans-serif" }}>
             KI für Brauereien & Gastronomie
           </p>
           <p className="mobile-slide-up-in mobile-slide-up-in-1 mx-auto max-w-lg text-base leading-relaxed text-white/95">
@@ -181,7 +181,7 @@ export function MobileLayout() {
                 <ProblemItem key={problem} text={problem} solution={solution} index={i} showIcon resetTrigger={problemResetTrigger} />
               ))}
             </div>
-            <p className="text-box-shine mt-5 rounded-xl border border-emerald-500/25 bg-emerald-500/10 px-4 py-3 text-base text-white/95">
+            <p className="text-box-shine mt-5 rounded-xl border border-orange-400/30 bg-orange-500/10 px-4 py-3 text-base text-white/95">
               <span className="font-bold italic">
                 Währenddessen gewinnen moderne Marken täglich neue Kunden über TikTok, Instagram und Google.
               </span>
@@ -194,7 +194,7 @@ export function MobileLayout() {
         <section className="relative px-4 py-16">
           <ScrollReveal>
           <div className="section3-card mx-auto max-w-2xl rounded-2xl px-6 py-10 text-center">
-            <p className="mb-3 text-sm font-medium uppercase tracking-[0.2em] text-emerald-400/90">
+            <p className="mb-3 text-sm font-medium uppercase tracking-[0.2em] text-orange-400/90">
               Dein nächster Schritt
             </p>
             <h2 className="text-3xl font-extrabold tracking-tight text-white drop-shadow-md">
@@ -217,7 +217,7 @@ export function MobileLayout() {
         <section className="relative px-4 py-16">
           <ScrollReveal>
           <div className="mb-6 inline-flex w-full justify-center">
-            <span className="section4-badge-pulse inline-flex items-center gap-2 rounded-full border border-emerald-400/30 bg-emerald-400/10 px-4 py-1.5 text-sm font-medium text-emerald-300">
+            <span className="section4-badge-pulse inline-flex items-center gap-2 rounded-full border border-orange-400/30 bg-orange-400/10 px-4 py-1.5 text-sm font-medium text-orange-300">
               <span aria-hidden>✦</span>
               Meine Angebote
             </span>
@@ -235,7 +235,7 @@ export function MobileLayout() {
                 className="section4-mobile-card group flex items-start gap-4 rounded-xl border border-white/15 bg-white/5 px-4 py-4 transition-all duration-300 active:scale-[0.98]"
               >
                 <span
-                  className={`section4-icon-wrap flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-emerald-500/15 text-emerald-400 ring-1 ring-emerald-400/20 transition-colors group-active:bg-emerald-500/25 section4-icon-${item.icon}`}
+                  className={`section4-icon-wrap flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-orange-500/15 text-orange-400 ring-1 ring-orange-400/20 transition-colors group-active:bg-orange-500/25 section4-icon-${item.icon}`}
                   aria-hidden
                 >
                   {item.icon === "camera" && (
@@ -274,7 +274,7 @@ export function MobileLayout() {
                   <h3 className="text-base font-semibold text-white">{item.title}</h3>
                   <p className="mt-1 text-sm leading-relaxed text-white/80">{item.text}</p>
                 </div>
-                <span className="mt-1 shrink-0 text-emerald-400/60" aria-hidden>
+                <span className="mt-1 shrink-0 text-orange-400/60" aria-hidden>
                   <svg className="h-4 w-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
                     <path d="M9 18l6-6-6-6" />
                   </svg>
@@ -289,7 +289,7 @@ export function MobileLayout() {
         <section className="relative px-4 py-16">
           <ScrollReveal>
             <div className="section2-card mx-auto max-w-2xl rounded-2xl px-6 py-8 text-center">
-            <div className="mb-6 inline-flex items-center gap-2 rounded-full border border-emerald-400/30 bg-emerald-400/10 px-4 py-1.5 text-sm font-medium text-emerald-300">
+            <div className="mb-6 inline-flex items-center gap-2 rounded-full border border-orange-400/30 bg-orange-400/10 px-4 py-1.5 text-sm font-medium text-orange-300">
               <span aria-hidden>✦</span>
               Aus der Praxis
             </div>

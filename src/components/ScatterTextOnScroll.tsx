@@ -19,7 +19,7 @@ const useIsMobile = () => {
 };
 
 const SHIMMER_STYLE = {
-  background: "linear-gradient(90deg, #ffffff 0%, #ffffff 25%, #a7f3d0 50%, #ffffff 75%, #ffffff 100%)",
+  background: "linear-gradient(90deg, #ffffff 0%, #ffffff 25%, #ffc090 50%, #ffffff 75%, #ffffff 100%)",
   backgroundSize: "200% 100%",
   WebkitBackgroundClip: "text" as const,
   backgroundClip: "text" as const,
@@ -38,7 +38,6 @@ const lerpGreen = (t: number) => {
   const b = Math.round(c1[2] + (c2[2] - c1[2]) * t);
   return `rgb(${r},${g},${b})`;
 };
-const FADE_BASE = { fontFamily: "var(--font-austera)", fontStyle: "italic" as const, fontWeight: 300, textShadow: "none" as const };
 
 type ScatterTextOnScrollProps = {
   text: string;
@@ -47,6 +46,8 @@ type ScatterTextOnScrollProps = {
   italicWords?: string[];
   /** Wörter mit grünem Fade statt Glow (z. B. speziell für Brauereien) */
   fadeWords?: string[];
+  /** Schriftart für fadeWords (Standard: font-austera) */
+  fadeFontFamily?: string;
   scrollAnchorRef?: React.RefObject<HTMLElement | null>;
   /** Shimmer/Lighting-Effekt wie im Loading-Screen */
   shimmer?: boolean;
@@ -59,6 +60,7 @@ export function ScatterTextOnScroll({
   as: Tag = "h1",
   italicWords = [],
   fadeWords = [],
+  fadeFontFamily = "var(--font-austera)",
   scrollAnchorRef,
   shimmer = false,
 }: ScatterTextOnScrollProps) {
@@ -161,7 +163,7 @@ export function ScatterTextOnScroll({
                 const isFade = fadeWords.includes(word);
                 const fadeT = word === "speziell" ? 0 : word === "für" ? 0.35 : 0.85;
                 const content = isFade ? (
-                  <span className="font-light italic" style={{ ...FADE_BASE, color: lerpGreen(fadeT) }}>
+                  <span className="font-light italic" style={{ fontFamily: fadeFontFamily, fontStyle: "italic", fontWeight: 400, textShadow: "none", color: lerpGreen(fadeT) }}>
                     {word}
                   </span>
                 ) : isItalic ? (

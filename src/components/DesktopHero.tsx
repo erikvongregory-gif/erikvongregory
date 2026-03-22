@@ -1,113 +1,111 @@
 "use client";
 
-import Image from "next/image";
-import { AppleStyleButton } from "./AppleStyleButton";
+import Link from "next/link";
 
-/** Statischer Desktop-Hero ohne Scroll-Effekte */
+/** Hero Section 1 – Text links, Portrait+Glow kommt aus StickyPortraitWithGlow im Layout */
 export function DesktopHero() {
   return (
-    <section className="relative z-20 flex min-h-screen flex-col items-center justify-start px-4 pb-8 pt-16 sm:px-6 sm:pb-12 sm:pt-16">
-      <div className="mx-auto flex w-full max-w-6xl flex-1 flex-col items-start justify-center gap-6 px-2 sm:gap-8 sm:px-4 lg:flex-row lg:items-center lg:justify-center lg:gap-12">
-        <div className="order-first flex w-full justify-center lg:order-last lg:w-auto">
-          <div
-            className="hero-portrait-float relative flex shrink-0 items-center justify-center"
-            style={{ marginBottom: "-16px" }}
-          >
-            <div className="relative h-[260px] w-[180px] origin-bottom sm:h-[380px] sm:w-[260px] md:h-[450px] md:w-[300px] lg:h-[800px] lg:w-[640px]">
-              <Image
-                src="/hero-portrait.svg"
-                alt="Erik von Gregory"
-                width={640}
-                height={800}
-                priority
-                className="hero-portrait-blend h-full w-full object-contain object-bottom"
-              />
-            </div>
-          </div>
-        </div>
-        <div className="order-last w-full max-w-4xl text-left lg:order-first">
-          <p className="mb-3 text-xl font-light italic text-white/95" style={{ fontFamily: "var(--font-austera)" }}>
-            KI für Brauereien & Gastronomie
-          </p>
-          <h1 className="block leading-tight tracking-tight">
-            <span className="block text-xl font-extrabold text-white drop-shadow-md sm:text-2xl md:text-3xl lg:text-4xl">
-              die erste KI‑Marketinglösung
+    <section className="relative z-20 flex min-h-screen flex-col items-center justify-center px-4 pb-8 pt-16 sm:px-6 sm:pb-12 sm:pt-16 lg:items-start lg:justify-center">
+      {/* Text links */}
+      <div className="relative z-10 mx-auto flex w-full max-w-6xl flex-1 flex-col items-start justify-center gap-6 px-2 sm:gap-8 sm:px-4 lg:ml-8 lg:mr-auto">
+        <div className="w-full max-w-2xl text-left">
+          {/* Headline: Wie Referenz – bold Sans + light Serif italic */}
+          <h1 className="block leading-tight tracking-tight" style={{ fontFamily: "'Montserrat', sans-serif" }}>
+            <span className="block whitespace-nowrap text-3xl font-semibold text-neutral-900 sm:text-4xl md:text-5xl lg:text-[3rem] xl:text-[3.5rem]">
+              die erste{" "}KI‑Marketinglösung
             </span>
-            <span className="block text-4xl font-light italic sm:text-5xl md:text-5xl lg:text-6xl" style={{ fontFamily: "var(--font-austera)" }}>
-              <span style={{ color: "rgb(167,243,208)" }}>speziell </span>
-              <span style={{ color: "rgb(86,197,157)" }}>für </span>
-              <span style={{ color: "rgb(5,150,105)" }}>Brauereien</span>
+            <span className="mt-2 block text-4xl sm:text-5xl md:text-6xl lg:text-[3.5rem] xl:text-[4rem]">
+              <span className="font-medium text-neutral-900">speziell für </span>
+              <span className="hero-brauereien-highlight text-4xl font-light italic sm:text-5xl md:text-[2.9rem] lg:text-[3.15rem] xl:text-[3.4rem]" style={{ fontFamily: "'Playfair Display', serif" }}>
+                Brauereien
+              </span>
             </span>
           </h1>
-          <p className="mt-3 max-w-3xl text-base leading-relaxed text-white/95 sm:text-lg">
-            Nutze moderne KI, um deine Brauerei digital sichtbar zu machen.
-            <br />
-            Mehr Reichweite, mehr Aufmerksamkeit für deine Marke und mehr Umsatz – ohne klassische Marketingagentur.
-          </p>
-          <p className="mt-1.5 max-w-3xl text-[15px] leading-relaxed text-white/80 sm:text-base">
-            Ich helfe Brauereien, Gastronomen und Getränkeherstellern dabei, KI-gestützte
-            Content-Systeme, Werbevideos und automatisiertes Marketing aufzubauen.
-          </p>
-          <div className="mt-4 flex flex-col gap-3 sm:flex-row sm:flex-wrap sm:items-center pointer-events-auto">
-            <AppleStyleButton href="#contact">
-              Kostenlose KI-Strategie für Brauereien sichern
-            </AppleStyleButton>
-            <div className="flex flex-wrap gap-2">
-              {[
-                {
-                  label: "KI-Produktfotos",
-                  icon: (
-                    <svg className="h-3.5 w-3.5 shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                      <rect x="3" y="3" width="18" height="18" rx="2" ry="2" />
-                      <circle cx="8.5" cy="8.5" r="1.5" />
-                      <polyline points="21 15 16 10 5 21" />
-                    </svg>
-                  ),
-                },
-                {
-                  label: "Werbevideos",
-                  icon: (
-                    <svg className="h-3.5 w-3.5 shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                      <polygon points="23 7 16 12 23 17 23 7" />
-                      <rect x="1" y="5" width="15" height="14" rx="2" ry="2" />
-                    </svg>
-                  ),
-                },
-                {
-                  label: "Social Media",
-                  icon: (
-                    <svg className="h-3.5 w-3.5 shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                      <line x1="18" y1="20" x2="18" y2="10" />
-                      <line x1="12" y1="20" x2="12" y2="4" />
-                      <line x1="6" y1="20" x2="6" y2="14" />
-                    </svg>
-                  ),
-                },
-                {
-                  label: "Automatisiert",
-                  icon: (
-                    <svg className="h-3.5 w-3.5 shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                      <polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2" />
-                    </svg>
-                  ),
-                },
-              ].map(({ label, icon }) => (
-                <span
-                  key={label}
-                  className="hero-highlight-pill inline-flex items-center gap-1.5 rounded-full border border-white/25 bg-white/10 px-3 py-1.5 text-xs font-medium text-white/95 backdrop-blur-sm transition-colors hover:border-emerald-400/40 hover:bg-white/15"
-                >
-                  <span className="hero-pill-icon-anim text-emerald-300/90" aria-hidden>
-                    {icon}
-                  </span>
-                  {label}
-                </span>
-              ))}
-            </div>
+
+          {/* Absätze wie im Beispiel – mehrere Blöcke mit Abstand */}
+          <div className="mt-8 max-w-xl space-y-5" style={{ fontFamily: "'Montserrat', sans-serif" }}>
+            <p className="text-base leading-[1.7] text-neutral-600 sm:text-lg lg:text-xl">
+              Nutze moderne KI, um deine Brauerei digital sichtbar zu machen.
+            </p>
+            <p className="text-base leading-[1.7] text-neutral-600 sm:text-lg lg:text-xl">
+              Mehr Reichweite, mehr Aufmerksamkeit für deine Marke und mehr Umsatz – ohne klassische Marketingagentur.
+            </p>
           </div>
-          <p className="mt-4 text-sm text-white/70">
-            Speziell für Brauereien, Getränkehersteller & Gastronomie – individuell auf deine
-            Branche zugeschnitten.
-          </p>
+
+          {/* CTAs: Schwarzer Primary-Button + Secondary mit Play */}
+          <div className="mt-8 flex flex-wrap items-center gap-4">
+            <a
+              href="#contact"
+              className="inline-flex items-center justify-center rounded-full bg-neutral-900 px-6 py-2.5 text-sm font-semibold text-white shadow-lg shadow-neutral-900/20 transition-all hover:bg-neutral-800 hover:shadow-xl focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-neutral-900 focus-visible:ring-offset-2"
+              style={{ fontFamily: "'Montserrat', sans-serif" }}
+            >
+              Kostenlose KI-Strategie sichern
+            </a>
+            <Link
+              href="#section-7"
+              className="inline-flex items-center gap-2 rounded-full border px-4 py-2 text-sm font-medium text-neutral-900 transition-opacity hover:opacity-70 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-neutral-900 focus-visible:ring-offset-2"
+              style={{ fontFamily: "'Montserrat', sans-serif", borderColor: "rgb(255, 200, 160)" }}
+            >
+              <span className="flex h-8 w-8 items-center justify-center rounded-full bg-neutral-100">
+                <svg className="ml-0.5 h-3.5 w-3.5" viewBox="0 0 24 24" fill="currentColor" aria-hidden>
+                  <path d="M8 5v14l11-7z" />
+                </svg>
+              </span>
+              So funktioniert&apos;s
+            </Link>
+          </div>
+
+          {/* Trust-Bar: KI-Produktfotos, Werbevideos, Social Media, Automatisiert mit Icons */}
+          <div className="hero-trust-pills mt-12 flex flex-wrap items-center gap-3">
+            {[
+              {
+                label: "KI-Produktfotos",
+                icon: (
+                  <svg className="h-4 w-4 shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                    <rect x="3" y="3" width="18" height="18" rx="2" />
+                    <circle cx="8.5" cy="8.5" r="1.5" />
+                  </svg>
+                ),
+              },
+              {
+                label: "Werbevideos",
+                icon: (
+                  <svg className="h-4 w-4 shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                    <polygon points="23 7 16 12 23 17 23 7" />
+                    <rect x="1" y="5" width="15" height="14" rx="2" ry="2" />
+                  </svg>
+                ),
+              },
+              {
+                label: "Social Media",
+                icon: (
+                  <svg className="h-4 w-4 shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                    <path d="M18 2h-3a5 5 0 0 0-5 5v3H7v4h3v8h4v-8h3l1-4h-4V7a1 1 0 0 1 1-1h3z" />
+                  </svg>
+                ),
+              },
+              {
+                label: "Automatisiert",
+                icon: (
+                  <svg className="h-4 w-4 shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                    <path d="M21 12a9 9 0 0 0-9-9 9.75 9.75 0 0 0-6.74 2.74L3 8" />
+                    <path d="M3 3v5h5" />
+                    <path d="M3 12a9 9 0 0 0 9 9 9.75 9.75 0 0 0 6.74-2.74L21 16" />
+                    <path d="M16 21h5v-5" />
+                  </svg>
+                ),
+              },
+            ].map((item, i) => (
+              <span
+                key={item.label}
+                className={`hero-trust-pill hero-trust-pill-${i + 1} inline-flex items-center gap-2 rounded-full border border-neutral-300 bg-neutral-100/80 px-4 py-2 text-sm font-medium text-neutral-700 transition-colors hover:border-orange-300 hover:bg-orange-50/80`}
+                style={{ fontFamily: "'Montserrat', sans-serif" }}
+              >
+                <span className="hero-trust-pill-icon text-neutral-600">{item.icon}</span>
+                {item.label}
+              </span>
+            ))}
+          </div>
         </div>
       </div>
     </section>
