@@ -133,6 +133,7 @@ export function ScatterTextOnScroll({
                   const avgY = (y + y2) / 2;
                   const avgR = (r + r2) / 2;
                   const useFade = fadeWords.includes("für") || fadeWords.includes(nextWord);
+                  const fadeBase = { fontFamily: fadeFontFamily, fontStyle: "italic" as const, fontWeight: 400, textShadow: "none" };
                   return (
                     <span
                       key={`für-brauereien-${idx}`}
@@ -147,8 +148,8 @@ export function ScatterTextOnScroll({
                     >
                       {useFade ? (
                         <>
-                          <span style={{ ...FADE_BASE, color: lerpGreen(0.35) }}>für{"\u00A0"}</span>
-                          <span style={{ ...FADE_BASE, color: lerpGreen(0.85) }}>{nextWord}</span>
+                          <span style={{ ...fadeBase, color: lerpGreen(0.35) }}>für{"\u00A0"}</span>
+                          <span style={{ ...fadeBase, color: lerpGreen(0.85) }}>{nextWord}</span>
                         </>
                       ) : (
                         <>für{"\u00A0"}{nextWord}</>
