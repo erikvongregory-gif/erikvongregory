@@ -32,7 +32,7 @@ export function DesktopLayout() {
         <DesktopFadeInView delay={100}>
           <DesktopSection3 />
         </DesktopFadeInView>
-        <DesktopFadeInView delay={150}>
+        <DesktopFadeInView delay={150} className="section4-cards-trigger">
           <DesktopSection4 />
         </DesktopFadeInView>
       </div>

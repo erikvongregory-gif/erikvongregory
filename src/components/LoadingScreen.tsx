@@ -40,17 +40,19 @@ export function LoadingScreen() {
       }`}
     >
       <p
-        className="loading-name-text-shimmer flex items-center justify-center gap-0 text-2xl font-light tracking-tight sm:text-3xl"
-        style={{
-          fontFamily: "var(--font-austera)",
-          fontStyle: "italic",
-          fontWeight: 300,
-        }}
+        className="loading-name-text-shimmer flex items-center justify-center gap-0 text-2xl tracking-tight sm:text-3xl"
+        style={{ letterSpacing: "-0.025em" }}
       >
-        <span className="text-black font-extrabold">EvG</span>
+        <span
+          className="text-black font-extrabold"
+          style={{ fontFamily: "var(--font-main)" }}
+        >
+          EvG
+        </span>
         <span
           className="animate-loading-shimmer-text font-light italic"
           style={{
+            fontFamily: "var(--font-austera)",
             background: "linear-gradient(90deg, #d46830 0%, #ffc090 25%, #e07a40 50%, #ffc090 75%, #d46830 100%)",
             backgroundSize: "200% 100%",
             WebkitBackgroundClip: "text",

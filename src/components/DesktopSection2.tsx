@@ -15,7 +15,7 @@ export function DesktopSection2() {
   const [problemResetTrigger, setProblemResetTrigger] = useState(0);
 
   return (
-    <section className="relative z-20 flex w-full min-h-0 items-center justify-center py-12 sm:py-16 md:py-24">
+    <section id="section-2" className="relative z-20 flex w-full min-h-0 items-center justify-center py-12 sm:py-16 md:py-24">
       <div className="section2-boxes-grid mx-auto grid w-full max-w-7xl grid-cols-1 gap-6 px-4 lg:grid-cols-2 lg:gap-10 lg:px-6">
         {/* Links: Warum viele Brauereien online unsichtbar bleiben */}
         <div

@@ -130,6 +130,26 @@ export function Section7AIDemo() {
           </p>
         </div>
 
+        {/* KI-Video: Aus solchen Bildern können solche Videos entstehen – ohne dass die Person existiert */}
+        <div className="section2-card mt-6 overflow-hidden rounded-2xl border border-white/15 p-4 sm:p-6">
+          <div className="aspect-video mx-auto w-full max-w-2xl overflow-hidden rounded-xl bg-black/40">
+            <video
+              src="/ki-beispiel-video.mp4"
+              controls
+              playsInline
+              loop
+              className="h-full w-full object-contain"
+              aria-label="KI-Beispielvideo – zeigt, wie aus Bildern Videos entstehen können"
+            >
+              Dein Browser unterstützt das Video-Format nicht.
+            </video>
+          </div>
+          <p className="section7-hint mt-4 text-center text-sm text-white/70 sm:text-base">
+            Aus solchen Bildern können solche Videos entstehen – ohne dass die Person tatsächlich existiert.
+            KI bringt statische Motive zum Sprechen und Erzählen.
+          </p>
+        </div>
+
         <p className="section7-footer mt-6 text-center text-base font-medium text-white/90 sm:text-lg">
           So kann auch deine Brauerei mit professionellen Bildern und Werbematerial überzeugen – schnell, günstig und ohne Grafikdesigner.
         </p>

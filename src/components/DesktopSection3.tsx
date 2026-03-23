@@ -5,7 +5,7 @@ import { AppleStyleButton } from "./AppleStyleButton";
 /** Statische Section 3 – Bist du bereit? */
 export function DesktopSection3() {
   return (
-    <section className="section3-desktop relative z-20 flex w-full min-h-screen items-center justify-center py-12 sm:py-16 md:py-24">
+    <section id="section-3" className="section3-desktop relative z-20 flex w-full min-h-screen items-center justify-center py-12 sm:py-16 md:py-24">
       <div className="section3-card section3-card-desktop mx-auto max-w-3xl px-4 text-center antialiased lg:px-8 lg:py-12">
         <p className="mb-3 text-sm font-medium uppercase tracking-[0.2em] text-orange-500">
           Dein nächster Schritt

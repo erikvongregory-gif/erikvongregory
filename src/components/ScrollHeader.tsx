@@ -4,25 +4,64 @@ import { useEffect, useRef, useState } from "react";
 import Link from "next/link";
 import { smoothStep } from "@/lib/scrollConstants";
 
+/** Scrollt zum sichtbaren Abschnitt (behebt Duplikat-IDs bei Mobile/Desktop) */
+function scrollToSection(hash: string) {
+  const id = hash.replace(/^#/, "");
+  if (!id) return;
+  const isDesktop = typeof window !== "undefined" && window.matchMedia("(min-width: 768px)").matches;
+  const wrapper = document.getElementById(isDesktop ? "desktop-content" : "mobile-content");
+  const target = wrapper?.querySelector(`#${CSS.escape(id)}`) ?? document.getElementById(id);
+  if (target) {
+    target.scrollIntoView({ behavior: "smooth", block: "start" });
+    history.replaceState(null, "", hash ? `#${id}` : window.location.pathname);
+  }
+}
+
 /** Scroll-Distanz bis Header-Effekt vollständig */
 const HEADER_TRANSITION_END = 80;
 const PROGRESS_STEP = 0.04; /* Nur State-Update wenn Progress sich merklich ändert – flüssigeres Scroll */
+
+const NAV_ITEMS = [
+  { href: "#section-2", label: "Warum" },
+  { href: "#section-4", label: "Lösungen" },
+  { href: "#pakete-preise", label: "Pakete" },
+  { href: "#section-7", label: "Beispiele" },
+  { href: "#contact", label: "Kontakt" },
+] as const;
 
 export function ScrollHeader() {
   const [progress, setProgress] = useState(0);
   const [isMobile, setIsMobile] = useState(false);
   const [isDesktop, setIsDesktop] = useState(false);
+  const [menuOpen, setMenuOpen] = useState(false);
   const lastProgressRef = useRef(0);
 
   useEffect(() => {
     const check = () => {
-      setIsMobile(window.innerWidth < 640);
-      setIsDesktop(window.innerWidth >= 768);
+      const mobile = window.innerWidth < 768;
+      setIsMobile(mobile);
+      setIsDesktop(!mobile);
+      if (!mobile) setMenuOpen(false);
     };
     check();
     window.addEventListener("resize", check);
     return () => window.removeEventListener("resize", check);
   }, []);
+
+  useEffect(() => {
+    const onKey = (e: KeyboardEvent) => {
+      if (e.key === "Escape") setMenuOpen(false);
+    };
+    window.addEventListener("keydown", onKey);
+    return () => window.removeEventListener("keydown", onKey);
+  }, []);
+
+  useEffect(() => {
+    if (menuOpen && isMobile) {
+      document.body.style.overflow = "hidden";
+      return () => { document.body.style.overflow = ""; };
+    }
+  }, [menuOpen, isMobile]);
 
   useEffect(() => {
     let rafId = 0;
@@ -58,6 +97,11 @@ export function ScrollHeader() {
   const borderOpacity = progress;
   const borderRadius = isMobile ? 9999 : 9999 - progress * (9999 - 16);
   const logoFontSize = isMobile ? 18 : 24 - progress * 4;
+
+  const handleNavClick = (hash: string) => {
+    scrollToSection(hash);
+    setMenuOpen(false);
+  };
 
   return (
     <header
@@ -107,27 +151,71 @@ export function ScrollHeader() {
               </span>
             )}
           </div>
-          <nav className="premium-header-nav">
-            <a
-              href="#contact"
-              className="premium-header-link flex items-center gap-1.5 rounded focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white/60 focus-visible:ring-offset-2 focus-visible:ring-offset-transparent"
-            >
-              {isMobile && (
-                <svg
-                  className="h-3.5 w-3.5 shrink-0 text-white/70"
-                  viewBox="0 0 24 24"
-                  fill="none"
-                  stroke="currentColor"
-                  strokeWidth="2"
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  aria-hidden
+          <nav className="premium-header-nav flex items-center justify-end gap-x-3 sm:gap-x-5">
+            {/* Mobile: Hamburger-Menü */}
+            {isMobile ? (
+              <>
+                <button
+                  type="button"
+                  onClick={() => setMenuOpen((o) => !o)}
+                  className="premium-header-link flex h-9 w-9 items-center justify-center rounded-full focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white/60 focus-visible:ring-offset-2 focus-visible:ring-offset-transparent"
+                  aria-label={menuOpen ? "Menü schließen" : "Menü öffnen"}
+                  aria-expanded={menuOpen}
                 >
-                  <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z" />
-                </svg>
-              )}
-              Kontakt
-            </a>
+                  {menuOpen ? (
+                    <svg className="h-5 w-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                      <path d="M18 6L6 18M6 6l12 12" />
+                    </svg>
+                  ) : (
+                    <svg className="h-5 w-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                      <line x1="3" y1="6" x2="21" y2="6" />
+                      <line x1="3" y1="12" x2="21" y2="12" />
+                      <line x1="3" y1="18" x2="21" y2="18" />
+                    </svg>
+                  )}
+                </button>
+                {menuOpen && (
+                  <>
+                    <div
+                      className="fixed inset-0 z-[9997] bg-black/50"
+                      onClick={() => setMenuOpen(false)}
+                      aria-hidden
+                    />
+                    <div
+                      className="fixed right-4 top-[5rem] z-[9998] flex min-w-[10rem] flex-col gap-0.5 rounded-xl border border-white/15 bg-[#0a0f14]/95 py-2 shadow-xl backdrop-blur-xl"
+                      role="menu"
+                    >
+                      {NAV_ITEMS.map(({ href, label }) => (
+                        <a
+                          key={href}
+                          href={href}
+                          role="menuitem"
+                          onClick={(e) => {
+                            e.preventDefault();
+                            handleNavClick(href);
+                          }}
+                          className="premium-header-link whitespace-nowrap px-5 py-2.5 text-[15px] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white/60 focus-visible:ring-inset"
+                        >
+                          {label}
+                        </a>
+                      ))}
+                    </div>
+                  </>
+                )}
+              </>
+            ) : (
+              /* Desktop: Inline-Nav */
+              NAV_ITEMS.map(({ href, label }) => (
+                <a
+                  key={href}
+                  href={href}
+                  onClick={(e) => { e.preventDefault(); scrollToSection(href); }}
+                  className="premium-header-link rounded text-[13px] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white/60 focus-visible:ring-offset-2 focus-visible:ring-offset-transparent sm:text-[0.9375rem]"
+                >
+                  {label}
+                </a>
+              ))
+            )}
           </nav>
         </div>
       </div>

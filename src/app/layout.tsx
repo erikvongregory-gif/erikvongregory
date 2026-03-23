@@ -47,6 +47,7 @@ export const metadata: Metadata = {
     card: "summary_large_image",
     title: SITE.defaultTitle,
     description: SITE.defaultDescription,
+    images: SITE.ogImage ? [SITE.ogImage] : undefined,
   },
   category: "Business",
   manifest: "/manifest.json",

@@ -23,7 +23,7 @@ export const SITE = {
     "EvGlabs",
   ],
   locale: "de_DE",
-  ogImage: undefined as string | undefined, // "/og-image.jpg" (1200×630) für Social-Sharing erstellen
+  ogImage: "/og-image.png", // 1200×630 für WhatsApp, LinkedIn, Twitter etc.
 
   /** Google Search Console – Code von search.google.com/search-console eintragen, z.B. "abc123xyz" */
   googleSiteVerification: "",

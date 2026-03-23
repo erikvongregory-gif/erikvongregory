@@ -8,14 +8,14 @@ export default function Home() {
   return (
     <>
       {/* Mobile: reines CSS (unter 768px) – portrait oben */}
-      <div className="mobile-root block md:hidden">
+      <div id="mobile-content" className="mobile-root block md:hidden">
         <main id="main" className="relative min-h-screen overflow-x-hidden pt-14 sm:pt-16">
           <MobileLayout />
         </main>
         <MobileStickyCTA />
       </div>
       {/* Desktop/Tablet: ab 768px */}
-      <div className="hidden md:block">
+      <div id="desktop-content" className="hidden md:block">
         <DesktopLayout />
       </div>
       <PricingSection />

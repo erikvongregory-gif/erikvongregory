@@ -1,0 +1,14 @@
+---
+description: Git push Verhalten
+alwaysApply: true
+---
+
+# Git Push
+
+Wenn der User "push" sagt, sofort alle geänderten Dateien stagen, committen und zu `erik main` pushen – ohne Rückfragen oder Bestätigungen.
+
+Reihenfolge:
+1. `git add` (alle relevanten geänderten Dateien)
+2. `git commit -m "..."` (kurze sinnvolle Message)
+3. `git stash` falls nötig, `git pull erik main --rebase`, `git stash pop`
+4. `git push erik main`

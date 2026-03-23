@@ -158,7 +158,7 @@ export function MobileLayout() {
         </section>
 
         {/* Section 2 */}
-        <section ref={section2Ref} className="relative px-4 py-16">
+        <section id="section-2" ref={section2Ref} className="relative px-4 py-16">
           <ScrollReveal>
             <div className="section2-card mx-auto max-w-2xl rounded-2xl px-6 py-8 text-center">
             <h2 className="text-2xl font-bold tracking-tight text-white drop-shadow-md">
@@ -191,7 +191,7 @@ export function MobileLayout() {
         </section>
 
         {/* Section 3 */}
-        <section className="relative px-4 py-16">
+        <section id="section-3" className="relative px-4 py-16">
           <ScrollReveal>
           <div className="section3-card mx-auto max-w-2xl rounded-2xl px-6 py-10 text-center">
             <p className="mb-3 text-sm font-medium uppercase tracking-[0.2em] text-orange-400/90">
@@ -214,7 +214,7 @@ export function MobileLayout() {
         </section>
 
         {/* Section 4 */}
-        <section className="relative px-4 py-16">
+        <section id="section-4" className="relative px-4 py-16">
           <ScrollReveal>
           <div className="mb-6 inline-flex w-full justify-center">
             <span className="section4-badge-pulse inline-flex items-center gap-2 rounded-full border border-orange-400/30 bg-orange-400/10 px-4 py-1.5 text-sm font-medium text-orange-300">
@@ -286,7 +286,7 @@ export function MobileLayout() {
         </section>
 
         {/* Section 6 */}
-        <section className="relative px-4 py-16">
+        <section id="section-6" className="relative px-4 py-16">
           <ScrollReveal>
             <div className="section2-card mx-auto max-w-2xl rounded-2xl px-6 py-8 text-center">
             <div className="mb-6 inline-flex items-center gap-2 rounded-full border border-orange-400/30 bg-orange-400/10 px-4 py-1.5 text-sm font-medium text-orange-300">

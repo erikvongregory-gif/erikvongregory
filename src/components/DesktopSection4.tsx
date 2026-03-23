@@ -1,27 +1,10 @@
 "use client";
 
-import { useEffect, useState } from "react";
-
-function useHasHover() {
-  const [hasHover, setHasHover] = useState(true);
-  useEffect(() => {
-    const mq = window.matchMedia("(hover: hover)");
-    const id = setTimeout(() => setHasHover(mq.matches), 0);
-    const handler = () => setHasHover(mq.matches);
-    mq.addEventListener("change", handler);
-    return () => {
-      clearTimeout(id);
-      mq.removeEventListener("change", handler);
-    };
-  }, []);
-  return hasHover;
-}
+import { useState } from "react";
 
 /** Statische Section 4 – Meine 5 Lösungen */
 export function DesktopSection4() {
-  const [hoveredIndex, setHoveredIndex] = useState<number | null>(null);
   const [flippedIndex, setFlippedIndex] = useState<number | null>(null);
-  const hasHover = useHasHover();
 
   const handleCardInteraction = (index: number) => {
     setFlippedIndex((prev: number | null) => (prev === index ? null : index));
@@ -88,7 +71,7 @@ export function DesktopSection4() {
   ];
 
   return (
-    <section className="relative z-20 flex w-full min-h-screen items-center justify-center overflow-x-hidden py-12 sm:py-16 md:py-24">
+    <section id="section-4" className="relative z-20 flex w-full min-h-screen items-center justify-center overflow-x-hidden py-12 sm:py-16 md:py-24">
       <div className="mx-auto w-full max-w-6xl overflow-visible px-4 lg:px-6">
         <h2 className="mb-6 text-center text-xl font-bold tracking-tight text-neutral-900 drop-shadow-sm sm:mb-8 sm:text-3xl md:text-4xl">
           Meine 5{" "}
@@ -96,7 +79,7 @@ export function DesktopSection4() {
             Lösungen
           </span>
         </h2>
-        <div className="grid grid-cols-1 gap-5 sm:grid-cols-2 sm:gap-6 lg:grid-cols-5 auto-rows-fr px-3 py-4 overflow-visible sm:px-4 sm:py-6">
+        <div className="section4-flip-cards-grid grid grid-cols-1 gap-5 sm:grid-cols-2 sm:gap-6 lg:grid-cols-5 auto-rows-fr px-3 py-4 overflow-visible sm:px-4 sm:py-6">
           {items.map((item, i) => {
             const isFlipped = flippedIndex === i;
             return (
@@ -107,11 +90,7 @@ export function DesktopSection4() {
                 onClick={() => handleCardInteraction(i)}
                 onKeyDown={(e) => e.key === "Enter" && handleCardInteraction(i)}
                 aria-pressed={isFlipped}
-                className={`flip-card text-neutral-900 min-h-[340px] sm:min-h-[400px] lg:min-h-[460px] transition-transform duration-200 ${isFlipped ? "flip-card-flipped" : ""} ${
-                  hasHover && hoveredIndex === i ? "scale-[1.08]" : hasHover && hoveredIndex !== null ? "scale-[0.92]" : ""
-                }`}
-                onMouseEnter={() => setHoveredIndex(i)}
-                onMouseLeave={() => setHoveredIndex(null)}
+                className={`section4-flip-card-slide flip-card text-neutral-900 min-h-[340px] sm:min-h-[400px] lg:min-h-[460px] ${isFlipped ? "flip-card-flipped" : ""}`}
                 aria-label={isFlipped ? `${item.title} – Zum Schließen erneut tippen` : `${item.title} – Tippen für Details`}
               >
                 <div className="flip-card-inner">

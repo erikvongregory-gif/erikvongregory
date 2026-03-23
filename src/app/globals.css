@@ -335,6 +335,17 @@ body[data-legal-page="true"] {
   scroll-margin-top: 6rem;
 }
 
+/* Scroll-Ziele für Header-Nav – Abstand zum fixierten Header */
+#section-2,
+#section-3,
+#section-4,
+#section-6,
+#section-7,
+#pakete-preise,
+#contact {
+  scroll-margin-top: 5.5rem;
+}
+
 .legal-content a {
   word-break: break-all;
 }
@@ -831,6 +842,61 @@ body[data-legal-page="true"] {
     transform: none;
   }
   .section2-slide-trigger:not(.desktop-fade-in-view--visible) .section2-box-slide {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+/* Section 4 – Flipkarten clean von unten nach oben, gestaffelt */
+@keyframes section4-flip-card-fade-up {
+  from {
+    opacity: 0;
+    transform: translate3d(0, 48px, 0);
+  }
+  to {
+    opacity: 1;
+    transform: translate3d(0, 0, 0);
+  }
+}
+
+.section4-flip-cards-grid .section4-flip-card-slide {
+  animation: section4-flip-card-fade-up 0.5s cubic-bezier(0.22, 1, 0.36, 1) both;
+  animation-play-state: paused;
+}
+
+.section4-cards-trigger.desktop-fade-in-view--visible .section4-flip-cards-grid .section4-flip-card-slide {
+  animation-play-state: running;
+}
+
+.section4-cards-trigger:not(.desktop-fade-in-view--visible) .section4-flip-cards-grid .section4-flip-card-slide {
+  animation: none;
+  opacity: 0;
+  transform: translate3d(0, 48px, 0);
+}
+
+.section4-flip-cards-grid .section4-flip-card-slide:nth-child(1) { animation-delay: 0s; }
+.section4-flip-cards-grid .section4-flip-card-slide:nth-child(2) { animation-delay: 0.08s; }
+.section4-flip-cards-grid .section4-flip-card-slide:nth-child(3) { animation-delay: 0.16s; }
+.section4-flip-cards-grid .section4-flip-card-slide:nth-child(4) { animation-delay: 0.24s; }
+.section4-flip-cards-grid .section4-flip-card-slide:nth-child(5) { animation-delay: 0.32s; }
+
+.section4-cards-trigger.desktop-fade-in-view {
+  opacity: 1;
+  transform: none;
+  transition: none;
+}
+
+@media (max-width: 767px) {
+  .section4-flip-cards-grid .section4-flip-card-slide {
+    animation: none;
+    opacity: 1;
+    transform: none;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .section4-flip-cards-grid .section4-flip-card-slide {
+    animation: none;
     opacity: 1;
     transform: none;
   }
@@ -1975,7 +2041,6 @@ body[data-legal-page="true"] {
 
 /* Section-4 Flip Cards – Liquid-Glas, passend zu Hero & Section 2 */
 .flip-card {
-  transition: transform 0.35s cubic-bezier(0.4, 0, 0.2, 1);
   perspective: 2500px;
   perspective-origin: center center;
   -webkit-tap-highlight-color: transparent;
@@ -1986,6 +2051,17 @@ body[data-legal-page="true"] {
   min-height: 380px;
   overflow: visible;
   transform-style: preserve-3d;
+}
+
+/* Hover: dezenter Lift – kein Scale, kein Layout-Shift, keine Geschwister-Animation */
+@media (hover: hover) {
+  .flip-card:hover {
+    transform: translate3d(0, -6px, 0);
+    transition: transform 0.3s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+  }
+  .flip-card {
+    transition: transform 0.3s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+  }
 }
 
 .flip-card-inner {
@@ -2018,18 +2094,20 @@ body[data-legal-page="true"] {
   -webkit-backface-visibility: hidden;
   overflow: visible;
   border-radius: 1.25rem;
-  border: 1px solid rgba(255, 255, 255, 0.25);
+  border: 1px solid rgba(255, 255, 255, 0.2);
   padding: 1.75rem;
   box-sizing: border-box;
   box-shadow:
     0 0 0 1px rgba(255, 255, 255, 0.08) inset,
-    0 4px 24px rgba(0, 0, 0, 0.15),
-    0 0 50px rgba(224, 122, 64, 0.12),
-    0 1px 0 rgba(255, 255, 255, 0.06);
+    0 4px 24px rgba(0, 0, 0, 0.12),
+    0 0 40px rgba(224, 122, 64, 0.08),
+    0 1px 0 rgba(255, 255, 255, 0.05);
+  transition: box-shadow 0.3s ease, border-color 0.3s ease;
 }
 
+/* Vorder- und Rückseite: dezenter Farbverlauf für mehr Tiefe */
 .flip-card-front {
-  background: rgba(255, 255, 255, 0.1);
+  background: linear-gradient(165deg, rgba(255, 255, 255, 0.12) 0%, rgba(255, 255, 255, 0.06) 50%, rgba(224, 122, 64, 0.04) 100%);
   backdrop-filter: blur(20px);
   -webkit-backdrop-filter: blur(20px);
   display: flex;
@@ -2040,6 +2118,19 @@ body[data-legal-page="true"] {
   text-align: center;
 }
 
+/* Dezenter Orange-Akzent oben für mehr Charakter */
+.flip-card-front::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 20%;
+  right: 20%;
+  height: 2px;
+  border-radius: 1px;
+  background: linear-gradient(90deg, transparent, rgba(224, 122, 64, 0.5), transparent);
+  opacity: 0.7;
+}
+
 .flip-card-front-icon {
   display: flex;
   align-items: center;
@@ -2047,10 +2138,11 @@ body[data-legal-page="true"] {
   width: 4rem;
   height: 4rem;
   border-radius: 1rem;
-  background: rgba(34, 197, 94, 0.12);
-  border: 1px solid rgba(34, 197, 94, 0.22);
-  color: rgba(167, 243, 208, 0.85);
+  background: linear-gradient(135deg, rgba(224, 122, 64, 0.2) 0%, rgba(198, 90, 32, 0.12) 100%);
+  border: 1px solid rgba(224, 122, 64, 0.3);
+  color: rgba(255, 210, 170, 0.95);
   flex-shrink: 0;
+  box-shadow: 0 0 20px rgba(224, 122, 64, 0.08);
 }
 
 .flip-card-front-title {
@@ -2086,33 +2178,48 @@ body[data-legal-page="true"] {
 }
 
 .flip-card-back {
-  background: rgba(255, 255, 255, 0.08);
+  background: linear-gradient(180deg, rgba(15, 25, 35, 0.95) 0%, rgba(11, 20, 30, 0.98) 100%);
   backdrop-filter: blur(24px);
   -webkit-backdrop-filter: blur(24px);
   transform: rotateY(180deg);
   display: flex;
   flex-direction: column;
   box-sizing: border-box;
-  transition: box-shadow 0.4s ease, border-color 0.3s ease;
 }
 
+/* Hover: sanfter Rand-Glow auf der Rückseite */
+.flip-card:hover .flip-card-front,
 .flip-card:hover .flip-card-back {
   border-color: rgba(224, 122, 64, 0.35);
   box-shadow:
-    0 0 0 1px rgba(224, 122, 64, 0.12) inset,
-    0 0 0 1px rgba(255, 255, 255, 0.08) inset,
+    0 0 0 1px rgba(224, 122, 64, 0.15) inset,
+    0 0 0 1px rgba(255, 255, 255, 0.06) inset,
     0 8px 32px rgba(0, 0, 0, 0.2),
-    0 0 48px rgba(224, 122, 64, 0.2),
-    0 0 96px rgba(224, 122, 64, 0.08);
+    0 0 40px rgba(224, 122, 64, 0.15),
+    0 0 80px rgba(224, 122, 64, 0.06);
 }
 
 .flip-card-back .flip-card-back-content {
-  overflow: hidden;
+  overflow-y: auto;
+  overflow-x: hidden;
   flex: 1;
   min-height: 0;
   display: flex;
   flex-direction: column;
   border-radius: inherit;
+  -webkit-overflow-scrolling: touch;
+}
+
+/* Dezente Scrollbar für lange Texte auf der Rückseite */
+.flip-card-back .flip-card-back-content::-webkit-scrollbar {
+  width: 4px;
+}
+.flip-card-back .flip-card-back-content::-webkit-scrollbar-track {
+  background: transparent;
+}
+.flip-card-back .flip-card-back-content::-webkit-scrollbar-thumb {
+  background: rgba(224, 122, 64, 0.3);
+  border-radius: 2px;
 }
 
 /* Icon-Animationen – thematisch pro Typ */
@@ -2391,22 +2498,25 @@ body[data-legal-page="true"] {
   animation: pricing-slide-up 0.55s cubic-bezier(0.22, 1, 0.36, 1) 0.7s both;
 }
 
-/* Desktop: schnellere Animationen */
+/* Desktop: deutlich schnellere Animationen */
 @media (min-width: 768px) {
   .pricing-section-reveal {
-    transition-duration: 0.3s !important;
+    transition-duration: 0.2s !important;
+  }
+  .pricing-in-view .pricing-slide-in {
+    animation-duration: 0.35s;
   }
   .pricing-in-view .pricing-slide-in-delay-1 {
-    animation: pricing-slide-up 0.45s cubic-bezier(0.22, 1, 0.36, 1) 0.15s both;
+    animation: pricing-slide-up 0.35s cubic-bezier(0.22, 1, 0.36, 1) 0.05s both;
   }
   .pricing-in-view .pricing-card-slide-0 {
-    animation: pricing-card-from-left 0.4s cubic-bezier(0.22, 1, 0.36, 1) 0.2s forwards;
+    animation: pricing-card-from-left 0.3s cubic-bezier(0.22, 1, 0.36, 1) 0.05s forwards;
   }
   .pricing-in-view .pricing-card-slide-1 {
-    animation: pricing-card-from-right 0.4s cubic-bezier(0.22, 1, 0.36, 1) 0.35s forwards;
+    animation: pricing-card-from-right 0.3s cubic-bezier(0.22, 1, 0.36, 1) 0.1s forwards;
   }
   .pricing-in-view .pricing-card-slide-2 {
-    animation: pricing-card-from-left 0.4s cubic-bezier(0.22, 1, 0.36, 1) 0.5s forwards;
+    animation: pricing-card-from-left 0.3s cubic-bezier(0.22, 1, 0.36, 1) 0.15s forwards;
   }
 }
 
@@ -2459,15 +2569,17 @@ body[data-legal-page="true"] {
   transform: translateX(-56px);
 }
 
-/* Animation startet erst beim Scrollen ins Viewport – nacheinander gestaffelt */
-.pricing-in-view .pricing-card-slide-0 {
-  animation: pricing-card-from-left 0.55s cubic-bezier(0.22, 1, 0.36, 1) 1.2s forwards;
-}
-.pricing-in-view .pricing-card-slide-1 {
-  animation: pricing-card-from-right 0.55s cubic-bezier(0.22, 1, 0.36, 1) 1.7s forwards;
-}
-.pricing-in-view .pricing-card-slide-2 {
-  animation: pricing-card-from-left 0.55s cubic-bezier(0.22, 1, 0.36, 1) 2.2s forwards;
+/* Animation startet erst beim Scrollen ins Viewport – nacheinander gestaffelt (nur Mobile) */
+@media (max-width: 767px) {
+  .pricing-in-view .pricing-card-slide-0 {
+    animation: pricing-card-from-left 0.55s cubic-bezier(0.22, 1, 0.36, 1) 1.2s forwards;
+  }
+  .pricing-in-view .pricing-card-slide-1 {
+    animation: pricing-card-from-right 0.55s cubic-bezier(0.22, 1, 0.36, 1) 1.7s forwards;
+  }
+  .pricing-in-view .pricing-card-slide-2 {
+    animation: pricing-card-from-left 0.55s cubic-bezier(0.22, 1, 0.36, 1) 2.2s forwards;
+  }
 }
 
 @keyframes pricing-sale-badge-pulse {
