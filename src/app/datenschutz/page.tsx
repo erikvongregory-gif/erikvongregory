@@ -6,7 +6,7 @@ import { SITE } from "@/lib/siteConfig";
 export const metadata: Metadata = {
   title: "Datenschutzerklärung",
   description:
-    "Datenschutzerklärung – EvGlabs, KI für Brauereien & Gastronomie. Informationen zur Verarbeitung personenbezogener Daten und Cookies.",
+    "Datenschutzerklärung – EvGlab, KI für Brauereien & Gastronomie. Informationen zur Verarbeitung personenbezogener Daten und Cookies.",
   alternates: { canonical: `${SITE.baseUrl}/datenschutz` },
   robots: { index: true, follow: true },
 };
@@ -126,15 +126,18 @@ export default function DatenschutzPage() {
           <section>
             <h2 className="mb-3 text-lg font-semibold text-white">4. Cookies und lokale Speicherung</h2>
             <p className="text-white/90">
-              Diese Website verwendet Cookies bzw. lokale Speicherung (localStorage), um Ihre
-              Cookie-Einstellungen zu speichern. Dabei handelt es sich um technisch notwendige
-              Cookies, die ausschließlich dazu dienen, Ihre Wahl (Akzeptanz oder Ablehnung von
-              Cookies) zu merken.
+              Über das Cookie-Banner können Sie auswählen, welche Kategorien Sie zulassen:
+              notwendige Speicherung Ihrer Einstellung, optional Statistik sowie optional
+              Marketing. Ihre Auswahl wird lokal im Browser (localStorage) in strukturierter
+              Form gespeichert, damit sie bei weiteren Besuchen erhalten bleibt.
             </p>
             <p className="mt-3 text-white/90">
-              <strong>Rechtsgrundlage:</strong> Art. 6 Abs. 1 lit. f DSGVO (berechtigtes
-              Interesse an der Speicherung Ihrer Präferenz) bzw. Art. 6 Abs. 1 lit. a DSGVO
-              (Einwilligung, sofern Sie Cookies akzeptieren).
+              <strong>Rechtsgrundlage:</strong> Für notwendige Speicherung Ihrer Präferenz: Art.
+              6 Abs. 1 lit. f DSGVO (berechtigtes Interesse an der funktionsfähigen
+              Einstellungsverwaltung). Für Statistik und Marketing, sofern eingesetzt: Art. 6
+              Abs. 1 lit. a DSGVO (Einwilligung über das Banner), die Sie mit Wirkung für die
+              Zukunft widerrufen können (z. B. durch Löschen der lokalen Speicherung im Browser
+              oder erneutes Öffnen der Einstellungen, sofern angeboten).
             </p>
             <p className="mt-3 text-white/90">
               Sie können Ihren Browser so einstellen, dass Sie über das Setzen von Cookies

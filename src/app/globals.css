@@ -237,6 +237,8 @@
   --font-almarena: var(--font-work-sans);
   --akq-green-hover: #166534;
   --akq-green-light: #dcfce7;
+  /* Mobile Hauptseite: blauer Verlauf wie ursprünglich / Live (nicht flaches #0a0f14) */
+  --home-bg-gradient-blue: linear-gradient(165deg, #0a0f14 0%, #0f172a 35%, #0c1222 70%, #05100d 100%);
 }
 
 html {
@@ -255,6 +257,7 @@ html {
 @media (max-width: 768px) {
   html {
     overflow-x: hidden;
+    background: var(--home-bg-gradient-blue);
   }
 }
 
@@ -263,6 +266,12 @@ body {
   background: #0a0f14;
   /* overflow-x: clip statt hidden – verhindert Scroll-Buckling auf Desktop */
   overflow-x: clip;
+}
+
+@media (max-width: 768px) {
+  body:not([data-legal-page="true"]) {
+    background: var(--home-bg-gradient-blue) !important;
+  }
 }
 
 /* Rechtliche Seiten – Impressum & Datenschutz */
@@ -587,6 +596,20 @@ body[data-legal-page="true"] {
   }
 }
 
+/* Schwächerer Blur für die erste Hero-Zeile (bessere Lesbarkeit auf Mobile) */
+@keyframes word-blur-in-hero-line1 {
+  from {
+    opacity: 0;
+    filter: blur(6px);
+    transform: translateY(-8px);
+  }
+  to {
+    opacity: 1;
+    filter: blur(0px);
+    transform: translateY(0);
+  }
+}
+
 /* Ohne .hero-ready: versteckt */
 .mobile-hero-synced .mobile-slide-in {
   opacity: 0;
@@ -663,6 +686,16 @@ body[data-legal-page="true"] {
 }
 .mobile-hero-synced.hero-ready .mobile-word-blur-in {
   animation: word-blur-in 0.65s cubic-bezier(0.05, 1, 0.08, 1) var(--char-delay, 0s) both;
+}
+
+.mobile-hero-line1 {
+  filter: drop-shadow(0 0 1px rgba(255, 255, 255, 0.5))
+    drop-shadow(0 1px 2px rgba(0, 0, 0, 0.85))
+    drop-shadow(0 4px 14px rgba(0, 0, 0, 0.45));
+}
+
+.mobile-hero-synced.hero-ready .mobile-word-blur-in.mobile-word-blur-in-hero-line1 {
+  animation: word-blur-in-hero-line1 0.65s cubic-bezier(0.05, 1, 0.08, 1) var(--char-delay, 0s) both;
 }
 
 @media (prefers-reduced-motion: reduce) {
@@ -1666,10 +1699,26 @@ body[data-legal-page="true"] {
   color: #6b6b6b;
 }
 
-/* Section7 „Echte Beispiele aus der Praxis“ – auf Desktop weichere Schrift (weniger Kontrast) */
+/* Section 7 – Mobile: transparent = ein durchgehender fixierter Verlauf (LiquidBackground), kein Versatz am Übergang */
+@media (max-width: 767px) {
+  #section-7 {
+    background: transparent !important;
+  }
+}
+@media (min-width: 768px) {
+  #section-7 {
+    background-color: #cbcbcb !important;
+    /* Eigenes Stacking: verhindert, dass fixed Liquid-/Blur-Schichten „durchscheinen“ */
+    isolation: isolate;
+  }
+}
+
+/* Section7 – Typo & Karten: heller Block nur ab Tablet/Desktop; Mobile bleibt heller Komponenten-Schrift */
 @media (min-width: 768px) {
   #section-7 .section7-headline {
     color: #4a4a4a !important;
+    filter: none !important;
+    text-shadow: none;
   }
   #section-7 .section7-headline .font-austera-green-fade {
     background: linear-gradient(90deg, #d46830 0%, #c65a20 50%, #b84d15 100%);
@@ -1687,14 +1736,22 @@ body[data-legal-page="true"] {
     border-color: rgba(224, 122, 64, 0.35) !important;
     color: #c65a20 !important;
   }
+  /* Kein Glaseffekt: globale .section2-card nutzt helles translucent + blur → auf #cbcbcb wirkt das wie weißer Film */
   #section-7 .section2-card {
-    background: rgba(11, 22, 32, 0.72);
-    backdrop-filter: blur(20px);
-    -webkit-backdrop-filter: blur(20px);
-    border-color: rgba(255, 255, 255, 0.12);
+    background: rgb(14, 22, 30) !important;
+    backdrop-filter: none !important;
+    -webkit-backdrop-filter: none !important;
+    border-color: rgba(255, 255, 255, 0.14) !important;
     box-shadow:
-      0 8px 32px rgba(0, 0, 0, 0.2),
+      0 8px 32px rgba(0, 0, 0, 0.28),
       0 0 50px rgba(224, 122, 64, 0.14) !important;
+  }
+
+  #section-7 .section7-inner .group img,
+  #section-7 .section7-inner span > img {
+    mix-blend-mode: normal !important;
+    filter: none !important;
+    opacity: 1 !important;
   }
   #section-7 .section2-card .section7-hint {
     color: rgba(255, 255, 255, 0.8) !important;
@@ -2291,10 +2348,10 @@ body[data-legal-page="true"] {
   }
 }
 
-/* Loading-Screen auf Mobile: dunkler Hintergrund */
+/* Loading-Screen auf Mobile: gleicher blauer Verlauf wie Hauptseite */
 @media (max-width: 768px) {
   .loading-screen {
-    background: #0a0f14 !important;
+    background: var(--home-bg-gradient-blue) !important;
   }
   .loading-screen .text-black {
     color: white !important;
@@ -2317,9 +2374,9 @@ body[data-legal-page="true"] {
   animation: loading-shimmer-text 2.5s ease-in-out infinite;
 }
 
-/* Hero-Headline – langsamer Shimmer nur auf "Die…Brauereien." */
+/* Hero-Headline – Shimmer nur auf "Die…Brauereien." */
 .hero-headline-shimmer {
-  animation: loading-shimmer-text 8s ease-in-out infinite;
+  animation: loading-shimmer-text 5s ease-in-out infinite;
 }
 
 @keyframes loading-shimmer-text {

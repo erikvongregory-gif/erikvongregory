@@ -1,72 +1,30 @@
-"use client";
+/** Desktop: keine Transition für die statischen Blobs */
+const DESKTOP_BLOB_TRANSITION = "none";
 
-import { useEffect, useState } from "react";
+/** Gleicher Verlauf wie `body` auf Mobile (`--home-bg-gradient-blue`); #section-7 bleibt durchsichtig für einen nahtlosen Übergang */
+const MOBILE_HOME_GRADIENT =
+  "linear-gradient(165deg, #0a0f14 0%, #0f172a 35%, #0c1222 70%, #05100d 100%)";
 
-/** Desktop: keine Transition für 60fps direkte Scroll-Reaktion */
-const DESKTOP_TRANSITION = "none";
-const MOBILE_TRANSITION = "transform 0.08s cubic-bezier(0.33, 1, 0.68, 1)";
-
+/**
+ * Hintergrund: Mobile nur flacher blaugrauer Verlauf (wie Abschnitt „Echte Beispiele“),
+ * Desktop hell #cbcbcb mit Pfirsich-Blobs und leichten Overlays.
+ */
 export function LiquidBackground() {
-  const [scroll, setScroll] = useState({ dx: 0, dy: 0, rotation: 0 });
-  const [isMobile, setIsMobile] = useState(false);
-
-  useEffect(() => {
-    const id = setTimeout(() => setIsMobile(window.matchMedia("(max-width: 768px)").matches), 0);
-    return () => clearTimeout(id);
-  }, []);
-
-  useEffect(() => {
-    if (!isMobile) return;
-    let rafId = 0;
-    let lastRun = 0;
-    const onScroll = () => {
-      if (rafId) cancelAnimationFrame(rafId);
-      rafId = requestAnimationFrame((now) => {
-        if (now - lastRun < 32) return;
-        lastRun = now;
-        const scrollY = window.scrollY;
-        const t = scrollY * 0.001;
-        setScroll({
-          dx: Math.sin(t) * 32,
-          dy: Math.cos(t * 0.85) * 20,
-          rotation: scrollY * 0.032,
-        });
-      });
-    };
-    onScroll();
-    window.addEventListener("scroll", onScroll, { passive: true });
-    return () => {
-      window.removeEventListener("scroll", onScroll);
-      if (rafId) cancelAnimationFrame(rafId);
-    };
-  }, [isMobile]);
-
-  const { dx, dy, rotation } = scroll;
-  const blobTransition = isMobile ? MOBILE_TRANSITION : DESKTOP_TRANSITION;
-
   return (
     <div className="fixed inset-0 z-0 overflow-hidden" aria-hidden>
-      {/* Basis: sauber hell wie Referenz */}
+      <div className="absolute inset-0 md:hidden" style={{ background: MOBILE_HOME_GRADIENT }} />
+      <div className="absolute inset-0 hidden bg-[#cbcbcb] md:block" />
       <div
-        className="absolute inset-0"
-        style={{
-          background: "#cbcbcb",
-        }}
-      />
-      <div
-        className="absolute inset-0 liquid-scroll-layer"
-        style={{
-          transform: `scale(1.5) rotate(${rotation}deg)`,
-          transformOrigin: "center center",
-        }}
+        className="liquid-scroll-layer absolute inset-0 hidden scale-150 md:block"
+        style={{ transformOrigin: "center center" }}
       >
         <div
           className="liquid-blob liquid-blob-1 absolute h-[70vh] w-[70vh] -left-[15%] top-[10%]"
           style={{
             background:
               "linear-gradient(135deg, rgba(255, 220, 190, 0.15) 0%, rgba(255, 235, 205, 0.08) 40%, transparent 100%)",
-            transform: `translate3d(${dx * 0.8}px, ${dy * 0.6}px, 0)`,
-            transition: blobTransition,
+            transform: "translate3d(0,0,0)",
+            transition: DESKTOP_BLOB_TRANSITION,
           }}
         />
         <div
@@ -74,8 +32,8 @@ export function LiquidBackground() {
           style={{
             background:
               "linear-gradient(225deg, rgba(255, 220, 190, 0.1) 0%, rgba(255, 235, 205, 0.06) 50%, transparent 100%)",
-            transform: `translate3d(${-dx * 0.6}px, ${-dy * 0.5}px, 0)`,
-            transition: blobTransition,
+            transform: "translate3d(0,0,0)",
+            transition: DESKTOP_BLOB_TRANSITION,
           }}
         />
         <div
@@ -83,21 +41,21 @@ export function LiquidBackground() {
           style={{
             background:
               "linear-gradient(180deg, rgba(255, 235, 205, 0.06) 0%, transparent 50%)",
-            transform: `translate3d(calc(-50% + ${dx}px), calc(-50% + ${dy * 0.7}px), 0)`,
-            transition: blobTransition,
+            transform: "translate3d(-50%, -50%, 0)",
+            transition: DESKTOP_BLOB_TRANSITION,
           }}
         />
       </div>
-      {/* Vignette – auf hellem Desktop dezent */}
+      {/* Vignette & Pfirsich nur Desktop – auf Mobile Extra-Overlays wie #section-7 vermeiden */}
       <div
-        className="absolute inset-0"
+        className="pointer-events-none absolute inset-0 hidden md:block"
         style={{
           background:
             "radial-gradient(ellipse 80% 70% at 50% 40%, transparent 40%, rgba(0,0,0,0.03) 100%)",
         }}
       />
       <div
-        className="absolute inset-0 pointer-events-none"
+        className="pointer-events-none absolute inset-0 hidden md:block"
         style={{
           background:
             "radial-gradient(ellipse 180% 220% at 85% 30%, rgba(255, 200, 160, 0.25) 0%, rgba(255, 220, 190, 0.08) 6%, rgba(255, 235, 205, 0.02) 14%, transparent 22%)",

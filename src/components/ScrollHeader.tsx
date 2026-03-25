@@ -2,6 +2,7 @@
 
 import { useEffect, useRef, useState } from "react";
 import Link from "next/link";
+import { usePathname } from "next/navigation";
 import { smoothStep } from "@/lib/scrollConstants";
 
 /** Scrollt zum sichtbaren Abschnitt (behebt Duplikat-IDs bei Mobile/Desktop) */
@@ -30,6 +31,7 @@ const NAV_ITEMS = [
 ] as const;
 
 export function ScrollHeader() {
+  const pathname = usePathname();
   const [progress, setProgress] = useState(0);
   const [isMobile, setIsMobile] = useState(false);
   const [isDesktop, setIsDesktop] = useState(false);
@@ -103,9 +105,11 @@ export function ScrollHeader() {
     setMenuOpen(false);
   };
 
+  const shouldUseHeaderLightTheme = isDesktop;
+
   return (
     <header
-      className={`premium-header premium-header-progress ${isDesktop ? "header-light-theme" : ""}`}
+      className={`premium-header premium-header-progress ${shouldUseHeaderLightTheme ? "header-light-theme" : ""}`}
       style={{
         paddingTop: `${headerPaddingTop}px`,
       }}
@@ -125,7 +129,7 @@ export function ScrollHeader() {
             borderRadius: `${borderRadius}px`,
             borderColor: "transparent",
             backgroundColor: progress > 0
-              ? (isDesktop ? "rgba(255, 255, 255, 0.65)" : "rgba(10, 15, 20, 0.7)")
+              ? (shouldUseHeaderLightTheme ? "rgba(255, 255, 255, 0.65)" : "rgba(10, 15, 20, 0.7)")
               : "transparent",
             backdropFilter: progress > 0 ? "blur(12px)" : "none",
             WebkitBackdropFilter: progress > 0 ? "blur(12px)" : "none",
@@ -138,7 +142,7 @@ export function ScrollHeader() {
               className="premium-header-logo rounded focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white/60 focus-visible:ring-offset-2 focus-visible:ring-offset-transparent"
               style={{ fontSize: `${logoFontSize}px` }}
             >
-              EvG<span className="font-light italic font-austera-green-fade">labs</span>
+              EvG<span className="font-light italic font-austera-green-fade">lab</span>
             </Link>
             {isMobile && (
               <span

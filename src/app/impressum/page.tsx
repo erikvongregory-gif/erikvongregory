@@ -6,7 +6,7 @@ import { SITE } from "@/lib/siteConfig";
 export const metadata: Metadata = {
   title: "Impressum",
   description:
-    "Impressum und rechtliche Angaben – EvGlabs, KI für Brauereien & Gastronomie. Fuchstal.",
+    "Impressum und rechtliche Angaben – EvGlab, KI für Brauereien & Gastronomie. Fuchstal.",
   alternates: { canonical: `${SITE.baseUrl}/impressum` },
   robots: { index: true, follow: true },
 };

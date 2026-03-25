@@ -6,6 +6,7 @@ import { useLoading } from "@/context/LoadingContext";
 import { AppleStyleButton } from "./AppleStyleButton";
 import { ProblemItem } from "./ProblemItem";
 import { ScrollReveal } from "./ScrollReveal";
+import { LiquidBackground } from "./LiquidBackground";
 
 const SECTION4_ITEMS = [
   {
@@ -68,13 +69,8 @@ export function MobileLayout() {
 
   return (
     <>
-      <div
-        className="fixed inset-0 -z-10"
-        style={{
-          background: "linear-gradient(165deg, #0a0f14 0%, #0f172a 35%, #0c1222 70%, #05100d 100%)",
-        }}
-      />
-      <div className="relative flex flex-col">
+      <LiquidBackground />
+      <div className="relative z-10 flex flex-col">
         {/* Hero – gestaffelte Slide-Ins nach LoadingScreen */}
         <section
           className={`mobile-hero-synced relative flex min-h-screen flex-col items-center justify-start px-4 pb-12 pt-2 text-center ${heroReady ? "hero-ready" : ""}`}
@@ -82,7 +78,7 @@ export function MobileLayout() {
           <div className="mb-3 flex shrink-0 justify-center -mt-2">
             <Image
               src="/hero-portrait.svg"
-              alt="EvGlabs"
+              alt="EvGlab"
               width={219}
               height={320}
               priority
@@ -91,17 +87,19 @@ export function MobileLayout() {
             />
           </div>
           <h1 className="mobile-slide-up-in -mt-2 mb-8 block leading-none tracking-tight" style={{ fontFamily: "'Montserrat', sans-serif" }}>
-            <div className="block text-xl font-extrabold">
+            <div className="mobile-hero-line1 block text-[1.35rem] font-extrabold leading-snug sm:text-xl">
               {"die erste KI‑Marketinglösung".split("").map((char, i) => (
                 <span
                   key={i}
-                  className="mobile-word-blur-in inline-block"
+                  className="mobile-word-blur-in mobile-word-blur-in-hero-line1 inline-block"
                   style={{
-                    background: "linear-gradient(90deg, #ffffff 0%, #ffffff 25%, #ffc090 50%, #ffffff 75%, #ffffff 100%)",
+                    background:
+                      "linear-gradient(90deg, #ffffff 0%, #ffffff 32%, #ffe8d0 50%, #ffffff 68%, #ffffff 100%)",
                     backgroundSize: "200% 100%",
                     WebkitBackgroundClip: "text",
                     backgroundClip: "text",
                     color: "transparent",
+                    WebkitTextFillColor: "transparent",
                     ["--char-delay" as string]: `${i * 0.02}s`,
                     whiteSpace: "pre",
                   }}
@@ -110,7 +108,7 @@ export function MobileLayout() {
                 </span>
               ))}
             </div>
-            <div className="block -mt-2 text-[2.15rem] font-light italic" style={{ fontFamily: "var(--font-playfair)" }}>
+            <div className="block -mt-2 text-[2rem] font-light italic sm:text-[2.15rem]" style={{ fontFamily: "var(--font-playfair)" }}>
               {(() => {
                 const len = "speziell für Brauereien".length;
                 const lerp = (c1: string, c2: string, t: number) => {
@@ -141,13 +139,13 @@ export function MobileLayout() {
               })()}
             </div>
           </h1>
-          <p className="mobile-slide-up-in mobile-slide-up-in-0 mb-0 text-xl font-light italic text-white/95" style={{ fontFamily: "'Montserrat', sans-serif" }}>
+          <p className="mobile-slide-up-in mobile-slide-up-in-0 mb-0 text-xl font-light italic text-white/90" style={{ fontFamily: "'Montserrat', sans-serif" }}>
             KI für Brauereien & Gastronomie
           </p>
-          <p className="mobile-slide-up-in mobile-slide-up-in-1 mx-auto max-w-lg text-base leading-relaxed text-white/95">
+          <p className="mobile-slide-up-in mobile-slide-up-in-1 mx-auto max-w-lg text-base leading-relaxed text-white/90">
             <span className="font-semibold text-white">Mehr Reichweite, mehr Aufmerksamkeit</span> – nutze moderne KI, um deine Brauerei digital sichtbar zu machen. Ohne klassische Marketingagentur.
           </p>
-          <p className="mobile-slide-up-in mobile-slide-up-in-2 mx-auto mt-2 max-w-lg text-[15px] leading-relaxed text-white/85">
+          <p className="mobile-slide-up-in mobile-slide-up-in-2 mx-auto mt-2 max-w-lg text-[15px] leading-relaxed text-white/80">
             Content-Systeme, Werbevideos & automatisiertes Marketing – speziell für Brauereien, Gastronomen und Getränkehersteller.
           </p>
           <div className="mobile-slide-up-from-bottom mt-6 flex flex-col items-center gap-3">

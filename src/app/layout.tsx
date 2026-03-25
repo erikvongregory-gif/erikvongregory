@@ -21,13 +21,13 @@ export const metadata: Metadata = {
   metadataBase: new URL(SITE.baseUrl),
   title: {
     default: SITE.defaultTitle,
-    template: "%s | EvGlabs",
+    template: `%s | ${SITE.name}`,
   },
   description: SITE.defaultDescription,
   keywords: [...SITE.keywords],
-  authors: [{ name: "EvGlabs", url: SITE.baseUrl }],
-  creator: "EvGlabs",
-  publisher: "EvGlabs",
+  authors: [{ name: SITE.name, url: SITE.baseUrl }],
+  creator: SITE.name,
+  publisher: SITE.name,
   robots: {
     index: true,
     follow: true,
@@ -99,7 +99,7 @@ export default function RootLayout({
           <div className="mx-auto max-w-6xl px-4 sm:px-6">
             <div className="grid gap-8 sm:gap-12 md:grid-cols-2 lg:grid-cols-4">
               <div>
-                <p className="font-bold text-white">EvGlabs</p>
+                <p className="font-bold text-white">{SITE.name}</p>
                 <p className="mt-1 text-sm font-medium text-orange-200/90">
                   KI für Brauereien & Gastronomie
                 </p>
@@ -148,7 +148,7 @@ export default function RootLayout({
                 </a>
               </div>
             </div>
-            <p className="mt-8 text-center text-sm text-white/60 sm:mt-12">© Evglabs</p>
+            <p className="mt-8 text-center text-sm text-white/60 sm:mt-12">© {SITE.name}</p>
           </div>
         </footer>
         </LoadingProvider>

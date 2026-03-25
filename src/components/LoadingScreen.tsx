@@ -60,7 +60,7 @@ export function LoadingScreen() {
             color: "transparent",
           }}
         >
-          labs
+          lab
         </span>
       </p>
       <div className="loading-spinner h-1 w-24 overflow-hidden rounded-full bg-neutral-200">

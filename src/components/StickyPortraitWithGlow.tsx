@@ -52,7 +52,7 @@ export function StickyPortraitWithGlow() {
         >
           <Image
             src="/hero-portrait.svg"
-            alt="EvGlabs"
+            alt="EvGlab"
             width={640}
             height={800}
             priority

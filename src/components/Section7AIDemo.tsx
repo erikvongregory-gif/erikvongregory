@@ -12,26 +12,9 @@ const KI_BEISPIELE = [
 ];
 
 export function Section7AIDemo() {
-  const [fadeIn, setFadeIn] = useState(0);
   const [lightboxIndex, setLightboxIndex] = useState<number | null>(null);
   const sectionRef = useRef<HTMLElement>(null);
   const scrollYRef = useRef(0);
-
-  useEffect(() => {
-    const el = sectionRef.current;
-    if (!el) return;
-    const obs = new IntersectionObserver(
-      (entries) => {
-        const e = entries[0];
-        if (!e) return;
-        const ratio = Math.min(1, Math.max(0, (e.intersectionRatio - 0.15) / 0.5));
-        setFadeIn(ratio);
-      },
-      { threshold: [0, 0.05, 0.1, 0.15, 0.3, 0.5, 0.7, 1], rootMargin: "0px" }
-    );
-    obs.observe(el);
-    return () => obs.disconnect();
-  }, []);
 
   useEffect(() => {
     const onKey = (e: KeyboardEvent) => {
@@ -78,20 +61,15 @@ export function Section7AIDemo() {
     <section
       id="section-7"
       ref={sectionRef}
-      className="relative z-[70] border-t border-white/10 bg-transparent px-4 py-16 sm:py-20 md:py-24"
-      style={{
-        opacity: fadeIn,
-        transform: `translateY(${(1 - fadeIn) * 20}px)`,
-        transition: "opacity 0.6s cubic-bezier(0.22, 1, 0.36, 1), transform 0.6s cubic-bezier(0.22, 1, 0.36, 1)",
-      }}
+      className="relative z-[70] border-t-0 px-4 py-16 sm:py-20 md:border-t md:border-neutral-300/40 md:py-24"
     >
-      <div className="mx-auto max-w-4xl">
+      <div className="section7-inner mx-auto max-w-4xl">
         <div className="mb-8 text-center">
           <span className="section7-badge section7-badge-pulse inline-flex items-center gap-2 rounded-full border border-orange-400/30 bg-orange-400/10 px-4 py-1.5 text-sm font-medium text-orange-300">
             <span aria-hidden>✦</span>
             KI-Demo
           </span>
-          <h2 className="section7-headline mt-4 text-2xl font-bold tracking-tight text-white drop-shadow-md sm:text-3xl md:text-4xl">
+          <h2 className="section7-headline mt-4 text-2xl font-bold tracking-tight text-white sm:text-3xl md:text-4xl">
             Echte Beispiele{" "}
             <span className="font-light italic font-austera-green-fade">
               aus der Praxis
@@ -110,7 +88,7 @@ export function Section7AIDemo() {
                 key={img.src}
                 type="button"
                 onClick={() => setLightboxIndex(i)}
-                className="group relative aspect-[4/3] overflow-hidden rounded-xl border border-white/10 bg-black/30 transition-all duration-200 hover:border-emerald-400/40 hover:scale-[1.02] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-emerald-400 focus-visible:ring-offset-2 focus-visible:ring-offset-[#0a0f14]"
+                className="group relative aspect-[4/3] overflow-hidden rounded-xl border border-white/10 bg-black/30 transition-all duration-200 hover:border-emerald-400/40 hover:scale-[1.02] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-emerald-400 focus-visible:ring-offset-2 focus-visible:ring-offset-[#0a0f14] md:bg-[#070d12] md:focus-visible:ring-offset-[#cbcbcb]"
                 aria-label={`${img.alt} – zum Vergrößern klicken`}
               >
                 <Image

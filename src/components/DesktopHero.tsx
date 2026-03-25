@@ -1,6 +1,7 @@
 "use client";
 
 import Link from "next/link";
+import { DesktopHeroRotatingIndustryWord } from "@/components/DesktopHeroRotatingIndustryWord";
 
 /** Hero Section 1 – Text links, Portrait+Glow kommt aus StickyPortraitWithGlow im Layout */
 export function DesktopHero() {
@@ -14,11 +15,12 @@ export function DesktopHero() {
             <span className="block whitespace-nowrap text-3xl font-semibold text-neutral-900 sm:text-4xl md:text-5xl lg:text-[3rem] xl:text-[3.5rem]">
               die erste{" "}KI‑Marketinglösung
             </span>
-            <span className="mt-2 block text-4xl sm:text-5xl md:text-6xl lg:text-[3.5rem] xl:text-[4rem]">
-              <span className="font-medium text-neutral-900">speziell für </span>
-              <span className="hero-brauereien-highlight text-4xl font-light italic sm:text-5xl md:text-[2.9rem] lg:text-[3.15rem] xl:text-[3.4rem]" style={{ fontFamily: "'Playfair Display', serif" }}>
-                Brauereien
-              </span>
+            <span className="mt-2 flex flex-nowrap items-baseline gap-x-3 text-4xl sm:text-5xl md:gap-x-5 md:text-6xl lg:gap-x-6 lg:text-[3.5rem] xl:text-[4rem]">
+              <span className="shrink-0 font-medium text-neutral-900">speziell für</span>
+              <DesktopHeroRotatingIndustryWord
+                className="text-4xl sm:text-5xl md:text-[2.35rem] lg:text-[2.5rem] xl:text-[2.8rem] 2xl:text-[3.05rem]"
+                style={{ fontFamily: "'Playfair Display', serif" }}
+              />
             </span>
           </h1>
 
