@@ -1014,6 +1014,8 @@ body[data-legal-page="true"] {
 
 @media (max-width: 768px) {
   .hero-portrait-blend {
+    mix-blend-mode: normal;
+    background: transparent !important;
     filter: brightness(1.05) contrast(1.1)
             drop-shadow(0 0 14px rgba(255, 255, 255, 0.12));
   }

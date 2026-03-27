@@ -13,6 +13,7 @@ type Props = {
 /** Wortwechsel mit Slide nach oben – nur sichtbar/aktiv ab ≥768px (Desktop-Hero). */
 export function DesktopHeroRotatingIndustryWord({ className = "", style }: Props) {
   const [index, setIndex] = useState(0);
+  const [animate, setAnimate] = useState(true);
   const [isDesktopWide, setIsDesktopWide] = useState(false);
 
   useEffect(() => {
@@ -26,13 +27,26 @@ export function DesktopHeroRotatingIndustryWord({ className = "", style }: Props
   useEffect(() => {
     if (!isDesktopWide) {
       setIndex(0);
+      setAnimate(true);
       return;
     }
     const id = window.setInterval(() => {
-      setIndex((i) => (i + 1) % WORDS.length);
+      setIndex((i) => i + 1);
     }, INTERVAL_MS);
     return () => window.clearInterval(id);
   }, [isDesktopWide]);
+
+  useEffect(() => {
+    if (index < WORDS.length) return;
+    /* Nach dem letzten (duplizierten) Eintrag ohne Animation auf Start zurücksetzen,
+       damit der Zyklus visuell immer nur nach oben läuft. */
+    const t = window.setTimeout(() => {
+      setAnimate(false);
+      setIndex(0);
+      requestAnimationFrame(() => setAnimate(true));
+    }, 520);
+    return () => window.clearTimeout(t);
+  }, [index]);
 
   return (
     <span className={`inline-block ${className}`} style={style} aria-live="polite">
@@ -44,14 +58,14 @@ export function DesktopHeroRotatingIndustryWord({ className = "", style }: Props
         }}
       >
         <span
-          className="block will-change-transform transition-transform duration-500 ease-[cubic-bezier(0.22,1,0.36,1)]"
+          className={`block will-change-transform ease-[cubic-bezier(0.22,1,0.36,1)] ${animate ? "transition-transform duration-500" : ""}`}
           style={{
-            transform: `translateY(-${(index * 100) / WORDS.length}%)`,
+            transform: `translateY(-${index * 100}%)`,
           }}
         >
-          {WORDS.map((word) => (
+          {[...WORDS, WORDS[0]].map((word, i) => (
             <span
-              key={word}
+              key={`${word}-${i}`}
               className="flex h-[1.1em] items-end whitespace-nowrap font-light italic leading-none"
             >
               {word}
