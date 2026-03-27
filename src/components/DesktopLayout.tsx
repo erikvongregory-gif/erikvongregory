@@ -29,7 +29,7 @@ export function DesktopLayout() {
         <DesktopFadeInView className="section2-slide-trigger" resetOnExit>
           <DesktopSection2 />
         </DesktopFadeInView>
-        <DesktopFadeInView delay={100}>
+        <DesktopFadeInView delay={100} className="section3-clean-reveal">
           <DesktopSection3 />
         </DesktopFadeInView>
         <DesktopFadeInView delay={150} className="section4-cards-trigger">

@@ -793,6 +793,24 @@ body[data-legal-page="true"] {
   transform: translateY(0);
 }
 
+/* Section 3 ("Dein nächster Schritt") – weicher, cleaner Reveal */
+.section3-clean-reveal.desktop-fade-in-view {
+  transform: translateY(26px);
+  transition:
+    opacity 0.85s cubic-bezier(0.16, 1, 0.3, 1),
+    transform 0.85s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.section3-clean-reveal.desktop-fade-in-view--visible {
+  transform: translateY(0);
+}
+
+.section3-clean-reveal-mobile {
+  transition:
+    opacity 0.85s cubic-bezier(0.16, 1, 0.3, 1),
+    transform 0.85s cubic-bezier(0.16, 1, 0.3, 1) !important;
+}
+
 @media (max-width: 767px) {
   .desktop-fade-in-view {
     opacity: 1;
@@ -1492,60 +1510,34 @@ body[data-legal-page="true"] {
   --tw-ring-color: rgba(0, 0, 0, 0.4);
 }
 
-/* Desktop Light Theme – Section-Boxen mit Liquid-Glas + Orangen-Glow */
+/* Desktop Light Theme – ruhiger, cleaner Look */
 .desktop-light-theme .section2-card {
-  background: rgba(11, 22, 32, 0.72);
-  backdrop-filter: blur(20px);
-  -webkit-backdrop-filter: blur(20px);
+  background: rgb(14, 22, 30);
+  backdrop-filter: none;
+  -webkit-backdrop-filter: none;
   border: 1px solid rgba(255, 255, 255, 0.12);
-  box-shadow:
-    0 8px 32px rgba(0, 0, 0, 0.2),
-    0 0 50px rgba(224, 122, 64, 0.14);
+  box-shadow: 0 10px 28px rgba(0, 0, 0, 0.24);
 }
 
 .desktop-light-theme .section3-card {
-  background: rgba(11, 22, 32, 0.72);
-  backdrop-filter: blur(20px);
-  -webkit-backdrop-filter: blur(20px);
+  background: rgb(14, 22, 30);
+  backdrop-filter: none;
+  -webkit-backdrop-filter: none;
   border: 1px solid rgba(255, 255, 255, 0.12);
-  box-shadow:
-    0 8px 32px rgba(0, 0, 0, 0.2),
-    0 0 50px rgba(224, 122, 64, 0.14);
+  box-shadow: 0 10px 28px rgba(0, 0, 0, 0.24);
 }
 
-/* Section 3 Desktop – stärkerer Fokus, mehr Tiefe */
+/* Section 3 Desktop – ohne Neon-Rand */
 .section3-card-desktop {
   position: relative;
   overflow: hidden;
-  transition: box-shadow 0.4s ease, transform 0.3s ease;
-}
-.section3-card-desktop:hover {
-  transform: translateY(-2px);
-}
-.section3-card-desktop::before {
-  content: "";
-  position: absolute;
-  inset: -1px;
-  border-radius: inherit;
-  padding: 1px;
-  background: linear-gradient(135deg, rgba(224, 122, 64, 0.3) 0%, transparent 40%, transparent 60%, rgba(224, 122, 64, 0.2) 100%);
-  -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
-  mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
-  -webkit-mask-composite: xor;
-  mask-composite: exclude;
-  pointer-events: none;
+  transition: box-shadow 0.25s ease;
 }
 .desktop-light-theme .section3-card-desktop {
-  box-shadow:
-    0 8px 32px rgba(0, 0, 0, 0.2),
-    0 0 0 1px rgba(255, 255, 255, 0.12),
-    0 0 60px rgba(224, 122, 64, 0.12);
+  box-shadow: 0 10px 28px rgba(0, 0, 0, 0.24);
 }
 .desktop-light-theme .section3-card-desktop:hover {
-  box-shadow:
-    0 12px 40px rgba(0, 0, 0, 0.25),
-    0 0 0 1px rgba(224, 122, 64, 0.2),
-    0 0 80px rgba(224, 122, 64, 0.18);
+  box-shadow: 0 14px 34px rgba(0, 0, 0, 0.28);
 }
 .desktop-light-theme .section3-card-desktop .text-neutral-600,
 .desktop-light-theme .section3-card-desktop .text-neutral-500 {
@@ -1573,18 +1565,16 @@ body[data-legal-page="true"] {
 
 .desktop-light-theme .flip-card-front,
 .desktop-light-theme .flip-card-back {
-  background: rgba(11, 22, 32, 0.72);
-  backdrop-filter: blur(20px);
-  -webkit-backdrop-filter: blur(20px);
+  background: rgb(14, 22, 30);
+  backdrop-filter: none;
+  -webkit-backdrop-filter: none;
   border: 1px solid rgba(255, 255, 255, 0.12);
-  box-shadow:
-    0 8px 32px rgba(0, 0, 0, 0.2),
-    0 0 50px rgba(224, 122, 64, 0.14);
+  box-shadow: 0 10px 28px rgba(0, 0, 0, 0.24);
 }
 
 .desktop-light-theme .flip-card:hover .flip-card-back {
-  border-color: rgba(224, 122, 64, 0.4);
-  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.2), 0 0 0 1px rgba(224, 122, 64, 0.2);
+  border-color: rgba(224, 122, 64, 0.28);
+  box-shadow: 0 14px 34px rgba(0, 0, 0, 0.28);
 }
 
 .desktop-light-theme .flip-card-front-title,
@@ -1661,11 +1651,65 @@ body[data-legal-page="true"] {
   backdrop-filter: blur(12px);
   -webkit-backdrop-filter: blur(12px);
   border: 1px solid rgba(255, 255, 255, 0.1) !important;
-  box-shadow: 0 0 30px rgba(224, 122, 64, 0.1) !important;
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.2) !important;
 }
 
 .desktop-light-theme .section6-expertise-item span {
   color: rgba(255, 255, 255, 0.95) !important;
+}
+
+/* Section 4 Desktop – 5 Karten als leichter Halbkreis mit dezentem Overlap */
+@media (min-width: 1024px) {
+  .section4-arc-layout .section4-arc-card.section4-flip-card-slide {
+    animation: none !important;
+    opacity: 1 !important;
+  }
+
+  .section4-arc-layout {
+    display: flex !important;
+    justify-content: center;
+    align-items: flex-start;
+    flex-wrap: nowrap;
+    gap: 0;
+    padding-top: 2.25rem;
+    padding-bottom: 2.5rem;
+  }
+
+  .section4-arc-layout .section4-arc-card {
+    position: relative;
+    flex: 0 0 clamp(205px, 20vw, 255px);
+    max-width: clamp(205px, 20vw, 255px);
+    margin-left: -30px;
+  }
+
+  .section4-arc-layout .section4-arc-card:first-child {
+    margin-left: 0;
+  }
+
+  .section4-arc-layout .section4-arc-card-0 {
+    transform: translateX(34px) translateY(68px) rotate(-7deg);
+    z-index: 1;
+  }
+
+  .section4-arc-layout .section4-arc-card-1 {
+    transform: translateX(20px) translateY(30px) rotate(-4deg);
+    z-index: 2;
+  }
+
+  .section4-arc-layout .section4-arc-card-2 {
+    transform: translateY(-10px) rotate(0deg);
+    z-index: 5;
+  }
+
+  .section4-arc-layout .section4-arc-card-3 {
+    transform: translateX(-20px) translateY(30px) rotate(4deg);
+    z-index: 2;
+  }
+
+  .section4-arc-layout .section4-arc-card-4 {
+    transform: translateX(-34px) translateY(68px) rotate(7deg);
+    z-index: 1;
+  }
 }
 
 .desktop-light-theme .section6-expertise-item:hover {
@@ -2704,7 +2748,7 @@ body[data-legal-page="true"] {
     color: #4a4a4a !important;
   }
   #pakete-preise .pricing-card {
-    background: rgba(11, 22, 32, 0.72) !important;
+    background: rgb(14, 22, 30) !important;
     border-color: rgba(255, 255, 255, 0.12) !important;
     box-shadow:
       0 8px 32px rgba(0, 0, 0, 0.2),

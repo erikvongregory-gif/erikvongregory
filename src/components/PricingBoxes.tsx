@@ -7,8 +7,8 @@ const PRICING_PACKAGES = [
     icon: "🍺",
     name: "Starter Paket",
     description: "Perfekt für kleine Brauereien, die ihren Social-Media-Auftritt modernisieren möchten.",
-    oldPrice: "890 €",
-    price: "490 €",
+    oldPrice: "1.290 €",
+    price: "890 €",
     delivery: "3-5 Tage",
     cta: "👉 Angebot anfragen",
     features: [
@@ -22,8 +22,8 @@ const PRICING_PACKAGES = [
     icon: "🚀",
     name: "Growth Paket",
     description: "Für Brauereien, die regelmäßig hochwertigen Content benötigen.",
-    oldPrice: "1.490 €",
-    price: "990 €",
+    oldPrice: "2.490 €",
+    price: "1.690 €",
     delivery: "5-7 Tage",
     cta: "👉 Projekt starten",
     features: [
@@ -38,8 +38,8 @@ const PRICING_PACKAGES = [
     icon: "🍻",
     name: "Brewery Pro",
     description: "Komplettpaket für eine moderne Online-Präsenz.",
-    oldPrice: "3.490 €",
-    price: "2.490 €",
+    oldPrice: "5.490 €",
+    price: "3.990 €",
     delivery: "2-3 Wochen",
     cta: "👉 Angebot anfragen",
     features: [

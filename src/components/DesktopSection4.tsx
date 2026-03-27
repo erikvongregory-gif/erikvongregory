@@ -13,17 +13,6 @@ export function DesktopSection4() {
   const iconClass = "w-7 h-7 shrink-0";
   const items: Array<{ icon: React.ReactNode; title: string; text: string; iconType: string }> = [
     {
-      iconType: "camera",
-      icon: (
-        <svg className={iconClass} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.75" strokeLinecap="round" strokeLinejoin="round">
-          <path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z" />
-          <circle cx="12" cy="13" r="4" />
-        </svg>
-      ),
-      title: "KI-Produktfotos für Bier & Getränke",
-      text: "Hochwertige Produktbilder für Flaschen, Dosen und Gläser – erstellt mit moderner KI. Perfekt für Website, Online-Shop, Werbung und Social Media, ohne teure Fotoshootings.",
-    },
-    {
       iconType: "video",
       icon: (
         <svg className={iconClass} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.75" strokeLinecap="round" strokeLinejoin="round">
@@ -32,7 +21,7 @@ export function DesktopSection4() {
         </svg>
       ),
       title: "KI-Werbevideos für Social Media",
-      text: "Cinematische Werbevideos für Bier, Brauereien und Getränke – produziert mit KI. Ideal für TikTok, Instagram und Ads, um Aufmerksamkeit zu erzeugen und neue Kunden zu erreichen.",
+      text: "Cinematische KI-Werbevideos für TikTok, Instagram und Ads – schnell produziert und auf Reichweite optimiert.",
     },
     {
       iconType: "chart",
@@ -44,7 +33,18 @@ export function DesktopSection4() {
         </svg>
       ),
       title: "Automatisiertes Social Media Marketing",
-      text: "Wir entwickeln ein System, das regelmäßig Content für deine Brauerei veröffentlicht. Mehr Reichweite, mehr Sichtbarkeit und weniger Aufwand für dein Team.",
+      text: "Ein System, das regelmäßig Content für deine Brauerei veröffentlicht – mehr Sichtbarkeit bei weniger Aufwand.",
+    },
+    {
+      iconType: "camera",
+      icon: (
+        <svg className={iconClass} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.75" strokeLinecap="round" strokeLinejoin="round">
+          <path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z" />
+          <circle cx="12" cy="13" r="4" />
+        </svg>
+      ),
+      title: "KI-Produktfotos für Bier & Getränke",
+      text: "Hochwertige KI-Produktfotos für Flaschen, Dosen und Gläser – ideal für Website, Shop und Social Media.",
     },
     {
       iconType: "globe",
@@ -56,7 +56,7 @@ export function DesktopSection4() {
         </svg>
       ),
       title: "Moderne Websites mit Storytelling",
-      text: "Websites, die deine Brauerei perfekt präsentieren und Besucher zu Kunden machen. Modernes Design, starke Bilder und eine klare Story rund um deine Marke.",
+      text: "Moderne Websites mit klarer Story, starkem Design und Fokus auf Anfragen statt nur Klicks.",
     },
     {
       iconType: "sparkle",
@@ -66,7 +66,7 @@ export function DesktopSection4() {
         </svg>
       ),
       title: "KI-Content für Instagram, TikTok & Ads",
-      text: "Regelmäßiger Content speziell für Brauereien und Getränkemarken. Posts, Videos und Kampagnen, die Reichweite aufbauen und deine Marke sichtbar machen.",
+      text: "Regelmäßiger KI-Content für Posts, Reels und Ads – speziell für Brauereien.",
     },
   ];
 
@@ -79,9 +79,13 @@ export function DesktopSection4() {
             Lösungen
           </span>
         </h2>
-        <div className="section4-flip-cards-grid grid grid-cols-1 gap-5 sm:grid-cols-2 sm:gap-6 lg:grid-cols-5 auto-rows-fr px-3 py-4 overflow-visible sm:px-4 sm:py-6">
+        <p className="-mt-4 mb-8 text-center text-sm text-neutral-600 sm:text-base">
+          Klar strukturiert, praxisnah und sofort umsetzbar für Brauereien.
+        </p>
+        <div className="section4-flip-cards-grid section4-arc-layout grid grid-cols-1 gap-5 sm:grid-cols-2 sm:gap-6 lg:grid-cols-5 auto-rows-fr px-3 py-4 overflow-visible sm:px-4 sm:py-6">
           {items.map((item, i) => {
             const isFlipped = flippedIndex === i;
+            const numberPosClass = i <= 1 ? "left-3" : i >= 3 ? "right-3" : "left-3";
             return (
               <div
                 key={item.title}
@@ -90,11 +94,14 @@ export function DesktopSection4() {
                 onClick={() => handleCardInteraction(i)}
                 onKeyDown={(e) => e.key === "Enter" && handleCardInteraction(i)}
                 aria-pressed={isFlipped}
-                className={`section4-flip-card-slide flip-card text-neutral-900 min-h-[340px] sm:min-h-[400px] lg:min-h-[460px] ${isFlipped ? "flip-card-flipped" : ""}`}
+                className={`section4-flip-card-slide section4-arc-card section4-arc-card-${i} flip-card text-neutral-900 min-h-[360px] sm:min-h-[420px] lg:min-h-[520px] ${isFlipped ? "flip-card-flipped" : ""}`}
                 aria-label={isFlipped ? `${item.title} – Zum Schließen erneut tippen` : `${item.title} – Tippen für Details`}
               >
                 <div className="flip-card-inner">
-                  <div className="flip-card-front">
+                  <div className="flip-card-front relative">
+                    <span className={`absolute ${numberPosClass} top-3 inline-flex h-7 w-7 items-center justify-center rounded-full border border-white/20 bg-white/10 text-xs font-semibold text-white/90`}>
+                      {i + 1}
+                    </span>
                     <div className={`flip-card-front-icon icon-anim icon-anim-${item.iconType}`} data-icon={item.iconType}>{item.icon}</div>
                     <h3 className="flip-card-front-title">{item.title}</h3>
                     <p className="flip-card-front-hint">
@@ -105,7 +112,10 @@ export function DesktopSection4() {
                       </svg>
                     </p>
                   </div>
-                  <div className="flip-card-back">
+                  <div className="flip-card-back relative">
+                    <span className={`absolute ${numberPosClass} top-3 z-10 inline-flex h-7 w-7 items-center justify-center rounded-full border border-white/20 bg-white/10 text-xs font-semibold text-white/90`}>
+                      {i + 1}
+                    </span>
                     <div className="flip-card-back-content">
                       <div className={`flip-card-icon-wrap mb-4 icon-anim icon-anim-${item.iconType}`} data-icon={item.iconType}>{item.icon}</div>
                       <h3 className="text-base font-semibold tracking-tight text-neutral-900 sm:text-lg">{item.title}</h3>

@@ -88,7 +88,7 @@ export function MobileLayout() {
           </div>
           <h1 className="mobile-slide-up-in -mt-2 mb-8 block leading-none tracking-tight" style={{ fontFamily: "'Montserrat', sans-serif" }}>
             <div className="mobile-hero-line1 block text-[1.35rem] font-extrabold leading-snug sm:text-xl">
-              {"die erste KI‑Marketinglösung".split("").map((char, i) => (
+              {"Die erste KI‑Marketinglösung".split("").map((char, i) => (
                 <span
                   key={i}
                   className="mobile-word-blur-in mobile-word-blur-in-hero-line1 inline-block"
@@ -128,7 +128,7 @@ export function MobileLayout() {
                       className="mobile-word-blur-in inline-block"
                       style={{
                         color,
-                        ["--char-delay" as string]: `${("die erste KI‑Marketinglösung".length * 0.02) + i * 0.02}s`,
+                        ["--char-delay" as string]: `${("Die erste KI‑Marketinglösung".length * 0.02) + i * 0.02}s`,
                         whiteSpace: "pre",
                       }}
                     >
@@ -190,7 +190,7 @@ export function MobileLayout() {
 
         {/* Section 3 */}
         <section id="section-3" className="relative px-4 py-16">
-          <ScrollReveal>
+          <ScrollReveal className="section3-clean-reveal-mobile">
           <div className="section3-card mx-auto max-w-2xl rounded-2xl px-6 py-10 text-center">
             <p className="mb-3 text-sm font-medium uppercase tracking-[0.2em] text-orange-400/90">
               Dein nächster Schritt
@@ -272,11 +272,6 @@ export function MobileLayout() {
                   <h3 className="text-lg font-semibold text-white">{item.title}</h3>
                   <p className="mt-2 text-base leading-relaxed text-white/80">{item.text}</p>
                 </div>
-                <span className="mt-1 shrink-0 text-orange-400/60" aria-hidden>
-                  <svg className="h-4 w-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-                    <path d="M9 18l6-6-6-6" />
-                  </svg>
-                </span>
               </div>
             ))}
           </div>
