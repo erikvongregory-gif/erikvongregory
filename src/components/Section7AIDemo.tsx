@@ -112,7 +112,7 @@ export function Section7AIDemo() {
         <div className="section2-card mt-6 overflow-hidden rounded-2xl border border-white/15 p-4 sm:p-6">
           <div className="aspect-video mx-auto w-full max-w-2xl overflow-hidden rounded-xl bg-black/40">
             <video
-              src="/ki-beispiel-video.mp4"
+              src="/ki-beispiel-video-v2.mp4"
               controls
               playsInline
               loop
