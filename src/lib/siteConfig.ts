@@ -5,9 +5,9 @@
 export const SITE = {
   name: "EvGlab",
   baseUrl: "https://www.erikvongregory.com",
-  defaultTitle: "EvGlab | KI für Brauereien & Gastronomie",
+  defaultTitle: "KI Marketing für Brauereien | EvGlab",
   defaultDescription:
-    "KI für Brauereien – Automatisierte Marketing, Content & Verkauf. EvGlab hilft Brauereien, Gastronomen und Getränkeherstellern, mit KI sichtbar zu werden. Kostenloses Erstgespräch.",
+    "EvGlab bietet KI-Marketing für Brauereien: KI-Produktfotos, Werbevideos, Social-Media-Content und automatisierte Marketing-Systeme für mehr Sichtbarkeit und Anfragen.",
   keywords: [
     "KI Brauerei",
     "KI Marketing Brauerei",

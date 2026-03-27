@@ -3,6 +3,10 @@ import { SITE } from "@/lib/siteConfig";
 
 /** JSON-LD Structured Data für bessere Google-Snippets */
 export function JsonLd() {
+  const businessId = `${SITE.baseUrl}/#business`;
+  const websiteId = `${SITE.baseUrl}/#website`;
+  const serviceId = `${SITE.baseUrl}/#service`;
+
   const person = {
     "@context": "https://schema.org",
     "@type": "Person",
@@ -17,7 +21,7 @@ export function JsonLd() {
   const localBusiness = {
     "@context": "https://schema.org",
     "@type": "LocalBusiness",
-    "@id": `${SITE.baseUrl}/#business`,
+    "@id": businessId,
     name: SITE.name,
     description: SITE.defaultDescription,
     url: SITE.baseUrl,
@@ -37,11 +41,11 @@ export function JsonLd() {
   const website = {
     "@context": "https://schema.org",
     "@type": "WebSite",
-    "@id": `${SITE.baseUrl}/#website`,
+    "@id": websiteId,
     name: SITE.name,
     description: SITE.defaultDescription,
     url: SITE.baseUrl,
-    publisher: { "@id": `${SITE.baseUrl}/#business` },
+    publisher: { "@id": businessId },
     inLanguage: "de-DE",
     potentialAction: {
       "@type": "ContactAction",
@@ -52,6 +56,41 @@ export function JsonLd() {
         contactType: "customer service",
         availableLanguage: "German",
       },
+    },
+  };
+
+  const service = {
+    "@context": "https://schema.org",
+    "@type": "Service",
+    "@id": serviceId,
+    serviceType: "KI Marketing für Brauereien",
+    provider: { "@id": businessId },
+    areaServed: ["DE", "AT", "CH"],
+    audience: {
+      "@type": "Audience",
+      audienceType: "Brauereien, Gastronomie und Getränkehersteller",
+    },
+    hasOfferCatalog: {
+      "@type": "OfferCatalog",
+      name: "Leistungen",
+      itemListElement: [
+        {
+          "@type": "Offer",
+          itemOffered: { "@type": "Service", name: "KI-Produktfotos für Bier und Getränke" },
+        },
+        {
+          "@type": "Offer",
+          itemOffered: { "@type": "Service", name: "KI-Werbevideos für Social Media" },
+        },
+        {
+          "@type": "Offer",
+          itemOffered: { "@type": "Service", name: "Automatisiertes Social-Media-Marketing" },
+        },
+        {
+          "@type": "Offer",
+          itemOffered: { "@type": "Service", name: "Moderne Websites mit Storytelling" },
+        },
+      ],
     },
   };
 
@@ -94,6 +133,10 @@ export function JsonLd() {
       <script
         type="application/ld+json"
         dangerouslySetInnerHTML={{ __html: safeJson(website) }}
+      />
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: safeJson(service) }}
       />
       <script
         type="application/ld+json"

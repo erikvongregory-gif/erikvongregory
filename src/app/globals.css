@@ -2613,13 +2613,13 @@ body[data-legal-page="true"] {
     animation: pricing-slide-up 0.35s cubic-bezier(0.22, 1, 0.36, 1) 0.05s both;
   }
   .pricing-in-view .pricing-card-slide-0 {
-    animation: pricing-card-from-left 0.3s cubic-bezier(0.22, 1, 0.36, 1) 0.05s forwards;
+    animation: pricing-card-from-left 0.3s cubic-bezier(0.22, 1, 0.36, 1) 0.45s forwards;
   }
   .pricing-in-view .pricing-card-slide-1 {
-    animation: pricing-card-from-right 0.3s cubic-bezier(0.22, 1, 0.36, 1) 0.1s forwards;
+    animation: pricing-card-from-bottom 0.3s cubic-bezier(0.22, 1, 0.36, 1) 0.08s forwards;
   }
   .pricing-in-view .pricing-card-slide-2 {
-    animation: pricing-card-from-left 0.3s cubic-bezier(0.22, 1, 0.36, 1) 0.15s forwards;
+    animation: pricing-card-from-right 0.3s cubic-bezier(0.22, 1, 0.36, 1) 0.45s forwards;
   }
 }
 
@@ -2658,6 +2658,17 @@ body[data-legal-page="true"] {
   }
 }
 
+@keyframes pricing-card-from-bottom {
+  from {
+    opacity: 0;
+    transform: translateY(56px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
 /* Initial state – versteckt, bis Section sichtbar */
 .pricing-card-slide-0 {
   opacity: 0;
@@ -2665,23 +2676,23 @@ body[data-legal-page="true"] {
 }
 .pricing-card-slide-1 {
   opacity: 0;
-  transform: translateX(56px);
+  transform: translateY(56px);
 }
 .pricing-card-slide-2 {
   opacity: 0;
-  transform: translateX(-56px);
+  transform: translateX(56px);
 }
 
 /* Animation startet erst beim Scrollen ins Viewport – nacheinander gestaffelt (nur Mobile) */
 @media (max-width: 767px) {
   .pricing-in-view .pricing-card-slide-0 {
-    animation: pricing-card-from-left 0.55s cubic-bezier(0.22, 1, 0.36, 1) 1.2s forwards;
+    animation: pricing-card-from-left 0.55s cubic-bezier(0.22, 1, 0.36, 1) 1.78s forwards;
   }
   .pricing-in-view .pricing-card-slide-1 {
-    animation: pricing-card-from-right 0.55s cubic-bezier(0.22, 1, 0.36, 1) 1.7s forwards;
+    animation: pricing-card-from-bottom 0.55s cubic-bezier(0.22, 1, 0.36, 1) 1.2s forwards;
   }
   .pricing-in-view .pricing-card-slide-2 {
-    animation: pricing-card-from-left 0.55s cubic-bezier(0.22, 1, 0.36, 1) 2.2s forwards;
+    animation: pricing-card-from-right 0.55s cubic-bezier(0.22, 1, 0.36, 1) 1.78s forwards;
   }
 }
 
