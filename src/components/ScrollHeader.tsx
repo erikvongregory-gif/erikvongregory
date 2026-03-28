@@ -36,6 +36,7 @@ export function ScrollHeader() {
   const [isMobile, setIsMobile] = useState(false);
   const [isDesktop, setIsDesktop] = useState(false);
   const [menuOpen, setMenuOpen] = useState(false);
+  const [activeSection, setActiveSection] = useState<string>("");
   const lastProgressRef = useRef(0);
 
   useEffect(() => {
@@ -99,6 +100,45 @@ export function ScrollHeader() {
   const borderOpacity = progress;
   const borderRadius = isMobile ? 9999 : 9999 - progress * (9999 - 16);
   const logoFontSize = isMobile ? 18 : 24 - progress * 4;
+
+  useEffect(() => {
+    const sectionIds = NAV_ITEMS.map(item => item.href.replace(/^#/, ""));
+
+    const getEl = (id: string): HTMLElement | null => {
+      const isDesktopView = window.matchMedia("(min-width: 768px)").matches;
+      const wrapper = document.getElementById(isDesktopView ? "desktop-content" : "mobile-content");
+      return (wrapper?.querySelector(`#${CSS.escape(id)}`) ?? document.getElementById(id)) as HTMLElement | null;
+    };
+
+    // Welche Sections sind gerade sichtbar – letzter Treffer in DOM-Reihenfolge gewinnt
+    const visible = new Set<string>();
+    const pick = () => {
+      let active = "";
+      for (const id of sectionIds) {
+        if (visible.has(id)) active = `#${id}`;
+      }
+      setActiveSection(active);
+    };
+
+    const obs = new IntersectionObserver(
+      (entries) => {
+        entries.forEach(e => {
+          if (e.isIntersecting) visible.add(e.target.id);
+          else visible.delete(e.target.id);
+        });
+        pick();
+      },
+      // Section gilt als aktiv sobald sie die obere 55% des Viewports betritt
+      { rootMargin: "0px 0px -45% 0px", threshold: 0 }
+    );
+
+    sectionIds.forEach(id => {
+      const el = getEl(id);
+      if (el) obs.observe(el);
+    });
+
+    return () => obs.disconnect();
+  }, []);
 
   const handleNavClick = (hash: string) => {
     scrollToSection(hash);
@@ -206,36 +246,44 @@ export function ScrollHeader() {
                       className="fixed right-4 top-[5rem] z-[9998] flex min-w-[10rem] flex-col gap-0.5 rounded-xl border border-white/15 bg-[#0a0f14]/95 py-2 shadow-xl backdrop-blur-xl"
                       role="menu"
                     >
-                      {NAV_ITEMS.map(({ href, label }) => (
-                        <a
-                          key={href}
-                          href={href}
-                          role="menuitem"
-                          onClick={(e) => {
-                            e.preventDefault();
-                            handleNavClick(href);
-                          }}
-                          className="premium-header-link whitespace-nowrap px-5 py-2.5 text-[15px] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white/60 focus-visible:ring-inset"
-                        >
-                          {label}
-                        </a>
-                      ))}
+                      {NAV_ITEMS.map(({ href, label }) => {
+                        const isActive = activeSection === href;
+                        return (
+                          <a
+                            key={href}
+                            href={href}
+                            role="menuitem"
+                            onClick={(e) => {
+                              e.preventDefault();
+                              handleNavClick(href);
+                            }}
+                            className="premium-header-link whitespace-nowrap px-5 py-2.5 text-[15px] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white/60 focus-visible:ring-inset"
+                            style={isActive ? { color: "#c65a20", fontWeight: 600, opacity: 1 } : undefined}
+                          >
+                            {label}
+                          </a>
+                        );
+                      })}
                     </div>
                   </>
                 )}
               </>
             ) : (
               /* Desktop: Inline-Nav */
-              NAV_ITEMS.map(({ href, label }) => (
-                <a
-                  key={href}
-                  href={href}
-                  onClick={(e) => { e.preventDefault(); scrollToSection(href); }}
-                  className="premium-header-link rounded text-[13px] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white/60 focus-visible:ring-offset-2 focus-visible:ring-offset-transparent sm:text-[0.9375rem]"
-                >
-                  {label}
-                </a>
-              ))
+              NAV_ITEMS.map(({ href, label }) => {
+                const isActive = activeSection === href;
+                return (
+                  <a
+                    key={href}
+                    href={href}
+                    onClick={(e) => { e.preventDefault(); scrollToSection(href); }}
+                    className="premium-header-link rounded text-[13px] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white/60 focus-visible:ring-offset-2 focus-visible:ring-offset-transparent sm:text-[0.9375rem]"
+                    style={isActive ? { color: "#c65a20", fontWeight: 600, opacity: 1 } : undefined}
+                  >
+                    {label}
+                  </a>
+                );
+              })
             )}
           </nav>
         </div>
