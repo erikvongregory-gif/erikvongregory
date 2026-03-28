@@ -6,9 +6,9 @@ import { createPortal } from "react-dom";
 
 const KI_BEISPIELE = [
   { src: "/ki-beispiel-1.svg", alt: "KI-Werbebild Beispiel 1 – Lünebräu" },
-  { src: "/ki-beispiel-2.svg", alt: "KI-Werbebild Beispiel 2 – Lünebräu" },
+  { src: "/ki-beispiel-strand.webp", alt: "Lünebräu – Lifestyle-Foto am Strand" },
+  { src: "/ki-beispiel-hafen.webp", alt: "Lünebräu – Lifestyle-Foto am Hafen Lübeck" },
   { src: "/ki-beispiel-3.svg", alt: "KI-Werbebild Beispiel 3 – Lünebräu" },
-  { src: "/ki-beispiel-4.svg", alt: "KI-Werbebild Beispiel 4 – Lünebräu" },
 ];
 
 export function Section7AIDemo() {

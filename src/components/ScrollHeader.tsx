@@ -108,6 +108,23 @@ export function ScrollHeader() {
   const shouldUseHeaderLightTheme = isDesktop;
 
   return (
+    <>
+    {/* Deckt den transparenten Padding-Bereich über der Header-Pill ab */}
+    <div
+      aria-hidden
+      style={{
+        position: "fixed",
+        top: 0,
+        left: 0,
+        right: 0,
+        height: `${headerPaddingTop + 16}px`,
+        zIndex: 99,
+        pointerEvents: "none",
+        background: shouldUseHeaderLightTheme
+          ? "linear-gradient(to bottom, #cbcbcb 60%, transparent 100%)"
+          : "linear-gradient(to bottom, #0a0f14 60%, transparent 100%)",
+      }}
+    />
     <header
       className={`premium-header premium-header-progress ${shouldUseHeaderLightTheme ? "header-light-theme" : ""}`}
       style={{
@@ -129,7 +146,7 @@ export function ScrollHeader() {
             borderRadius: `${borderRadius}px`,
             borderColor: "transparent",
             backgroundColor: progress > 0
-              ? (shouldUseHeaderLightTheme ? "rgba(255, 255, 255, 0.65)" : "rgba(10, 15, 20, 0.7)")
+              ? (shouldUseHeaderLightTheme ? "rgba(255, 255, 255, 0.92)" : "rgba(10, 15, 20, 0.92)")
               : "transparent",
             backdropFilter: progress > 0 ? "blur(12px)" : "none",
             WebkitBackdropFilter: progress > 0 ? "blur(12px)" : "none",
@@ -224,5 +241,6 @@ export function ScrollHeader() {
         </div>
       </div>
     </header>
+    </>
   );
 }

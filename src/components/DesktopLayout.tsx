@@ -16,7 +16,7 @@ export function DesktopLayout() {
     <main id="main" className="desktop-light-theme relative min-h-screen overflow-x-hidden pt-14 sm:pt-16">
       <LiquidBackground />
       {/* Hero-Zeile: Content links, Portrait rechts (oben) – gestaffelte Einblendungen */}
-      <div className={`section1-wrapper lg:grid lg:grid-cols-[1fr_minmax(320px,40%)] lg:gap-0 ${heroReady ? "section1-ready" : ""}`}>
+      <div className={`section1-wrapper mx-auto w-full max-w-screen-2xl lg:grid lg:grid-cols-[1fr_minmax(320px,40%)] lg:gap-0 ${heroReady ? "section1-ready" : ""}`}>
         <div className="min-w-0">
           <DesktopHero />
         </div>

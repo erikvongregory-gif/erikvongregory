@@ -6,7 +6,7 @@ import { DesktopHeroRotatingIndustryWord } from "@/components/DesktopHeroRotatin
 /** Hero Section 1 – Text links, Portrait+Glow kommt aus StickyPortraitWithGlow im Layout */
 export function DesktopHero() {
   return (
-    <section className="relative z-20 flex min-h-screen flex-col items-center justify-center px-4 pb-8 pt-16 sm:px-6 sm:pb-12 sm:pt-16 lg:items-start lg:justify-center">
+    <section className="relative z-20 flex min-h-[600px] h-screen max-h-[960px] flex-col items-center justify-center px-4 pb-8 pt-16 sm:px-6 sm:pb-12 sm:pt-16 lg:items-start lg:justify-center">
       {/* Text links */}
       <div className="relative z-10 mx-auto flex w-full max-w-6xl flex-1 flex-col items-start justify-center gap-6 px-2 sm:gap-8 sm:px-4 lg:ml-8 lg:mr-auto">
         <div className="w-full max-w-2xl text-left">
