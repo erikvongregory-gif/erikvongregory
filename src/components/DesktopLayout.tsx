@@ -26,7 +26,7 @@ export function DesktopLayout() {
       </div>
       {/* Sections: volle Breite, Inhalte zentriert */}
       <div className="flex w-full flex-col">
-        <DesktopFadeInView className="section2-slide-trigger" resetOnExit>
+        <DesktopFadeInView className="section2-slide-trigger">
           <DesktopSection2 />
         </DesktopFadeInView>
         <DesktopFadeInView delay={100} className="section3-clean-reveal">

@@ -22,7 +22,9 @@ export function ScrollReveal({
 
     const observer = new IntersectionObserver(
       ([entry]) => {
-        setIsVisible(entry.isIntersecting);
+        if (!entry.isIntersecting) return;
+        setIsVisible(true);
+        observer.disconnect();
       },
       { threshold: 0.1, rootMargin: "0px 0px -40px 0px" }
     );

@@ -54,10 +54,7 @@ export function MobileLayout() {
     const obs = new IntersectionObserver(
       ([e]) => {
         const visible = e.intersectionRatio > 0.15;
-        if (wasVisibleRef.current && !visible) {
-          wasVisibleRef.current = false;
-          setProblemResetTrigger((t) => t + 1);
-        } else if (visible) {
+        if (visible) {
           wasVisibleRef.current = true;
         }
       },

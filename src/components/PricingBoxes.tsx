@@ -146,7 +146,11 @@ export function PricingBoxes() {
     const el = sectionRef.current;
     if (!el) return;
     const observer = new IntersectionObserver(
-      ([entry]) => setInView(entry.isIntersecting),
+      ([entry]) => {
+        if (!entry.isIntersecting) return;
+        setInView(true);
+        observer.disconnect();
+      },
       { threshold: 0.1, rootMargin: "50px 0px 0px 0px" }
     );
     observer.observe(el);
@@ -157,7 +161,11 @@ export function PricingBoxes() {
     const el = addonsRef.current;
     if (!el) return;
     const observer = new IntersectionObserver(
-      ([entry]) => setAddonsInView(entry.isIntersecting),
+      ([entry]) => {
+        if (!entry.isIntersecting) return;
+        setAddonsInView(true);
+        observer.disconnect();
+      },
       { threshold: 0.2, rootMargin: "0px 0px -60px 0px" }
     );
     observer.observe(el);
@@ -257,7 +265,7 @@ export function PricingBoxes() {
           {ADDONS.map((addon, i) => (
             <div
               key={addon.name}
-              className={`addon-card-slide-${i} ${addonsInView ? "addon-card-in addon-card-in-" + i : "addon-card-out"} group relative flex flex-col rounded-2xl border border-white/12 bg-[#0b1620]/70 p-5 shadow-[0_8px_28px_rgba(0,0,0,0.25)] backdrop-blur-sm transition-all duration-300 hover:-translate-y-1 hover:border-orange-400/35 hover:shadow-[0_14px_36px_rgba(0,0,0,0.32),0_0_26px_rgba(224,122,64,0.16)]`}
+              className={`addon-card-slide-${i} ${addonsInView ? "addon-card-in addon-card-in-" + i : "addon-card-out"} group relative flex flex-col rounded-2xl border border-white/12 bg-[#0b1620]/70 p-5 shadow-[0_8px_28px_rgba(0,0,0,0.25)] backdrop-blur-sm transition-all duration-300 hover:-translate-y-1 hover:border-orange-400/35 hover:shadow-[0_14px_36px_rgba(0,0,0,0.32),0_0_26px_rgba(224,122,64,0.16)] md:bg-[rgb(14,22,30)] md:shadow-[0_8px_32px_rgba(0,0,0,0.2),0_0_50px_rgba(224,122,64,0.14)]`}
             >
               <div className="mb-3 flex items-center gap-3">
                 <span className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl border border-orange-400/25 bg-orange-400/10 text-orange-300 transition-colors duration-300 group-hover:border-orange-400/45 group-hover:bg-orange-400/20">
