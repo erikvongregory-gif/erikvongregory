@@ -179,9 +179,9 @@ export function PricingBoxes() {
       </div>
 
       {/* Trust Bar */}
-      <div className="mt-6 flex flex-wrap items-center justify-center gap-x-5 gap-y-2 rounded-xl border border-white/12 bg-white/6 px-4 py-3 backdrop-blur-sm">
+      <div className="mt-6 flex flex-wrap items-center justify-center gap-x-5 gap-y-2 rounded-xl border border-neutral-200 bg-white/80 px-4 py-3">
         {TRUST_ITEMS.map((item) => (
-          <span key={item.label} className="flex items-center gap-1.5 text-xs font-medium text-white/70">
+          <span key={item.label} className="flex items-center gap-1.5 text-xs font-medium text-neutral-800">
             <span aria-hidden className="text-sm">{item.icon}</span>
             {item.label}
           </span>
