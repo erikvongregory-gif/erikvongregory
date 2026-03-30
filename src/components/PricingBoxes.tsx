@@ -179,13 +179,23 @@ export function PricingBoxes() {
       </div>
 
       {/* Trust Bar */}
-      <div className="mt-6 flex flex-wrap items-center justify-center gap-x-5 gap-y-2 rounded-xl border border-neutral-200 bg-white/80 px-4 py-3">
-        {TRUST_ITEMS.map((item) => (
-          <span key={item.label} className="flex items-center gap-1.5 text-xs font-medium text-neutral-800">
-            <span aria-hidden className="text-sm">{item.icon}</span>
-            {item.label}
-          </span>
-        ))}
+      <div className="relative mt-6 overflow-hidden rounded-xl border border-neutral-200/60 px-4 py-3">
+        {/* Liquid blobs */}
+        <div aria-hidden className="liquid-blob liquid-blob-1 absolute -left-8 -top-8 h-24 w-24 rounded-full"
+          style={{ background: "linear-gradient(135deg, rgba(255,200,160,0.55) 0%, rgba(255,220,190,0.35) 100%)" }} />
+        <div aria-hidden className="liquid-blob liquid-blob-2 absolute -right-8 -bottom-8 h-24 w-24 rounded-full"
+          style={{ background: "linear-gradient(225deg, rgba(224,122,64,0.35) 0%, rgba(255,210,180,0.25) 100%)" }} />
+        <div aria-hidden className="liquid-blob liquid-blob-3 absolute left-1/2 top-1/2 h-20 w-20 -translate-x-1/2 -translate-y-1/2 rounded-full"
+          style={{ background: "rgba(255,235,210,0.3)" }} />
+        {/* Content */}
+        <div className="relative flex flex-wrap items-center justify-center gap-x-5 gap-y-2">
+          {TRUST_ITEMS.map((item) => (
+            <span key={item.label} className="flex items-center gap-1.5 text-xs font-medium text-neutral-800">
+              <span aria-hidden className="text-sm">{item.icon}</span>
+              {item.label}
+            </span>
+          ))}
+        </div>
       </div>
 
       {/* Add-ons */}
