@@ -116,7 +116,7 @@ export function PricingBoxes() {
   }, []);
 
   return (
-    <section ref={sectionRef} className={`mt-10 overflow-hidden ${inView ? "pricing-in-view" : ""}`}>
+    <section ref={sectionRef} className={`mt-10 ${inView ? "pricing-in-view" : ""}`}>
       <div className="mb-8 flex flex-col items-center gap-4 text-center">
         <span className="pricing-section-badge section4-badge-pulse inline-flex items-center gap-2 rounded-full border border-orange-400/30 bg-orange-400/10 px-4 py-1.5 text-sm font-medium text-orange-300 pricing-slide-in">
           <span aria-hidden>✦</span>
@@ -179,9 +179,9 @@ export function PricingBoxes() {
       </div>
 
       {/* Trust Bar */}
-      <div className="mt-6 flex flex-wrap items-center justify-center gap-x-5 gap-y-2 rounded-xl border border-white/8 bg-white/4 px-4 py-3 backdrop-blur-sm">
+      <div className="mt-6 flex flex-wrap items-center justify-center gap-x-5 gap-y-2 rounded-xl border border-white/12 bg-white/6 px-4 py-3 backdrop-blur-sm">
         {TRUST_ITEMS.map((item) => (
-          <span key={item.label} className="flex items-center gap-1.5 text-xs font-medium text-white/45">
+          <span key={item.label} className="flex items-center gap-1.5 text-xs font-medium text-white/70">
             <span aria-hidden className="text-sm">{item.icon}</span>
             {item.label}
           </span>
@@ -191,11 +191,11 @@ export function PricingBoxes() {
       {/* Add-ons */}
       <div className="mt-14">
         <div className="mb-6 text-center">
-          <span className="inline-flex items-center gap-2 rounded-full border border-white/15 bg-white/6 px-4 py-1.5 text-xs font-semibold uppercase tracking-widest text-white/45">
+          <span className="inline-flex items-center gap-2 rounded-full border border-orange-400/30 bg-orange-400/10 px-4 py-1.5 text-xs font-semibold uppercase tracking-widest text-orange-300">
             Erweiterungen
           </span>
           <h4 className="mt-3 text-xl font-bold text-white sm:text-2xl">Add-ons & Upsells</h4>
-          <p className="mt-2 text-sm text-white/50">Kombinierbar mit jedem Paket – für mehr Wirkung.</p>
+          <p className="mt-2 text-sm text-white/65">Kombinierbar mit jedem Paket – für mehr Wirkung.</p>
         </div>
         <div className="grid gap-4 sm:grid-cols-3">
           {ADDONS.map((addon) => (
@@ -207,9 +207,9 @@ export function PricingBoxes() {
                 <span className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl border border-orange-400/25 bg-orange-400/10 text-orange-300">
                   {addon.icon}
                 </span>
-                <p className="text-sm font-semibold text-white/90">{addon.name}</p>
+                <p className="text-sm font-semibold text-white/95">{addon.name}</p>
               </div>
-              <p className="flex-1 text-sm leading-relaxed text-white/55">{addon.description}</p>
+              <p className="flex-1 text-sm leading-relaxed text-white/70">{addon.description}</p>
               <div className="mt-4 flex items-center justify-between">
                 <p className="text-sm font-semibold text-orange-300">{addon.price}</p>
                 <a
