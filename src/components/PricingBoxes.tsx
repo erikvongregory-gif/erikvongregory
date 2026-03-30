@@ -194,8 +194,8 @@ export function PricingBoxes() {
           <span className="inline-flex items-center gap-2 rounded-full border border-orange-400/30 bg-orange-400/10 px-4 py-1.5 text-xs font-semibold uppercase tracking-widest text-orange-300">
             Erweiterungen
           </span>
-          <h4 className="mt-3 text-xl font-bold text-white sm:text-2xl">Add-ons & Upsells</h4>
-          <p className="mt-2 text-sm text-white/65">Kombinierbar mit jedem Paket – für mehr Wirkung.</p>
+          <h4 className="mt-3 text-xl font-bold text-neutral-900 sm:text-2xl">Add-ons & Upsells</h4>
+          <p className="mt-2 text-sm text-neutral-600">Kombinierbar mit jedem Paket – für mehr Wirkung.</p>
         </div>
         <div className="grid gap-4 sm:grid-cols-3">
           {ADDONS.map((addon) => (
