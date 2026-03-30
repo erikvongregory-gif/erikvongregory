@@ -45,12 +45,13 @@ const PRICING_PACKAGES = [
     delivery: "2-3 Wochen",
     cta: "👉 Angebot anfragen",
     features: [
-      "moderne Website (Onepage)",
+      "Website-Setup (Onepager oder kompakte Seite)",
       "10 KI-Produktbilder",
       "2 KI-Werbevideos",
       "Social-Media-Content Setup",
       "Texte & Struktur für die Website",
       "KI-Bewertungsmanagement (Google)",
+      "Komplexe Webprojekte im erweiterten Preissegment",
       "kommerzielle Nutzungsrechte",
     ],
   },
@@ -94,10 +95,45 @@ const ADDONS = [
 ];
 
 const TRUST_ITEMS = [
-  { icon: "🇩🇪", label: "Hosting in Deutschland" },
-  { icon: "🔒", label: "DSGVO-konform" },
-  { icon: "✓", label: "Kommerzielle Nutzungsrechte" },
-  { icon: "📞", label: "Persönliche Betreuung" },
+  {
+    icon: (
+      <svg className="h-[14px] w-[14px]" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.9" strokeLinecap="round" strokeLinejoin="round">
+        <path d="M3 11.5A8.5 8.5 0 0 1 11.5 3h1A8.5 8.5 0 0 1 21 11.5v1A8.5 8.5 0 0 1 12.5 21h-1A8.5 8.5 0 0 1 3 12.5z" />
+        <path d="M8 12h8" />
+        <path d="M12 8v8" />
+      </svg>
+    ),
+    label: "Hosting in Deutschland",
+  },
+  {
+    icon: (
+      <svg className="h-[14px] w-[14px]" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.9" strokeLinecap="round" strokeLinejoin="round">
+        <path d="M12 3l7 3v6c0 4.2-2.7 7.6-7 9-4.3-1.4-7-4.8-7-9V6z" />
+        <path d="m9.4 12.2 1.9 1.9 3.3-3.3" />
+      </svg>
+    ),
+    label: "DSGVO-konform",
+  },
+  {
+    icon: (
+      <svg className="h-[14px] w-[14px]" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.9" strokeLinecap="round" strokeLinejoin="round">
+        <circle cx="12" cy="12" r="9" />
+        <path d="m8.5 12.5 2.3 2.3 4.7-4.7" />
+      </svg>
+    ),
+    label: "Kommerzielle Nutzungsrechte",
+  },
+  {
+    icon: (
+      <svg className="h-[14px] w-[14px]" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.9" strokeLinecap="round" strokeLinejoin="round">
+        <path d="M4 12a8 8 0 0 1 16 0" />
+        <rect x="3" y="12" width="4" height="6" rx="1.2" />
+        <rect x="17" y="12" width="4" height="6" rx="1.2" />
+        <path d="M8 19h8" />
+      </svg>
+    ),
+    label: "Persönliche Betreuung",
+  },
 ];
 
 export function PricingBoxes() {
@@ -144,10 +180,10 @@ export function PricingBoxes() {
         {PRICING_PACKAGES.map((pkg, index) => (
           <article
             key={pkg.name}
-            className={`pricing-card pricing-card-slide-${index} group relative flex h-full flex-col rounded-2xl border p-5 shadow-[0_12px_40px_rgba(0,0,0,0.35),0_0_40px_rgba(224,122,64,0.12)] backdrop-blur-sm transition-all duration-300 hover:-translate-y-1 hover:shadow-[0_16px_42px_rgba(0,0,0,0.34),0_0_30px_rgba(224,122,64,0.2)] ${
+            className={`pricing-card pricing-card-slide-${index} group relative flex h-full flex-col rounded-2xl border p-5 shadow-[0_12px_40px_rgba(0,0,0,0.35),0_0_40px_rgba(224,122,64,0.12)] backdrop-blur-sm ${
               pkg.highlight
-                ? "border-orange-400/40 bg-[#0b1620]/90 ring-1 ring-orange-400/20 hover:border-orange-400/60"
-                : "border-white/15 bg-[#0b1620]/80 hover:border-orange-400/35"
+                ? "border-orange-400/40 bg-[#0b1620]/90 ring-1 ring-orange-400/20"
+                : "border-white/15 bg-[#0b1620]/80"
             }`}
           >
             {pkg.highlight && (
@@ -192,19 +228,15 @@ export function PricingBoxes() {
       </div>
 
       {/* Trust Bar */}
-      <div className="relative mt-6 overflow-hidden rounded-xl border border-white/20 bg-[#0b1620]/70 px-4 py-3 backdrop-blur-sm md:border-neutral-200/60 md:bg-transparent md:backdrop-blur-0">
-        {/* Liquid blobs */}
-        <div aria-hidden className="liquid-blob liquid-blob-1 absolute -left-8 -top-8 h-24 w-24 rounded-full"
-          style={{ background: "linear-gradient(135deg, rgba(255,200,160,0.55) 0%, rgba(255,220,190,0.35) 100%)" }} />
-        <div aria-hidden className="liquid-blob liquid-blob-2 absolute -right-8 -bottom-8 h-24 w-24 rounded-full"
-          style={{ background: "linear-gradient(225deg, rgba(224,122,64,0.35) 0%, rgba(255,210,180,0.25) 100%)" }} />
-        <div aria-hidden className="liquid-blob liquid-blob-3 absolute left-1/2 top-1/2 h-20 w-20 -translate-x-1/2 -translate-y-1/2 rounded-full"
-          style={{ background: "rgba(255,235,210,0.3)" }} />
+      <div className="relative mt-6 overflow-hidden rounded-xl border border-transparent bg-transparent px-4 py-3 md:px-5 md:py-3">
         {/* Content */}
         <div className="relative grid grid-cols-2 gap-x-4 gap-y-2 md:flex md:flex-wrap md:items-center md:justify-center md:gap-x-5 md:gap-y-2">
           {TRUST_ITEMS.map((item) => (
-            <span key={item.label} className="flex items-center gap-1.5 text-[12px] font-medium text-white/90 md:text-xs md:text-neutral-800">
-              <span aria-hidden className="text-base md:text-sm">{item.icon}</span>
+            <span
+              key={item.label}
+              className="section7-badge pricing-trust-badge inline-flex items-center gap-2 rounded-full border border-orange-400/30 bg-orange-400/10 px-3.5 py-2 text-[13px] font-semibold text-orange-300 md:px-4 md:py-2.5 md:text-[15px] md:text-[#c65a20]"
+            >
+              <span aria-hidden className="text-orange-300 md:text-[#c65a20] [&>svg]:h-4 [&>svg]:w-4 md:[&>svg]:h-[15px] md:[&>svg]:w-[15px]">{item.icon}</span>
               {item.label}
             </span>
           ))}

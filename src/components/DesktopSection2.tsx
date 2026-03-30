@@ -84,14 +84,26 @@ export function DesktopSection2() {
             Brauereiwissen + moderne KI = Marketing, das funktioniert.
           </p>
           <div className="mb-5 flex flex-wrap items-center justify-center gap-2">
-            <span className="inline-flex items-center gap-1.5 rounded-full border border-neutral-200 bg-white/80 px-3 py-1 text-xs font-medium text-neutral-600">
-              🔒 DSGVO-konform
+            <span className="section7-badge inline-flex items-center gap-1.5 rounded-full border border-orange-400/30 bg-orange-400/10 px-3 py-1 text-xs font-medium text-orange-300">
+              <svg className="h-3.5 w-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.9" strokeLinecap="round" strokeLinejoin="round" aria-hidden>
+                <path d="M12 3l7 3v6c0 4.2-2.7 7.6-7 9-4.3-1.4-7-4.8-7-9V6z" />
+                <path d="m9.4 12.2 1.9 1.9 3.3-3.3" />
+              </svg>
+              DSGVO-konform
             </span>
-            <span className="inline-flex items-center gap-1.5 rounded-full border border-neutral-200 bg-white/80 px-3 py-1 text-xs font-medium text-neutral-600">
-              🇩🇪 Hosting in Deutschland
+            <span className="section7-badge inline-flex items-center gap-1.5 rounded-full border border-orange-400/30 bg-orange-400/10 px-3 py-1 text-xs font-medium text-orange-300">
+              <svg className="h-3.5 w-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.9" strokeLinecap="round" strokeLinejoin="round" aria-hidden>
+                <path d="M12 21s7-4.5 7-10a7 7 0 1 0-14 0c0 5.5 7 10 7 10z" />
+                <circle cx="12" cy="11" r="2.2" />
+              </svg>
+              Hosting in Deutschland
             </span>
-            <span className="inline-flex items-center gap-1.5 rounded-full border border-neutral-200 bg-white/80 px-3 py-1 text-xs font-medium text-neutral-600">
-              ✓ KI als Werkzeug – Seele bleibt deine
+            <span className="section7-badge inline-flex items-center gap-1.5 rounded-full border border-orange-400/30 bg-orange-400/10 px-3 py-1 text-xs font-medium text-orange-300">
+              <svg className="h-3.5 w-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.9" strokeLinecap="round" strokeLinejoin="round" aria-hidden>
+                <circle cx="12" cy="12" r="9" />
+                <path d="m8.5 12.5 2.3 2.3 4.7-4.7" />
+              </svg>
+              KI als Werkzeug – Seele bleibt deine
             </span>
           </div>
           <div className="mt-auto flex justify-center">
