@@ -26,11 +26,13 @@ const PRICING_PACKAGES = [
     price: "1.690 €",
     delivery: "5-7 Tage",
     cta: "👉 Projekt starten",
+    highlight: true,
     features: [
       "10 KI-Produktbilder",
       "1 KI-Werbevideo (10-15 Sekunden)",
       "10 Social-Media-Posts inkl. Text",
-      "Content optimiert für Instagram & Werbung",
+      "Reels & TikTok-optimiert",
+      "Content für Instagram, Facebook & Ads",
       "kommerzielle Nutzungsrechte",
     ],
   },
@@ -48,9 +50,54 @@ const PRICING_PACKAGES = [
       "2 KI-Werbevideos",
       "Social-Media-Content Setup",
       "Texte & Struktur für die Website",
+      "KI-Bewertungsmanagement (Google)",
       "kommerzielle Nutzungsrechte",
     ],
   },
+];
+
+const ADDONS = [
+  {
+    icon: (
+      <svg className="w-6 h-6" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.75" strokeLinecap="round" strokeLinejoin="round">
+        <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z" />
+      </svg>
+    ),
+    name: "KI-Bewertungsmanagement",
+    description: "Google-Rezensionen automatisch & markengetreu beantworten – ohne Zeitaufwand für den Inhaber.",
+    price: "ab 149 €/Monat",
+  },
+  {
+    icon: (
+      <svg className="w-6 h-6" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.75" strokeLinecap="round" strokeLinejoin="round">
+        <circle cx="12" cy="8" r="4" />
+        <path d="M20 21a8 8 0 1 0-16 0" />
+      </svg>
+    ),
+    name: "KI-Markenbotschafter",
+    description: "Ein digitaler Braumeister, der regelmäßig Neuigkeiten aus deiner Brauerei als Video präsentiert.",
+    price: "ab 299 €/Monat",
+  },
+  {
+    icon: (
+      <svg className="w-6 h-6" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.75" strokeLinecap="round" strokeLinejoin="round">
+        <rect x="3" y="4" width="18" height="18" rx="2" ry="2" />
+        <line x1="16" y1="2" x2="16" y2="6" />
+        <line x1="8" y1="2" x2="8" y2="6" />
+        <line x1="3" y1="10" x2="21" y2="10" />
+      </svg>
+    ),
+    name: "KI-Event-Marketing",
+    description: "Automatisierte Kampagnen für Brauereifeste, Bockbieranstiche und Verkostungen – rechtzeitig und ohne Aufwand.",
+    price: "ab 199 €/Event",
+  },
+];
+
+const TRUST_ITEMS = [
+  { icon: "🇩🇪", label: "Hosting in Deutschland" },
+  { icon: "🔒", label: "DSGVO-konform" },
+  { icon: "✓", label: "Kommerzielle Nutzungsrechte" },
+  { icon: "📞", label: "Persönliche Betreuung" },
 ];
 
 export function PricingBoxes() {
@@ -84,8 +131,17 @@ export function PricingBoxes() {
         {PRICING_PACKAGES.map((pkg, index) => (
           <article
             key={pkg.name}
-            className={`pricing-card pricing-card-slide-${index} relative flex h-full flex-col rounded-2xl border border-white/15 bg-[#0b1620]/80 p-5 shadow-[0_12px_40px_rgba(0,0,0,0.35),0_0_40px_rgba(224,122,64,0.12)] backdrop-blur-sm`}
+            className={`pricing-card pricing-card-slide-${index} relative flex h-full flex-col rounded-2xl border p-5 shadow-[0_12px_40px_rgba(0,0,0,0.35),0_0_40px_rgba(224,122,64,0.12)] backdrop-blur-sm ${
+              pkg.highlight
+                ? "border-orange-400/40 bg-[#0b1620]/90 ring-1 ring-orange-400/20"
+                : "border-white/15 bg-[#0b1620]/80"
+            }`}
           >
+            {pkg.highlight && (
+              <span className="absolute -top-3 left-1/2 -translate-x-1/2 rounded-full border border-orange-400/40 bg-orange-500/20 px-3 py-1 text-[11px] font-semibold tracking-wide text-orange-300">
+                Beliebteste Wahl
+              </span>
+            )}
             <span className="pricing-sale-badge absolute right-3 top-3 rounded-full border border-red-400/50 bg-red-500/20 px-2.5 py-1 text-[11px] font-semibold tracking-wide text-red-300">
               SALE
             </span>
@@ -110,12 +166,63 @@ export function PricingBoxes() {
             <a
               href="#contact"
               data-paket={pkg.name}
-              className="pricing-cta mt-5 inline-flex w-full items-center justify-center rounded-xl border border-orange-400/40 bg-orange-500/15 px-4 py-2.5 text-sm font-semibold text-orange-200 transition hover:bg-orange-500/25"
+              className={`pricing-cta mt-5 inline-flex w-full items-center justify-center rounded-xl border px-4 py-2.5 text-sm font-semibold transition ${
+                pkg.highlight
+                  ? "border-orange-400/60 bg-orange-500/25 text-orange-200 hover:bg-orange-500/35"
+                  : "border-orange-400/40 bg-orange-500/15 text-orange-200 hover:bg-orange-500/25"
+              }`}
             >
               {pkg.cta}
             </a>
           </article>
         ))}
+      </div>
+
+      {/* Trust Bar */}
+      <div className="mt-6 flex flex-wrap items-center justify-center gap-x-5 gap-y-2 rounded-xl border border-white/8 bg-white/4 px-4 py-3 backdrop-blur-sm">
+        {TRUST_ITEMS.map((item) => (
+          <span key={item.label} className="flex items-center gap-1.5 text-xs font-medium text-white/45">
+            <span aria-hidden className="text-sm">{item.icon}</span>
+            {item.label}
+          </span>
+        ))}
+      </div>
+
+      {/* Add-ons */}
+      <div className="mt-14">
+        <div className="mb-6 text-center">
+          <span className="inline-flex items-center gap-2 rounded-full border border-white/15 bg-white/6 px-4 py-1.5 text-xs font-semibold uppercase tracking-widest text-white/45">
+            Erweiterungen
+          </span>
+          <h4 className="mt-3 text-xl font-bold text-white sm:text-2xl">Add-ons & Upsells</h4>
+          <p className="mt-2 text-sm text-white/50">Kombinierbar mit jedem Paket – für mehr Wirkung.</p>
+        </div>
+        <div className="grid gap-4 sm:grid-cols-3">
+          {ADDONS.map((addon) => (
+            <div
+              key={addon.name}
+              className="relative flex flex-col rounded-2xl border border-white/12 bg-[#0b1620]/70 p-5 shadow-[0_8px_28px_rgba(0,0,0,0.25)] backdrop-blur-sm"
+            >
+              <div className="mb-3 flex items-center gap-3">
+                <span className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl border border-orange-400/25 bg-orange-400/10 text-orange-300">
+                  {addon.icon}
+                </span>
+                <p className="text-sm font-semibold text-white/90">{addon.name}</p>
+              </div>
+              <p className="flex-1 text-sm leading-relaxed text-white/55">{addon.description}</p>
+              <div className="mt-4 flex items-center justify-between">
+                <p className="text-sm font-semibold text-orange-300">{addon.price}</p>
+                <a
+                  href="#contact"
+                  data-paket={addon.name}
+                  className="inline-flex items-center gap-1 rounded-lg border border-orange-400/30 bg-orange-500/10 px-3 py-1.5 text-xs font-semibold text-orange-200 transition hover:bg-orange-500/20"
+                >
+                  Anfragen →
+                </a>
+              </div>
+            </div>
+          ))}
+        </div>
       </div>
     </section>
   );

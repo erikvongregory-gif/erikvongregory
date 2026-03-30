@@ -167,7 +167,8 @@ export function MobileLayout() {
               bleiben
             </h2>
             <p className="mt-5 text-base leading-relaxed text-white/90">
-              Viele Brauereien haben ein großartiges Produkt – aber online findet sie kaum jemand.
+              Viele Brauereien haben ein großartiges Produkt – aber online findet sie kaum jemand. Während der deutsche Biermarkt{" "}
+              <span className="font-semibold text-white">um 6 % einbricht</span>, gewinnen sichtbare Marken täglich neue Kunden.
             </p>
             <div className="mx-auto mt-5 flex w-full max-w-sm flex-col gap-2">
               {[

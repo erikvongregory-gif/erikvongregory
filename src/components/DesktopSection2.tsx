@@ -33,7 +33,8 @@ export function DesktopSection2() {
             bleiben
           </h2>
           <p className="mt-4 text-base leading-relaxed text-neutral-800 sm:text-lg">
-            Viele Brauereien haben ein großartiges Produkt – aber online findet sie kaum jemand.
+            Viele Brauereien haben ein großartiges Produkt – aber online findet sie kaum jemand. Während der deutsche Biermarkt{" "}
+            <span className="font-semibold text-neutral-900">um 6 % einbricht</span>, gewinnen sichtbare Marken täglich neue Kunden.
           </p>
           <div className="relative z-10 mt-4 grid min-w-0 grid-cols-1 gap-2 sm:grid-cols-2">
             {[
@@ -82,6 +83,17 @@ export function DesktopSection2() {
           <p className="mb-5 text-center text-base font-medium leading-relaxed text-neutral-800 sm:text-lg">
             Brauereiwissen + moderne KI = Marketing, das funktioniert.
           </p>
+          <div className="mb-5 flex flex-wrap items-center justify-center gap-2">
+            <span className="inline-flex items-center gap-1.5 rounded-full border border-neutral-200 bg-white/80 px-3 py-1 text-xs font-medium text-neutral-600">
+              🔒 DSGVO-konform
+            </span>
+            <span className="inline-flex items-center gap-1.5 rounded-full border border-neutral-200 bg-white/80 px-3 py-1 text-xs font-medium text-neutral-600">
+              🇩🇪 Hosting in Deutschland
+            </span>
+            <span className="inline-flex items-center gap-1.5 rounded-full border border-neutral-200 bg-white/80 px-3 py-1 text-xs font-medium text-neutral-600">
+              ✓ KI als Werkzeug – Seele bleibt deine
+            </span>
+          </div>
           <div className="mt-auto flex justify-center">
             <AppleStyleButton href="#contact" className="cta-orange">Kostenloses Erstgespraech starten</AppleStyleButton>
           </div>
