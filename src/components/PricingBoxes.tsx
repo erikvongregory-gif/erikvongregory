@@ -102,7 +102,9 @@ const TRUST_ITEMS = [
 
 export function PricingBoxes() {
   const sectionRef = useRef<HTMLElement>(null);
+  const addonsRef = useRef<HTMLDivElement>(null);
   const [inView, setInView] = useState(false);
+  const [addonsInView, setAddonsInView] = useState(false);
 
   useEffect(() => {
     const el = sectionRef.current;
@@ -115,10 +117,21 @@ export function PricingBoxes() {
     return () => observer.disconnect();
   }, []);
 
+  useEffect(() => {
+    const el = addonsRef.current;
+    if (!el) return;
+    const observer = new IntersectionObserver(
+      ([entry]) => setAddonsInView(entry.isIntersecting),
+      { threshold: 0.2, rootMargin: "0px 0px -60px 0px" }
+    );
+    observer.observe(el);
+    return () => observer.disconnect();
+  }, []);
+
   return (
     <section ref={sectionRef} className={`mt-10 ${inView ? "pricing-in-view" : ""}`}>
       <div className="mb-8 flex flex-col items-center gap-4 text-center">
-        <span className="pricing-section-badge section4-badge-pulse inline-flex items-center gap-2 rounded-full border border-orange-400/30 bg-orange-400/10 px-4 py-1.5 text-sm font-medium text-orange-300 pricing-slide-in">
+        <span className="pricing-section-badge section7-badge section7-badge-pulse inline-flex items-center gap-2 rounded-full border border-orange-400/30 bg-orange-400/10 px-4 py-1.5 text-sm font-medium text-orange-300 pricing-slide-in md:border-[rgba(224,122,64,0.35)] md:bg-[rgba(224,122,64,0.15)] md:text-[#c65a20]">
           <span aria-hidden>✦</span>
           Aktuelle Angebote
         </span>
@@ -131,10 +144,10 @@ export function PricingBoxes() {
         {PRICING_PACKAGES.map((pkg, index) => (
           <article
             key={pkg.name}
-            className={`pricing-card pricing-card-slide-${index} relative flex h-full flex-col rounded-2xl border p-5 shadow-[0_12px_40px_rgba(0,0,0,0.35),0_0_40px_rgba(224,122,64,0.12)] backdrop-blur-sm ${
+            className={`pricing-card pricing-card-slide-${index} group relative flex h-full flex-col rounded-2xl border p-5 shadow-[0_12px_40px_rgba(0,0,0,0.35),0_0_40px_rgba(224,122,64,0.12)] backdrop-blur-sm transition-all duration-300 hover:-translate-y-1 hover:shadow-[0_16px_42px_rgba(0,0,0,0.34),0_0_30px_rgba(224,122,64,0.2)] ${
               pkg.highlight
-                ? "border-orange-400/40 bg-[#0b1620]/90 ring-1 ring-orange-400/20"
-                : "border-white/15 bg-[#0b1620]/80"
+                ? "border-orange-400/40 bg-[#0b1620]/90 ring-1 ring-orange-400/20 hover:border-orange-400/60"
+                : "border-white/15 bg-[#0b1620]/80 hover:border-orange-400/35"
             }`}
           >
             {pkg.highlight && (
@@ -179,7 +192,7 @@ export function PricingBoxes() {
       </div>
 
       {/* Trust Bar */}
-      <div className="relative mt-6 overflow-hidden rounded-xl border border-neutral-200/60 px-4 py-3">
+      <div className="relative mt-6 overflow-hidden rounded-xl border border-white/20 bg-[#0b1620]/70 px-4 py-3 backdrop-blur-sm md:border-neutral-200/60 md:bg-transparent md:backdrop-blur-0">
         {/* Liquid blobs */}
         <div aria-hidden className="liquid-blob liquid-blob-1 absolute -left-8 -top-8 h-24 w-24 rounded-full"
           style={{ background: "linear-gradient(135deg, rgba(255,200,160,0.55) 0%, rgba(255,220,190,0.35) 100%)" }} />
@@ -188,10 +201,10 @@ export function PricingBoxes() {
         <div aria-hidden className="liquid-blob liquid-blob-3 absolute left-1/2 top-1/2 h-20 w-20 -translate-x-1/2 -translate-y-1/2 rounded-full"
           style={{ background: "rgba(255,235,210,0.3)" }} />
         {/* Content */}
-        <div className="relative flex flex-wrap items-center justify-center gap-x-5 gap-y-2">
+        <div className="relative grid grid-cols-2 gap-x-4 gap-y-2 md:flex md:flex-wrap md:items-center md:justify-center md:gap-x-5 md:gap-y-2">
           {TRUST_ITEMS.map((item) => (
-            <span key={item.label} className="flex items-center gap-1.5 text-xs font-medium text-neutral-800">
-              <span aria-hidden className="text-sm">{item.icon}</span>
+            <span key={item.label} className="flex items-center gap-1.5 text-[12px] font-medium text-white/90 md:text-xs md:text-neutral-800">
+              <span aria-hidden className="text-base md:text-sm">{item.icon}</span>
               {item.label}
             </span>
           ))}
@@ -199,22 +212,23 @@ export function PricingBoxes() {
       </div>
 
       {/* Add-ons */}
-      <div className="mt-14">
+      <div ref={addonsRef} className="mt-14">
         <div className="mb-6 text-center">
-          <span className="inline-flex items-center gap-2 rounded-full border border-orange-400/30 bg-orange-400/10 px-4 py-1.5 text-xs font-semibold uppercase tracking-widest text-orange-300">
+          <span className="section7-badge section7-badge-pulse inline-flex items-center gap-2 rounded-full border border-orange-400/30 bg-orange-400/10 px-4 py-1.5 text-sm font-medium text-orange-300 md:border-[rgba(224,122,64,0.35)] md:bg-[rgba(224,122,64,0.15)] md:text-[#c65a20]">
+            <span aria-hidden>✦</span>
             Erweiterungen
           </span>
           <h4 className="mt-3 text-xl font-bold text-white lg:text-neutral-900 sm:text-2xl">Add-ons & Upsells</h4>
           <p className="mt-2 text-sm text-white/80 lg:text-neutral-600">Kombinierbar mit jedem Paket – für mehr Wirkung.</p>
         </div>
         <div className="grid gap-4 sm:grid-cols-3">
-          {ADDONS.map((addon) => (
+          {ADDONS.map((addon, i) => (
             <div
               key={addon.name}
-              className="relative flex flex-col rounded-2xl border border-white/12 bg-[#0b1620]/70 p-5 shadow-[0_8px_28px_rgba(0,0,0,0.25)] backdrop-blur-sm"
+              className={`addon-card-slide-${i} ${addonsInView ? "addon-card-in addon-card-in-" + i : "addon-card-out"} group relative flex flex-col rounded-2xl border border-white/12 bg-[#0b1620]/70 p-5 shadow-[0_8px_28px_rgba(0,0,0,0.25)] backdrop-blur-sm transition-all duration-300 hover:-translate-y-1 hover:border-orange-400/35 hover:shadow-[0_14px_36px_rgba(0,0,0,0.32),0_0_26px_rgba(224,122,64,0.16)]`}
             >
               <div className="mb-3 flex items-center gap-3">
-                <span className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl border border-orange-400/25 bg-orange-400/10 text-orange-300">
+                <span className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl border border-orange-400/25 bg-orange-400/10 text-orange-300 transition-colors duration-300 group-hover:border-orange-400/45 group-hover:bg-orange-400/20">
                   {addon.icon}
                 </span>
                 <p className="text-sm font-semibold text-white/95">{addon.name}</p>

@@ -2687,14 +2687,39 @@ body[data-legal-page="true"] {
 /* Animation startet erst beim Scrollen ins Viewport – nacheinander gestaffelt (nur Mobile) */
 @media (max-width: 767px) {
   .pricing-in-view .pricing-card-slide-0 {
-    animation: pricing-card-from-left 0.55s cubic-bezier(0.22, 1, 0.36, 1) 1.78s forwards;
+    animation: pricing-card-from-left 0.42s cubic-bezier(0.22, 1, 0.36, 1) 0.55s forwards;
   }
   .pricing-in-view .pricing-card-slide-1 {
-    animation: pricing-card-from-bottom 0.55s cubic-bezier(0.22, 1, 0.36, 1) 1.2s forwards;
+    animation: pricing-card-from-bottom 0.42s cubic-bezier(0.22, 1, 0.36, 1) 0.82s forwards;
   }
   .pricing-in-view .pricing-card-slide-2 {
-    animation: pricing-card-from-right 0.55s cubic-bezier(0.22, 1, 0.36, 1) 1.78s forwards;
+    animation: pricing-card-from-right 0.42s cubic-bezier(0.22, 1, 0.36, 1) 1.09s forwards;
   }
+}
+
+/* Add-ons/Upsells – cleanes Einfaden mit leichtem Stagger */
+.addon-card-slide-0,
+.addon-card-slide-1,
+.addon-card-slide-2 {
+  opacity: 0;
+  transform: translateY(20px);
+}
+
+.addon-card-out {
+  opacity: 0;
+  transform: translateY(20px);
+}
+
+.addon-card-in-0 {
+  animation: pricing-slide-up 0.45s cubic-bezier(0.22, 1, 0.36, 1) 0.08s both;
+}
+
+.addon-card-in-1 {
+  animation: pricing-slide-up 0.45s cubic-bezier(0.22, 1, 0.36, 1) 0.16s both;
+}
+
+.addon-card-in-2 {
+  animation: pricing-slide-up 0.45s cubic-bezier(0.22, 1, 0.36, 1) 0.24s both;
 }
 
 @keyframes pricing-sale-badge-pulse {
@@ -2830,6 +2855,9 @@ body[data-legal-page="true"] {
   .pricing-card-slide-0,
   .pricing-card-slide-1,
   .pricing-card-slide-2,
+  .addon-card-slide-0,
+  .addon-card-slide-1,
+  .addon-card-slide-2,
   .pricing-card-enter,
   .pricing-sale-badge,
   .pricing-sale-price {
