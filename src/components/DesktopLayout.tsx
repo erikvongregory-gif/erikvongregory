@@ -1,5 +1,6 @@
 "use client";
 
+import { DesktopAmbientDetails } from "@/components/DesktopAmbientDetails";
 import { LiquidBackground } from "@/components/LiquidBackground";
 import { DesktopHero } from "@/components/DesktopHero";
 import { DesktopSection2 } from "@/components/DesktopSection2";
@@ -15,6 +16,7 @@ export function DesktopLayout() {
   return (
     <main id="main" className="desktop-light-theme relative min-h-screen overflow-x-hidden pt-14 sm:pt-16">
       <LiquidBackground />
+      <DesktopAmbientDetails />
       {/* Hero-Zeile: Content links, Portrait rechts (oben) – gestaffelte Einblendungen */}
       <div className={`section1-wrapper mx-auto w-full max-w-screen-2xl lg:grid lg:grid-cols-[1fr_minmax(320px,40%)] lg:gap-0 ${heroReady ? "section1-ready" : ""}`}>
         <div className="min-w-0">
@@ -29,9 +31,7 @@ export function DesktopLayout() {
         <DesktopFadeInView className="section2-slide-trigger">
           <DesktopSection2 />
         </DesktopFadeInView>
-        <DesktopFadeInView delay={100} className="section3-clean-reveal">
-          <DesktopSection3 />
-        </DesktopFadeInView>
+        <DesktopSection3 />
         <DesktopFadeInView delay={150} className="section4-cards-trigger">
           <DesktopSection4 />
         </DesktopFadeInView>

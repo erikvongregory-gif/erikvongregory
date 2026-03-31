@@ -5,6 +5,7 @@ import { useEffect, useRef, useState } from "react";
 import { useLoading } from "@/context/LoadingContext";
 import { AppleStyleButton } from "./AppleStyleButton";
 import { ProblemItem } from "./ProblemItem";
+import { Section3TextReveal } from "./Section3TextReveal";
 import { ScrollReveal } from "./ScrollReveal";
 import { LiquidBackground } from "./LiquidBackground";
 
@@ -188,25 +189,46 @@ export function MobileLayout() {
 
         {/* Section 3 */}
         <section id="section-3" className="relative px-4 py-16">
-          <ScrollReveal className="section3-clean-reveal-mobile">
           <div className="section3-card mx-auto max-w-2xl rounded-2xl px-6 py-10 text-center">
-            <p className="mb-3 text-sm font-medium uppercase tracking-[0.2em] text-orange-400/90">
-              Dein nächster Schritt
-            </p>
-            <h2 className="text-3xl font-extrabold tracking-tight text-white drop-shadow-md">
-              Bist du{" "}
-              <a href="#contact" className="section3-cta-link">
-                <span className="font-austera-green-fade">
-                  bereit
-                </span>
-              </a>
-              ?
-            </h2>
-            <p className="mt-4 text-base text-white/70">
-              Sprich mit mir über deine Brauerei – unverbindlich & direkt.
-            </p>
+            <Section3TextReveal
+              eyebrow={
+                <p className="mb-3 text-sm font-medium uppercase tracking-[0.2em] text-orange-400/90">
+                  Dein nächster Schritt
+                </p>
+              }
+              body={
+                <>
+                  <h2 className="text-3xl font-extrabold tracking-tight text-white drop-shadow-md">
+                    Bist du{" "}
+                    <a
+                      href="#contact"
+                      className="section3-cta-link pointer-events-auto relative inline-block transition-all duration-300 hover:scale-105"
+                    >
+                      <span className="font-austera-green-fade section3-bereit-glow relative z-10">
+                        bereit
+                      </span>
+                    </a>
+                    ?
+                  </h2>
+                  <p className="mt-4 text-base text-white/70">
+                    Sprich mit mir über deine Brauerei – unverbindlich & direkt. In 15 Minuten weißt du, wie KI dein
+                    Marketing transformiert.
+                  </p>
+                  <div className="mt-8 flex flex-col items-center justify-center gap-3">
+                    <AppleStyleButton
+                      href="#contact"
+                      className="cta-orange px-8 py-3 text-base shadow-lg shadow-orange-900/20 hover:shadow-orange-900/30"
+                    >
+                      Kostenloses Erstgespräch sichern
+                    </AppleStyleButton>
+                    <p className="text-sm text-white/55 flex items-center gap-1.5">
+                      <span aria-hidden>✓</span> Kein Pitch, keine Verkaufsmasche
+                    </p>
+                  </div>
+                </>
+              }
+            />
           </div>
-          </ScrollReveal>
         </section>
 
         {/* Section 4 */}

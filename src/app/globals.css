@@ -811,6 +811,39 @@ body[data-legal-page="true"] {
     transform 0.85s cubic-bezier(0.16, 1, 0.3, 1) !important;
 }
 
+/* Section 3 – gestaffeltes Text-Reveal (Mobile + Desktop, ein Observer) */
+.section3-text-reveal .section3-reveal-eyebrow,
+.section3-text-reveal .section3-reveal-body {
+  opacity: 0;
+  transform: translate3d(0, 36px, 0);
+  transition:
+    opacity 0.9s cubic-bezier(0.16, 1, 0.3, 1),
+    transform 0.9s cubic-bezier(0.16, 1, 0.3, 1);
+  will-change: opacity, transform;
+}
+
+.section3-text-reveal--shown .section3-reveal-eyebrow {
+  opacity: 1;
+  transform: translate3d(0, 0, 0);
+  transition-delay: 0ms;
+}
+
+.section3-text-reveal--shown .section3-reveal-body {
+  opacity: 1;
+  transform: translate3d(0, 0, 0);
+  transition-delay: 0.15s;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .section3-text-reveal .section3-reveal-eyebrow,
+  .section3-text-reveal .section3-reveal-body {
+    opacity: 1;
+    transform: none;
+    transition: none;
+    will-change: auto;
+  }
+}
+
 @media (max-width: 767px) {
   .desktop-fade-in-view {
     opacity: 1;
@@ -1203,6 +1236,23 @@ body[data-legal-page="true"] {
   }
 }
 
+/* Section 2 – beide Boxen: Hover wie Pakete/Add-ons (Lift, orangener Rand, Schatten) */
+#section-2 .section2-card {
+  transition:
+    transform 0.35s cubic-bezier(0.22, 1, 0.36, 1),
+    box-shadow 0.3s ease,
+    border-color 0.3s ease;
+}
+
+#section-2 .section2-card:hover {
+  transform: translateY(-4px);
+  border-color: rgba(251, 146, 60, 0.35);
+  box-shadow:
+    0 14px 36px rgba(0, 0, 0, 0.32),
+    0 0 26px rgba(224, 122, 64, 0.16);
+  transition-delay: 0s;
+}
+
 .section2-problem-item {
   transition: background 0.2s ease, border-color 0.2s ease, box-shadow 0.2s ease;
   box-shadow:
@@ -1566,6 +1616,13 @@ body[data-legal-page="true"] {
   color: transparent;
 }
 
+/* Kernaussage in Box 1: nicht als gedimmtes Grau (.text-neutral-900 auf dunklem Card) */
+.desktop-light-theme .section2-card .section2-inline-stat {
+  color: #fdba74;
+  font-weight: 700;
+  text-shadow: 0 0 22px rgba(224, 122, 64, 0.4);
+}
+
 .desktop-light-theme .flip-card-front,
 .desktop-light-theme .flip-card-back {
   background: rgb(14, 22, 30);
@@ -1668,6 +1725,38 @@ body[data-legal-page="true"] {
     opacity: 1 !important;
   }
 
+  /* Von flacher Startpose (translateY durch Fade-Trigger) in den Bogen: längere, weiche Transition */
+  .section4-arc-layout .section4-arc-card.flip-card {
+    transition: transform 1.25s cubic-bezier(0.22, 1, 0.36, 1);
+  }
+
+  .section4-arc-layout .section4-arc-card-0.flip-card {
+    transition-delay: 0s;
+  }
+
+  .section4-arc-layout .section4-arc-card-1.flip-card {
+    transition-delay: 0.08s;
+  }
+
+  .section4-arc-layout .section4-arc-card-2.flip-card {
+    transition-delay: 0.16s;
+  }
+
+  .section4-arc-layout .section4-arc-card-3.flip-card {
+    transition-delay: 0.24s;
+  }
+
+  .section4-arc-layout .section4-arc-card-4.flip-card {
+    transition-delay: 0.32s;
+  }
+
+  @media (hover: hover) {
+    .section4-arc-layout .section4-arc-card.flip-card:hover {
+      transition: transform 0.38s cubic-bezier(0.34, 1.56, 0.64, 1);
+      transition-delay: 0s !important;
+    }
+  }
+
   .section4-arc-layout {
     display: flex !important;
     justify-content: center;
@@ -1712,6 +1801,18 @@ body[data-legal-page="true"] {
   .section4-arc-layout .section4-arc-card-4 {
     transform: translateX(-34px) translateY(68px) rotate(7deg);
     z-index: 1;
+  }
+}
+
+@media (min-width: 1024px) and (prefers-reduced-motion: reduce) {
+  .section4-arc-layout .section4-arc-card.flip-card,
+  .section4-arc-layout .section4-arc-card-0.flip-card,
+  .section4-arc-layout .section4-arc-card-1.flip-card,
+  .section4-arc-layout .section4-arc-card-2.flip-card,
+  .section4-arc-layout .section4-arc-card-3.flip-card,
+  .section4-arc-layout .section4-arc-card-4.flip-card {
+    transition: transform 0.01ms linear;
+    transition-delay: 0s !important;
   }
 }
 
@@ -1897,6 +1998,115 @@ body[data-legal-page="true"] {
 .liquid-blob-1 { animation-name: liquid-blob-1; }
 .liquid-blob-2 { animation-name: liquid-blob-2; animation-delay: -4s; }
 .liquid-blob-3 { animation-name: liquid-blob-3; animation-delay: -8s; }
+
+/* Desktop – dezente Ambient-Schicht (nur DesktopLayout, md+) */
+@keyframes desktop-ambient-sheen-drift {
+  0%, 100% {
+    transform: translate(-50%, 0) translate(-1.5%, 0) rotate(-14deg);
+  }
+  50% {
+    transform: translate(-50%, 0) translate(2.5%, 1.5%) rotate(-11deg);
+  }
+}
+
+@keyframes desktop-ambient-orb-breathe {
+  0%, 100% {
+    opacity: 0.2;
+    transform: scale(1);
+  }
+  50% {
+    opacity: 0.3;
+    transform: scale(1.035);
+  }
+}
+
+@media (min-width: 768px) {
+  .desktop-ambient-dots {
+    opacity: 0.42;
+    background-image: radial-gradient(rgba(42, 46, 56, 0.038) 1px, transparent 1px);
+    background-size: 23px 23px;
+    background-position: 0 0;
+    mix-blend-mode: multiply;
+  }
+
+  .desktop-ambient-sheen {
+    pointer-events: none;
+    opacity: 0.3;
+    background: linear-gradient(
+      100deg,
+      transparent 36%,
+      rgba(255, 255, 255, 0.11) 49%,
+      rgba(255, 248, 240, 0.06) 51.5%,
+      transparent 64%
+    );
+    animation: desktop-ambient-sheen-drift 100s ease-in-out infinite;
+  }
+
+  .desktop-ambient-orb {
+    position: absolute;
+    border-radius: 50%;
+    filter: blur(68px);
+    pointer-events: none;
+    animation: desktop-ambient-orb-breathe 32s ease-in-out infinite;
+  }
+
+  .desktop-ambient-orb--tr {
+    right: -7%;
+    top: 16%;
+    width: min(36vw, 400px);
+    height: min(36vw, 400px);
+    background: radial-gradient(circle, rgba(224, 122, 64, 0.09) 0%, transparent 68%);
+    animation-delay: -7s;
+  }
+
+  .desktop-ambient-orb--bl {
+    left: -5%;
+    bottom: 10%;
+    width: min(40vw, 440px);
+    height: min(40vw, 440px);
+    background: radial-gradient(circle, rgba(100, 118, 150, 0.055) 0%, transparent 72%);
+    animation-delay: -15s;
+  }
+
+  .desktop-ambient-hairline {
+    position: absolute;
+    pointer-events: none;
+    opacity: 0.16;
+  }
+
+  .desktop-ambient-hairline--tl {
+    left: 3.5%;
+    top: 14%;
+    width: min(28vw, 160px);
+    height: 1px;
+    background: linear-gradient(90deg, rgba(224, 122, 64, 0.32), transparent);
+    transform: rotate(-32deg);
+    transform-origin: left center;
+  }
+
+  .desktop-ambient-hairline--br {
+    right: 4.5%;
+    bottom: 16%;
+    width: min(30vw, 180px);
+    height: 1px;
+    background: linear-gradient(270deg, rgba(70, 80, 96, 0.22), transparent);
+    transform: rotate(-26deg);
+    transform-origin: right center;
+  }
+}
+
+@media (min-width: 768px) and (prefers-reduced-motion: reduce) {
+  .desktop-ambient-sheen,
+  .desktop-ambient-orb {
+    animation: none;
+  }
+
+  .desktop-ambient-orb--tr,
+  .desktop-ambient-orb--bl {
+    opacity: 0.24;
+    transform: none;
+  }
+}
 
 /* Mobile: weniger Blur + langsamere Animation = flüssiger */
 @media (max-width: 768px) {
@@ -2661,30 +2871,30 @@ body[data-legal-page="true"] {
   }
 }
 
-/* Paketkarten: gleicher clean Fade wie Add-ons */
-.pricing-card-slide-0 {
-  opacity: 0;
-  transform: translateY(20px);
-}
-.pricing-card-slide-1 {
-  opacity: 0;
-  transform: translateY(20px);
-}
+/* Paketkarten: gleicher Look wie vorher, aber per transition → :hover transform funktioniert */
+.pricing-card-slide-0,
+.pricing-card-slide-1,
 .pricing-card-slide-2 {
   opacity: 0;
   transform: translateY(20px);
 }
 
 .pricing-in-view .pricing-card-slide-0 {
-  animation: pricing-slide-up 0.45s cubic-bezier(0.22, 1, 0.36, 1) 0.08s both;
+  opacity: 1;
+  transform: translateY(0);
+  transition-delay: 0.08s;
 }
 
 .pricing-in-view .pricing-card-slide-1 {
-  animation: pricing-slide-up 0.45s cubic-bezier(0.22, 1, 0.36, 1) 0.16s both;
+  opacity: 1;
+  transform: translateY(0);
+  transition-delay: 0.16s;
 }
 
 .pricing-in-view .pricing-card-slide-2 {
-  animation: pricing-slide-up 0.45s cubic-bezier(0.22, 1, 0.36, 1) 0.24s both;
+  opacity: 1;
+  transform: translateY(0);
+  transition-delay: 0.24s;
 }
 
 /* Add-ons/Upsells – cleanes Einfaden mit leichtem Stagger */
@@ -2764,8 +2974,14 @@ body[data-legal-page="true"] {
   }
 }
 
+/* Wie Add-ons/Upsells: hover:-translate-y-1 + gleicher Rand/Schatten.
+   Einblendung per transition (keine transform-Keyframes) – sonst blockiert animation bei :hover den Lift. */
 .pricing-card {
-  transition: transform 0.25s ease, box-shadow 0.25s ease, border-color 0.25s ease;
+  transition:
+    opacity 0.45s cubic-bezier(0.22, 1, 0.36, 1),
+    transform 0.45s cubic-bezier(0.22, 1, 0.36, 1),
+    box-shadow 0.3s ease,
+    border-color 0.3s ease;
 }
 
 .pricing-card-enter {
@@ -2774,30 +2990,21 @@ body[data-legal-page="true"] {
 }
 
 .pricing-card:hover {
-  transform: translateY(-4px) scale(1.01);
-  border-color: rgba(224, 122, 64, 0.4);
+  transform: translateY(-4px);
+  border-color: rgba(251, 146, 60, 0.35);
   box-shadow:
-    0 14px 44px rgba(0, 0, 0, 0.35),
-    0 0 26px rgba(224, 122, 64, 0.14);
+    0 14px 36px rgba(0, 0, 0, 0.32),
+    0 0 26px rgba(224, 122, 64, 0.16);
+  transition-delay: 0s;
 }
 
-/* Desktop/Tablet: cleaner, langsamer Scale-Hover */
 @media (min-width: 768px) {
   .pricing-card {
-    transform-origin: center center;
-    will-change: transform;
     transition:
-      transform 0.55s cubic-bezier(0.22, 1, 0.36, 1),
-      box-shadow 0.55s cubic-bezier(0.22, 1, 0.36, 1),
-      border-color 0.55s cubic-bezier(0.22, 1, 0.36, 1);
-  }
-
-  .pricing-card:hover {
-    transform: translateY(-2px) scale(1.035);
-    border-color: rgba(224, 122, 64, 0.45);
-    box-shadow:
-      0 20px 52px rgba(0, 0, 0, 0.38),
-      0 0 34px rgba(224, 122, 64, 0.18);
+      opacity 0.35s cubic-bezier(0.22, 1, 0.36, 1),
+      transform 0.35s cubic-bezier(0.22, 1, 0.36, 1),
+      box-shadow 0.3s ease,
+      border-color 0.3s ease;
   }
 }
 
@@ -2834,6 +3041,21 @@ body[data-legal-page="true"] {
     box-shadow:
       0 8px 32px rgba(0, 0, 0, 0.2),
       0 0 50px rgba(224, 122, 64, 0.14) !important;
+    transition:
+      opacity 0.35s cubic-bezier(0.22, 1, 0.36, 1),
+      transform 0.35s cubic-bezier(0.22, 1, 0.36, 1),
+      box-shadow 0.3s ease,
+      border-color 0.3s ease;
+  }
+
+  /* Gleicher Hover wie Add-ons; stagger von Einblendung darf Hover nicht verzögern */
+  #pakete-preise .pricing-card:hover {
+    transform: translateY(-4px);
+    border-color: rgba(251, 146, 60, 0.35) !important;
+    box-shadow:
+      0 14px 36px rgba(0, 0, 0, 0.32),
+      0 0 26px rgba(224, 122, 64, 0.16) !important;
+    transition-delay: 0s !important;
   }
   #pakete-preise .pricing-card p,
   #pakete-preise .pricing-card li {

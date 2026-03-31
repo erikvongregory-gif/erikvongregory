@@ -34,7 +34,7 @@ export function DesktopSection2() {
           </h2>
           <p className="mt-4 text-base leading-relaxed text-neutral-800 sm:text-lg">
             Viele Brauereien haben ein großartiges Produkt – aber online findet sie kaum jemand. Während der deutsche Biermarkt{" "}
-            <span className="font-semibold text-neutral-900">um 6 % einbricht</span>, gewinnen sichtbare Marken täglich neue Kunden.
+            <span className="section2-inline-stat font-semibold">um 6 % einbricht</span>, gewinnen sichtbare Marken täglich neue Kunden.
           </p>
           <div className="relative z-10 mt-4 grid min-w-0 grid-cols-1 gap-2 sm:grid-cols-2">
             {[
