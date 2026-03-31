@@ -7,6 +7,7 @@ import { LoadingScreen } from "@/components/LoadingScreen";
 import { LegalPageTheme } from "@/components/LegalPageTheme";
 import { LoadingProvider } from "@/context/LoadingContext";
 import { JsonLd } from "@/components/JsonLd";
+import { FaviconReminder } from "@/components/FaviconReminder";
 import { SITE } from "@/lib/siteConfig";
 import "./globals.css";
 
@@ -86,6 +87,7 @@ export default function RootLayout({
       />
       <body className="bg-[#0a0f14] text-neutral-900 antialiased">
         <JsonLd />
+        <FaviconReminder />
         <LoadingProvider>
         <a
           href="#main"
