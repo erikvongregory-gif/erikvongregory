@@ -37,7 +37,12 @@ export function DesktopSection3() {
                   href="#contact"
                   className="cta-orange px-8 py-3 text-base shadow-lg shadow-orange-900/20 hover:shadow-orange-900/30"
                 >
-                  Kostenloses Erstgespräch sichern
+                  <span className="inline-flex items-center gap-2">
+                    <svg className="h-4 w-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.9" strokeLinecap="round" strokeLinejoin="round" aria-hidden>
+                      <path d="m12 3-1.912 5.813a2 2 0 0 1-1.275 1.275L3 12l5.813 1.912a2 2 0 0 1 1.275 1.275L12 21l1.912-5.813a2 2 0 0 1 1.275-1.275L21 12l-5.813-1.912a2 2 0 0 1-1.275-1.275L12 3Z" />
+                    </svg>
+                    Kostenloses Erstgespräch sichern
+                  </span>
                 </AppleStyleButton>
                 <p className="text-sm text-neutral-500 flex items-center gap-1.5">
                   <span aria-hidden>✓</span> Kein Pitch, keine Verkaufsmasche

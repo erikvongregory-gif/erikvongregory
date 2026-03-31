@@ -148,7 +148,12 @@ export function MobileLayout() {
           </p>
           <div className="mobile-slide-up-from-bottom mt-6 flex flex-col items-center gap-3">
             <AppleStyleButton href="#contact" className="mobile-cta-animate">
-              Kostenlose KI-Strategie für Brauereien sichern
+              <span className="inline-flex items-center gap-2">
+                <svg className="h-4 w-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.9" strokeLinecap="round" strokeLinejoin="round" aria-hidden>
+                  <path d="m12 3-1.912 5.813a2 2 0 0 1-1.275 1.275L3 12l5.813 1.912a2 2 0 0 1 1.275 1.275L12 21l1.912-5.813a2 2 0 0 1 1.275-1.275L21 12l-5.813-1.912a2 2 0 0 1-1.275-1.275L12 3Z" />
+                </svg>
+                Kostenloses Erstgespräch sichern
+              </span>
             </AppleStyleButton>
           </div>
         </section>
