@@ -50,6 +50,10 @@ export const metadata: Metadata = {
     images: SITE.ogImage ? [SITE.ogImage] : undefined,
   },
   category: "Business",
+  icons: {
+    icon: [{ url: "/icon.svg", type: "image/svg+xml" }],
+    shortcut: ["/icon.svg"],
+  },
   manifest: "/manifest.json",
   ...(SITE.googleSiteVerification?.trim() && {
     verification: { google: SITE.googleSiteVerification.trim() },

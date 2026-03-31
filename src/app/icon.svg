@@ -1,0 +1,32 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64">
+  <defs>
+    <linearGradient id="labGradient" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" stop-color="#ffc090" />
+      <stop offset="50%" stop-color="#e07a40" />
+      <stop offset="100%" stop-color="#d46830" />
+    </linearGradient>
+  </defs>
+  <rect x="1.5" y="1.5" width="61" height="61" rx="14" fill="#0a0f14" stroke="rgba(255,255,255,0.14)" />
+  <text
+    x="8"
+    y="37"
+    fill="#f4f4f5"
+    font-family="Montserrat, Arial, sans-serif"
+    font-size="22"
+    font-weight="800"
+    letter-spacing="-0.5"
+  >
+    EvG
+  </text>
+  <text
+    x="35"
+    y="38"
+    fill="url(#labGradient)"
+    font-family="'Playfair Display', Georgia, serif"
+    font-size="14"
+    font-style="italic"
+    font-weight="400"
+  >
+    lab
+  </text>
+</svg>
