@@ -3,7 +3,7 @@
 import Image from "next/image";
 import { useEffect, useRef, useState } from "react";
 import { useLoading } from "@/context/LoadingContext";
-import { AppleStyleButton } from "./AppleStyleButton";
+import { Button } from "@/components/ui/neon-button";
 import { ProblemItem } from "./ProblemItem";
 import { Section3TextReveal } from "./Section3TextReveal";
 import { ScrollReveal } from "./ScrollReveal";
@@ -147,14 +147,14 @@ export function MobileLayout() {
             Content-Systeme, Werbevideos & automatisiertes Marketing – speziell für Brauereien, Gastronomen und Getränkehersteller.
           </p>
           <div className="mobile-slide-up-from-bottom mt-6 flex flex-col items-center gap-3">
-            <AppleStyleButton href="#contact" className="mobile-cta-animate">
+            <Button href="#contact" variant="solid" size="lg" className="mobile-cta-animate">
               <span className="inline-flex items-center gap-2">
-                <svg className="h-4 w-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.9" strokeLinecap="round" strokeLinejoin="round" aria-hidden>
+                <svg className="h-4 w-4 shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.9" strokeLinecap="round" strokeLinejoin="round" aria-hidden>
                   <path d="m12 3-1.912 5.813a2 2 0 0 1-1.275 1.275L3 12l5.813 1.912a2 2 0 0 1 1.275 1.275L12 21l1.912-5.813a2 2 0 0 1 1.275-1.275L21 12l-5.813-1.912a2 2 0 0 1-1.275-1.275L12 3Z" />
                 </svg>
                 Kostenloses Erstgespräch sichern
               </span>
-            </AppleStyleButton>
+            </Button>
           </div>
         </section>
 
@@ -220,12 +220,14 @@ export function MobileLayout() {
                     Marketing transformiert.
                   </p>
                   <div className="mt-8 flex flex-col items-center justify-center gap-3">
-                    <AppleStyleButton
+                    <Button
                       href="#contact"
-                      className="cta-orange px-8 py-3 text-base shadow-lg shadow-orange-900/20 hover:shadow-orange-900/30"
+                      variant="solid"
+                      size="lg"
+                      className="px-8 py-3 text-base shadow-lg shadow-orange-900/30"
                     >
                       Kostenloses Erstgespräch sichern
-                    </AppleStyleButton>
+                    </Button>
                     <p className="text-sm text-white/55 flex items-center gap-1.5">
                       <span aria-hidden>✓</span> Kein Pitch, keine Verkaufsmasche
                     </p>
@@ -334,7 +336,9 @@ export function MobileLayout() {
               Brauereiwissen + moderne KI = Marketing, das funktioniert.
             </p>
             <div className="flex justify-center">
-              <AppleStyleButton href="#contact" className="mobile-cta-animate">Kostenloses Erstgespräch starten</AppleStyleButton>
+              <Button href="#contact" variant="solid" size="lg" className="mobile-cta-animate">
+                Kostenloses Erstgespräch starten
+              </Button>
             </div>
           </div>
           </ScrollReveal>

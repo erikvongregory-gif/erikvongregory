@@ -2,6 +2,7 @@
 
 import Link from "next/link";
 import { DesktopHeroRotatingIndustryWord } from "@/components/DesktopHeroRotatingIndustryWord";
+import { WaveTextHover } from "@/components/ui/wave-text-hover";
 
 /** Hero Section 1 – Text links, Portrait+Glow kommt aus StickyPortraitWithGlow im Layout */
 export function DesktopHero() {
@@ -13,7 +14,10 @@ export function DesktopHero() {
           {/* Headline: Wie Referenz – bold Sans + light Serif italic */}
           <h1 className="section1-fade section1-fade-0 block leading-tight tracking-tight" style={{ fontFamily: "'Montserrat', sans-serif" }}>
             <span className="block whitespace-nowrap text-3xl font-semibold text-neutral-900 sm:text-4xl md:text-5xl lg:text-[3rem] xl:text-[3.5rem]">
-              Die erste{" "}KI‑Marketinglösung
+              <WaveTextHover
+                text={"Die erste KI‑Marketinglösung"}
+                className="whitespace-nowrap"
+              />
             </span>
             <span className="mt-2 flex flex-nowrap items-baseline gap-x-3 text-4xl sm:text-5xl md:gap-x-5 md:text-6xl lg:gap-x-6 lg:text-[3.5rem] xl:text-[4rem]">
               <span className="shrink-0 font-medium text-neutral-900">speziell für</span>

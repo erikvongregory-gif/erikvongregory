@@ -38,7 +38,8 @@ export function LoadingProvider({ children }: { children: React.ReactNode }) {
     setCookiePreferences(prefs);
   }, []);
 
-  const heroReady = isLoadComplete && cookiePreferences !== null;
+  /** Nur LoadingScreen – nicht an Cookie-Banner koppeln, sonst bleibt der Mobile-Hero-CTA unsichtbar. */
+  const heroReady = isLoadComplete;
 
   return (
     <LoadingContext.Provider

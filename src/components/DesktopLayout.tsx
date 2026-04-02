@@ -3,6 +3,7 @@
 import { DesktopAmbientDetails } from "@/components/DesktopAmbientDetails";
 import { LiquidBackground } from "@/components/LiquidBackground";
 import { DesktopHero } from "@/components/DesktopHero";
+import { HeroDigitalSerenityEffect } from "@/components/HeroDigitalSerenityEffect";
 import { DesktopSection2 } from "@/components/DesktopSection2";
 import { DesktopSection3 } from "@/components/DesktopSection3";
 import { DesktopSection4 } from "@/components/DesktopSection4";
@@ -18,7 +19,8 @@ export function DesktopLayout() {
       <LiquidBackground />
       <DesktopAmbientDetails />
       {/* Hero-Zeile: Content links, Portrait rechts (oben) – gestaffelte Einblendungen */}
-      <div className={`section1-wrapper mx-auto w-full max-w-screen-2xl lg:grid lg:grid-cols-[1fr_minmax(320px,40%)] lg:gap-0 ${heroReady ? "section1-ready" : ""}`}>
+      <div className={`section1-wrapper relative mx-auto w-full max-w-screen-2xl lg:grid lg:grid-cols-[1fr_minmax(320px,40%)] lg:gap-0 ${heroReady ? "section1-ready" : ""}`}>
+        <HeroDigitalSerenityEffect mode="desktop" />
         <div className="min-w-0">
           <DesktopHero />
         </div>

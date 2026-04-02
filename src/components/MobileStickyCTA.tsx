@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useRef, useState } from "react";
-import Link from "next/link";
+import { Button } from "@/components/ui/neon-button";
 
 /** Sticky Bottom CTA – erscheint beim Scrollen, blendet aus bei Pakete & Preise, Section 7 und Footer. Nur Mobile. */
 export function MobileStickyCTA() {
@@ -71,11 +71,13 @@ export function MobileStickyCTA() {
         transition: "opacity 0.4s cubic-bezier(0.22, 1, 0.36, 1), transform 0.4s cubic-bezier(0.22, 1, 0.36, 1)",
       }}
     >
-      <Link
+      <Button
         href="#contact"
-        className="mobile-sticky-cta-btn flex w-full items-center justify-between gap-3 rounded-2xl px-5 py-4 text-left shadow-lg"
+        variant="solid"
+        size="lg"
+        className="mobile-sticky-cta-btn mx-0 flex w-full max-w-none items-center justify-between gap-3 rounded-2xl px-5 py-4 text-left shadow-lg"
       >
-        <div className="flex flex-col gap-0.5">
+        <div className="relative z-[1] flex flex-col gap-0.5 text-left">
           <span className="text-base font-bold text-white">
             Kostenloses Erstgespräch sichern
           </span>
@@ -83,10 +85,10 @@ export function MobileStickyCTA() {
             Unverbindlich · Direkt · Für Brauereien
           </span>
         </div>
-        <span className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-white/20 text-lg">
+        <span className="relative z-[1] flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-white/20 text-lg">
           →
         </span>
-      </Link>
+      </Button>
     </div>
   );
 }
