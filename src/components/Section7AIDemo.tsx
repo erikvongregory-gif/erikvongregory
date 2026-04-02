@@ -91,7 +91,7 @@ export function Section7AIDemo() {
                 key={img.src}
                 type="button"
                 onClick={() => setLightboxIndex(i)}
-                className="group relative aspect-[4/3] overflow-hidden rounded-xl border border-white/10 bg-black/30 transition-all duration-200 hover:border-emerald-400/40 hover:scale-[1.02] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-emerald-400 focus-visible:ring-offset-2 focus-visible:ring-offset-[#0a0f14] md:bg-[#070d12] md:focus-visible:ring-offset-[#cbcbcb]"
+                className="group relative aspect-[4/3] overflow-hidden rounded-xl border border-white/10 bg-transparent transition-all duration-200 hover:border-emerald-400/40 hover:scale-[1.02] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-emerald-400 focus-visible:ring-offset-2 focus-visible:ring-offset-[#0a0f14] md:bg-[#070d12] md:focus-visible:ring-offset-[#cbcbcb]"
                 aria-label={`${img.alt} – zum Vergrößern klicken`}
               >
                 <Image
@@ -113,7 +113,7 @@ export function Section7AIDemo() {
 
         {/* KI-Video: Aus solchen Bildern können solche Videos entstehen – ohne dass die Person existiert */}
         <div className="section2-card mt-6 overflow-hidden rounded-2xl border border-white/15 p-4 sm:p-6">
-          <div className="aspect-video mx-auto w-full max-w-2xl overflow-hidden rounded-xl bg-black/40">
+          <div className="aspect-video mx-auto w-full max-w-2xl overflow-hidden rounded-xl bg-transparent md:bg-black/40">
             <video
               src="/ki-beispiel-video-v2.mp4"
               controls
