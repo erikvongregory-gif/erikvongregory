@@ -1,11 +1,36 @@
 "use client";
 
 import Link from "next/link";
+import { useCallback } from "react";
 import { DesktopHeroRotatingIndustryWord } from "@/components/DesktopHeroRotatingIndustryWord";
 import { WaveTextHover } from "@/components/ui/wave-text-hover";
 
 /** Hero Section 1 – Text links, Portrait+Glow kommt aus StickyPortraitWithGlow im Layout */
 export function DesktopHero() {
+  const scrollToEchteBeispiele = useCallback(
+    (e: React.MouseEvent<HTMLAnchorElement | HTMLButtonElement>) => {
+      e.preventDefault();
+      const id = "echte-beispiele-aus-der-praxis";
+      const el = document.getElementById(id);
+      if (!el) return;
+
+      // Sticky-Header grob berücksichtigen
+      const offset = 96;
+      const targetTop = el.getBoundingClientRect().top + window.scrollY - offset;
+
+      window.scrollTo({ top: targetTop, behavior: "smooth" });
+
+      // Slide-in erst kurz nach dem Scrollen
+      window.setTimeout(() => {
+        el.classList.remove("section7-slide-into");
+        // Force reflow, damit die Animation sicher erneut startet
+        void el.offsetWidth;
+        el.classList.add("section7-slide-into");
+      }, 650);
+    },
+    []
+  );
+
   return (
     <section className="relative z-20 flex min-h-[600px] h-screen max-h-[960px] flex-col items-center justify-center px-4 pb-8 pt-16 sm:px-6 sm:pb-12 sm:pt-16 lg:items-start lg:justify-center">
       {/* Text links */}
@@ -54,6 +79,8 @@ export function DesktopHero() {
             </a>
             <Link
               href="#echte-beispiele-aus-der-praxis"
+              scroll={false}
+              onClick={scrollToEchteBeispiele}
               className="inline-flex items-center gap-2 rounded-full border px-4 py-2 text-sm font-medium text-neutral-900 transition-opacity hover:opacity-70 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-neutral-900 focus-visible:ring-offset-2"
               style={{ fontFamily: "'Montserrat', sans-serif", borderColor: "rgb(255, 200, 160)" }}
             >
