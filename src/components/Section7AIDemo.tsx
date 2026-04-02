@@ -69,7 +69,10 @@ export function Section7AIDemo() {
             <span aria-hidden>✦</span>
             KI-Demo
           </span>
-          <h2 className="section7-headline mt-4 text-2xl font-bold tracking-tight text-white sm:text-3xl md:text-4xl">
+          <h2
+            id="echte-beispiele-aus-der-praxis"
+            className="section7-headline mt-4 scroll-mt-24 text-2xl font-bold tracking-tight text-white sm:text-3xl md:text-4xl"
+          >
             Echte Beispiele{" "}
             <span className="font-light italic font-austera-green-fade">
               aus der Praxis

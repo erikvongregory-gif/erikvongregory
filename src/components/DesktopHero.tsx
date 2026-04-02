@@ -53,7 +53,7 @@ export function DesktopHero() {
               </span>
             </a>
             <Link
-              href="#section-7"
+              href="#echte-beispiele-aus-der-praxis"
               className="inline-flex items-center gap-2 rounded-full border px-4 py-2 text-sm font-medium text-neutral-900 transition-opacity hover:opacity-70 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-neutral-900 focus-visible:ring-offset-2"
               style={{ fontFamily: "'Montserrat', sans-serif", borderColor: "rgb(255, 200, 160)" }}
             >
