@@ -1852,7 +1852,7 @@ body[data-legal-page="true"] {
 }
 
 /* Section 7 – Mobile: transparent = ein durchgehender fixierter Verlauf (LiquidBackground), kein Versatz am Übergang */
-@media (max-width: 767px) {
+@media (max-width: 768px) {
   #section-7 {
     background: transparent !important;
   }
