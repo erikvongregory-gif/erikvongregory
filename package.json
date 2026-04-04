@@ -10,10 +10,12 @@
     "ebook:pdf": "node scripts/generate-ebook-pdf.mjs"
   },
   "dependencies": {
+    "@radix-ui/react-slot": "^1.2.4",
     "canvas-confetti": "^1.9.4",
     "class-variance-authority": "^0.7.1",
     "clsx": "^2.1.1",
-    "framer-motion": "^12.38.0",
+    "lucide-react": "^1.7.0",
+    "motion": "^12.38.0",
     "next": "^16.2.1",
     "react": "19.2.0",
     "react-dom": "19.2.0",

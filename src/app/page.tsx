@@ -31,9 +31,12 @@ export const metadata: Metadata = {
 export default function Home() {
   return (
     <>
-      {/* Mobile: reines CSS (unter 768px) – portrait oben */}
+      {/* Mobile: unter 768px – gleicher Hero wie Desktop, angepasst */}
       <div id="mobile-content" className="mobile-root block md:hidden">
-        <main id="main" className="relative min-h-screen overflow-x-hidden pt-14 sm:pt-16">
+        <main
+          id="main"
+          className="relative min-h-screen overflow-x-hidden bg-transparent pt-14 sm:pt-16"
+        >
           <MobileLayout />
         </main>
         <MobileStickyCTA />

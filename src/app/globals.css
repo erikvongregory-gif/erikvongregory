@@ -1,148 +1,29 @@
 @import "tailwindcss";
 /* Explizit alle TS/TSX unter src scannen (u. a. components/ui – Neon-Button-Klassen) */
 @source "..";
-@import url("https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600;700;800&family=Playfair+Display:ital,wght@0,400;0,600;1,300;1,400&display=swap");
 
-/* SK Reykjavik Rounded Regular – Hauptschrift */
-@font-face {
-  font-family: "SK Reykjavik Rounded Regular";
-  font-style: normal;
-  font-weight: 400;
-  font-display: swap;
-  src: url("https://db.onlinewebfonts.com/t/16e715573b2b3072037cf4ab26fc8bb8.woff2") format("woff2"),
-       url("https://db.onlinewebfonts.com/t/16e715573b2b3072037cf4ab26fc8bb8.woff") format("woff"),
-       url("https://db.onlinewebfonts.com/t/16e715573b2b3072037cf4ab26fc8bb8.ttf") format("truetype");
+/* Tailwind: Sans = Inter, Display = Playfair (next/font-Variablen auf <html>) */
+@theme {
+  --font-sans: var(--font-inter), ui-sans-serif, system-ui, sans-serif;
+  --font-display: var(--font-serif), Georgia, "Times New Roman", serif;
+  --color-background: #ffffff;
+  --color-foreground: #0f172a;
 }
 
-/* Work Sans – lokal, public/fonts/ (weights 300–700, latin + latin-ext) */
-@font-face {
-  font-family: "Work Sans";
-  font-style: normal;
-  font-weight: 300;
-  font-display: swap;
-  src: local("Work Sans Light"), local("WorkSans-Light"),
-       url("/fonts/work-sans-latin-300-normal.woff2") format("woff2");
-  unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
-}
-@font-face {
-  font-family: "Work Sans";
-  font-style: normal;
-  font-weight: 300;
-  font-display: swap;
-  src: local("Work Sans Light"), local("WorkSans-Light"),
-       url("/fonts/work-sans-latin-ext-300-normal.woff2") format("woff2");
-  unicode-range: U+0100-02BA, U+02BD-02C5, U+02C7-02CC, U+02CE-02D7, U+02DD-02FF, U+0304, U+0308, U+0329, U+1D00-1DBF, U+1E00-1E9F, U+1EF2-1EFF, U+2020, U+20A0-20AB, U+20AD-20C0, U+2113, U+2C60-2C7F, U+A720-A7FF;
-}
-@font-face {
-  font-family: "Work Sans";
-  font-style: normal;
-  font-weight: 400;
-  font-display: swap;
-  src: local("Work Sans"), local("WorkSans-Regular"),
-       url("/fonts/work-sans-latin-400-normal.woff2") format("woff2");
-  unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
-}
-@font-face {
-  font-family: "Work Sans";
-  font-style: normal;
-  font-weight: 400;
-  font-display: swap;
-  src: local("Work Sans"), local("WorkSans-Regular"),
-       url("/fonts/work-sans-latin-ext-400-normal.woff2") format("woff2");
-  unicode-range: U+0100-02BA, U+02BD-02C5, U+02C7-02CC, U+02CE-02D7, U+02DD-02FF, U+0304, U+0308, U+0329, U+1D00-1DBF, U+1E00-1E9F, U+1EF2-1EFF, U+2020, U+20A0-20AB, U+20AD-20C0, U+2113, U+2C60-2C7F, U+A720-A7FF;
-}
-@font-face {
-  font-family: "Work Sans";
-  font-style: italic;
-  font-weight: 400;
-  font-display: swap;
-  src: local("Work Sans Italic"), local("WorkSans-Italic"),
-       url("/fonts/work-sans-latin-400-italic.woff2") format("woff2");
-  unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
-}
-@font-face {
-  font-family: "Work Sans";
-  font-style: italic;
-  font-weight: 400;
-  font-display: swap;
-  src: local("Work Sans Italic"), local("WorkSans-Italic"),
-       url("/fonts/work-sans-latin-ext-400-italic.woff2") format("woff2");
-  unicode-range: U+0100-02BA, U+02BD-02C5, U+02C7-02CC, U+02CE-02D7, U+02DD-02FF, U+0304, U+0308, U+0329, U+1D00-1DBF, U+1E00-1E9F, U+1EF2-1EFF, U+2020, U+20A0-20AB, U+20AD-20C0, U+2113, U+2C60-2C7F, U+A720-A7FF;
-}
-@font-face {
-  font-family: "Work Sans";
-  font-style: normal;
-  font-weight: 500;
-  font-display: swap;
-  src: local("Work Sans Medium"), local("WorkSans-Medium"),
-       url("/fonts/work-sans-latin-500-normal.woff2") format("woff2");
-  unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
-}
-@font-face {
-  font-family: "Work Sans";
-  font-style: normal;
-  font-weight: 500;
-  font-display: swap;
-  src: local("Work Sans Medium"), local("WorkSans-Medium"),
-       url("/fonts/work-sans-latin-ext-500-normal.woff2") format("woff2");
-  unicode-range: U+0100-02BA, U+02BD-02C5, U+02C7-02CC, U+02CE-02D7, U+02DD-02FF, U+0304, U+0308, U+0329, U+1D00-1DBF, U+1E00-1E9F, U+1EF2-1EFF, U+2020, U+20A0-20AB, U+20AD-20C0, U+2113, U+2C60-2C7F, U+A720-A7FF;
-}
-@font-face {
-  font-family: "Work Sans";
-  font-style: normal;
-  font-weight: 600;
-  font-display: swap;
-  src: local("Work Sans SemiBold"), local("WorkSans-SemiBold"),
-       url("/fonts/work-sans-latin-600-normal.woff2") format("woff2");
-  unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
-}
-@font-face {
-  font-family: "Work Sans";
-  font-style: normal;
-  font-weight: 600;
-  font-display: swap;
-  src: local("Work Sans SemiBold"), local("WorkSans-SemiBold"),
-       url("/fonts/work-sans-latin-ext-600-normal.woff2") format("woff2");
-  unicode-range: U+0100-02BA, U+02BD-02C5, U+02C7-02CC, U+02CE-02D7, U+02DD-02FF, U+0304, U+0308, U+0329, U+1D00-1DBF, U+1E00-1E9F, U+1EF2-1EFF, U+2020, U+20A0-20AB, U+20AD-20C0, U+2113, U+2C60-2C7F, U+A720-A7FF;
-}
-@font-face {
-  font-family: "Work Sans";
-  font-style: normal;
-  font-weight: 700;
-  font-display: swap;
-  src: local("Work Sans Bold"), local("WorkSans-Bold"),
-       url("/fonts/work-sans-latin-700-normal.woff2") format("woff2");
-  unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
-}
-@font-face {
-  font-family: "Work Sans";
-  font-style: normal;
-  font-weight: 700;
-  font-display: swap;
-  src: local("Work Sans Bold"), local("WorkSans-Bold"),
-       url("/fonts/work-sans-latin-ext-700-normal.woff2") format("woff2");
-  unicode-range: U+0100-02BA, U+02BD-02C5, U+02C7-02CC, U+02CE-02D7, U+02DD-02FF, U+0304, U+0308, U+0329, U+1D00-1DBF, U+1E00-1E9F, U+1EF2-1EFF, U+2020, U+20A0-20AB, U+20AD-20C0, U+2113, U+2C60-2C7F, U+A720-A7FF;
+:root {
+  --button-ripple-color: oklch(0.145 0 0 / 0.3);
 }
 
-/* Cormorant Garamond Italic – lokal installiert oder public/fonts/ */
-@font-face {
-  font-family: "Cormorant Garamond";
-  font-style: italic;
-  font-weight: 400;
-  font-display: swap;
-  src: local("Cormorant Garamond Italic"),
-       local("Cormorant Garamond"),
-       local("CormorantGaramond-Italic"),
-       url("/fonts/CormorantGaramond-Italic.woff2") format("woff2"),
-       url("/fonts/CormorantGaramond-Italic.woff") format("woff"),
-       url("/fonts/CormorantGaramond-Italic.ttf") format("truetype");
+.dark {
+  --color-background: oklch(0.1 0 0);
+  --color-foreground: oklch(0.985 0 0);
+  --button-ripple-color: oklch(0.985 0 0 / 0.5);
 }
-
-/* Cormorant Garamond – orange Fade (hell→dunkel) für alle Akzent-Texte */
+/* Playfair (next/font) – orange Fade für Akzent-Texte */
 .font-austera-green-fade {
   font-family: var(--font-austera);
   font-style: italic;
-  font-weight: 300;
+  font-weight: 400;
   background: linear-gradient(90deg, #ffc090 0%, #e07a40 50%, #d46830 100%);
   -webkit-background-clip: text;
   background-clip: text;
@@ -162,7 +43,12 @@
   color: transparent;
 }
 
-/* Mobile – Schriftart wie Desktop (Montserrat + Playfair für Akzente) */
+/*
+ * Mobile-Startseite (.mobile-root): kein desktop-light-theme auf <main>.
+ * Hero/Flächen liegen über dem dunklen SiteGradientBackdrop – helle Typo nur gezielt (z. B. DesktopHero).
+ */
+
+/* Mobile – Schriftart wie Desktop (Inter + Playfair für Akzente) */
 @media (max-width: 768px) {
   .mobile-root h1,
   .mobile-root h2,
@@ -174,6 +60,14 @@
   .mobile-root .section6-expertise-item,
   .mobile-root .mobile-sticky-cta-btn {
     font-family: var(--font-main), sans-serif;
+  }
+
+  .mobile-root #section-4.insurance-card-theme h2,
+  .mobile-root #section-4.insurance-card-theme h3,
+  .mobile-root #section-4.insurance-card-theme p,
+  .mobile-root #section-4.insurance-card-theme .section4-badge-pulse,
+  .mobile-root #section-4.insurance-card-theme .section4-mobile-card {
+    font-family: var(--font-insurance), ui-sans-serif, system-ui, sans-serif;
   }
 }
 
@@ -208,13 +102,30 @@
       0 12px 40px rgba(0, 0, 0, 0.3),
       0 0 56px rgba(224, 122, 64, 0.35);
   }
+  /* KI-Demo: heller Seiten-Verlauf – Badge + Typo dunkel (nicht „Weiß auf Weiß“) */
   #section-7 .section7-badge {
-    background: rgba(224, 122, 64, 0.2) !important;
-    border-color: rgba(224, 122, 64, 0.45) !important;
-    color: #f4a574 !important;
+    background: rgba(224, 122, 64, 0.15) !important;
+    border-color: rgba(224, 122, 64, 0.35) !important;
+    color: #c65a20 !important;
   }
   #section-7 .section7-badge.section7-badge-pulse {
     animation: section7-badge-pulse-orange 2.5s ease-in-out infinite;
+  }
+  #section-7 .section7-headline {
+    color: #4a4a4a !important;
+    filter: none !important;
+    text-shadow: none;
+  }
+  #section-7 .section7-headline .font-austera-green-fade {
+    background: linear-gradient(90deg, #d46830 0%, #c65a20 50%, #b84d15 100%);
+    -webkit-background-clip: text;
+    background-clip: text;
+    -webkit-text-fill-color: transparent;
+    color: transparent;
+  }
+  #section-7 .section7-desc,
+  #section-7 .section7-footer {
+    color: #5a5a5a !important;
   }
   #section-7 button.group:hover {
     --tw-border-opacity: 0.4;
@@ -232,11 +143,11 @@
 
 :root {
   --akq-green: #14532d;
-  --font-work-sans: "Work Sans", system-ui, sans-serif;
-  --font-main: "Montserrat", sans-serif;
-  --font-austera: "Playfair Display", Georgia, serif;
-  --font-playfair: "Playfair Display", Georgia, serif;
-  --font-almarena: var(--font-work-sans);
+  --font-main: var(--font-inter), ui-sans-serif, system-ui, sans-serif;
+  --font-insurance: var(--font-inter), ui-sans-serif, system-ui, sans-serif;
+  --font-austera: var(--font-serif), Georgia, "Times New Roman", serif;
+  --font-playfair: var(--font-serif), Georgia, "Times New Roman", serif;
+  --font-almarena: var(--font-main);
   --akq-green-hover: #166534;
   --akq-green-light: #dcfce7;
   /* Mobile Hauptseite: blauer Verlauf wie ursprünglich / Live (nicht flaches #0a0f14) */
@@ -259,7 +170,8 @@ html {
 @media (max-width: 768px) {
   html {
     overflow-x: hidden;
-    background: var(--home-bg-gradient-blue);
+    /* Startseite: nur SiteGradientBackdrop (Orange-Radial), kein zweiter Body-Verlauf */
+    background: transparent;
   }
 }
 
@@ -272,7 +184,17 @@ body {
 
 @media (max-width: 768px) {
   body:not([data-legal-page="true"]) {
-    background: var(--home-bg-gradient-blue) !important;
+    background: transparent !important;
+  }
+}
+
+/* Desktop: kein volles #0a0f14 mehr – SiteGradientBackdrop (fixed) scheint durch */
+@media (min-width: 768px) {
+  html {
+    background: transparent;
+  }
+  body {
+    background: transparent !important;
   }
 }
 
@@ -288,14 +210,14 @@ body[data-legal-page="true"] {
   min-height: 100vh;
 }
 
-/* Desktop: heller Hintergrund wie Hauptseite (#cbcbcb) */
+/* Desktop: gleicher Verlauf-Hintergrund wie Startseite (SiteGradientBackdrop) */
 @media (min-width: 768px) {
   body[data-legal-page="true"] {
-    background: #cbcbcb !important;
+    background: transparent !important;
     color: #1a1a1a;
   }
   .legal-page {
-    background: #cbcbcb;
+    background: transparent;
   }
   .legal-page .legal-back {
     color: #c65a20 !important;
@@ -305,7 +227,7 @@ body[data-legal-page="true"] {
   }
   .legal-page .legal-back:focus-visible {
     --tw-ring-color: rgba(198, 90, 32, 0.5);
-    --tw-ring-offset-color: #cbcbcb;
+    --tw-ring-offset-color: rgba(255, 253, 248, 0.9);
   }
   .legal-page h1,
   .legal-page h2,
@@ -348,9 +270,7 @@ body[data-legal-page="true"] {
 
 /* Scroll-Ziele für Header-Nav – Abstand zum fixierten Header */
 #section-2,
-#section-3,
 #section-4,
-#section-6,
 #section-7,
 #pakete-preise,
 #contact {
@@ -1257,6 +1177,133 @@ body[data-legal-page="true"] {
   transition-delay: 0s;
 }
 
+/* Section 2 – shadcn/Insurance-Card-Stil (Inter, helle Zinc-Karten) */
+.insurance-card-theme {
+  font-family: var(--font-insurance), ui-sans-serif, system-ui, sans-serif;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+#section-2.insurance-card-theme .insurance-card-ui {
+  transition:
+    box-shadow 0.28s cubic-bezier(0.22, 1, 0.36, 1),
+    border-color 0.28s cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+#section-2.insurance-card-theme .insurance-card-ui:hover {
+  border-color: rgba(234, 88, 12, 0.28);
+  box-shadow:
+    0 22px 48px -14px rgba(0, 0, 0, 0.14),
+    0 0 0 1px rgba(0, 0, 0, 0.04),
+    0 0 32px rgba(224, 122, 64, 0.14);
+}
+
+/* Section 4 – Flip-Karten: gleicher Glas-Stil wie Pakete & Preise (PricingCard) */
+#section-4.insurance-card-theme .flip-card-front,
+#section-4.insurance-card-theme .flip-card-back {
+  background: linear-gradient(to bottom right, rgba(0, 0, 0, 0.05) 0%, rgba(0, 0, 0, 0) 100%);
+  backdrop-filter: blur(14px);
+  -webkit-backdrop-filter: blur(14px);
+  border: 1px solid rgba(0, 0, 0, 0.1);
+  border-radius: 1rem;
+  box-shadow:
+    0 20px 25px -5px rgba(0, 0, 0, 0.1),
+    0 8px 10px -6px rgba(0, 0, 0, 0.1);
+}
+
+#section-4.insurance-card-theme .flip-card-back {
+  background: linear-gradient(to bottom right, rgba(0, 0, 0, 0.06) 0%, rgba(0, 0, 0, 0.02) 100%);
+}
+
+#section-4.insurance-card-theme .flip-card-front::before {
+  background: linear-gradient(
+    90deg,
+    transparent,
+    rgba(224, 122, 64, 0.4),
+    transparent
+  );
+  opacity: 0.85;
+}
+
+#section-4.insurance-card-theme .flip-card:hover .flip-card-front,
+#section-4.insurance-card-theme .flip-card:hover .flip-card-back {
+  border-color: rgba(0, 0, 0, 0.14);
+  box-shadow:
+    0 20px 25px -5px rgba(0, 0, 0, 0.12),
+    0 8px 10px -6px rgba(0, 0, 0, 0.08),
+    0 0 0 1px rgba(224, 122, 64, 0.1);
+}
+
+#section-4.insurance-card-theme .section4-flip-num {
+  border: 1px solid rgba(0, 0, 0, 0.1);
+  background: rgba(255, 255, 255, 0.35);
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+  color: #3f3f46;
+}
+
+#section-4.insurance-card-theme .flip-card-front-title {
+  color: #18181b;
+}
+
+#section-4.insurance-card-theme .flip-card-front-hint {
+  color: #71717a;
+}
+
+#section-4.insurance-card-theme .flip-card-front-icon {
+  background: rgba(0, 0, 0, 0.04);
+  border: 1px solid rgba(0, 0, 0, 0.08);
+  color: #c65a20;
+  box-shadow: none;
+}
+
+#section-4.insurance-card-theme .flip-card-icon-wrap {
+  background: rgba(0, 0, 0, 0.04);
+  border: 1px solid rgba(0, 0, 0, 0.08);
+  color: #c65a20;
+}
+
+#section-4.insurance-card-theme .flip-card-back h3 {
+  color: #18181b !important;
+}
+
+#section-4.insurance-card-theme .flip-card-back p {
+  color: #52525b !important;
+}
+
+#section-4.insurance-card-theme .flip-card-back .flip-card-back-content::-webkit-scrollbar-thumb {
+  background: rgba(113, 113, 122, 0.35);
+}
+
+/* Section 4 Mobile – gleicher Glas-Stil wie Pakete & Preise */
+#section-4.insurance-card-theme .section4-mobile-card {
+  background: linear-gradient(to bottom right, rgba(0, 0, 0, 0.05) 0%, rgba(0, 0, 0, 0) 100%);
+  backdrop-filter: blur(14px);
+  -webkit-backdrop-filter: blur(14px);
+  border: 1px solid rgba(0, 0, 0, 0.1);
+  box-shadow:
+    0 20px 25px -5px rgba(0, 0, 0, 0.1),
+    0 8px 10px -6px rgba(0, 0, 0, 0.1);
+}
+
+#section-4.insurance-card-theme .section4-mobile-card:active {
+  border-color: rgba(198, 90, 32, 0.35);
+  box-shadow:
+    0 20px 25px -5px rgba(0, 0, 0, 0.12),
+    0 0 0 1px rgba(224, 122, 64, 0.15);
+}
+
+#section-4.insurance-card-theme .section4-icon-wrap {
+  border: 1px solid rgba(0, 0, 0, 0.08);
+  background: rgba(0, 0, 0, 0.04);
+  color: #c65a20;
+}
+
+#section-4.insurance-card-theme .section4-mobile-card:active .section4-icon-wrap {
+  background: rgba(224, 122, 64, 0.12);
+  border-color: rgba(198, 90, 32, 0.28);
+}
+
 .section2-problem-item {
   transition: background 0.2s ease, border-color 0.2s ease, box-shadow 0.2s ease;
   box-shadow:
@@ -1360,14 +1407,14 @@ body[data-legal-page="true"] {
   .section4-badge-pulse { transform: scale(1); }
 }
 
-/* Section 4 Mobile – Karten mit Orange-Akzent */
-.section4-mobile-card {
+/* Section 4 Mobile – Fallback nur ohne insurance-theme (Standard: Glas über #section-4.insurance-card-theme) */
+#section-4:not(.insurance-card-theme) .section4-mobile-card {
   box-shadow:
     0 0 0 1px rgba(224, 122, 64, 0.08),
     0 0 30px rgba(224, 122, 64, 0.12);
 }
 
-.section4-mobile-card:active {
+#section-4:not(.insurance-card-theme) .section4-mobile-card:active {
   border-color: rgba(34, 197, 94, 0.25);
   box-shadow: 0 0 0 1px rgba(34, 197, 94, 0.15), 0 0 20px rgba(34, 197, 94, 0.08);
 }
@@ -1465,16 +1512,28 @@ body[data-legal-page="true"] {
   will-change: transform;
 }
 
-/* Premium Header – scroll-progress-basiert, 0 (oben) → 1 (Section 3) */
+/* Premium Header – fixiert, zentrierte Pill (Desktop: max-content + mx-auto) */
 .premium-header {
   position: fixed;
   left: 0;
   right: 0;
   top: 0;
   z-index: 100;
-  padding: max(0.75rem, env(safe-area-inset-top)) 0 0;
+  /* Dunkler Modus: volle Breite undurchsichtig; heller Modus: transparent (siehe .header-light-theme) */
+  box-sizing: border-box;
+  padding-top: max(0.75rem, env(safe-area-inset-top));
+  padding-bottom: 0.75rem;
+  padding-left: 0;
+  padding-right: 0;
+  background-color: #0a0f14;
 }
 
+/* Heller Modus: volle Breite transparent – Verlauf bleibt sichtbar; Inhalt wird nur hinter der Nav-Pille verborgen (glow-menu) */
+.premium-header.header-light-theme {
+  background-color: transparent;
+  backdrop-filter: none;
+  -webkit-backdrop-filter: none;
+}
 
 .premium-header-container {
   margin: 0 auto;
@@ -1851,7 +1910,7 @@ body[data-legal-page="true"] {
   color: #6b6b6b;
 }
 
-/* Section 7 – Mobile: transparent = ein durchgehender fixierter Verlauf (LiquidBackground), kein Versatz am Übergang */
+/* Section 7 – Mobile: transparent = ein durchgehender fixierter Verlauf (SiteGradientBackdrop), kein Versatz am Übergang */
 @media (max-width: 768px) {
   #section-7 {
     background: transparent !important;
@@ -1865,13 +1924,7 @@ body[data-legal-page="true"] {
     box-shadow: none !important;
   }
 }
-@media (min-width: 768px) {
-  #section-7 {
-    background-color: #cbcbcb !important;
-    /* Eigenes Stacking: verhindert, dass fixed Liquid-/Blur-Schichten „durchscheinen“ */
-    isolation: isolate;
-  }
-}
+/* Section 7: kein eigener Flächenhintergrund – site-weiter SiteGradientBackdrop */
 
 /* Section7 – Typo & Karten: heller Block nur ab Tablet/Desktop; Mobile bleibt heller Komponenten-Schrift */
 @media (min-width: 768px) {
@@ -1896,7 +1949,7 @@ body[data-legal-page="true"] {
     border-color: rgba(224, 122, 64, 0.35) !important;
     color: #c65a20 !important;
   }
-  /* Kein Glaseffekt: globale .section2-card nutzt helles translucent + blur → auf #cbcbcb wirkt das wie weißer Film */
+  /* Kein Glaseffekt: dunkle Kartenfläche auf hellem Verlauf-Hintergrund */
   #section-7 .section2-card {
     background: rgb(14, 22, 30) !important;
     backdrop-filter: none !important;
@@ -2805,6 +2858,33 @@ body[data-legal-page="true"] {
   }
 }
 
+/* Contact-Funnel – Glas wie Pricing / dunkle Seite, Orange-Akzente */
+.contact-funnel-glass-panel {
+  background: linear-gradient(165deg, rgba(255, 255, 255, 0.1) 0%, rgba(255, 255, 255, 0.025) 55%, rgba(10, 15, 20, 0.35) 100%);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  box-shadow:
+    0 20px 48px -14px rgba(0, 0, 0, 0.5),
+    inset 0 1px 0 rgba(255, 255, 255, 0.07),
+    0 0 56px -18px rgba(224, 122, 64, 0.16);
+  backdrop-filter: blur(14px);
+  -webkit-backdrop-filter: blur(14px);
+}
+
+.contact-funnel-input {
+  font-family: var(--font-main), ui-sans-serif, system-ui, sans-serif;
+  transition: border-color 0.2s ease, box-shadow 0.2s ease;
+}
+
+.contact-funnel-input:focus {
+  border-color: rgba(224, 122, 64, 0.48) !important;
+  box-shadow: 0 0 0 2px rgba(224, 122, 64, 0.22);
+  outline: none;
+}
+
+.contact-funnel-input::placeholder {
+  color: rgba(255, 255, 255, 0.38);
+}
+
 /* Hero Feature-Boxen – weiße Rechtecke mit dünnem Rahmen */
 .hero-feature-banner {
   background: #ffffff;
@@ -2925,29 +3005,30 @@ body[data-legal-page="true"] {
   transition-delay: 0.24s;
 }
 
-/* Add-ons/Upsells – cleanes Einfaden mit leichtem Stagger */
-.addon-card-slide-0,
-.addon-card-slide-1,
-.addon-card-slide-2 {
+/* Add-ons unter Paketen – eigenes Stagger (keine Kollision mit Paket-Klassen) */
+.pricing-card-slide-addon-0,
+.pricing-card-slide-addon-1,
+.pricing-card-slide-addon-2 {
   opacity: 0;
   transform: translateY(20px);
 }
 
-.addon-card-out {
-  opacity: 0;
-  transform: translateY(20px);
+.pricing-in-view .pricing-card-slide-addon-0 {
+  opacity: 1;
+  transform: translateY(0);
+  transition-delay: 0.32s;
 }
 
-.addon-card-in-0 {
-  animation: pricing-slide-up 0.45s cubic-bezier(0.22, 1, 0.36, 1) 0.08s both;
+.pricing-in-view .pricing-card-slide-addon-1 {
+  opacity: 1;
+  transform: translateY(0);
+  transition-delay: 0.4s;
 }
 
-.addon-card-in-1 {
-  animation: pricing-slide-up 0.45s cubic-bezier(0.22, 1, 0.36, 1) 0.16s both;
-}
-
-.addon-card-in-2 {
-  animation: pricing-slide-up 0.45s cubic-bezier(0.22, 1, 0.36, 1) 0.24s both;
+.pricing-in-view .pricing-card-slide-addon-2 {
+  opacity: 1;
+  transform: translateY(0);
+  transition-delay: 0.48s;
 }
 
 /* Trust-Badges unter Pricing – dezente, clean animierte Aufmerksamkeit */
@@ -3139,7 +3220,7 @@ body[data-legal-page="true"] {
     color: rgba(255, 200, 170, 0.9) !important;
   }
 
-  /* Footer – gleiche Farbe wie Hintergrund (transparent = LiquidBackground durch) */
+  /* Footer – gleiche Farbe wie Hintergrund (transparent = SiteGradientBackdrop durch) */
   footer#contact {
     background: transparent !important;
     border-color: rgba(0, 0, 0, 0.06) !important;
@@ -3177,9 +3258,9 @@ body[data-legal-page="true"] {
   .pricing-card-slide-0,
   .pricing-card-slide-1,
   .pricing-card-slide-2,
-  .addon-card-slide-0,
-  .addon-card-slide-1,
-  .addon-card-slide-2,
+  .pricing-card-slide-addon-0,
+  .pricing-card-slide-addon-1,
+  .pricing-card-slide-addon-2,
   .pricing-trust-badge,
   .pricing-card-enter,
   .pricing-sale-badge,

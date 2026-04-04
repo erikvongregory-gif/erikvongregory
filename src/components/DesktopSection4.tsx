@@ -2,6 +2,8 @@
 
 import { useState } from "react";
 
+import { CONTAINED_SHADER_BG, ShaderCanvas } from "@/components/ui/animated-glassy-pricing";
+
 /** Statische Section 4 – Meine 5 Lösungen */
 export function DesktopSection4() {
   const [flippedIndex, setFlippedIndex] = useState<number | null>(null);
@@ -71,61 +73,80 @@ export function DesktopSection4() {
   ];
 
   return (
-    <section id="section-4" className="relative z-20 flex w-full min-h-screen items-center justify-center overflow-x-hidden py-12 sm:py-16 md:py-24">
-      <div className="mx-auto w-full max-w-6xl overflow-visible px-4 lg:px-6">
-        <h2 className="mb-6 text-center text-xl font-bold tracking-tight text-neutral-900 drop-shadow-sm sm:mb-8 sm:text-3xl md:text-4xl">
+    <section
+      id="section-4"
+      className="insurance-card-theme relative z-20 flex w-full min-h-screen items-center justify-center overflow-x-hidden py-12 sm:py-16 md:py-24"
+    >
+      <div className="relative mx-auto w-full max-w-6xl overflow-visible px-4 lg:px-6">
+        <div
+          className="pointer-events-none absolute -inset-x-5 -inset-y-12 z-0 overflow-hidden rounded-[1.75rem] sm:-inset-x-8 sm:-inset-y-16 sm:rounded-3xl lg:-inset-x-[4.5rem] lg:-inset-y-32"
+          aria-hidden
+        >
+          <ShaderCanvas
+            mode="contained"
+            shape="loop"
+            backgroundRgb={CONTAINED_SHADER_BG.desktopLight}
+          />
+        </div>
+        <div className="relative z-[1] pb-20 lg:pb-28">
+          <h2 className="mb-6 text-center text-xl font-bold tracking-tight text-zinc-900 drop-shadow-sm sm:mb-8 sm:text-3xl md:text-4xl">
           Meine 5{" "}
           <span className="font-light italic font-austera-green-fade">
             Lösungen
           </span>
         </h2>
-        <p className="-mt-4 mb-8 text-center text-sm text-neutral-600 sm:text-base">
-          Klar strukturiert, praxisnah und sofort umsetzbar für Brauereien.
-        </p>
-        <div className="section4-flip-cards-grid section4-arc-layout grid grid-cols-1 gap-5 sm:grid-cols-2 sm:gap-6 lg:grid-cols-5 auto-rows-fr px-3 py-4 overflow-visible sm:px-4 sm:py-6">
-          {items.map((item, i) => {
+          <p className="-mt-4 mb-8 text-center text-sm text-zinc-600 sm:text-base">
+            Klar strukturiert, praxisnah und sofort umsetzbar für Brauereien.
+          </p>
+          <div className="section4-flip-cards-grid section4-arc-layout grid grid-cols-1 gap-5 sm:grid-cols-2 sm:gap-6 lg:grid-cols-5 auto-rows-fr px-3 py-4 overflow-visible sm:px-4 sm:py-6">
+            {items.map((item, i) => {
             const isFlipped = flippedIndex === i;
             const numberPosClass = i <= 1 ? "left-3" : i >= 3 ? "right-3" : "left-3";
-            return (
-              <div
-                key={item.title}
-                role="button"
-                tabIndex={0}
-                onClick={() => handleCardInteraction(i)}
-                onKeyDown={(e) => e.key === "Enter" && handleCardInteraction(i)}
-                aria-pressed={isFlipped}
-                className={`section4-flip-card-slide section4-arc-card section4-arc-card-${i} flip-card text-neutral-900 min-h-[360px] sm:min-h-[420px] lg:min-h-[520px] ${isFlipped ? "flip-card-flipped" : ""}`}
-                aria-label={isFlipped ? `${item.title} – Zum Schließen erneut tippen` : `${item.title} – Tippen für Details`}
-              >
-                <div className="flip-card-inner">
-                  <div className="flip-card-front relative">
-                    <span className={`absolute ${numberPosClass} top-3 inline-flex h-7 w-7 items-center justify-center rounded-full border border-white/20 bg-white/10 text-xs font-semibold text-white/90`}>
-                      {i + 1}
-                    </span>
-                    <div className={`flip-card-front-icon icon-anim icon-anim-${item.iconType}`} data-icon={item.iconType}>{item.icon}</div>
-                    <h3 className="flip-card-front-title">{item.title}</h3>
-                    <p className="flip-card-front-hint">
-                      <span className="sm:hidden">Tippen für Details</span>
-                      <span className="hidden sm:inline">Hover für Details</span>
-                      <svg className="flip-card-front-arrow" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden>
-                        <path d="M7 17L17 7M17 7H7M17 7v10" />
-                      </svg>
-                    </p>
-                  </div>
-                  <div className="flip-card-back relative">
-                    <span className={`absolute ${numberPosClass} top-3 z-10 inline-flex h-7 w-7 items-center justify-center rounded-full border border-white/20 bg-white/10 text-xs font-semibold text-white/90`}>
-                      {i + 1}
-                    </span>
-                    <div className="flip-card-back-content">
-                      <div className={`flip-card-icon-wrap mb-4 icon-anim icon-anim-${item.iconType}`} data-icon={item.iconType}>{item.icon}</div>
-                      <h3 className="text-base font-semibold tracking-tight text-neutral-900 sm:text-lg">{item.title}</h3>
-                      <p className="mt-2 text-sm leading-relaxed text-neutral-700 sm:text-base">{item.text}</p>
+              return (
+                <div
+                  key={item.title}
+                  role="button"
+                  tabIndex={0}
+                  onClick={() => handleCardInteraction(i)}
+                  onKeyDown={(e) => e.key === "Enter" && handleCardInteraction(i)}
+                  aria-pressed={isFlipped}
+                  className={`section4-flip-card-slide section4-arc-card section4-arc-card-${i} flip-card text-neutral-900 min-h-[360px] sm:min-h-[420px] lg:min-h-[520px] ${isFlipped ? "flip-card-flipped" : ""}`}
+                  aria-label={isFlipped ? `${item.title} – Zum Schließen erneut tippen` : `${item.title} – Tippen für Details`}
+                >
+                  <div className="flip-card-inner">
+                    <div className="flip-card-front relative">
+                      <span
+                        className={`section4-flip-num absolute ${numberPosClass} top-3 inline-flex h-7 w-7 items-center justify-center rounded-full text-xs font-semibold`}
+                      >
+                        {i + 1}
+                      </span>
+                      <div className={`flip-card-front-icon icon-anim icon-anim-${item.iconType}`} data-icon={item.iconType}>{item.icon}</div>
+                      <h3 className="flip-card-front-title">{item.title}</h3>
+                      <p className="flip-card-front-hint">
+                        <span className="sm:hidden">Tippen für Details</span>
+                        <span className="hidden sm:inline">Hover für Details</span>
+                        <svg className="flip-card-front-arrow" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden>
+                          <path d="M7 17L17 7M17 7H7M17 7v10" />
+                        </svg>
+                      </p>
+                    </div>
+                    <div className="flip-card-back relative">
+                      <span
+                        className={`section4-flip-num absolute ${numberPosClass} top-3 z-10 inline-flex h-7 w-7 items-center justify-center rounded-full text-xs font-semibold`}
+                      >
+                        {i + 1}
+                      </span>
+                      <div className="flip-card-back-content">
+                        <div className={`flip-card-icon-wrap mb-4 icon-anim icon-anim-${item.iconType}`} data-icon={item.iconType}>{item.icon}</div>
+                        <h3 className="text-base font-semibold tracking-tight text-zinc-900 sm:text-lg">{item.title}</h3>
+                        <p className="mt-2 text-sm leading-relaxed text-zinc-600 sm:text-base">{item.text}</p>
+                      </div>
                     </div>
                   </div>
                 </div>
-              </div>
-            );
-          })}
+              );
+            })}
+          </div>
         </div>
       </div>
     </section>

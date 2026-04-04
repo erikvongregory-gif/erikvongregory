@@ -1,14 +1,10 @@
 "use client";
 
-import { DesktopAmbientDetails } from "@/components/DesktopAmbientDetails";
-import { LiquidBackground } from "@/components/LiquidBackground";
 import { DesktopHero } from "@/components/DesktopHero";
 import { HeroDigitalSerenityEffect } from "@/components/HeroDigitalSerenityEffect";
 import { DesktopSection2 } from "@/components/DesktopSection2";
-import { DesktopSection3 } from "@/components/DesktopSection3";
 import { DesktopSection4 } from "@/components/DesktopSection4";
 import { DesktopFadeInView } from "@/components/DesktopFadeInView";
-import { StickyPortraitWithGlow } from "@/components/StickyPortraitWithGlow";
 import { useLoading } from "@/context/LoadingContext";
 
 export function DesktopLayout() {
@@ -16,16 +12,13 @@ export function DesktopLayout() {
 
   return (
     <main id="main" className="desktop-light-theme relative min-h-screen overflow-x-hidden pt-14 sm:pt-16">
-      <LiquidBackground />
-      <DesktopAmbientDetails />
-      {/* Hero-Zeile: Content links, Portrait rechts (oben) – gestaffelte Einblendungen */}
-      <div className={`section1-wrapper relative mx-auto w-full max-w-screen-2xl lg:grid lg:grid-cols-[1fr_minmax(320px,40%)] lg:gap-0 ${heroReady ? "section1-ready" : ""}`}>
+      {/* Hero: volle Breite ohne Portrait (Desktop) */}
+      <div
+        className={`section1-wrapper relative mx-auto w-full max-w-screen-2xl ${heroReady ? "section1-ready" : ""}`}
+      >
         <HeroDigitalSerenityEffect mode="desktop" />
         <div className="min-w-0">
           <DesktopHero />
-        </div>
-        <div className="section1-fade section1-fade-0 relative hidden lg:block">
-          <StickyPortraitWithGlow />
         </div>
       </div>
       {/* Sections: volle Breite, Inhalte zentriert */}
@@ -33,7 +26,6 @@ export function DesktopLayout() {
         <DesktopFadeInView className="section2-slide-trigger">
           <DesktopSection2 />
         </DesktopFadeInView>
-        <DesktopSection3 />
         <DesktopFadeInView delay={150} className="section4-cards-trigger">
           <DesktopSection4 />
         </DesktopFadeInView>
