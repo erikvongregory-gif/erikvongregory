@@ -1,22 +1,12 @@
 "use client";
 
-import { useLayoutEffect, useState } from "react";
+import { useState } from "react";
 
-import { Section4LoopCssBackdrop } from "@/components/Section4LoopCssBackdrop";
 import { CONTAINED_SHADER_BG, ShaderCanvas } from "@/components/ui/animated-glassy-pricing";
-import { isWindowsNtUserAgent } from "@/lib/isWindowsNtUserAgent";
 
 /** Statische Section 4 – Meine 5 Lösungen */
 export function DesktopSection4() {
   const [flippedIndex, setFlippedIndex] = useState<number | null>(null);
-  /** Static Export: kein Server-UA – erst true (sicher), dann Mac → WebGL vor erstem Paint. */
-  const [useCssLoopBackdrop, setUseCssLoopBackdrop] = useState(true);
-
-  useLayoutEffect(() => {
-    if (!isWindowsNtUserAgent(navigator.userAgent)) {
-      setUseCssLoopBackdrop(false);
-    }
-  }, []);
 
   const handleCardInteraction = (index: number) => {
     setFlippedIndex((prev: number | null) => (prev === index ? null : index));
@@ -97,15 +87,11 @@ export function DesktopSection4() {
           aria-hidden
         >
           <div className="pointer-events-none absolute -inset-x-5 -inset-y-12 overflow-hidden rounded-[1.75rem] sm:-inset-x-8 sm:-inset-y-16 sm:rounded-3xl lg:-inset-x-[4.5rem] lg:-inset-y-32">
-            {useCssLoopBackdrop ? (
-              <Section4LoopCssBackdrop />
-            ) : (
-              <ShaderCanvas
-                mode="contained"
-                shape="loop"
-                backgroundRgb={CONTAINED_SHADER_BG.desktopLight}
-              />
-            )}
+            <ShaderCanvas
+              mode="contained"
+              shape="loop"
+              backgroundRgb={CONTAINED_SHADER_BG.desktopLight}
+            />
           </div>
         </div>
         <div className="section4-loop-content-stack relative col-start-1 row-start-1 z-10 min-w-0 transform-gpu pb-20 lg:pb-28">
