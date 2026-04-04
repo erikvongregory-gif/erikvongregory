@@ -146,13 +146,25 @@ export function ScrollHeader() {
 
   const shouldUseHeaderLightTheme = true;
 
+  const evglabWordmark = (
+    <>
+      EvG<span className="font-light italic font-austera-green-fade">lab</span>
+    </>
+  );
+
+  const logoLinkClassBase =
+    "premium-header-logo rounded text-lg leading-none tracking-tight whitespace-nowrap focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 sm:text-2xl";
+
   const headerLogo = (
     <div className="flex flex-col items-start gap-px">
       <Link
         href="/"
-        className="premium-header-logo rounded text-lg focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white/60 focus-visible:ring-offset-2 focus-visible:ring-offset-transparent sm:text-2xl"
+        className={cn(
+          logoLinkClassBase,
+          "focus-visible:ring-white/60 focus-visible:ring-offset-transparent",
+        )}
       >
-        EvG<span className="font-light italic font-austera-green-fade">lab</span>
+        {evglabWordmark}
       </Link>
     </div>
   );
@@ -161,7 +173,7 @@ export function ScrollHeader() {
     <>
       {/* Mobile & schmale Tablets: kein Premium-Header – nur Logo + Dropdown */}
       <header
-        className="fixed left-0 right-0 top-0 z-[100] box-border flex items-center justify-between gap-3 pl-[max(1rem,env(safe-area-inset-left))] pr-[max(1rem,env(safe-area-inset-right))] pt-[max(0.5rem,env(safe-area-inset-top))] pb-2 lg:hidden"
+        className="mobile-top-header pointer-events-none fixed left-0 right-0 top-0 z-[100] box-border flex items-center justify-between gap-3 bg-transparent pl-[max(1rem,env(safe-area-inset-left))] pr-[max(1rem,env(safe-area-inset-right))] pt-[max(0.5rem,env(safe-area-inset-top))] pb-2 lg:hidden"
         aria-label="Seitennavigation"
       >
         <a
@@ -175,15 +187,15 @@ export function ScrollHeader() {
         </a>
         <Link
           href="/"
-          className="min-w-0 shrink text-lg font-extrabold tracking-tight text-neutral-800 drop-shadow-[0_1px_2px_rgba(255,255,255,0.9)] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-neutral-400 focus-visible:ring-offset-2"
+          className={cn(
+            logoLinkClassBase,
+            "pointer-events-auto min-w-0 shrink focus-visible:ring-neutral-400",
+          )}
         >
-          EvG
-          <span className="font-display font-medium italic bg-gradient-to-r from-[#d46830] via-[#c65a20] to-[#b84d15] bg-clip-text text-transparent">
-            lab
-          </span>
+          {evglabWordmark}
         </Link>
 
-        <div ref={mobileNavRef} className="relative shrink-0">
+        <div ref={mobileNavRef} className="pointer-events-auto relative shrink-0">
           <button
             type="button"
             className="inline-flex h-10 w-10 items-center justify-center rounded-lg border border-zinc-200 bg-white text-neutral-800 shadow-sm focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-neutral-400 focus-visible:ring-offset-2"

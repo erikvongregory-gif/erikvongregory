@@ -272,7 +272,7 @@ export const ShaderCanvas = ({
   const canvasClass =
     mode === "contained"
       ? cn(
-          "pointer-events-none absolute inset-0 z-0 block h-full min-h-full w-full min-w-full bg-transparent",
+          "pointer-events-none absolute inset-0 block h-full min-h-full w-full min-w-full bg-transparent",
           className,
         )
       : cn("fixed left-0 top-0 z-0 block h-full w-full bg-background", className);

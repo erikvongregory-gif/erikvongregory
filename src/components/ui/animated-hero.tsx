@@ -2,10 +2,11 @@
 
 import { useCallback, useEffect, useState } from "react";
 import Link from "next/link";
-import { motion } from "motion/react";
+import { motion, useReducedMotion } from "motion/react";
 import { MoveRight, PhoneCall, Sparkles } from "lucide-react";
 
 import { Button } from "@/components/ui/button";
+import { scrollToSection } from "@/lib/scrollToSection";
 import { cn } from "@/lib/utils";
 
 /** Zweite Zeile unter „Bringe deine Brauerei“ – liest sich als gemeinsame Headline */
@@ -27,6 +28,7 @@ export interface AnimatedHeroProps {
  */
 export function AnimatedHero({ className }: AnimatedHeroProps) {
   const [titleNumber, setTitleNumber] = useState(0);
+  const reduceMotion = useReducedMotion();
 
   useEffect(() => {
     const timeoutId = window.setTimeout(() => {
@@ -36,6 +38,11 @@ export function AnimatedHero({ className }: AnimatedHeroProps) {
     }, 2000);
     return () => window.clearTimeout(timeoutId);
   }, [titleNumber]);
+
+  const goAngebote = useCallback((e: React.MouseEvent<HTMLAnchorElement>) => {
+    e.preventDefault();
+    scrollToSection("#section-4");
+  }, []);
 
   const scrollToEchteBeispiele = useCallback(
     (e: React.MouseEvent<HTMLAnchorElement>) => {
@@ -59,19 +66,56 @@ export function AnimatedHero({ className }: AnimatedHeroProps) {
     <div className={cn("w-full md:hidden", className)}>
       <div className="container mx-auto max-w-lg px-4">
         <div className="flex flex-col items-center justify-center gap-6 py-12 sm:gap-8 sm:py-16">
-          <div>
-            <Button
-              variant="outline"
-              size="sm"
-              className="gap-2 border-zinc-300/80 bg-white/85 text-zinc-800 shadow-sm hover:bg-white"
-              asChild
+          <div className="flex justify-center">
+            <motion.div
+              className="inline-flex rounded-md"
+              animate={
+                reduceMotion
+                  ? undefined
+                  : {
+                      y: [0, -5, 0],
+                      boxShadow: [
+                        "0 1px 3px rgba(0,0,0,0.08)",
+                        "0 6px 22px rgba(198, 90, 32, 0.26)",
+                        "0 1px 3px rgba(0,0,0,0.08)",
+                      ],
+                    }
+              }
+              transition={{
+                duration: 2.85,
+                repeat: Infinity,
+                ease: "easeInOut",
+              }}
+              whileTap={{ scale: 0.97 }}
             >
-              <Link href="#section-4">
-                <Sparkles className="h-4 w-4 shrink-0" aria-hidden />
-                Meine Angebote
-                <MoveRight className="h-4 w-4 shrink-0" aria-hidden />
-              </Link>
-            </Button>
+              <Button
+                variant="outline"
+                size="sm"
+                className="gap-2 border-zinc-300/80 bg-white/90 text-zinc-800 shadow-sm ring-1 ring-black/[0.04] hover:bg-white hover:ring-[#c65a20]/25"
+                asChild
+              >
+                <Link href="#section-4" scroll={false} onClick={goAngebote}>
+                  <motion.span
+                    className="inline-flex shrink-0"
+                    aria-hidden
+                    animate={
+                      reduceMotion
+                        ? undefined
+                        : { rotate: [0, -8, 8, 0] }
+                    }
+                    transition={{
+                      duration: 3.2,
+                      repeat: Infinity,
+                      ease: "easeInOut",
+                    }}
+                  >
+                    <Sparkles className="h-4 w-4 text-[#c65a20]" />
+                  </motion.span>
+                  Meine Angebote
+                  <MoveRight className="h-4 w-4 shrink-0 opacity-80" aria-hidden />
+                </Link>
+              </Button>
+            </motion.div>
           </div>
 
           <div className="flex flex-col gap-3 sm:gap-4">
@@ -108,9 +152,16 @@ export function AnimatedHero({ className }: AnimatedHeroProps) {
               </span>
             </h1>
 
-            <p className="mx-auto max-w-2xl text-center text-base leading-relaxed tracking-tight text-zinc-600 sm:text-lg">
-              KI-Marketing für Brauereien und Getränke: starke Produktbilder,
-              Videos und Social-Content – ohne klassisches Grafikstudio.
+            <p className="mx-auto max-w-2xl text-balance text-center text-base leading-relaxed tracking-tight text-zinc-600 sm:text-lg">
+              <span className="font-medium text-zinc-700">
+                KI-Marketing für Brauereien und Getränke:
+              </span>{" "}
+              <span className="hero-mobile-subtitle-shine">
+                starke Produktbilder, Videos und Social-Content
+              </span>{" "}
+              <span className="text-zinc-600">
+                – ohne klassisches Grafikstudio.
+              </span>
             </p>
           </div>
 

@@ -77,9 +77,9 @@ export function DesktopSection4() {
       id="section-4"
       className="insurance-card-theme relative z-20 flex w-full min-h-screen items-center justify-center overflow-x-hidden py-12 sm:py-16 md:py-24"
     >
-      <div className="relative isolate mx-auto w-full max-w-6xl overflow-visible px-4 lg:px-6">
+      <div className="section4-loop-stack-root relative isolate z-0 mx-auto w-full max-w-6xl overflow-visible px-4 lg:px-6">
         <div
-          className="pointer-events-none absolute -inset-x-5 -inset-y-12 z-0 overflow-hidden rounded-[1.75rem] sm:-inset-x-8 sm:-inset-y-16 sm:rounded-3xl lg:-inset-x-[4.5rem] lg:-inset-y-32"
+          className="section4-loop-shader-backdrop pointer-events-none absolute -inset-x-5 -inset-y-12 -z-10 overflow-hidden rounded-[1.75rem] sm:-inset-x-8 sm:-inset-y-16 sm:rounded-3xl lg:-inset-x-[4.5rem] lg:-inset-y-32"
           aria-hidden
         >
           <ShaderCanvas
@@ -88,8 +88,7 @@ export function DesktopSection4() {
             backgroundRgb={CONTAINED_SHADER_BG.desktopLight}
           />
         </div>
-        {/* z-20 + GPU-Layer: WebGL-Canvas sonst oft über 3D-Flip-Karten (WebKit/Safari) */}
-        <div className="relative z-20 transform-gpu pb-20 lg:pb-28">
+        <div className="section4-loop-content-stack relative z-20 transform-gpu pb-20 lg:pb-28">
           <h2 className="mb-6 text-center text-xl font-bold tracking-tight text-zinc-900 drop-shadow-sm sm:mb-8 sm:text-3xl md:text-4xl">
           Meine 5{" "}
           <span className="font-light italic font-austera-green-fade">

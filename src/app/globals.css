@@ -1199,6 +1199,44 @@ body[data-legal-page="true"] {
 }
 
 /* Section 4 – Flip-Karten: gleicher Glas-Stil wie Pakete & Preise (PricingCard) */
+/* Section 4 – WebGL-Ringe strikt HINTER Karten (Produktion: eigenes Compositing-Layer) */
+#section-4.insurance-card-theme .section4-loop-stack-root {
+  position: relative;
+  isolation: isolate;
+  z-index: 0;
+}
+
+#section-4.insurance-card-theme .section4-loop-shader-backdrop {
+  z-index: -1 !important;
+}
+
+#section-4.insurance-card-theme .section4-loop-content-stack {
+  position: relative;
+  z-index: 2 !important;
+  isolation: isolate;
+  transform: translate3d(0, 0, 0);
+  -webkit-transform: translate3d(0, 0, 0);
+}
+
+/* Pakete & Preise – gleiche Shader-Hintergrund-Logik */
+#pakete-preise .pricing-loop-stack-root {
+  position: relative;
+  isolation: isolate;
+  z-index: 0;
+}
+
+#pakete-preise .pricing-loop-shader-backdrop {
+  z-index: -1 !important;
+}
+
+#pakete-preise .pricing-loop-content-stack {
+  position: relative;
+  z-index: 2 !important;
+  isolation: isolate;
+  transform: translate3d(0, 0, 0);
+  -webkit-transform: translate3d(0, 0, 0);
+}
+
 #section-4.insurance-card-theme .flip-card-front,
 #section-4.insurance-card-theme .flip-card-back {
   background: linear-gradient(to bottom right, rgba(0, 0, 0, 0.05) 0%, rgba(0, 0, 0, 0) 100%);
@@ -1626,6 +1664,17 @@ body[data-legal-page="true"] {
   --tw-ring-color: rgba(0, 0, 0, 0.4);
 }
 
+/*
+ * Transparenter Mobile-Header: Lesbarkeit auf hellem und dunklem Scroll-Hintergrund
+ * per dunkler Type + hellem Halo (kein eigener Header-Hintergrund).
+ */
+.mobile-top-header .premium-header-logo {
+  color: #27272a;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  filter: drop-shadow(0 1px 2px rgba(255, 255, 255, 0.88));
+}
+
 /* Desktop Light Theme – ruhiger, cleaner Look */
 .desktop-light-theme .section2-card {
   background: rgb(14, 22, 30);
@@ -1864,6 +1913,25 @@ body[data-legal-page="true"] {
   .section4-arc-layout .section4-arc-card-4 {
     transform: translateX(-34px) translateY(68px) rotate(7deg);
     z-index: 1;
+  }
+
+  /* Desktop: wie Pricing „Brewery Pro“ – border-black/10 + ring-2 ring-[#e07a40]/35 */
+  #section-4.insurance-card-theme .flip-card-front,
+  #section-4.insurance-card-theme .flip-card-back {
+    border-color: rgba(0, 0, 0, 0.1);
+    box-shadow:
+      0 0 0 2px rgba(224, 122, 64, 0.35),
+      0 20px 25px -5px rgba(0, 0, 0, 0.1),
+      0 8px 10px -6px rgba(0, 0, 0, 0.1);
+  }
+
+  #section-4.insurance-card-theme .flip-card:hover .flip-card-front,
+  #section-4.insurance-card-theme .flip-card:hover .flip-card-back {
+    border-color: rgba(0, 0, 0, 0.14);
+    box-shadow:
+      0 0 0 2px rgba(224, 122, 64, 0.48),
+      0 20px 25px -5px rgba(0, 0, 0, 0.12),
+      0 8px 10px -6px rgba(0, 0, 0, 0.08);
   }
 }
 
@@ -2701,6 +2769,38 @@ body[data-legal-page="true"] {
   animation: loading-shimmer-text 5s ease-in-out infinite;
 }
 
+/* Mobile Hero – Untertitel: sanfter Lichtstreifen auf der Nutzen-Zeile (Orange wie Marke) */
+.hero-mobile-subtitle-shine {
+  background-image: linear-gradient(
+    100deg,
+    #52525b 0%,
+    #52525b 36%,
+    #b45309 48%,
+    #e07a40 50%,
+    #b45309 52%,
+    #52525b 64%,
+    #52525b 100%
+  );
+  background-size: 240% 100%;
+  background-position: 100% 50%;
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+  -webkit-text-fill-color: transparent;
+  animation: hero-mobile-subtitle-shine-move 7s ease-in-out infinite;
+  font-weight: 500;
+}
+
+@keyframes hero-mobile-subtitle-shine-move {
+  0%,
+  100% {
+    background-position: 100% 50%;
+  }
+  50% {
+    background-position: 0% 50%;
+  }
+}
+
 @keyframes loading-shimmer-text {
   0% { background-position: 200% 0; }
   100% { background-position: -200% 0; }
@@ -2710,6 +2810,15 @@ body[data-legal-page="true"] {
   .animate-loading-shimmer-text,
   .hero-headline-shimmer {
     animation: none;
+  }
+
+  .hero-mobile-subtitle-shine {
+    animation: none;
+    background: none;
+    -webkit-background-clip: unset;
+    background-clip: unset;
+    color: #57534e;
+    -webkit-text-fill-color: unset;
   }
 }
 
