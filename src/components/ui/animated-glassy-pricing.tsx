@@ -329,7 +329,7 @@ export const PricingCard = ({
       ? "w-full max-w-[280px] px-5 py-6 sm:max-w-[300px]"
       : "max-w-xs px-7 py-8",
     isPopular
-      ? "relative scale-105 shadow-2xl ring-2 ring-[#e07a40]/35 dark:from-white/20 dark:to-white/10 dark:border-[#c65a20]/45 hover:z-10 hover:-translate-y-1 hover:shadow-[0_16px_30px_-8px_rgba(0,0,0,0.12)] dark:hover:shadow-[0_18px_36px_-8px_rgba(0,0,0,0.35)] motion-reduce:transition-none motion-reduce:hover:translate-y-0"
+      ? "relative max-md:scale-100 md:scale-105 shadow-2xl ring-2 ring-[#e07a40]/35 dark:from-white/20 dark:to-white/10 dark:border-[#c65a20]/45 hover:z-10 hover:-translate-y-1 hover:shadow-[0_16px_30px_-8px_rgba(0,0,0,0.12)] dark:hover:shadow-[0_18px_36px_-8px_rgba(0,0,0,0.35)] motion-reduce:transition-none motion-reduce:hover:translate-y-0"
       : "hover:z-10 hover:-translate-y-1 hover:shadow-[0_14px_28px_-8px_rgba(0,0,0,0.1)] dark:hover:shadow-[0_16px_32px_-8px_rgba(0,0,0,0.32)] motion-reduce:transition-none motion-reduce:hover:translate-y-0",
     className,
   );

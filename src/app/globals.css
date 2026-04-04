@@ -1200,19 +1200,8 @@ body[data-legal-page="true"] {
 
 /* Section 4 – Flip-Karten: gleicher Glas-Stil wie Pakete & Preise (PricingCard) */
 /*
- * Desktop: WebGL-Ringe + Inhalt als zwei Grid-Items in derselben Zelle (außerhalb preserve-3d).
- * Mobile: negativer z nur innerhalb .section4-loop-stack-root.
+ * Wie #pakete-preise: ein isolate-Root, Shader mit z:-1, Inhalt darüber (WebGL + preserve-3d).
  */
-#section-4.insurance-card-theme .section4-desktop-loop-grid {
-  position: relative;
-  isolation: isolate;
-  z-index: 0;
-}
-
-#section-4.insurance-card-theme .section4-loop-shader-plane {
-  z-index: 0 !important;
-}
-
 #section-4.insurance-card-theme .section4-loop-stack-root {
   position: relative;
   isolation: isolate;
@@ -1225,7 +1214,7 @@ body[data-legal-page="true"] {
 
 #section-4.insurance-card-theme .section4-loop-content-stack {
   position: relative;
-  z-index: 10 !important;
+  z-index: 2 !important;
   isolation: isolate;
   transform: translate3d(0, 0, 0);
   -webkit-transform: translate3d(0, 0, 0);

@@ -78,23 +78,21 @@ export function DesktopSection4() {
       className="insurance-card-theme relative z-20 flex w-full min-h-screen items-center justify-center overflow-x-hidden py-12 sm:py-16 md:py-24"
     >
       {/*
-        Gleiche Grid-Zelle für Shader + Inhalt: WebGL liegt nicht im Stapel-Kontext der
-        preserve-3d-Flip-Karten (sonst oft „Ringe über Karten“ in Produktion / WebKit).
+        Gleicher Aufbau wie Pakete & Preise (PricingBoxes): isolate + Shader mit negativem z.
+        Section 4 hatte zuvor Grid/z-0 – WebGL landet unter Windows oft über preserve-3d-Karten.
       */}
-      <div className="section4-desktop-loop-grid relative isolate z-0 grid w-full max-w-6xl grid-cols-1 grid-rows-1 px-4 lg:px-6">
+      <div className="section4-loop-stack-root relative isolate z-0 mx-auto w-full max-w-6xl overflow-visible px-4 lg:px-6">
         <div
-          className="section4-loop-shader-plane pointer-events-none relative col-start-1 row-start-1 z-0 h-full min-h-0 min-w-0 w-full overflow-visible"
+          className="section4-loop-shader-backdrop pointer-events-none absolute -inset-x-5 -inset-y-12 -z-10 overflow-hidden rounded-[1.75rem] sm:-inset-x-8 sm:-inset-y-16 sm:rounded-3xl lg:-inset-x-[4.5rem] lg:-inset-y-32"
           aria-hidden
         >
-          <div className="pointer-events-none absolute -inset-x-5 -inset-y-12 overflow-hidden rounded-[1.75rem] sm:-inset-x-8 sm:-inset-y-16 sm:rounded-3xl lg:-inset-x-[4.5rem] lg:-inset-y-32">
-            <ShaderCanvas
-              mode="contained"
-              shape="loop"
-              backgroundRgb={CONTAINED_SHADER_BG.desktopLight}
-            />
-          </div>
+          <ShaderCanvas
+            mode="contained"
+            shape="loop"
+            backgroundRgb={CONTAINED_SHADER_BG.desktopLight}
+          />
         </div>
-        <div className="section4-loop-content-stack relative col-start-1 row-start-1 z-10 min-w-0 transform-gpu pb-20 lg:pb-28">
+        <div className="section4-loop-content-stack relative z-20 min-w-0 transform-gpu pb-20 lg:pb-28">
           <h2 className="mb-6 text-center text-xl font-bold tracking-tight text-zinc-900 drop-shadow-sm sm:mb-8 sm:text-3xl md:text-4xl">
           Meine 5{" "}
           <span className="font-light italic font-austera-green-fade">

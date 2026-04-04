@@ -267,14 +267,14 @@ function MobilePricingSnapCarousel({
         <div
           ref={trackRef}
           className={cn(
-            "flex snap-x snap-mandatory gap-4 overflow-x-auto overflow-y-visible scroll-smooth px-11 py-1",
+            "flex snap-x snap-mandatory gap-4 overflow-x-auto overflow-y-visible scroll-smooth px-11 py-2 pb-8",
             "[scrollbar-width:none] [-ms-overflow-style:none] [&::-webkit-scrollbar]:hidden",
           )}
         >
           {slideKeys.map((key, i) => (
             <div
               key={key}
-              className="w-[min(22rem,calc(100vw-5.5rem))] max-w-sm shrink-0 snap-center"
+              className="w-[min(22rem,calc(100vw-5.5rem))] max-w-sm shrink-0 snap-center py-1"
             >
               {renderSlide(i)}
             </div>
@@ -354,7 +354,7 @@ export function PricingBoxes() {
 
   return (
     <section ref={sectionRef} className={`mt-10 ${inView ? "pricing-in-view" : ""}`}>
-      <div className="pricing-loop-stack-root relative isolate z-0 overflow-hidden rounded-3xl">
+      <div className="pricing-loop-stack-root relative isolate z-0 rounded-3xl max-md:overflow-visible md:overflow-hidden">
         <div
           className="pricing-loop-shader-backdrop pointer-events-none absolute inset-0 -z-10 overflow-hidden rounded-3xl"
           aria-hidden
