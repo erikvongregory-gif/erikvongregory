@@ -1,15 +1,25 @@
 "use client";
 
-import { useEffect, useRef, useState } from "react";
+import {
+  useCallback,
+  useEffect,
+  useRef,
+  useState,
+  type ReactNode,
+} from "react";
 import type { LucideIcon } from "lucide-react";
 import {
   CalendarRange,
+  ChevronLeft,
+  ChevronRight,
   Layers,
   MessageSquareText,
   Sparkles,
   TrendingUp,
   Video,
 } from "lucide-react";
+
+import { cn } from "@/lib/utils";
 
 import {
   CONTAINED_SHADER_BG,
@@ -158,6 +168,145 @@ function toPricingCardProps(pkg: PricingPackageDef): PricingCardProps {
   };
 }
 
+/** Mobile: horizontal wischen oder Punkte / Pfeile – ein Paket pro „Folie“. */
+function MobilePricingSnapCarousel({
+  ariaLabel,
+  dotsNavLabel,
+  slideKeys,
+  renderSlide,
+}: {
+  ariaLabel: string;
+  /** Kurzbeschreibung für die Punkt-Navigation (Screenreader). */
+  dotsNavLabel?: string;
+  slideKeys: readonly string[];
+  renderSlide: (index: number) => ReactNode;
+}) {
+  const trackRef = useRef<HTMLDivElement>(null);
+  const [active, setActive] = useState(0);
+  const n = slideKeys.length;
+
+  const updateActive = useCallback(() => {
+    const track = trackRef.current;
+    if (!track || n === 0) return;
+    const mid = track.scrollLeft + track.clientWidth / 2;
+    let best = 0;
+    let bestDist = Infinity;
+    for (let i = 0; i < n; i++) {
+      const ch = track.children[i] as HTMLElement | undefined;
+      if (!ch) continue;
+      const c = ch.offsetLeft + ch.offsetWidth / 2;
+      const d = Math.abs(c - mid);
+      if (d < bestDist) {
+        bestDist = d;
+        best = i;
+      }
+    }
+    setActive(best);
+  }, [n]);
+
+  useEffect(() => {
+    const track = trackRef.current;
+    if (!track) return;
+    track.addEventListener("scroll", updateActive, { passive: true });
+    updateActive();
+    const ro = new ResizeObserver(() => updateActive());
+    ro.observe(track);
+    return () => {
+      track.removeEventListener("scroll", updateActive);
+      ro.disconnect();
+    };
+  }, [updateActive]);
+
+  const goTo = useCallback(
+    (i: number) => {
+      const track = trackRef.current;
+      const slide = track?.children[i] as HTMLElement | undefined;
+      if (!track || !slide) return;
+      const target =
+        slide.offsetLeft - (track.clientWidth - slide.offsetWidth) / 2;
+      track.scrollTo({
+        left: Math.max(0, target),
+        behavior: "smooth",
+      });
+    },
+    [],
+  );
+
+  const prev = () => goTo(Math.max(0, active - 1));
+  const next = () => goTo(Math.min(n - 1, active + 1));
+
+  if (n === 0) return null;
+
+  return (
+    <div
+      role="region"
+      aria-roledescription="Karussell"
+      aria-label={ariaLabel}
+      className="relative w-full"
+    >
+      <div className="relative">
+        <button
+          type="button"
+          className="absolute top-1/2 left-0 z-10 flex h-10 w-10 -translate-y-1/2 items-center justify-center rounded-full border border-zinc-200/90 bg-white/95 text-zinc-800 shadow-md backdrop-blur-sm disabled:pointer-events-none disabled:opacity-25"
+          aria-label="Vorheriges Angebot"
+          disabled={active <= 0}
+          onClick={prev}
+        >
+          <ChevronLeft className="h-5 w-5" aria-hidden />
+        </button>
+        <button
+          type="button"
+          className="absolute top-1/2 right-0 z-10 flex h-10 w-10 -translate-y-1/2 items-center justify-center rounded-full border border-zinc-200/90 bg-white/95 text-zinc-800 shadow-md backdrop-blur-sm disabled:pointer-events-none disabled:opacity-25"
+          aria-label="Nächstes Angebot"
+          disabled={active >= n - 1}
+          onClick={next}
+        >
+          <ChevronRight className="h-5 w-5" aria-hidden />
+        </button>
+
+        <div
+          ref={trackRef}
+          className={cn(
+            "flex snap-x snap-mandatory gap-4 overflow-x-auto overflow-y-visible scroll-smooth px-11 py-1",
+            "[scrollbar-width:none] [-ms-overflow-style:none] [&::-webkit-scrollbar]:hidden",
+          )}
+        >
+          {slideKeys.map((key, i) => (
+            <div
+              key={key}
+              className="w-[min(22rem,calc(100vw-5.5rem))] max-w-sm shrink-0 snap-center"
+            >
+              {renderSlide(i)}
+            </div>
+          ))}
+        </div>
+      </div>
+
+      <nav
+        className="mt-4 flex justify-center gap-2"
+        aria-label={dotsNavLabel ?? "Folienposition"}
+      >
+        {slideKeys.map((key, i) => (
+          <button
+            key={key}
+            type="button"
+            aria-current={i === active ? "true" : undefined}
+            aria-label={`${i + 1} von ${n}: ${key}`}
+            className={cn(
+              "h-2 rounded-full transition-[width,background-color] duration-200",
+              i === active
+                ? "w-7 bg-[#c65a20]"
+                : "w-2 bg-zinc-400/70 hover:bg-zinc-500/80",
+            )}
+            onClick={() => goTo(i)}
+          >
+          </button>
+        ))}
+      </nav>
+    </div>
+  );
+}
+
 function toAddonPricingCardProps(addon: AddonRow, index: number): PricingCardProps {
   return {
     planName: addon.name,
@@ -228,14 +377,21 @@ export function PricingBoxes() {
             </h3>
           </div>
 
-          <div className="flex flex-col items-center gap-8 md:hidden">
-            {PRICING_PACKAGES.map((pkg, index) => (
-              <PricingCard
-                key={pkg.name}
-                {...toPricingCardProps(pkg)}
-                className={`pricing-card-slide-${index} w-full max-w-sm`}
-              />
-            ))}
+          <div className="md:hidden">
+            <MobilePricingSnapCarousel
+              ariaLabel="Pakete durchblättern"
+              dotsNavLabel="Paket wählen"
+              slideKeys={PRICING_PACKAGES.map((p) => p.name)}
+              renderSlide={(index) => {
+                const pkg = PRICING_PACKAGES[index]!;
+                return (
+                  <PricingCard
+                    {...toPricingCardProps(pkg)}
+                    className={`pricing-card-slide-${index} w-full max-w-sm`}
+                  />
+                );
+              }}
+            />
           </div>
 
           <div className="hidden flex-col items-center justify-center gap-8 py-6 md:flex md:flex-row md:gap-6">
@@ -265,14 +421,21 @@ export function PricingBoxes() {
               </p>
             </div>
 
-            <div className="flex flex-col items-center gap-6 md:hidden">
-              {ADDONS.map((addon, index) => (
-                <PricingCard
-                  key={addon.name}
-                  {...toAddonPricingCardProps(addon, index)}
-                  className={`pricing-card-slide-addon-${index} w-full max-w-[300px]`}
-                />
-              ))}
+            <div className="md:hidden">
+              <MobilePricingSnapCarousel
+                ariaLabel="Add-ons durchblättern"
+                dotsNavLabel="Add-on wählen"
+                slideKeys={ADDONS.map((a) => a.name)}
+                renderSlide={(index) => {
+                  const addon = ADDONS[index]!;
+                  return (
+                    <PricingCard
+                      {...toAddonPricingCardProps(addon, index)}
+                      className={`pricing-card-slide-addon-${index} w-full max-w-[300px]`}
+                    />
+                  );
+                }}
+              />
             </div>
 
             <div className="hidden flex-col items-center justify-center gap-5 py-2 md:flex md:flex-row md:flex-wrap md:gap-5">

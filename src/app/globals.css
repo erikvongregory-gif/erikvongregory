@@ -1232,6 +1232,83 @@ body[data-legal-page="true"] {
   -webkit-transform: translate3d(0, 0, 0);
 }
 
+/* Section 4 – Windows/Chromium: CSS-Ringe statt WebGL (Compositor stapelt Canvas oft falsch) */
+@keyframes section4-css-loop-pulse-l {
+  0%,
+  100% {
+    opacity: 0.78;
+  }
+
+  50% {
+    opacity: 0.92;
+  }
+}
+
+@keyframes section4-css-loop-pulse-r {
+  0%,
+  100% {
+    opacity: 0.72;
+  }
+
+  50% {
+    opacity: 0.88;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  #section-4.insurance-card-theme .section4-css-loop-ring {
+    animation: none !important;
+  }
+}
+
+#section-4.insurance-card-theme .section4-css-loop-backdrop {
+  contain: layout style;
+  background: transparent;
+}
+
+#section-4.insurance-card-theme .section4-css-loop-ring {
+  position: absolute;
+  top: 50%;
+  width: min(52vw, 440px);
+  height: min(52vw, 440px);
+  margin-top: calc(min(52vw, 440px) * -0.5);
+  border-radius: 50%;
+  pointer-events: none;
+}
+
+#section-4.insurance-card-theme .section4-css-loop-ring--l {
+  left: 4%;
+  background: radial-gradient(
+    circle closest-side at 50% 50%,
+    transparent 0%,
+    transparent 46%,
+    rgba(79, 70, 229, 0.18) 48%,
+    rgba(99, 102, 241, 0.42) 50%,
+    rgba(129, 140, 248, 0.15) 53%,
+    transparent 57%
+  );
+  filter: blur(16px);
+  opacity: 0.85;
+  animation: section4-css-loop-pulse-l 18s ease-in-out infinite;
+}
+
+#section-4.insurance-card-theme .section4-css-loop-ring--r {
+  right: 4%;
+  background: conic-gradient(
+    from 200deg,
+    rgba(45, 212, 191, 0.38),
+    rgba(163, 230, 53, 0.32),
+    rgba(244, 114, 182, 0.36),
+    rgba(167, 139, 250, 0.34),
+    rgba(45, 212, 191, 0.38)
+  );
+  mask: radial-gradient(circle closest-side at 50% 50%, transparent 44%, #000 46%, #000 54%, transparent 56%);
+  -webkit-mask: radial-gradient(circle closest-side at 50% 50%, transparent 44%, #fff 46%, #fff 54%, transparent 56%);
+  filter: blur(14px);
+  opacity: 0.8;
+  animation: section4-css-loop-pulse-r 22s ease-in-out infinite;
+}
+
 /* Pakete & Preise – gleiche Shader-Hintergrund-Logik */
 #pakete-preise .pricing-loop-stack-root {
   position: relative;
