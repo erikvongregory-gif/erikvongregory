@@ -2686,22 +2686,6 @@ body[data-legal-page="true"] {
   }
 }
 
-/* Loading-Screen auf Mobile: gleicher blauer Verlauf wie Hauptseite */
-@media (max-width: 768px) {
-  .loading-screen {
-    background: var(--home-bg-gradient-blue) !important;
-  }
-  .loading-screen .text-black {
-    color: white !important;
-  }
-  .loading-screen .loading-spinner {
-    background-color: rgba(255, 255, 255, 0.2) !important;
-  }
-  .loading-screen .loading-spinner-bar {
-    background-color: #e07a40 !important;
-  }
-}
-
 @keyframes loading-bar-fill {
   0% { width: 0%; }
   100% { width: 100%; }

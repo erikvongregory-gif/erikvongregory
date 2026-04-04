@@ -205,14 +205,14 @@ export function PricingBoxes() {
 
   return (
     <section ref={sectionRef} className={`mt-10 ${inView ? "pricing-in-view" : ""}`}>
-      <div className="relative overflow-hidden rounded-3xl">
+      <div className="relative isolate overflow-hidden rounded-3xl">
         <ShaderCanvas
           mode="contained"
           backgroundRgb={
             isDesktop ? CONTAINED_SHADER_BG.desktopLight : CONTAINED_SHADER_BG.mobileDark
           }
         />
-        <div className="relative z-[1] px-1 py-4 sm:px-2 md:py-8">
+        <div className="relative z-20 transform-gpu px-1 py-4 sm:px-2 md:py-8">
           <div className="mb-8 flex flex-col items-center gap-4 text-center">
             <span className="pricing-section-badge section7-badge section7-badge-pulse inline-flex items-center gap-2 rounded-full border border-[rgba(224,122,64,0.35)] bg-[rgba(224,122,64,0.15)] px-4 py-1.5 text-sm font-medium text-[#c65a20] pricing-slide-in">
               <span aria-hidden>✦</span>

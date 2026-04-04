@@ -63,7 +63,7 @@ export function MobileLayout() {
 
         {/* Section 4 */}
         <section id="section-4" className="insurance-card-theme relative z-30 px-4 py-16">
-          <div className="relative mx-auto max-w-2xl">
+          <div className="relative isolate mx-auto max-w-2xl">
             <div
               className="pointer-events-none absolute -inset-x-2 -inset-y-12 z-0 overflow-hidden rounded-3xl sm:-inset-x-3 sm:-inset-y-14"
               aria-hidden
@@ -74,7 +74,7 @@ export function MobileLayout() {
                 backgroundRgb={CONTAINED_SHADER_BG.mobileDark}
               />
             </div>
-            <div className="relative z-[1]">
+            <div className="relative z-20 transform-gpu">
           <ScrollReveal>
           <div className="mb-6 inline-flex w-full justify-center">
             <span className="section4-badge-pulse inline-flex items-center gap-2 rounded-full border border-zinc-200 bg-zinc-100 px-4 py-1.5 text-sm font-medium text-zinc-700">

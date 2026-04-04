@@ -1,7 +1,6 @@
 import type { Metadata } from "next";
 import { DesktopLayout } from "@/components/DesktopLayout";
 import { MobileLayout } from "@/components/MobileLayout";
-import { MobileStickyCTA } from "@/components/MobileStickyCTA";
 import { PricingSection } from "@/components/PricingSection";
 import { Section7AIDemo } from "@/components/Section7AIDemo";
 import { SITE } from "@/lib/siteConfig";
@@ -39,7 +38,6 @@ export default function Home() {
         >
           <MobileLayout />
         </main>
-        <MobileStickyCTA />
       </div>
       {/* Desktop/Tablet: ab 768px */}
       <div id="desktop-content" className="hidden md:block">

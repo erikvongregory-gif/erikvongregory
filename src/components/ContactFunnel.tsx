@@ -26,6 +26,23 @@ const STEPS = [
 const primaryRippleBtn =
   "w-full rounded-xl border-none bg-[#c65a20] px-5 py-3 text-sm font-semibold text-white shadow-none transition-all hover:bg-[#d46830] hover:shadow-[0_8px_28px_rgba(224,122,64,0.38)] disabled:cursor-not-allowed disabled:opacity-50 disabled:hover:bg-[#c65a20] disabled:hover:shadow-none focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#e07a40]/55 focus-visible:ring-offset-2 focus-visible:ring-offset-transparent";
 
+/** Gleiche Seite, nur Hash #contact (inkl. aufgelöster URL von Next.js). */
+function isContactFunnelLink(a: HTMLAnchorElement): boolean {
+  const attr = (a.getAttribute("href") || "").split("?")[0];
+  if (attr === "#contact" || attr === "/#contact") return true;
+  if (typeof window === "undefined") return false;
+  try {
+    const resolved = new URL(a.href);
+    return (
+      resolved.hash === "#contact" &&
+      resolved.hostname === window.location.hostname &&
+      resolved.pathname === window.location.pathname
+    );
+  } catch {
+    return false;
+  }
+}
+
 export function ContactFunnel() {
   const [isOpen, setIsOpen] = useState(false);
   const [step, setStep] = useState(0);
@@ -35,20 +52,25 @@ export function ContactFunnel() {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
-  // Alle #contact Klicks abfangen → Funnel öffnen, Angebot aus data-paket übernehmen
+  // #contact → Funnel (Capture-Phase: verhindert Scroll zum Footer, z. B. auf Mobile)
   useEffect(() => {
-    const handleClick = (e: MouseEvent) => {
-      const target = e.target as HTMLElement;
-      const link = target.closest('a[href="#contact"]');
-      if (link) {
-        e.preventDefault();
-        const paket = link.getAttribute("data-paket");
-        setSelectedOffer(paket || null);
-        setIsOpen(true);
-      }
+    const handleClickCapture = (e: MouseEvent) => {
+      if (e.defaultPrevented) return;
+      if (e.button !== 0) return;
+      if (e.metaKey || e.ctrlKey || e.shiftKey || e.altKey) return;
+      const node = e.target;
+      if (!node || !(node instanceof Element)) return;
+      const link = node.closest("a");
+      if (!link || !(link instanceof HTMLAnchorElement)) return;
+      if (!isContactFunnelLink(link)) return;
+      e.preventDefault();
+      e.stopPropagation();
+      const paket = link.getAttribute("data-paket");
+      setSelectedOffer(paket || null);
+      setIsOpen(true);
     };
-    document.addEventListener("click", handleClick);
-    return () => document.removeEventListener("click", handleClick);
+    document.addEventListener("click", handleClickCapture, true);
+    return () => document.removeEventListener("click", handleClickCapture, true);
   }, []);
 
   // Body-Scroll sperren wenn offen

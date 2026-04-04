@@ -81,7 +81,11 @@ export function AnimatedHero({ className }: AnimatedHeroProps) {
                 fontFamily: "var(--font-main), ui-sans-serif, system-ui, sans-serif",
               }}
             >
-              <span className="text-balance">Bringe deine Brauerei</span>
+              {/* Zwei Zeilen erzwingen – auf schmalen Screens sonst oft „Bringe deine Brauerei“ in einer Zeile */}
+              <span className="flex flex-col items-center gap-0 leading-tight">
+                <span className="block text-balance">Bringe deine</span>
+                <span className="block text-balance">Brauerei</span>
+              </span>
               <span className="relative mt-1 flex min-h-[2.65rem] w-full justify-center overflow-hidden text-center sm:mt-2 sm:min-h-[3rem]">
                 {ROTATING_WORDS.map((title, index) => (
                   <motion.span

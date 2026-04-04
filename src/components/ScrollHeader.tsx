@@ -1,10 +1,11 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import Link from "next/link";
 import { HelpCircle, Layers, Mail, Package, Sparkles } from "lucide-react";
 import { MenuBar, type GlowMenuItem } from "@/components/ui/glow-menu";
 import { scrollToSection } from "@/lib/scrollToSection";
+import { cn } from "@/lib/utils";
 
 const GLOW_NAV_ITEMS: GlowMenuItem[] = [
   {
@@ -55,39 +56,43 @@ const GLOW_NAV_ITEMS: GlowMenuItem[] = [
 ];
 
 export function ScrollHeader() {
-  const [isMobile, setIsMobile] = useState(false);
-  const [isDesktop, setIsDesktop] = useState(false);
-  const [menuOpen, setMenuOpen] = useState(false);
+  const [dropdownOpen, setDropdownOpen] = useState(false);
   const [activeSection, setActiveSection] = useState<string>("");
+  const mobileNavRef = useRef<HTMLDivElement>(null);
+  const contactLinkRef = useRef<HTMLAnchorElement>(null);
 
   useEffect(() => {
-    const check = () => {
-      const mobile = window.innerWidth < 768;
-      setIsMobile(mobile);
-      setIsDesktop(!mobile);
-      if (!mobile) setMenuOpen(false);
+    const closeOnWide = () => {
+      if (window.innerWidth >= 1024) setDropdownOpen(false);
     };
-    check();
-    window.addEventListener("resize", check);
-    return () => window.removeEventListener("resize", check);
+    closeOnWide();
+    window.addEventListener("resize", closeOnWide);
+    return () => window.removeEventListener("resize", closeOnWide);
   }, []);
 
   useEffect(() => {
     const onKey = (e: KeyboardEvent) => {
-      if (e.key === "Escape") setMenuOpen(false);
+      if (e.key === "Escape") setDropdownOpen(false);
     };
     window.addEventListener("keydown", onKey);
     return () => window.removeEventListener("keydown", onKey);
   }, []);
 
   useEffect(() => {
-    if (menuOpen && isMobile) {
-      document.body.style.overflow = "hidden";
-      return () => { document.body.style.overflow = ""; };
-    }
-  }, [menuOpen, isMobile]);
-
-  const headerPaddingTop = isMobile ? 16 : 24;
+    if (!dropdownOpen) return;
+    const onPointer = (e: MouseEvent | TouchEvent) => {
+      const el = mobileNavRef.current;
+      if (!el) return;
+      const target = e.target;
+      if (target instanceof Node && !el.contains(target)) setDropdownOpen(false);
+    };
+    document.addEventListener("mousedown", onPointer);
+    document.addEventListener("touchstart", onPointer, { passive: true });
+    return () => {
+      document.removeEventListener("mousedown", onPointer);
+      document.removeEventListener("touchstart", onPointer);
+    };
+  }, [dropdownOpen]);
 
   useEffect(() => {
     const sectionIds = GLOW_NAV_ITEMS.map((item) => item.href.replace(/^#/, ""));
@@ -98,7 +103,6 @@ export function ScrollHeader() {
       return (wrapper?.querySelector(`#${CSS.escape(id)}`) ?? document.getElementById(id)) as HTMLElement | null;
     };
 
-    // Welche Sections sind gerade sichtbar – letzter Treffer in DOM-Reihenfolge gewinnt
     const visible = new Set<string>();
     const pick = () => {
       let active = "";
@@ -110,17 +114,16 @@ export function ScrollHeader() {
 
     const obs = new IntersectionObserver(
       (entries) => {
-        entries.forEach(e => {
+        entries.forEach((e) => {
           if (e.isIntersecting) visible.add(e.target.id);
           else visible.delete(e.target.id);
         });
         pick();
       },
-      // Section gilt als aktiv sobald sie die obere 55% des Viewports betritt
-      { rootMargin: "0px 0px -45% 0px", threshold: 0 }
+      { rootMargin: "0px 0px -45% 0px", threshold: 0 },
     );
 
-    sectionIds.forEach(id => {
+    sectionIds.forEach((id) => {
       const el = getEl(id);
       if (el) obs.observe(el);
     });
@@ -129,14 +132,18 @@ export function ScrollHeader() {
   }, []);
 
   const handleNavClick = (hash: string) => {
+    if (hash === "#contact") {
+      contactLinkRef.current?.click();
+      setDropdownOpen(false);
+      return;
+    }
     scrollToSection(hash);
-    setMenuOpen(false);
+    setDropdownOpen(false);
   };
 
   const activeGlowLabel =
     GLOW_NAV_ITEMS.find((item) => item.href === activeSection)?.label ?? "";
 
-  /** Wie Desktop: gleicher SiteGradientBackdrop – heller Header auch auf Mobile. */
   const shouldUseHeaderLightTheme = true;
 
   const headerLogo = (
@@ -147,102 +154,114 @@ export function ScrollHeader() {
       >
         EvG<span className="font-light italic font-austera-green-fade">lab</span>
       </Link>
-      {isMobile ? (
-        <span
-          className="text-[10px] font-medium leading-none tracking-wider text-orange-500"
-          style={{
-            textShadow: "0 0 8px rgba(224, 122, 64, 0.3)",
-          }}
-        >
-          KI für Brauereien
-        </span>
-      ) : null}
     </div>
-  );
-
-  const hamburgerButton = (
-    <button
-      type="button"
-      onClick={() => setMenuOpen((o) => !o)}
-      className="premium-header-link flex h-9 w-9 items-center justify-center rounded-full focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white/60 focus-visible:ring-offset-2 focus-visible:ring-offset-transparent"
-      aria-label={menuOpen ? "Menü schließen" : "Menü öffnen"}
-      aria-expanded={menuOpen}
-    >
-      {menuOpen ? (
-        <svg className="h-5 w-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-          <path d="M18 6L6 18M6 6l12 12" />
-        </svg>
-      ) : (
-        <svg className="h-5 w-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-          <line x1="3" y1="6" x2="21" y2="6" />
-          <line x1="3" y1="12" x2="21" y2="12" />
-          <line x1="3" y1="18" x2="21" y2="18" />
-        </svg>
-      )}
-    </button>
   );
 
   return (
     <>
-    <header
-      className={`premium-header ${shouldUseHeaderLightTheme ? "header-light-theme" : ""}`}
-      style={{
-        paddingTop: `${headerPaddingTop}px`,
-      }}
-    >
-      <div className="premium-header-container">
-        <div className="premium-header-inner mx-auto max-w-full !gap-0 !rounded-none !border-0 !bg-transparent !p-0 !shadow-none">
-          {isMobile && menuOpen ? (
-            <>
-              <div
-                className="fixed inset-0 z-[9997] bg-black/50"
-                onClick={() => setMenuOpen(false)}
-                aria-hidden
-              />
-              <div
-                className="fixed right-4 top-[5rem] z-[9998] flex min-w-[10rem] flex-col gap-0.5 rounded-xl border border-white/15 bg-[#0a0f14] py-2 shadow-xl"
-                role="menu"
-              >
-                {GLOW_NAV_ITEMS.map(({ href, label }) => {
-                  const isActive = activeSection === href;
-                  return (
-                    <a
-                      key={href}
-                      href={href}
-                      role="menuitem"
-                      onClick={(e) => {
-                        e.preventDefault();
-                        handleNavClick(href);
-                      }}
-                      className="premium-header-link whitespace-nowrap px-5 py-2.5 text-[15px] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white/60 focus-visible:ring-inset"
-                      style={isActive ? { color: "#c65a20", fontWeight: 600, opacity: 1 } : undefined}
-                    >
-                      {label}
-                    </a>
-                  );
-                })}
-              </div>
-            </>
+      {/* Mobile & schmale Tablets: kein Premium-Header – nur Logo + Dropdown */}
+      <header
+        className="fixed left-0 right-0 top-0 z-[100] box-border flex items-center justify-between gap-3 pl-[max(1rem,env(safe-area-inset-left))] pr-[max(1rem,env(safe-area-inset-right))] pt-[max(0.5rem,env(safe-area-inset-top))] pb-2 lg:hidden"
+        aria-label="Seitennavigation"
+      >
+        <a
+          ref={contactLinkRef}
+          href="#contact"
+          tabIndex={-1}
+          className="sr-only"
+          aria-hidden
+        >
+          Kontakt
+        </a>
+        <Link
+          href="/"
+          className="min-w-0 shrink text-lg font-extrabold tracking-tight text-neutral-800 drop-shadow-[0_1px_2px_rgba(255,255,255,0.9)] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-neutral-400 focus-visible:ring-offset-2"
+        >
+          EvG
+          <span className="font-display font-medium italic bg-gradient-to-r from-[#d46830] via-[#c65a20] to-[#b84d15] bg-clip-text text-transparent">
+            lab
+          </span>
+        </Link>
+
+        <div ref={mobileNavRef} className="relative shrink-0">
+          <button
+            type="button"
+            className="inline-flex h-10 w-10 items-center justify-center rounded-lg border border-zinc-200 bg-white text-neutral-800 shadow-sm focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-neutral-400 focus-visible:ring-offset-2"
+            aria-expanded={dropdownOpen}
+            aria-haspopup="menu"
+            aria-label={dropdownOpen ? "Menü schließen" : "Menü öffnen"}
+            onClick={() => setDropdownOpen((o) => !o)}
+          >
+            {dropdownOpen ? (
+              <svg className="h-5 w-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden>
+                <path d="M18 6L6 18M6 6l12 12" />
+              </svg>
+            ) : (
+              <svg className="h-5 w-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden>
+                <line x1="3" y1="6" x2="21" y2="6" />
+                <line x1="3" y1="12" x2="21" y2="12" />
+                <line x1="3" y1="18" x2="21" y2="18" />
+              </svg>
+            )}
+          </button>
+
+          {dropdownOpen ? (
+            <div
+              className="absolute right-0 top-full z-[110] mt-1.5 min-w-[12.5rem] overflow-hidden rounded-lg border border-zinc-200 bg-white py-1 shadow-lg"
+              role="menu"
+            >
+              {GLOW_NAV_ITEMS.map(({ href, label }) => {
+                const isActive = activeSection === href;
+                return (
+                  <a
+                    key={href}
+                    href={href}
+                    role="menuitem"
+                    onClick={(e) => {
+                      e.preventDefault();
+                      handleNavClick(href);
+                    }}
+                    className="block px-4 py-2.5 text-[15px] text-neutral-800 focus-visible:bg-zinc-50 focus-visible:outline-none"
+                    style={
+                      isActive ? { color: "#c65a20", fontWeight: 600 } : undefined
+                    }
+                  >
+                    {label}
+                  </a>
+                );
+              })}
+            </div>
           ) : null}
-          <div className="flex w-full min-w-0 justify-center">
-            <div className="min-w-0 max-w-full overflow-x-auto [-ms-overflow-style:none] [scrollbar-width:none] [&::-webkit-scrollbar]:hidden">
-              <MenuBar
-                className="w-full max-w-full sm:w-max sm:max-w-none"
-                logo={headerLogo}
-                items={isDesktop ? GLOW_NAV_ITEMS : []}
-                endSlot={isMobile ? hamburgerButton : undefined}
-                activeItem={activeGlowLabel}
-                headerLight={shouldUseHeaderLightTheme}
-                onItemClick={(label) => {
-                  const item = GLOW_NAV_ITEMS.find((i) => i.label === label);
-                  if (item) handleNavClick(item.href);
-                }}
-              />
+        </div>
+      </header>
+
+      {/* Desktop: bisheriger Premium-Header mit Glow-Menü */}
+      <header
+        className={cn(
+          "premium-header hidden lg:block",
+          shouldUseHeaderLightTheme && "header-light-theme",
+        )}
+      >
+        <div className="premium-header-container">
+          <div className="premium-header-inner mx-auto max-w-full !gap-0 !rounded-none !border-0 !bg-transparent !p-0 !shadow-none">
+            <div className="flex w-full min-w-0 justify-center">
+              <div className="min-w-0 max-w-full overflow-x-auto [-ms-overflow-style:none] [scrollbar-width:none] [&::-webkit-scrollbar]:hidden">
+                <MenuBar
+                  className="w-full max-w-full sm:w-max sm:max-w-none"
+                  logo={headerLogo}
+                  items={GLOW_NAV_ITEMS}
+                  activeItem={activeGlowLabel}
+                  headerLight={shouldUseHeaderLightTheme}
+                  onItemClick={(label) => {
+                    const item = GLOW_NAV_ITEMS.find((i) => i.label === label);
+                    if (item) handleNavClick(item.href);
+                  }}
+                />
+              </div>
             </div>
           </div>
         </div>
-      </div>
-    </header>
+      </header>
     </>
   );
 }
