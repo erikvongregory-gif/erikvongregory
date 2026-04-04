@@ -3,7 +3,7 @@
 import { useCallback, useEffect, useState } from "react";
 import Link from "next/link";
 import { motion, useReducedMotion } from "motion/react";
-import { MoveRight, PhoneCall, Sparkles } from "lucide-react";
+import { MoveRight, Sparkles } from "lucide-react";
 
 import { Button } from "@/components/ui/button";
 import { scrollToSection } from "@/lib/scrollToSection";
@@ -68,7 +68,7 @@ export function AnimatedHero({ className }: AnimatedHeroProps) {
         <div className="flex flex-col items-center justify-center gap-6 py-12 sm:gap-8 sm:py-16">
           <div className="flex justify-center">
             <motion.div
-              className="inline-flex rounded-md"
+              className="inline-flex rounded-full"
               animate={
                 reduceMotion
                   ? undefined
@@ -91,7 +91,7 @@ export function AnimatedHero({ className }: AnimatedHeroProps) {
               <Button
                 variant="outline"
                 size="sm"
-                className="gap-2 border-zinc-300/80 bg-white/90 text-zinc-800 shadow-sm ring-1 ring-black/[0.04] hover:bg-white hover:ring-[#c65a20]/25"
+                className="gap-2 rounded-full border-zinc-300/80 bg-white/90 px-4 text-zinc-800 shadow-sm ring-1 ring-black/[0.04] hover:bg-white hover:ring-[#c65a20]/25"
                 asChild
               >
                 <Link href="#section-4" scroll={false} onClick={goAngebote}>
@@ -165,28 +165,73 @@ export function AnimatedHero({ className }: AnimatedHeroProps) {
             </p>
           </div>
 
-          <div className="flex w-full max-w-md flex-col gap-2 sm:flex-row sm:justify-center sm:gap-3">
-            <Button
-              size="lg"
-              variant="outline"
-              className="gap-2 border-zinc-300/80 bg-white/90 text-zinc-900 hover:bg-white"
-              asChild
+          <div className="flex w-full flex-col items-center gap-3 sm:flex-row sm:flex-wrap sm:justify-center">
+            <motion.a
+              href="#contact"
+              className={cn(
+                "z-20 inline-flex items-center justify-center rounded-full bg-neutral-900 font-medium tracking-tight text-white",
+                "px-4 py-2 text-xs font-semibold shadow-2xl sm:px-5 sm:py-2.5 sm:text-base md:px-6 md:py-3 md:text-lg lg:px-8 lg:py-3 lg:text-xl",
+              )}
+              style={{
+                fontFamily: "var(--font-main), ui-sans-serif, system-ui, sans-serif",
+              }}
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{
+                duration: 0.2,
+                ease: "easeOut",
+                delay: 0.7,
+              }}
+              whileHover={{
+                scale: 1.05,
+                transition: { type: "spring", damping: 30, stiffness: 400 },
+              }}
             >
-              <Link href="#contact">
-                <PhoneCall className="h-4 w-4 shrink-0" aria-hidden />
-                Erstgespräch
-              </Link>
-            </Button>
-            <Button size="lg" className="gap-2" asChild>
+              <span className="text-center">
+                Kostenloses Erstgespräch{" "}
+                <span className="ml-1 font-serif" aria-hidden>
+                  →
+                </span>
+              </span>
+            </motion.a>
+            <motion.div
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{
+                duration: 0.2,
+                ease: "easeOut",
+                delay: 0.7,
+              }}
+              whileHover={{
+                scale: 1.05,
+                transition: { type: "spring", damping: 30, stiffness: 400 },
+              }}
+            >
               <Link
                 href="#echte-beispiele-aus-der-praxis"
                 scroll={false}
                 onClick={scrollToEchteBeispiele}
+                className={cn(
+                  "z-20 inline-flex items-center justify-center rounded-full border border-[rgb(255,200,160)] bg-white/90 font-medium tracking-tight text-neutral-900 backdrop-blur-sm",
+                  "gap-2 px-4 py-2 text-xs font-semibold shadow-xl sm:px-5 sm:py-2.5 sm:text-base md:px-6 md:py-3 md:text-lg lg:px-8 lg:py-3 lg:text-xl",
+                )}
+                style={{
+                  fontFamily: "var(--font-main), ui-sans-serif, system-ui, sans-serif",
+                }}
               >
+                <span className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-neutral-100">
+                  <svg
+                    className="ml-0.5 h-3.5 w-3.5"
+                    viewBox="0 0 24 24"
+                    fill="currentColor"
+                    aria-hidden
+                  >
+                    <path d="M8 5v14l11-7z" />
+                  </svg>
+                </span>
                 So funktioniert&apos;s
-                <MoveRight className="h-4 w-4 shrink-0" aria-hidden />
               </Link>
-            </Button>
+            </motion.div>
           </div>
         </div>
       </div>
