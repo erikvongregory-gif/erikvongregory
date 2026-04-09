@@ -1310,15 +1310,13 @@ body[data-legal-page="true"] {
   width: clamp(200px, 28vw, 360px);
   aspect-ratio: 1 / 1;
   border-radius: 9999px;
-  border: clamp(10px, 1.3vw, 14px) solid transparent;
-  background:
-    linear-gradient(135deg, rgba(148, 52, 255, 0.86), rgba(55, 68, 245, 0.92)) border-box,
-    radial-gradient(circle at 30% 30%, rgba(255, 255, 255, 0.35), rgba(255, 255, 255, 0.05)) padding-box;
+  border: clamp(7px, 0.95vw, 11px) solid rgba(87, 88, 255, 0.7);
+  background: transparent;
   box-shadow:
-    0 0 0 1px rgba(255, 255, 255, 0.24) inset,
-    0 12px 30px rgba(27, 34, 120, 0.24);
-  opacity: 0.88;
-  filter: saturate(1.08);
+    0 0 0 2px rgba(192, 120, 255, 0.38) inset,
+    0 0 18px rgba(87, 88, 255, 0.25);
+  opacity: 0.62;
+  filter: saturate(1.04);
 }
 
 #section-4.insurance-card-theme .section4-loop-left {
