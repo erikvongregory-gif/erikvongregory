@@ -133,7 +133,7 @@ const CookiePanel = (props: CookiePanelProps) => {
   }, [initialOpen, storageEnabled]);
 
   useEffect(() => {
-    if (forceOpenToken == null) return;
+    if (forceOpenToken == null || forceOpenToken <= 0) return;
     setRender(true);
     setShowPrefs(true);
     requestAnimationFrame(() => setVisible(true));
