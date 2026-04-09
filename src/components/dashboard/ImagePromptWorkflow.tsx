@@ -2009,9 +2009,10 @@ export function ImagePromptWorkflow({
         const isFailedState = ["fail", "failed", "error", "cancelled", "canceled"].includes(state);
 
         if (statusData.imageUrl) {
+          const previewUrl = `/api/kie/download?url=${encodeURIComponent(statusData.imageUrl)}&format=${imageOutputFormat}&taskId=${encodeURIComponent(taskId)}`;
           // Erst echtes Ergebnis vorladen, dann Reveal starten (kein Fremdbild mehr sichtbar).
-          await preloadImage(statusData.imageUrl);
-          setGeneratedImageUrl(statusData.imageUrl);
+          await preloadImage(previewUrl);
+          setGeneratedImageUrl(previewUrl);
           setIsImageRevealing(true);
           setImageGenerationProgress(0);
           for (let i = 1; i <= 20; i += 1) {
@@ -2060,9 +2061,7 @@ export function ImagePromptWorkflow({
     if (!generatedImageUrl) return;
     setIsDownloading(true);
     try {
-      const response = await fetch(
-        `/api/kie/download?url=${encodeURIComponent(generatedImageUrl)}&format=${imageOutputFormat}&taskId=${encodeURIComponent(lastTaskId || `${Date.now()}`)}`,
-      );
+      const response = await fetch(generatedImageUrl);
       if (!response.ok) {
         const payload = (await response.json()) as { error?: string };
         throw new Error(payload.error || "Bild konnte nicht heruntergeladen werden.");
