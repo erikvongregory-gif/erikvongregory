@@ -1,7 +1,7 @@
 "use client";
 
 import Link from "next/link";
-import { usePathname, useSearchParams } from "next/navigation";
+import { usePathname } from "next/navigation";
 import { useEffect, useRef, useState } from "react";
 import { FcGoogle } from "react-icons/fc";
 import { LogIn } from "lucide-react";
@@ -29,13 +29,12 @@ export function HeaderLogin({ variant, className }: HeaderLoginProps) {
   const [mode, setMode] = useState<"signin">("signin");
   const [open, setOpen] = useState(false);
   const [isAuthenticated, setIsAuthenticated] = useState(false);
+  const [authError, setAuthError] = useState<string | null>(null);
+  const [authNotice, setAuthNotice] = useState<string | null>(null);
   const lockedScrollYRef = useRef(0);
   const pathname = usePathname();
-  const searchParams = useSearchParams();
   const nextPath = pathname?.startsWith("/") ? pathname : "/";
   const idSuffix = variant === "desktop" ? "desktop" : "mobile";
-  const authError = searchParams.get("error");
-  const authNotice = searchParams.get("notice");
 
   useEffect(() => {
     if (!isSupabaseConfigured()) {
@@ -92,19 +91,20 @@ export function HeaderLogin({ variant, className }: HeaderLoginProps) {
   }, [pathname]);
 
   useEffect(() => {
-    const authAction = searchParams.get("auth");
+    if (typeof window === "undefined") return;
+    const url = new URL(window.location.href);
+    const authAction = url.searchParams.get("auth");
+    setAuthError(url.searchParams.get("error"));
+    setAuthNotice(url.searchParams.get("notice"));
+
     if (isAuthenticated) return;
     if (authAction !== "signin" && authAction !== "signup") return;
 
     setMode("signin");
     setOpen(true);
-
-    if (typeof window !== "undefined") {
-      const url = new URL(window.location.href);
-      url.searchParams.delete("auth");
-      window.history.replaceState({}, "", `${url.pathname}${url.search}${url.hash}`);
-    }
-  }, [isAuthenticated, searchParams]);
+    url.searchParams.delete("auth");
+    window.history.replaceState({}, "", `${url.pathname}${url.search}${url.hash}`);
+  }, [isAuthenticated, pathname]);
 
   useEffect(() => {
     if (typeof window === "undefined") return;

@@ -8,10 +8,6 @@ import { enforceRateLimit, enforceSameOrigin } from "@/lib/security/requestGuard
 
 type TokenPackKey = "tokens_500" | "tokens_2000";
 
-type BuyTokensBody = {
-  pack?: TokenPackKey;
-};
-
 function getStripeClient() {
   const key = process.env.STRIPE_SECRET_KEY;
   if (!key) throw new Error("STRIPE_SECRET_KEY fehlt.");
@@ -52,7 +48,7 @@ export async function POST(req: Request) {
     if (!body.success) {
       return NextResponse.json({ error: "Token-Pack fehlt." }, { status: 400 });
     }
-    const pack = body.data.pack as BuyTokensBody["pack"];
+    const pack: TokenPackKey = body.data.pack;
     const packConfig = getPackConfig(pack);
     if (!packConfig?.priceId) {
       return NextResponse.json({ error: "Preis fuer Token-Pack ist nicht konfiguriert." }, { status: 500 });

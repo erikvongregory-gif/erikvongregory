@@ -7,10 +7,6 @@ import { ensureBillingRow, getBillingRow, setStripeCustomerId } from "@/lib/bill
 import { type SubscriptionPlanKey } from "@/lib/billing/tokenState";
 import { enforceRateLimit, enforceSameOrigin } from "@/lib/security/requestGuards";
 
-type CheckoutBody = {
-  plan?: SubscriptionPlanKey;
-};
-
 const checkoutSchema = z.object({
   plan: z.enum(["start", "growth", "pro"]),
 });
@@ -62,7 +58,7 @@ export async function POST(req: Request) {
     if (!parsed.success) {
       return NextResponse.json({ error: "Ungültige Anfrage." }, { status: 400 });
     }
-    const plan = parsed.data.plan as CheckoutBody["plan"];
+    const plan: SubscriptionPlanKey = parsed.data.plan;
 
     const stripe = getStripeClient();
     await ensureBillingRow(user.id);

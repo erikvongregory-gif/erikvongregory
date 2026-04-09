@@ -29,6 +29,11 @@ function toIsoFromUnix(seconds?: number | null) {
   return new Date(seconds * 1000).toISOString();
 }
 
+function getCurrentPeriodEndUnix(subscription: Stripe.Subscription) {
+  const value = (subscription as Stripe.Subscription & { current_period_end?: number }).current_period_end;
+  return typeof value === "number" ? value : null;
+}
+
 export async function POST(req: Request) {
   try {
     const webhookSecret = process.env.STRIPE_WEBHOOK_SECRET;
@@ -69,7 +74,7 @@ export async function POST(req: Request) {
           subscriptionStatus: (subscription.status as "active" | "trialing" | "past_due" | "canceled" | "incomplete" | "unpaid") ?? "active",
           stripeCustomerId: customerId,
           stripeSubscriptionId: subscriptionId,
-          currentPeriodEnd: toIsoFromUnix(subscription.current_period_end),
+          currentPeriodEnd: toIsoFromUnix(getCurrentPeriodEndUnix(subscription)),
         });
       }
     }
@@ -92,7 +97,7 @@ export async function POST(req: Request) {
               | "canceled"
               | "incomplete"
               | "unpaid",
-            current_period_end: toIsoFromUnix(subscription.current_period_end),
+            current_period_end: toIsoFromUnix(getCurrentPeriodEndUnix(subscription)),
           });
         }
       }
@@ -105,7 +110,7 @@ export async function POST(req: Request) {
         monthly_tokens: 0,
         used_tokens: 0,
         subscription_status: "canceled",
-        current_period_end: toIsoFromUnix(subscription.current_period_end),
+        current_period_end: toIsoFromUnix(getCurrentPeriodEndUnix(subscription)),
       });
     }
 

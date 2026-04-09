@@ -27,6 +27,11 @@ function toIsoFromUnix(seconds?: number | null) {
   return new Date(seconds * 1000).toISOString();
 }
 
+function getCurrentPeriodEndUnix(subscription: Stripe.Subscription) {
+  const value = (subscription as Stripe.Subscription & { current_period_end?: number }).current_period_end;
+  return typeof value === "number" ? value : null;
+}
+
 function mapStatusToBillingStatus(status: Stripe.Subscription.Status) {
   if (status === "incomplete_expired" || status === "paused") return "incomplete" as const;
   return status as "active" | "trialing" | "past_due" | "canceled" | "incomplete" | "unpaid";
@@ -105,7 +110,7 @@ export async function POST(req: Request) {
       subscriptionStatus: mapStatusToBillingStatus(preferred.status),
       stripeCustomerId: customerId,
       stripeSubscriptionId: preferred.id,
-      currentPeriodEnd: toIsoFromUnix(preferred.current_period_end),
+      currentPeriodEnd: toIsoFromUnix(getCurrentPeriodEndUnix(preferred)),
     });
 
     return NextResponse.json({ ok: true, synced: true, plan });

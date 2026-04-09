@@ -49,27 +49,29 @@ const LoadingButton = React.forwardRef<HTMLButtonElement, ButtonProps>(
       return (
         <Slot ref={ref} {...props}>
           <>
-            {React.Children.map(
-              children as React.ReactElement,
-              (child: React.ReactElement) => {
-                return React.cloneElement(child, {
-                  className: cn(buttonVariants({ variant, size }), className),
-                  children: (
-                    <>
-                      {loading && (
-                        <Loader2
-                          className={cn(
-                            "h-4 w-4 animate-spin",
-                            children && "mr-2",
-                          )}
-                        />
-                      )}
-                      {child.props.children}
-                    </>
-                  ),
-                });
-              },
-            )}
+            {React.Children.map(children, (child) => {
+              if (!React.isValidElement(child)) return child;
+              const typedChild = child as React.ReactElement<{
+                className?: string;
+                children?: React.ReactNode;
+              }>;
+              return React.cloneElement(typedChild, {
+                className: cn(buttonVariants({ variant, size }), className),
+                children: (
+                  <>
+                    {loading && (
+                      <Loader2
+                        className={cn(
+                          "h-4 w-4 animate-spin",
+                          children && "mr-2",
+                        )}
+                      />
+                    )}
+                    {typedChild.props.children}
+                  </>
+                ),
+              });
+            })}
           </>
         </Slot>
       );

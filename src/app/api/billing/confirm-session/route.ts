@@ -7,10 +7,6 @@ import { activatePlanForUser } from "@/lib/billing/store";
 import { type SubscriptionPlanKey } from "@/lib/billing/tokenState";
 import { enforceRateLimit, enforceSameOrigin } from "@/lib/security/requestGuards";
 
-type ConfirmBody = {
-  sessionId?: string;
-};
-
 function getStripeClient() {
   const key = process.env.STRIPE_SECRET_KEY;
   if (!key) throw new Error("STRIPE_SECRET_KEY fehlt.");
@@ -82,6 +78,12 @@ export async function POST(req: Request) {
       return NextResponse.json({ error: "Session-Metadaten unvollstaendig." }, { status: 400 });
     }
 
+    const subscriptionWithPeriod = subscription as Stripe.Subscription & { current_period_end?: number };
+    const currentPeriodEndUnix =
+      typeof subscriptionWithPeriod.current_period_end === "number"
+        ? subscriptionWithPeriod.current_period_end
+        : null;
+
     await activatePlanForUser({
       userId: user.id,
       plan,
@@ -89,9 +91,7 @@ export async function POST(req: Request) {
         (subscription.status as "active" | "trialing" | "past_due" | "canceled" | "incomplete" | "unpaid") ?? "active",
       stripeCustomerId: customerId,
       stripeSubscriptionId: subscription.id,
-      currentPeriodEnd: subscription.current_period_end
-        ? new Date(subscription.current_period_end * 1000).toISOString()
-        : null,
+      currentPeriodEnd: currentPeriodEndUnix ? new Date(currentPeriodEndUnix * 1000).toISOString() : null,
     });
 
     return NextResponse.json({ ok: true });

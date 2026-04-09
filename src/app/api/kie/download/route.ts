@@ -185,8 +185,9 @@ export async function GET(req: Request) {
 
     const contentType =
       formatParam === "png" ? "image/png" : formatParam === "jpg" ? "image/jpeg" : "image/webp";
+    const responseBody = new Uint8Array(convertedBuffer);
 
-    return new NextResponse(convertedBuffer, {
+    return new NextResponse(responseBody, {
       headers: {
         "Content-Type": contentType,
         "Content-Disposition": `attachment; filename="${fileBase}.${formatParam}"`,

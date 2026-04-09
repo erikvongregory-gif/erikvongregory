@@ -10,10 +10,6 @@ import { createClient } from "@/lib/supabase/server";
 import { isSupabaseConfigured } from "@/lib/supabase/env";
 import { enforceRateLimit, enforceSameOrigin } from "@/lib/security/requestGuards";
 
-type SelectPlanBody = {
-  plan?: SubscriptionPlanKey;
-};
-
 export async function POST(req: Request) {
   try {
     const rateError = enforceRateLimit(req, {
@@ -39,7 +35,7 @@ export async function POST(req: Request) {
     if (!body.success) {
       return NextResponse.json({ error: "Ungueltiger Plan." }, { status: 400 });
     }
-    const plan = body.data.plan as SelectPlanBody["plan"];
+    const plan: SubscriptionPlanKey = body.data.plan;
 
     const state = {
       plan,
