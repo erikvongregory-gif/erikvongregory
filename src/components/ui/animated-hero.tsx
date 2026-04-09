@@ -1,149 +1,199 @@
 "use client";
 
-import { useCallback, useEffect, useState } from "react";
-import Link from "next/link";
-import { motion, useReducedMotion } from "motion/react";
-import { MoveRight, Sparkles } from "lucide-react";
-
+import { useEffect, useMemo, useState } from "react";
+import { motion } from "framer-motion";
+import { MoveRight } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import { scrollToSection } from "@/lib/scrollToSection";
-import { cn } from "@/lib/utils";
+import { LiquidMetalButton } from "@/components/ui/liquid-metal-button";
+import Floating, { FloatingElement } from "@/components/ui/parallax-floating";
+import { KI_BEISPIELE } from "@/lib/kiBeispiele";
+import { createClient as createSupabaseClient } from "@/lib/supabase/client";
+import { isSupabaseConfigured } from "@/lib/supabase/env";
 
-/** Zweite Zeile unter „Bringe deine Brauerei“ – liest sich als gemeinsame Headline */
-const ROTATING_WORDS = [
-  "ins Rampenlicht",
-  "mit KI nach vorn",
-  "sichtbar im Feed",
-  "mit Bild & Video",
-  "in Social & Ads",
+const HERO_FLOAT_LAYOUT = [
+  {
+    depth: 0.5 as const,
+    className: "left-[2%] top-[15%] md:left-[5%] md:top-[25%]",
+    imgClass: "h-12 w-16 -rotate-[3deg] sm:h-16 sm:w-24 md:h-20 md:w-28 lg:h-24 lg:w-32",
+    delay: 0.5,
+  },
+  {
+    depth: 1 as const,
+    className: "left-[8%] top-0 md:left-[11%] md:top-[6%]",
+    imgClass: "h-28 w-40 -rotate-12 sm:h-36 sm:w-48 md:h-44 md:w-56 lg:h-48 lg:w-60",
+    delay: 0.7,
+  },
+  {
+    depth: 4 as const,
+    className: "left-[6%] top-[90%] md:left-[8%] md:top-[80%]",
+    imgClass: "h-40 w-40 -rotate-[4deg] sm:h-48 sm:w-48 md:h-60 md:w-60 lg:h-64 lg:w-64",
+    delay: 0.9,
+  },
+  {
+    depth: 2 as const,
+    className: "left-[87%] top-0 md:left-[83%] md:top-[2%]",
+    imgClass: "h-36 w-40 rotate-[6deg] sm:h-44 sm:w-48 md:h-52 md:w-60 lg:h-56 lg:w-64",
+    delay: 1.1,
+  },
+  {
+    depth: 1 as const,
+    className: "left-[83%] top-[78%] md:left-[83%] md:top-[68%]",
+    imgClass: "h-44 w-44 rotate-[19deg] sm:h-64 sm:w-64 md:h-72 md:w-72 lg:h-80 lg:w-80",
+    delay: 1.3,
+  },
 ] as const;
 
-export interface AnimatedHeroProps {
-  className?: string;
-}
-
-/**
- * Hero mit wechselndem Schlagwort – nur Mobile (`md:hidden` am Root).
- * Desktop nutzt weiterhin {@link DesktopHero}.
- */
-export function AnimatedHero({ className }: AnimatedHeroProps) {
+function Hero() {
   const [titleNumber, setTitleNumber] = useState(0);
-  const reduceMotion = useReducedMotion();
+  const titles = useMemo(() => ["KI-gestützt", "automatisiert", "skalierbar"], []);
+  const [isAuthenticated, setIsAuthenticated] = useState(false);
+  const [freeTrialImageUsed, setFreeTrialImageUsed] = useState(false);
+  const [hasActiveSubscription, setHasActiveSubscription] = useState(false);
 
   useEffect(() => {
-    const timeoutId = window.setTimeout(() => {
-      setTitleNumber((n) =>
-        n === ROTATING_WORDS.length - 1 ? 0 : n + 1,
-      );
-    }, 2000);
-    return () => window.clearTimeout(timeoutId);
-  }, [titleNumber]);
+    if (!isSupabaseConfigured()) {
+      setIsAuthenticated(false);
+      setFreeTrialImageUsed(false);
+      setHasActiveSubscription(false);
+      return;
+    }
 
-  const goAngebote = useCallback((e: React.MouseEvent<HTMLAnchorElement>) => {
-    e.preventDefault();
-    scrollToSection("#section-4");
+    const supabase = createSupabaseClient();
+    let active = true;
+
+    const loadHeroCtaState = async () => {
+      const {
+        data: { session },
+      } = await supabase.auth.getSession();
+      if (!active) return;
+      const hasSession = Boolean(session?.user);
+      setIsAuthenticated(hasSession);
+      if (!hasSession) {
+        setFreeTrialImageUsed(false);
+        setHasActiveSubscription(false);
+        return;
+      }
+      try {
+        const res = await fetch("/api/billing/state", { cache: "no-store" });
+        if (!active) return;
+        if (!res.ok) {
+          setFreeTrialImageUsed(false);
+          return;
+        }
+        const data = (await res.json()) as {
+          state?: {
+            freeTrialImageUsed?: boolean;
+            plan?: string | null;
+            status?: string;
+          };
+        };
+        setFreeTrialImageUsed(Boolean(data.state?.freeTrialImageUsed));
+        const status = data.state?.status ?? "none";
+        const plan = data.state?.plan ?? null;
+        setHasActiveSubscription(Boolean(plan) && status !== "none" && status !== "canceled");
+      } catch {
+        if (active) {
+          setFreeTrialImageUsed(false);
+          setHasActiveSubscription(false);
+        }
+      }
+    };
+
+    void loadHeroCtaState();
+
+    const {
+      data: { subscription },
+    } = supabase.auth.onAuthStateChange((_event, session) => {
+      if (!active) return;
+      setIsAuthenticated(Boolean(session?.user));
+      void loadHeroCtaState();
+    });
+
+    const onBillingUpdated = () => {
+      void loadHeroCtaState();
+    };
+    window.addEventListener("evglab-billing-updated", onBillingUpdated as EventListener);
+
+    return () => {
+      active = false;
+      subscription.unsubscribe();
+      window.removeEventListener("evglab-billing-updated", onBillingUpdated as EventListener);
+    };
   }, []);
 
-  const scrollToEchteBeispiele = useCallback(
-    (e: React.MouseEvent<HTMLAnchorElement>) => {
-      e.preventDefault();
-      const id = "echte-beispiele-aus-der-praxis";
-      const el = document.getElementById(id);
-      if (!el) return;
-      const offset = 96;
-      const targetTop = el.getBoundingClientRect().top + window.scrollY - offset;
-      window.scrollTo({ top: targetTop, behavior: "smooth" });
-      window.setTimeout(() => {
-        el.classList.remove("section7-slide-into");
-        void el.offsetWidth;
-        el.classList.add("section7-slide-into");
-      }, 650);
-    },
-    [],
-  );
+  const primaryCtaLabel = useMemo(() => {
+    if (!isAuthenticated) return "1 Bild kostenlos generieren";
+    if (hasActiveSubscription) return "Zum Dashboard";
+    if (freeTrialImageUsed) return "Zu Abo & Tokens";
+    return "Jetzt kostenloses Bild erstellen";
+  }, [isAuthenticated, freeTrialImageUsed, hasActiveSubscription]);
+
+  const onPrimaryCtaClick = () => {
+    if (typeof window === "undefined") return;
+    if (!isAuthenticated) {
+      window.dispatchEvent(
+        new CustomEvent("evglab-open-auth-modal", {
+          detail: { mode: "signup" },
+        }),
+      );
+      return;
+    }
+    window.location.assign("/dashboard");
+  };
+
+  useEffect(() => {
+    const timeoutId = setTimeout(() => {
+      if (titleNumber === titles.length - 1) {
+        setTitleNumber(0);
+      } else {
+        setTitleNumber(titleNumber + 1);
+      }
+    }, 2000);
+    return () => clearTimeout(timeoutId);
+  }, [titleNumber, titles]);
 
   return (
-    <div className={cn("w-full md:hidden", className)}>
-      <div className="container mx-auto max-w-lg px-4">
-        <div className="flex flex-col items-center justify-center gap-6 py-12 sm:gap-8 sm:py-16">
-          <div className="flex justify-center">
-            <motion.div
-              className="inline-flex rounded-full"
-              animate={
-                reduceMotion
-                  ? undefined
-                  : {
-                      y: [0, -5, 0],
-                      boxShadow: [
-                        "0 1px 3px rgba(0,0,0,0.08)",
-                        "0 6px 22px rgba(198, 90, 32, 0.26)",
-                        "0 1px 3px rgba(0,0,0,0.08)",
-                      ],
-                    }
-              }
-              transition={{
-                duration: 2.85,
-                repeat: Infinity,
-                ease: "easeInOut",
-              }}
-              whileTap={{ scale: 0.97 }}
-            >
-              <Button
-                variant="outline"
-                size="sm"
-                className="gap-2 rounded-full border-zinc-300/80 bg-white/90 px-4 text-zinc-800 shadow-sm ring-1 ring-black/[0.04] hover:bg-white hover:ring-[#c65a20]/25"
-                asChild
-              >
-                <Link href="#section-4" scroll={false} onClick={goAngebote}>
-                  <motion.span
-                    className="inline-flex shrink-0"
-                    aria-hidden
-                    animate={
-                      reduceMotion
-                        ? undefined
-                        : { rotate: [0, -8, 8, 0] }
-                    }
-                    transition={{
-                      duration: 3.2,
-                      repeat: Infinity,
-                      ease: "easeInOut",
-                    }}
-                  >
-                    <Sparkles className="h-4 w-4 text-[#c65a20]" />
-                  </motion.span>
-                  Meine Angebote
-                  <MoveRight className="h-4 w-4 shrink-0 opacity-80" aria-hidden />
-                </Link>
-              </Button>
-            </motion.div>
+    <div className="relative w-full overflow-visible">
+      <Floating sensitivity={-0.5} className="pointer-events-none absolute inset-0 z-0 h-full min-h-full" aria-hidden>
+        {HERO_FLOAT_LAYOUT.map((slot, i) => {
+          const imgIndex = i < KI_BEISPIELE.length ? i : 1;
+          const img = KI_BEISPIELE[imgIndex];
+          return (
+            <FloatingElement key={`hero-float-${i}-${img.src}`} depth={slot.depth} className={slot.className}>
+              <motion.img
+                src={img.src}
+                alt=""
+                className={`cursor-default rounded-xl object-cover shadow-2xl duration-200 blur-[2px] sm:blur-[3px] md:blur-[4px] ${slot.imgClass}`}
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
+                transition={{ delay: slot.delay }}
+              />
+            </FloatingElement>
+          );
+        })}
+      </Floating>
+      <div className="container mx-auto">
+        <div className="relative z-10 flex items-center justify-center flex-col gap-8 py-20 lg:py-40">
+          <div>
+            <Button variant="secondary" size="sm" className="gap-4">
+              Kategorie-Fokus: KI-Content-System für Brauereien <MoveRight className="w-4 h-4" />
+            </Button>
           </div>
-
-          <div className="flex flex-col gap-3 sm:gap-4">
-            <h1
-              className="max-w-2xl text-center text-4xl leading-tight font-bold tracking-tighter text-neutral-900 sm:text-5xl"
-              style={{
-                fontFamily: "var(--font-main), ui-sans-serif, system-ui, sans-serif",
-              }}
-            >
-              {/* Zwei Zeilen erzwingen – auf schmalen Screens sonst oft „Bringe deine Brauerei“ in einer Zeile */}
-              <span className="flex flex-col items-center gap-0 leading-tight">
-                <span className="block text-balance">Bringe deine</span>
-                <span className="block text-balance">Brauerei</span>
-              </span>
-              <span className="relative mt-1 flex min-h-[2.65rem] w-full justify-center overflow-hidden text-center sm:mt-2 sm:min-h-[3rem]">
-                {ROTATING_WORDS.map((title, index) => (
+          <div className="flex flex-col gap-4">
+            <h1 className="max-w-2xl text-center text-5xl font-regular tracking-tighter md:text-7xl">
+              <span className="text-spektr-cyan-50">KI-Content-System für Brauereien</span>
+              <span className="relative flex w-full justify-center overflow-hidden text-center md:pb-4 md:pt-1">
+                &nbsp;
+                {titles.map((title, index) => (
                   <motion.span
-                    key={title}
-                    className="font-display absolute inset-x-0 top-0 px-1 text-center text-[1.35rem] leading-snug font-semibold text-[#c65a20] text-balance sm:text-3xl sm:leading-tight"
-                    initial={{ opacity: 0, y: "-100%" }}
+                    key={index}
+                    className="absolute font-semibold"
+                    initial={{ opacity: 0, y: "-100" }}
                     transition={{ type: "spring", stiffness: 50 }}
                     animate={
                       titleNumber === index
                         ? { y: 0, opacity: 1 }
-                        : {
-                            y: titleNumber > index ? -150 : 150,
-                            opacity: 0,
-                          }
+                        : { y: titleNumber > index ? -150 : 150, opacity: 0 }
                     }
                   >
                     {title}
@@ -152,89 +202,30 @@ export function AnimatedHero({ className }: AnimatedHeroProps) {
               </span>
             </h1>
 
-            <p className="mx-auto max-w-2xl text-balance text-center text-base leading-relaxed tracking-tight text-zinc-600 sm:text-lg">
-              <span className="font-medium text-zinc-700">
-                KI-Marketing für Brauereien und Getränke:
-              </span>{" "}
-              <span className="hero-mobile-subtitle-shine">
-                starke Produktbilder, Videos und Social-Content
-              </span>{" "}
-              <span className="text-zinc-600">
-                – ohne klassisches Grafikstudio.
-              </span>
+            <p className="max-w-2xl text-center text-lg leading-relaxed tracking-tight text-muted-foreground md:text-xl">
+              Weniger Aufwand, bessere Ergebnisse: planbare KI-Produktfotos, Kampagnenmotive und Social-Content
+              in deinem Markenstil.
             </p>
           </div>
-
-          <div className="flex w-full flex-col items-center gap-3 sm:flex-row sm:flex-wrap sm:justify-center">
-            <motion.a
-              href="#contact"
-              className={cn(
-                "z-20 inline-flex items-center justify-center rounded-full bg-neutral-900 font-medium tracking-tight text-white",
-                "px-4 py-2 text-xs font-semibold shadow-2xl sm:px-5 sm:py-2.5 sm:text-base md:px-6 md:py-3 md:text-lg lg:px-8 lg:py-3 lg:text-xl",
-              )}
-              style={{
-                fontFamily: "var(--font-main), ui-sans-serif, system-ui, sans-serif",
+          <div className="flex flex-row flex-wrap items-center justify-center gap-3">
+            <LiquidMetalButton
+              label={primaryCtaLabel}
+              onClick={onPrimaryCtaClick}
+            />
+            <LiquidMetalButton
+              label="Beispiele ansehen"
+              onClick={() => {
+                if (typeof window === "undefined") return;
+                const el = document.getElementById("echte-beispiele-aus-der-praxis");
+                if (!el) return;
+                el.scrollIntoView({ behavior: "smooth", block: "start" });
               }}
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{
-                duration: 0.2,
-                ease: "easeOut",
-                delay: 0.7,
-              }}
-              whileHover={{
-                scale: 1.05,
-                transition: { type: "spring", damping: 30, stiffness: 400 },
-              }}
-            >
-              <span className="text-center">
-                Kostenloses Erstgespräch{" "}
-                <span className="ml-1 font-serif" aria-hidden>
-                  →
-                </span>
-              </span>
-            </motion.a>
-            <motion.div
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{
-                duration: 0.2,
-                ease: "easeOut",
-                delay: 0.7,
-              }}
-              whileHover={{
-                scale: 1.05,
-                transition: { type: "spring", damping: 30, stiffness: 400 },
-              }}
-            >
-              <Link
-                href="#echte-beispiele-aus-der-praxis"
-                scroll={false}
-                onClick={scrollToEchteBeispiele}
-                className={cn(
-                  "z-20 inline-flex items-center justify-center rounded-full border border-[rgb(255,200,160)] bg-white/90 font-medium tracking-tight text-neutral-900 backdrop-blur-sm",
-                  "gap-2 px-4 py-2 text-xs font-semibold shadow-xl sm:px-5 sm:py-2.5 sm:text-base md:px-6 md:py-3 md:text-lg lg:px-8 lg:py-3 lg:text-xl",
-                )}
-                style={{
-                  fontFamily: "var(--font-main), ui-sans-serif, system-ui, sans-serif",
-                }}
-              >
-                <span className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-neutral-100">
-                  <svg
-                    className="ml-0.5 h-3.5 w-3.5"
-                    viewBox="0 0 24 24"
-                    fill="currentColor"
-                    aria-hidden
-                  >
-                    <path d="M8 5v14l11-7z" />
-                  </svg>
-                </span>
-                So funktioniert&apos;s
-              </Link>
-            </motion.div>
+            />
           </div>
         </div>
       </div>
     </div>
   );
 }
+
+export { Hero };

@@ -3,7 +3,7 @@
 import React, { useEffect, useRef, useState } from "react";
 import type { LucideIcon } from "lucide-react";
 
-import { RippleButton } from "@/components/ui/multi-type-ripple-buttons";
+import { LoadingButton } from "@/components/ui/loading-button";
 import { cn } from "@/lib/utils";
 
 const CheckIcon = ({ className }: { className?: string }) => (
@@ -297,6 +297,7 @@ export interface PricingCardProps {
   /** Text auf dem Popular-Badge */
   popularLabel?: string;
   onCtaClick?: () => void;
+  buttonLoading?: boolean;
   "data-paket"?: string;
   className?: string;
   /** Kleinere Typo & Padding – z. B. Add-ons unter den Hauptpaketen. */
@@ -316,21 +317,22 @@ export const PricingCard = ({
   priceSubtext = "/mo",
   popularLabel = "Most Popular",
   onCtaClick,
+  buttonLoading = false,
   "data-paket": dataPaket,
   className,
   compact = false,
 }: PricingCardProps) => {
   /* Hover: nur minimaler Lift (translateY), kein Zoom – kurz, ease-out, dezenter Schatten. */
   const cardClasses = cn(
-    "relative z-0 flex min-w-0 flex-1 flex-col rounded-2xl border border-black/10 bg-gradient-to-br from-black/5 to-black/0 shadow-xl backdrop-blur-[14px]",
+    "relative z-0 flex min-w-0 flex-1 flex-col rounded-[var(--ui-radius-lg)] border border-black/10 bg-gradient-to-br from-black/5 to-black/0 shadow-[var(--ui-shadow-soft)] backdrop-blur-[14px]",
     "dark:border-white/10 dark:from-white/10 dark:to-white/5 dark:backdrop-brightness-[0.91]",
-    "transform-gpu transition-[transform,box-shadow] duration-200 ease-out",
+    "evg-clean-hover transform-gpu will-change-transform transition-[transform,box-shadow,border-color] ease-[var(--ui-motion-ease)]",
     compact
       ? "w-full max-w-[280px] px-5 py-6 sm:max-w-[300px]"
       : "max-w-xs px-7 py-8",
     isPopular
-      ? "relative max-md:scale-100 md:scale-105 shadow-2xl ring-2 ring-[#e07a40]/35 dark:from-white/20 dark:to-white/10 dark:border-[#c65a20]/45 hover:z-10 hover:-translate-y-1 hover:shadow-[0_16px_30px_-8px_rgba(0,0,0,0.12)] dark:hover:shadow-[0_18px_36px_-8px_rgba(0,0,0,0.35)] motion-reduce:transition-none motion-reduce:hover:translate-y-0"
-      : "hover:z-10 hover:-translate-y-1 hover:shadow-[0_14px_28px_-8px_rgba(0,0,0,0.1)] dark:hover:shadow-[0_16px_32px_-8px_rgba(0,0,0,0.32)] motion-reduce:transition-none motion-reduce:hover:translate-y-0",
+      ? "relative max-md:scale-100 md:scale-105 shadow-[var(--ui-shadow-accent)] ring-1 ring-[#e07a40]/30 dark:from-white/20 dark:to-white/10 dark:border-[#c65a20]/45 hover:z-10 hover:border-[#e07a40]/35 hover:shadow-[var(--ui-shadow-accent-hover)] dark:hover:border-white/20 motion-reduce:transition-none motion-reduce:hover:translate-y-0"
+      : "hover:z-10 hover:border-[#e07a40]/35 hover:shadow-[0_16px_34px_-20px_rgba(198,90,32,0.24)] dark:hover:border-white/20 motion-reduce:transition-none motion-reduce:hover:translate-y-0",
     className,
   );
   const buttonClasses = cn(
@@ -338,7 +340,7 @@ export const PricingCard = ({
     compact ? "py-2 text-[13px]" : "py-2.5 text-[14px]",
     buttonVariant === "primary"
       ? "bg-[#c65a20] text-white hover:bg-[#d46830]"
-      : "border border-black/20 bg-black/10 text-foreground hover:bg-black/20 dark:border-white/20 dark:bg-white/10 dark:text-white dark:hover:bg-white/20",
+      : "border border-black/20 bg-black/10 text-zinc-900 hover:bg-black/20",
   );
 
   return (
@@ -372,7 +374,7 @@ export const PricingCard = ({
           ) : null}
           <h2
             className={cn(
-              "min-w-0 max-w-full break-words font-display font-normal tracking-[-0.03em] text-foreground hyphens-auto",
+              "min-w-0 max-w-full break-words font-display font-normal tracking-[-0.03em] text-zinc-900 hyphens-auto",
               PlanIcon && "sm:flex-1 sm:min-w-0",
               PlanIcon
                 ? compact
@@ -388,7 +390,7 @@ export const PricingCard = ({
         </div>
         <p
           className={cn(
-            "min-w-0 break-words font-sans text-foreground/70",
+            "min-w-0 break-words font-sans text-zinc-600",
             PlanIcon ? "mt-2.5 sm:mt-2" : "mt-1",
             compact ? "text-[13px] leading-snug" : "text-[16px]",
           )}
@@ -404,7 +406,7 @@ export const PricingCard = ({
       >
         <span
           className={cn(
-            "min-w-0 max-w-full break-words font-display font-normal text-foreground",
+            "min-w-0 max-w-full break-words font-display font-normal text-zinc-900",
             compact ? "text-[1.75rem] sm:text-[2rem]" : "text-[48px]",
           )}
         >
@@ -413,7 +415,7 @@ export const PricingCard = ({
         </span>
         <span
           className={cn(
-            "min-w-0 font-sans text-foreground/70",
+            "min-w-0 font-sans text-zinc-600",
             compact ? "text-[12px] leading-tight" : "text-[14px]",
           )}
         >
@@ -428,7 +430,7 @@ export const PricingCard = ({
       />
       <ul
         className={cn(
-          "flex flex-col font-sans text-foreground/90",
+          "flex flex-col font-sans text-zinc-800",
           compact ? "mb-4 gap-1.5 text-[13px] leading-snug" : "mb-6 gap-2 text-[14px]",
         )}
       >
@@ -439,13 +441,15 @@ export const PricingCard = ({
           </li>
         ))}
       </ul>
-      <RippleButton
+      <LoadingButton
         className={buttonClasses}
         onClick={onCtaClick}
+        loading={buttonLoading}
+        disabled={buttonLoading}
         data-paket={dataPaket}
       >
         {buttonText}
-      </RippleButton>
+      </LoadingButton>
     </div>
   );
 };

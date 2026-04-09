@@ -15,4 +15,5 @@ export const KI_CAROUSEL = [
   { src: "/ki-beispiel-3.svg", alt: "KI-Beispielbild – Lünebräu Werbemotiv" },
   { src: "/ki-beispiel-hafen.webp", alt: "Lünebräu – Lifestyle am Hafen Lübeck" },
   { src: "/ki-beispiel-strand.webp", alt: "Lünebräu – Lifestyle am Strand" },
+  { src: "/ki-beispiel-praxis-6.webp", alt: "Bierflasche in der Hand im Biergarten bei Abendlicht" },
 ] as const;

@@ -48,18 +48,18 @@ const HERO_FLOAT_LAYOUT = [
 ] as const;
 
 /**
- * Kurze zweite Hero-Zeile (wenig Layout-Sprung); KI + Bild/Video/Visuals.
+ * Kurze zweite Hero-Zeile (wenig Layout-Sprung); Fokus auf KI-Bilder.
  */
 const HERO_ROTATE_TEXTS = [
   "Mit KI-Fotos ins Licht",
-  "Mit KI-Videos im Feed",
-  "Mit KI-Clips groß raus",
+  "Mit KI-Bildern im Feed",
+  "Mit KI-Visuals groß raus",
   "Mit KI-Bildern sichtbar",
-  "Mit KI-Motion online",
+  "Mit KI-Assets online",
   "Mit KI-Grafik auffällig",
   "Mit KI-Spots regional",
   "Mit KI-Visuals im Feed",
-  "Mit KI-Reels nah dran",
+  "Mit KI-Bildideen nah dran",
   "Mit KI-Medien frisch",
   "Mit KI-Assets klar",
   "Mit KI-Spot stark",
@@ -292,7 +292,7 @@ export function DesktopHero({ variant = "desktop" }: { variant?: DesktopHeroVari
               ),
             },
             {
-              label: "Werbevideos",
+              label: "Bildkampagnen",
               icon: (
                 <svg
                   className="h-4 w-4 shrink-0"

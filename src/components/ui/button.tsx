@@ -1,34 +1,33 @@
 "use client";
 
-import * as React from "react";
 import { Slot } from "@radix-ui/react-slot";
 import { cva, type VariantProps } from "class-variance-authority";
+import * as React from "react";
 
 import { cn } from "@/lib/utils";
 
 const buttonVariants = cva(
-  "inline-flex items-center justify-center gap-2 whitespace-nowrap rounded-md text-sm font-medium transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-orange-400/60 focus-visible:ring-offset-2 focus-visible:ring-offset-transparent disabled:pointer-events-none disabled:opacity-50 [&_svg]:pointer-events-none [&_svg]:size-4 [&_svg]:shrink-0",
+  "inline-flex items-center justify-center whitespace-nowrap text-sm font-medium transition-colors outline-offset-2 focus-visible:outline focus-visible:outline-2 focus-visible:outline-ring/70 disabled:pointer-events-none disabled:opacity-50 [&_svg]:pointer-events-none [&_svg]:shrink-0",
   {
     variants: {
       variant: {
-        default:
-          "bg-orange-600 text-white shadow hover:bg-orange-500 dark:bg-orange-500 dark:hover:bg-orange-400",
+        default: "bg-primary text-primary-foreground shadow-sm shadow-black/5 hover:bg-primary/90",
         destructive:
-          "bg-red-600 text-white shadow-sm hover:bg-red-500",
+          "bg-destructive text-destructive-foreground shadow-sm shadow-black/5 hover:bg-destructive/90",
         outline:
-          "border border-white/20 bg-transparent text-white shadow-sm hover:bg-white/10",
+          "border border-input bg-background shadow-sm shadow-black/5 hover:bg-accent hover:text-accent-foreground",
         secondary:
-          "bg-white/10 text-white shadow-sm hover:bg-white/15",
-        ghost: "text-white hover:bg-white/10",
-        link: "text-orange-400 underline-offset-4 hover:underline",
+          "bg-secondary text-secondary-foreground shadow-sm shadow-black/5 hover:bg-secondary/80",
+        ghost: "hover:bg-accent hover:text-accent-foreground",
+        link: "text-primary underline-offset-4 hover:underline",
         neutral:
-          "bg-zinc-900 text-zinc-50 shadow hover:bg-zinc-800 focus-visible:ring-zinc-400/40 focus-visible:ring-offset-2 focus-visible:ring-offset-zinc-50",
+          "bg-zinc-900 text-zinc-50 shadow hover:bg-zinc-800 focus-visible:outline-zinc-400/40",
       },
       size: {
-        default: "h-10 px-4 py-2",
-        sm: "h-9 rounded-md px-3 text-xs",
-        lg: "h-11 rounded-md px-8",
-        icon: "h-10 w-10",
+        default: "h-9 rounded-[var(--ui-radius-md)] px-4 py-2",
+        sm: "h-8 rounded-[var(--ui-radius-md)] px-3 text-xs",
+        lg: "h-10 rounded-[var(--ui-radius-lg)] px-8",
+        icon: "h-9 w-9 rounded-[var(--ui-radius-md)]",
       },
     },
     defaultVariants: {

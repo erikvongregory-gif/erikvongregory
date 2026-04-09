@@ -15,15 +15,15 @@ export function DesktopSection4() {
   const iconClass = "w-7 h-7 shrink-0";
   const items: Array<{ icon: React.ReactNode; title: string; text: string; iconType: string }> = [
     {
-      iconType: "video",
+      iconType: "camera",
       icon: (
         <svg className={iconClass} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.75" strokeLinecap="round" strokeLinejoin="round">
           <polygon points="23 7 16 12 23 17 23 7" />
           <rect x="1" y="5" width="15" height="14" rx="2" ry="2" />
         </svg>
       ),
-      title: "KI-Werbevideos für Social Media",
-      text: "Cinematische KI-Werbevideos für TikTok, Instagram und Ads – schnell produziert und auf Reichweite optimiert.",
+      title: "KI-Bildkampagnen für Social Media",
+      text: "Hochwertige KI-Bildkampagnen für Instagram und Ads – schnell produziert und auf Reichweite optimiert.",
     },
     {
       iconType: "chart",
@@ -67,8 +67,8 @@ export function DesktopSection4() {
           <path d="m12 3-1.912 5.813a2 2 0 0 1-1.275 1.275L3 12l5.813 1.912a2 2 0 0 1 1.275 1.275L12 21l1.912-5.813a2 2 0 0 1 1.275-1.275L21 12l-5.813-1.912a2 2 0 0 1-1.275-1.275L12 3Z" />
         </svg>
       ),
-      title: "KI-Content für Instagram, TikTok & Ads",
-      text: "Regelmäßiger KI-Content für Posts, Reels und Ads – speziell für Brauereien.",
+      title: "KI-Content für Instagram & Ads",
+      text: "Regelmäßiger KI-Content für Posts und Ads – speziell für Brauereien.",
     },
   ];
 
@@ -82,7 +82,7 @@ export function DesktopSection4() {
       */}
       <div className="section4-loop-stack-root relative isolate z-0 mx-auto w-full max-w-6xl overflow-visible px-4 lg:px-6">
         <div
-          className="section4-loop-shader-backdrop pointer-events-none absolute -inset-x-5 -inset-y-12 -z-10 overflow-hidden rounded-[1.75rem] sm:-inset-x-8 sm:-inset-y-16 sm:rounded-3xl lg:-inset-x-[4.5rem] lg:-inset-y-32"
+          className="section4-loop-shader-backdrop pointer-events-none absolute inset-x-0 -inset-y-12 -z-10 overflow-hidden rounded-[1.75rem] sm:-inset-y-16 sm:rounded-3xl lg:-inset-y-24"
           aria-hidden
         >
           <ShaderCanvas

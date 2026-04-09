@@ -2,8 +2,10 @@
 
 import { useEffect, useRef, useState } from "react";
 import Link from "next/link";
+import { usePathname } from "next/navigation";
 import { HelpCircle, Layers, Mail, Package, Sparkles } from "lucide-react";
 import { MenuBar, type GlowMenuItem } from "@/components/ui/glow-menu";
+import { HeaderLogin } from "@/components/HeaderLogin";
 import { scrollToSection } from "@/lib/scrollToSection";
 import { cn } from "@/lib/utils";
 
@@ -56,6 +58,7 @@ const GLOW_NAV_ITEMS: GlowMenuItem[] = [
 ];
 
 export function ScrollHeader() {
+  const pathname = usePathname();
   const [dropdownOpen, setDropdownOpen] = useState(false);
   const [activeSection, setActiveSection] = useState<string>("");
   const mobileNavRef = useRef<HTMLDivElement>(null);
@@ -146,6 +149,10 @@ export function ScrollHeader() {
 
   const shouldUseHeaderLightTheme = true;
 
+  if (pathname?.startsWith("/dashboard")) {
+    return null;
+  }
+
   const evglabWordmark = (
     <>
       EvG<span className="font-light italic font-austera-green-fade">lab</span>
@@ -173,7 +180,7 @@ export function ScrollHeader() {
     <>
       {/* Mobile & schmale Tablets: kein Premium-Header – nur Logo + Dropdown */}
       <header
-        className="mobile-top-header pointer-events-none fixed left-0 right-0 top-0 z-[100] box-border flex items-center justify-between gap-3 bg-transparent pl-[max(1rem,env(safe-area-inset-left))] pr-[max(1rem,env(safe-area-inset-right))] pt-[max(0.5rem,env(safe-area-inset-top))] pb-2 lg:hidden"
+        className="mobile-top-header pointer-events-none fixed left-0 right-0 top-0 z-[100] box-border flex items-center justify-between gap-3 bg-transparent pl-[max(1rem,env(safe-area-inset-left))] pr-[max(1rem,env(safe-area-inset-right))] pt-[max(0.35rem,env(safe-area-inset-top))] pb-1 lg:hidden"
         aria-label="Seitennavigation"
       >
         <a
@@ -185,15 +192,9 @@ export function ScrollHeader() {
         >
           Kontakt
         </a>
-        <Link
-          href="/"
-          className={cn(
-            logoLinkClassBase,
-            "pointer-events-auto min-w-0 shrink focus-visible:ring-neutral-400",
-          )}
-        >
-          {evglabWordmark}
-        </Link>
+        <div className="pointer-events-auto min-w-0 shrink">
+          {headerLogo}
+        </div>
 
         <div ref={mobileNavRef} className="pointer-events-auto relative shrink-0">
           <button
@@ -242,6 +243,9 @@ export function ScrollHeader() {
                   </a>
                 );
               })}
+              <HeaderLogin
+                variant="mobile"
+              />
             </div>
           ) : null}
         </div>
@@ -254,13 +258,15 @@ export function ScrollHeader() {
           shouldUseHeaderLightTheme && "header-light-theme",
         )}
       >
-        <div className="premium-header-container">
-          <div className="premium-header-inner mx-auto max-w-full !gap-0 !rounded-none !border-0 !bg-transparent !p-0 !shadow-none">
-            <div className="flex w-full min-w-0 justify-center">
+        <div className="premium-header-container !max-w-none">
+          <div className="grid w-full grid-cols-[1fr_auto_1fr] items-center gap-4">
+            <div className="min-w-0 justify-self-start">
+              {headerLogo}
+            </div>
+            <div className="min-w-0">
               <div className="min-w-0 max-w-full overflow-x-auto [-ms-overflow-style:none] [scrollbar-width:none] [&::-webkit-scrollbar]:hidden">
                 <MenuBar
                   className="w-full max-w-full sm:w-max sm:max-w-none"
-                  logo={headerLogo}
                   items={GLOW_NAV_ITEMS}
                   activeItem={activeGlowLabel}
                   headerLight={shouldUseHeaderLightTheme}
@@ -270,6 +276,9 @@ export function ScrollHeader() {
                   }}
                 />
               </div>
+            </div>
+            <div className="min-w-0 justify-self-end">
+              <HeaderLogin variant="desktop" className="!border-0 !pl-0" />
             </div>
           </div>
         </div>

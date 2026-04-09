@@ -10,6 +10,7 @@ type StoredV1 = {
   necessary: true;
   analytics: boolean;
   marketing: boolean;
+  consentedAt?: string;
 };
 
 export function serializeCookieConsent(prefs: CookiePrefs): string {
@@ -18,6 +19,7 @@ export function serializeCookieConsent(prefs: CookiePrefs): string {
     necessary: true,
     analytics: prefs.analytics,
     marketing: prefs.marketing,
+    consentedAt: new Date().toISOString(),
   };
   return JSON.stringify(payload);
 }

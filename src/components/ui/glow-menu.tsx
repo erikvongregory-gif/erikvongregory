@@ -87,7 +87,7 @@ export const MenuBar = React.forwardRef<HTMLElement, MenuBarProps>(
     const isDarkTheme = !headerLight;
 
     const shell = headerLight
-      ? "border border-white/40 bg-white/45 shadow-sm shadow-black/10 md:border-zinc-200/80 md:bg-white/[0.96] md:backdrop-blur-xl md:backdrop-saturate-150"
+      ? "border border-white/35 bg-white/45 shadow-sm shadow-black/10 backdrop-blur-md backdrop-saturate-150 md:border-zinc-300/55 md:bg-white/42 md:backdrop-blur-lg md:backdrop-saturate-150"
       : "border-white/15 bg-[#0a0f14] shadow-lg shadow-black/40";
 
     const fg = headerLight ? "text-neutral-800" : "text-white";

@@ -1,71 +1,10 @@
 "use client";
 
-import { useEffect, useState } from "react";
-import Link from "next/link";
-import { Beer, Clock, Sparkles } from "lucide-react";
-import { motion } from "motion/react";
-import { Button } from "@/components/ui/button";
-import {
-  Card,
-  CardContent,
-  CardFooter,
-  CardHeader,
-} from "@/components/ui/card";
-import { scrollToSection } from "@/lib/scrollToSection";
+import { Shield, Sparkles, TrendingUp, Users } from "lucide-react";
+import { Card, CardContent } from "@/components/ui/card";
 import { cn } from "@/lib/utils";
 
-/** shadcn Insurance-Card Prompt: helle Karte, Zinc-Typo, Header/Footer muted */
-const cardShell =
-  "insurance-card-ui w-full max-w-md overflow-hidden rounded-2xl border border-zinc-200 bg-white text-zinc-900 shadow-lg";
-
-const headerShell =
-  "border-b border-zinc-200 bg-zinc-100/80 p-6";
-
-const footerShell = "border-t border-zinc-200 bg-zinc-100/80 p-6";
-
-function InfoRow({ label, value }: { label: string; value: string }) {
-  return (
-    <div className="flex flex-col gap-0.5">
-      <span className="text-xs text-zinc-500">{label}</span>
-      <span className="text-sm font-semibold leading-snug text-zinc-900">
-        {value}
-      </span>
-    </div>
-  );
-}
-
 type Layout = "grid" | "stack";
-
-const easeOutSoft: [number, number, number, number] = [0.22, 1, 0.36, 1];
-
-/** Langsamer Zoom nur auf Desktop (≥768px + echtes Hover, feine Zeiger) */
-const section2CardHoverDesktop = { scale: 1.035, y: -5 };
-
-const section2CardMotion = {
-  initial: { opacity: 0, y: 20 },
-  whileInView: { opacity: 1, y: 0 },
-  viewport: { once: true, amount: 0.2 as const },
-  transition: {
-    opacity: { duration: 0.5, ease: easeOutSoft },
-    y: { duration: 0.5, ease: easeOutSoft },
-    scale: { type: "tween" as const, duration: 1.05, ease: easeOutSoft },
-  },
-  whileTap: { scale: 0.992 },
-};
-
-function useDesktopHoverZoom() {
-  const [enabled, setEnabled] = useState(false);
-  useEffect(() => {
-    const mq = window.matchMedia(
-      "(min-width: 768px) and (hover: hover) and (pointer: fine)",
-    );
-    const sync = () => setEnabled(mq.matches);
-    sync();
-    mq.addEventListener("change", sync);
-    return () => mq.removeEventListener("change", sync);
-  }, []);
-  return enabled;
-}
 
 export function Section2BreweryCards({
   layout = "grid",
@@ -74,137 +13,122 @@ export function Section2BreweryCards({
   layout?: Layout;
   className?: string;
 }) {
-  const desktopHoverZoom = useDesktopHoverZoom();
-
-  const gridClass =
-    layout === "grid"
-      ? "mx-auto grid w-full max-w-7xl grid-cols-1 justify-items-center gap-6 px-4 lg:grid-cols-2 lg:gap-8 lg:px-6"
-      : "mx-auto flex w-full max-w-md flex-col items-center gap-6 px-4";
+  const rootClass = layout === "grid" ? "mx-auto max-w-3xl lg:max-w-5xl px-6" : "mx-auto max-w-3xl px-4";
+  const glassCardClass =
+    "rounded-2xl border border-white/55 bg-white/38 backdrop-blur-xl shadow-[0_14px_30px_-20px_rgba(24,24,27,0.26)]";
+  const glassInnerClass = "border-white/50 bg-white/45 backdrop-blur-md";
 
   return (
-    <div className={cn(gridClass, className)}>
-      <motion.div
-        {...section2CardMotion}
-        whileHover={desktopHoverZoom ? section2CardHoverDesktop : undefined}
-        className="section2-box-slide section2-box-left flex min-w-0 origin-center justify-center transform-gpu will-change-transform"
-      >
-        <Card className={cn(cardShell, "border-zinc-900/10")}>
-          <CardHeader
-            className={cn(headerShell, "flex flex-row items-start gap-3")}
-          >
-            <div
-              className="flex h-14 w-14 shrink-0 items-center justify-center rounded-full border-2 border-white bg-zinc-200 text-zinc-600 shadow-sm"
-              aria-hidden
-            >
-              <Beer className="h-7 w-7" />
-            </div>
-            <div className="min-w-0">
-              <div className="flex items-center gap-2 text-zinc-500">
-                <Clock className="h-4 w-4 shrink-0" aria-hidden />
-                <span className="text-xs font-medium">Marktlage</span>
+    <section className={cn("py-16 md:py-24", className)}>
+      <div className={rootClass} style={{ fontFamily: "var(--font-main), ui-sans-serif, system-ui, sans-serif" }}>
+        <div className="mb-8 flex flex-col items-center gap-3 text-center md:mb-10">
+          <span className="inline-flex items-center gap-2 rounded-full border border-[rgba(224,122,64,0.35)] bg-[rgba(224,122,64,0.14)] px-4 py-1.5 text-sm font-medium text-[#c65a20]">
+            <span aria-hidden>✦</span>
+            Warum EvGlab
+          </span>
+          <h3 className="text-2xl font-bold tracking-tight text-zinc-900 sm:text-3xl">
+            Was du mit mir konkret besser machst
+          </h3>
+        </div>
+
+        <div className="grid grid-cols-6 gap-4">
+          <Card className={cn("relative col-span-full flex overflow-hidden lg:col-span-2", glassCardClass)}>
+            <CardContent className="relative m-auto size-fit p-6 md:p-7">
+              <div className="relative flex h-24 w-56 items-center justify-center">
+                <svg
+                  className="absolute inset-0 h-full w-full text-zinc-300/90"
+                  viewBox="0 0 254 104"
+                  fill="none"
+                  xmlns="http://www.w3.org/2000/svg"
+                  aria-hidden
+                >
+                  <path
+                    d="M112.891 97.7022C140.366 97.0802 171.004 94.6715 201.087 87.5116C210.43 85.2881 219.615 82.6412 228.284 78.2473C232.198 76.3179 235.905 73.9942 239.348 71.3124C241.85 69.2557 243.954 66.7571 245.555 63.9408C249.34 57.3235 248.281 50.5341 242.498 45.6109C239.033 42.7237 235.228 40.2703 231.169 38.3054C219.443 32.7209 207.141 28.4382 194.482 25.534C184.013 23.1927 173.358 21.7755 162.64 21.2989C161.376 21.3512 160.113 21.181 158.908 20.796C158.034 20.399 156.857 19.1682 156.962 18.4535C157.115 17.8927 157.381 17.3689 157.743 16.9139C158.104 16.4588 158.555 16.0821 159.067 15.8066C160.14 15.4683 161.274 15.3733 162.389 15.5286C179.805 15.3566 196.626 18.8373 212.998 24.462C220.978 27.2494 228.798 30.4747 236.423 34.1232C240.476 36.1159 244.202 38.7131 247.474 41.8258C254.342 48.2578 255.745 56.9397 251.841 65.4892C249.793 69.8582 246.736 73.6777 242.921 76.6327C236.224 82.0192 228.522 85.4602 220.502 88.2924C205.017 93.7847 188.964 96.9081 172.738 99.2109C153.442 101.949 133.993 103.478 114.506 103.79C91.1468 104.161 67.9334 102.97 45.1169 97.5831C36.0094 95.5616 27.2626 92.1655 19.1771 87.5116C13.839 84.5746 9.1557 80.5802 5.41318 75.7725C-0.54238 67.7259 -1.13794 59.1763 3.25594 50.2827C5.82447 45.3918 9.29572 41.0315 13.4863 37.4319C24.2989 27.5721 37.0438 20.9681 50.5431 15.7272C68.1451 8.8849 86.4883 5.1395 105.175 2.83669C129.045 0.0992292 153.151 0.134761 177.013 2.94256C197.672 5.23215 218.04 9.01724 237.588 16.3889C240.089 17.3418 242.498 18.5197 244.933 19.6446C246.627 20.4387 247.725 21.6695 246.997 23.615C246.455 25.1105 244.814 25.5605 242.63 24.5811C230.322 18.9961 217.233 16.1904 204.117 13.4376C188.761 10.3438 173.2 8.36665 157.558 7.52174C129.914 5.70776 102.154 8.06792 75.2124 14.5228C60.6177 17.8788 46.5758 23.2977 33.5102 30.6161C26.6595 34.3329 20.4123 39.0673 14.9818 44.658C12.9433 46.8071 11.1336 49.1622 9.58207 51.6855C4.87056 59.5336 5.61172 67.2494 11.9246 73.7608C15.2064 77.0494 18.8775 79.925 22.8564 82.3236C31.6176 87.7101 41.3848 90.5291 51.3902 92.5804C70.6068 96.5773 90.0219 97.7419 112.891 97.7022Z"
+                    fill="currentColor"
+                  />
+                </svg>
+                <span className="relative z-10 mx-auto block w-fit text-5xl font-semibold text-[#c65a20]">100%</span>
               </div>
-              <p className="mt-1 text-base font-bold text-zinc-950">
-                Biermarkt{" "}
-                <span className="text-orange-600">−6&nbsp;%</span>
+              <h2 className="mt-6 text-center text-2xl font-semibold text-zinc-900">Brauerei-Fokus</h2>
+              <p className="mt-3 text-center leading-relaxed text-zinc-600">
+                Ich arbeite ausschließlich für Brauereien, Gastronomie und Getränkemarken.
               </p>
-              <p className="text-xs text-zinc-500">
-                Sichtbarkeit entscheidet.
-              </p>
-            </div>
-          </CardHeader>
+            </CardContent>
+          </Card>
 
-          <CardContent className="space-y-6 p-6">
-            <div className="grid grid-cols-2 gap-x-4 gap-y-6">
-              <InfoRow label="Thema" value="Online kaum sichtbar" />
-              <InfoRow label="Social" value="Zu wenig aktiv" />
-              <InfoRow label="Werbung" value="Teuer, wenig Wirkung" />
-              <InfoRow label="Content" value="Keine Kapazität" />
-              <InfoRow label="Website" value="Wirkt veraltet" />
-              <InfoRow label="KI-Hebel" value="Fotos · Video · Posts" />
-            </div>
-            <div className="border-t border-zinc-200 pt-4">
-              <InfoRow
-                label="Chance"
-                value="Regelmäßig sichtbar ohne Vollzeit-Marketing"
-              />
-            </div>
-          </CardContent>
-
-          <CardFooter className={footerShell}>
-            <Button asChild variant="neutral" className="w-full rounded-md">
-              <Link
-                href="#section-4"
-                scroll={false}
-                onClick={(e) => {
-                  e.preventDefault();
-                  scrollToSection("#section-4");
-                }}
-              >
-                Wie funktioniert es?
-              </Link>
-            </Button>
-          </CardFooter>
-        </Card>
-      </motion.div>
-
-      <motion.div
-        {...section2CardMotion}
-        whileHover={desktopHoverZoom ? section2CardHoverDesktop : undefined}
-        transition={{
-          ...section2CardMotion.transition,
-          opacity: { ...section2CardMotion.transition.opacity, delay: 0.06 },
-          y: { ...section2CardMotion.transition.y, delay: 0.06 },
-        }}
-        className="section2-box-slide section2-box-right flex min-w-0 origin-center justify-center transform-gpu will-change-transform"
-      >
-        <Card className={cardShell}>
-          <CardHeader
-            className={cn(headerShell, "flex flex-row items-start gap-3")}
-          >
-            <div
-              className="flex h-14 w-14 shrink-0 items-center justify-center rounded-full border-2 border-white bg-zinc-200 text-zinc-600 shadow-sm"
-              aria-hidden
-            >
-              <Sparkles className="h-6 w-6" />
-            </div>
-            <div className="min-w-0">
-              <div className="flex items-center gap-2 text-zinc-500">
-                <Sparkles className="h-4 w-4 shrink-0" aria-hidden />
-                <span className="text-xs font-medium">Ansprechpartner</span>
+          <Card className={cn("relative col-span-full overflow-hidden sm:col-span-3 lg:col-span-2", glassCardClass)}>
+            <CardContent className="p-6 pt-6 md:p-7 md:pt-6">
+              <div className={cn("relative mx-auto flex aspect-square size-24 rounded-full border", glassInnerClass)}>
+                <Shield className="m-auto size-10 text-zinc-700" strokeWidth={1.5} />
               </div>
-              <p className="mt-1 text-base font-bold text-zinc-950">
-                EvGlab – Marketing für Brauereien
-              </p>
-              <p className="text-xs text-zinc-500">
-                Brauerei- und Gastro-Hintergrund, heute mit KI im Alltag.
-              </p>
-            </div>
-          </CardHeader>
+              <div className="relative z-10 mt-8 space-y-2 text-center">
+                <h2 className="text-lg font-medium text-zinc-900">Planbar statt chaotisch</h2>
+                <p className="leading-relaxed text-zinc-600">
+                  Klare Pakete, klare Abläufe, klare Ergebnisse - damit du zuverlässig veröffentlichen kannst.
+                </p>
+              </div>
+            </CardContent>
+          </Card>
 
-          <CardContent className="space-y-6 p-6">
-            <div className="grid grid-cols-2 gap-x-4 gap-y-6">
-              <InfoRow label="Herkunft" value="Brauerei & Gastronomie" />
-              <InfoRow label="Schwerpunkt" value="Sichtbarkeit & Anfragen" />
-              <InfoRow label="Verständnis" value="Bier, Gäste, Handel" />
-              <InfoRow label="Ansatz" value="KI nur wo es wirklich hilft" />
-              <InfoRow label="Technik" value="Hosting in Deutschland" />
-              <InfoRow label="Datenschutz" value="DSGVO-konform" />
-            </div>
-            <div className="border-t border-zinc-200 pt-4">
-              <InfoRow
-                label="Versprechen"
-                value="Konkrete Schritte statt Folien-Show"
-              />
-            </div>
-          </CardContent>
+          <Card className={cn("relative col-span-full overflow-hidden sm:col-span-3 lg:col-span-2", glassCardClass)}>
+            <CardContent className="p-6 pt-6 md:p-7 md:pt-6">
+              <div className={cn("relative mx-auto flex aspect-square size-24 rounded-full border", glassInnerClass)}>
+                <TrendingUp className="m-auto size-10 text-[#c65a20]" strokeWidth={1.5} />
+              </div>
+              <div className="relative z-10 mt-8 space-y-2 text-center">
+                <h2 className="text-lg font-medium text-zinc-900">Wirkung vor Show</h2>
+                <p className="leading-relaxed text-zinc-600">
+                  Mehr Sichtbarkeit, mehr Wiedererkennung und mehr Anfragen durch konsistenten Content.
+                </p>
+              </div>
+            </CardContent>
+          </Card>
 
-          <CardFooter className={footerShell}>
-            <Button asChild variant="neutral" className="w-full rounded-md">
-              <Link href="#contact">Erstgespräch starten</Link>
-            </Button>
-          </CardFooter>
-        </Card>
-      </motion.div>
-    </div>
+          <Card className={cn("relative col-span-full overflow-hidden lg:col-span-3", glassCardClass)}>
+            <CardContent className="grid gap-5 p-6 sm:grid-cols-2 md:p-7">
+              <div className="relative z-10 flex flex-col justify-between space-y-8">
+                <div className={cn("relative flex aspect-square size-12 rounded-full border", glassInnerClass)}>
+                  <Sparkles className="m-auto size-6 text-[#c65a20]" strokeWidth={1.5} />
+                </div>
+                <div className="space-y-2">
+                  <h2 className="text-lg font-medium text-zinc-900">Du lieferst die Marke</h2>
+                  <p className="leading-relaxed text-zinc-600">Wir liefern den Content - in deinem Stil, für deine Zielgruppe.</p>
+                </div>
+              </div>
+              <div className={cn("relative rounded-xl border p-5 sm:ml-2", glassInnerClass)}>
+                <p className="text-sm font-medium text-zinc-500">So läuft die Zusammenarbeit</p>
+                <ul className="mt-4 space-y-2 text-sm text-zinc-700">
+                  <li>• Strukturierter Monatsplan</li>
+                  <li>• Schnelle Feedback-Schleifen</li>
+                  <li>• Inhalte direkt einsatzbereit</li>
+                </ul>
+              </div>
+            </CardContent>
+          </Card>
+
+          <Card className={cn("relative col-span-full overflow-hidden lg:col-span-3", glassCardClass)}>
+            <CardContent className="grid h-full gap-5 p-6 sm:grid-cols-2 md:p-7">
+              <div className="relative z-10 flex flex-col justify-between space-y-8">
+                <div className={cn("relative flex aspect-square size-12 rounded-full border", glassInnerClass)}>
+                  <Users className="m-auto size-6 text-zinc-700" strokeWidth={1.5} />
+                </div>
+                <div className="space-y-2">
+                  <h2 className="text-lg font-medium text-zinc-900">Wofür ich stehe</h2>
+                  <p className="leading-relaxed text-zinc-600">Klarheit vor Komplexität. Qualität vor Hype. Umsetzung vor Theorie.</p>
+                </div>
+              </div>
+              <div className={cn("relative rounded-xl border p-5 sm:ml-2", glassInnerClass)}>
+                <p className="text-sm font-medium text-zinc-500">Dein Vorteil</p>
+                <ul className="mt-4 space-y-2 text-sm text-zinc-700">
+                  <li>• Weniger Zeitaufwand intern</li>
+                  <li>• Höhere Konsistenz im Auftritt</li>
+                  <li>• Schnellere Umsetzung im Alltag</li>
+                </ul>
+              </div>
+            </CardContent>
+          </Card>
+        </div>
+      </div>
+    </section>
   );
 }

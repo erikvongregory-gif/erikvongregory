@@ -80,7 +80,7 @@ export function JsonLd() {
         },
         {
           "@type": "Offer",
-          itemOffered: { "@type": "Service", name: "KI-Werbevideos für Social Media" },
+          itemOffered: { "@type": "Service", name: "KI-Bildkampagnen für Social Media" },
         },
         {
           "@type": "Offer",
@@ -89,6 +89,18 @@ export function JsonLd() {
         {
           "@type": "Offer",
           itemOffered: { "@type": "Service", name: "Moderne Websites mit Storytelling" },
+        },
+        {
+          "@type": "Offer",
+          itemOffered: { "@type": "Service", name: "Saisonkampagnen für Brauereien" },
+        },
+        {
+          "@type": "Offer",
+          itemOffered: { "@type": "Service", name: "Biergarten- und Event-Marketing" },
+        },
+        {
+          "@type": "Offer",
+          itemOffered: { "@type": "Service", name: "Händler- und Gastro-Promotion mit KI-Content" },
         },
       ],
     },
@@ -103,7 +115,7 @@ export function JsonLd() {
         name: `Was bietet ${SITE.name} für Brauereien?`,
         acceptedAnswer: {
           "@type": "Answer",
-          text: "KI-gestützte Content-Systeme, Werbevideos, automatisiertes Marketing, KI-Produktfotos und moderne Websites für Brauereien, Gastronomen und Getränkehersteller.",
+          text: "KI-gestützte Content-Systeme, automatisiertes Marketing, KI-Produktfotos, Bildkampagnen und moderne Websites für Brauereien, Gastronomen und Getränkehersteller.",
         },
       },
       {
@@ -111,7 +123,7 @@ export function JsonLd() {
         name: "Wie können Brauereien KI für Marketing nutzen?",
         acceptedAnswer: {
           "@type": "Answer",
-          text: "Mit KI-Produktfotos, automatisiertem Social Media Marketing, KI-Werbevideos und Content für Instagram, TikTok und Ads – ohne teure Agentur.",
+          text: "Mit KI-Produktfotos, Bildkampagnen, automatisiertem Social Media Marketing und Content für Instagram und Ads – ohne teure Agentur.",
         },
       },
     ],

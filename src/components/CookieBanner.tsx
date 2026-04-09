@@ -54,6 +54,19 @@ export function CookieBanner() {
     return () => clearTimeout(id);
   }, []);
 
+  useEffect(() => {
+    const openSettings = () => {
+      const parsed = parseStoredCookieConsent(localStorage.getItem(COOKIE_CONSENT_KEY));
+      setDraft(parsed ?? { analytics: false, marketing: false });
+      setMode("settings");
+      setVisible(true);
+    };
+    window.addEventListener("evglab-open-cookie-settings", openSettings);
+    return () => {
+      window.removeEventListener("evglab-open-cookie-settings", openSettings);
+    };
+  }, []);
+
   const dismissWith = (prefs: CookiePrefs) => {
     saveCookieConsent(prefs);
     setVisible(false);

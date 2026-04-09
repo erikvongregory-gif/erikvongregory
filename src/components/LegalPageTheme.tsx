@@ -3,7 +3,7 @@
 import { usePathname } from "next/navigation";
 import { useEffect } from "react";
 
-const LEGAL_PATHS = ["/datenschutz", "/impressum"];
+const LEGAL_PATHS = ["/datenschutz", "/impressum", "/agb"];
 
 export function LegalPageTheme() {
   const pathname = usePathname();

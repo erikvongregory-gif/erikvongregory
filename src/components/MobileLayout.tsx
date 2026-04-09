@@ -1,7 +1,7 @@
 "use client";
 
 import { useLoading } from "@/context/LoadingContext";
-import { AnimatedHero } from "@/components/ui/animated-hero";
+import { AnimatedHeroMobile } from "@/components/ui/animated-hero-mobile";
 import { HeroDigitalSerenityEffect } from "@/components/HeroDigitalSerenityEffect";
 import { ScrollReveal } from "./ScrollReveal";
 import { Section2BreweryCards } from "@/components/Section2BreweryCards";
@@ -14,9 +14,9 @@ const SECTION4_ITEMS = [
     icon: "camera",
   },
   {
-    title: "KI-Werbevideos für Social Media",
-    text: "Cinematische Werbevideos für Bier, Brauereien und Getränke – produziert mit KI.",
-    icon: "video",
+    title: "KI-Bildkampagnen für Social Media",
+    text: "Starke Bildkampagnen für Bier, Brauereien und Getränke – produziert mit KI.",
+    icon: "camera",
   },
   {
     title: "Automatisiertes Social Media Marketing",
@@ -29,8 +29,8 @@ const SECTION4_ITEMS = [
     icon: "globe",
   },
   {
-    title: "KI-Content für Instagram, TikTok & Ads",
-    text: "Regelmäßiger Content speziell für Brauereien und Getränkemarken.",
+    title: "KI-Content für Instagram & Ads",
+    text: "Regelmäßiger Bild-Content speziell für Brauereien und Getränkemarken.",
     icon: "sparkle",
   },
 ];
@@ -47,10 +47,9 @@ export function MobileLayout() {
         >
           <HeroDigitalSerenityEffect mode="mobile" />
           <div className="min-w-0">
-            <AnimatedHero />
+            <AnimatedHeroMobile />
           </div>
         </div>
-
         {/* Section 2 – Karten wie Desktop */}
         <section
           id="section-2"
@@ -102,12 +101,6 @@ export function MobileLayout() {
                     <svg className="h-6 w-6" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
                       <path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z" />
                       <circle cx="12" cy="13" r="4" />
-                    </svg>
-                  )}
-                  {item.icon === "video" && (
-                    <svg className="h-6 w-6" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                      <polygon points="23 7 16 12 23 17 23 7" />
-                      <rect x="1" y="5" width="15" height="14" rx="2" ry="2" />
                     </svg>
                   )}
                   {item.icon === "chart" && (

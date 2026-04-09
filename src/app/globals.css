@@ -1,6 +1,31 @@
 @import "tailwindcss";
+@import "tw-animate-css";
+@custom-variant dark (&:where(.dark, .dark *));
 /* Explizit alle TS/TSX unter src scannen (u. a. components/ui – Neon-Button-Klassen) */
 @source "..";
+
+@theme inline {
+  --animate-accordion-down: accordion-down 0.2s ease-out;
+  --animate-accordion-up: accordion-up 0.2s ease-out;
+}
+
+@keyframes accordion-down {
+  from {
+    height: 0;
+  }
+  to {
+    height: var(--radix-accordion-content-height);
+  }
+}
+
+@keyframes accordion-up {
+  from {
+    height: var(--radix-accordion-content-height);
+  }
+  to {
+    height: 0;
+  }
+}
 
 /* Tailwind: Sans = Inter, Display = Playfair (next/font-Variablen auf <html>) */
 @theme {
@@ -12,6 +37,14 @@
 
 :root {
   --button-ripple-color: oklch(0.145 0 0 / 0.3);
+  --ui-radius-md: 0.75rem;
+  --ui-radius-lg: 1rem;
+  --ui-shadow-soft: 0 10px 24px -16px rgba(0, 0, 0, 0.22);
+  --ui-shadow-soft-hover: 0 14px 30px -16px rgba(0, 0, 0, 0.28);
+  --ui-shadow-accent: 0 16px 34px -20px rgba(198, 90, 32, 0.32);
+  --ui-shadow-accent-hover: 0 18px 36px -20px rgba(198, 90, 32, 0.38);
+  --ui-motion-fast: 220ms;
+  --ui-motion-ease: cubic-bezier(0.22, 1, 0.36, 1);
 }
 
 .dark {
@@ -442,6 +475,58 @@ body[data-legal-page="true"] {
   .problem-x-icon {
     animation: none;
   }
+}
+
+@keyframes loader-rotate {
+  0% {
+    transform: rotate(90deg);
+    box-shadow: 0 10px 20px 0 #fff inset, 0 20px 30px 0 #ad5fff inset, 0 60px 60px 0 #471eec inset;
+  }
+  50% {
+    transform: rotate(270deg);
+    box-shadow: 0 10px 20px 0 #fff inset, 0 20px 10px 0 #d60a47 inset, 0 40px 60px 0 #311e80 inset;
+  }
+  100% {
+    transform: rotate(450deg);
+    box-shadow: 0 10px 20px 0 #fff inset, 0 20px 30px 0 #ad5fff inset, 0 60px 60px 0 #471eec inset;
+  }
+}
+
+@keyframes loader-letter-anim {
+  0%,
+  100% {
+    opacity: 0.4;
+    transform: translateY(0);
+  }
+  20% {
+    opacity: 1;
+    transform: scale(1.15);
+  }
+  40% {
+    opacity: 0.7;
+    transform: translateY(0);
+  }
+}
+
+.ai-loader-wrapper {
+  display: flex;
+  align-items: center;
+  gap: 0.15rem;
+  color: #6b7280;
+  font-size: 0.95rem;
+  font-weight: 600;
+}
+
+.ai-loader-letter {
+  animation: loader-letter-anim 1.2s ease-in-out infinite;
+}
+
+.ai-loader-ring {
+  width: 1.35rem;
+  height: 1.35rem;
+  margin-left: 0.45rem;
+  border-radius: 9999px;
+  animation: loader-rotate 1.5s linear infinite;
 }
 
 /* Mobile Hero Portrait – kommt von unten */
@@ -1207,12 +1292,12 @@ body[data-legal-page="true"] {
 }
 
 #section-4.insurance-card-theme .section4-loop-stack-root .section4-loop-shader-backdrop {
-  z-index: -1 !important;
+  z-index: 0 !important;
 }
 
 #section-4.insurance-card-theme .section4-loop-content-stack {
   position: relative;
-  z-index: 2 !important;
+  z-index: 3 !important;
   isolation: isolate;
   transform: translate3d(0, 0, 0);
   -webkit-transform: translate3d(0, 0, 0);
@@ -1226,15 +1311,43 @@ body[data-legal-page="true"] {
 }
 
 #pakete-preise .pricing-loop-shader-backdrop {
-  z-index: -1 !important;
+  z-index: 0 !important;
 }
 
 #pakete-preise .pricing-loop-content-stack {
   position: relative;
-  z-index: 2 !important;
+  z-index: 3 !important;
   isolation: isolate;
   transform: translate3d(0, 0, 0);
   -webkit-transform: translate3d(0, 0, 0);
+}
+
+/* Mobile Compositor-Schutz:
+   verhindert, dass WebGL-Shader-Layer beim schnellen Scrollen kurz vor den Content rutschen. */
+@media (max-width: 768px) {
+  #pakete-preise .pricing-loop-stack-root,
+  #section-4.insurance-card-theme .section4-loop-stack-root {
+    contain: paint;
+    transform: translateZ(0);
+    -webkit-transform: translateZ(0);
+    backface-visibility: hidden;
+    -webkit-backface-visibility: hidden;
+  }
+
+  #pakete-preise .pricing-loop-shader-backdrop,
+  #section-4.insurance-card-theme .section4-loop-shader-backdrop {
+    z-index: 0 !important;
+    transform: translateZ(0);
+    -webkit-transform: translateZ(0);
+  }
+
+  #pakete-preise .pricing-loop-content-stack,
+  #section-4.insurance-card-theme .section4-loop-content-stack {
+    z-index: 5 !important;
+    transform: translateZ(0);
+    -webkit-transform: translateZ(0);
+    will-change: transform;
+  }
 }
 
 #section-4.insurance-card-theme .flip-card-front,
@@ -1559,8 +1672,8 @@ body[data-legal-page="true"] {
   z-index: 100;
   /* Dunkler Modus: volle Breite undurchsichtig; heller Modus: transparent (siehe .header-light-theme) */
   box-sizing: border-box;
-  padding-top: max(0.75rem, env(safe-area-inset-top));
-  padding-bottom: 0.75rem;
+  padding-top: max(0.5rem, env(safe-area-inset-top));
+  padding-bottom: 0.45rem;
   padding-left: 0;
   padding-right: 0;
   background-color: #0a0f14;
@@ -1594,7 +1707,7 @@ body[data-legal-page="true"] {
   width: max-content;
   max-width: 100%;
   min-width: 0;
-  padding: 0.75rem 2rem;
+  padding: 0.55rem 1.75rem;
   border-radius: 9999px;
   border: 1px solid transparent;
   background: transparent;
@@ -1672,7 +1785,24 @@ body[data-legal-page="true"] {
   color: #27272a;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
-  filter: drop-shadow(0 1px 2px rgba(255, 255, 255, 0.88));
+  filter: none;
+  text-shadow: none;
+}
+
+/*
+ * Große Displays: leicht erhöhte Basis-Typografie, damit UI/Schrift
+ * auf 1440p/4K visuell nicht zu klein wirkt.
+ */
+@media (min-width: 1536px) {
+  html {
+    font-size: 17px;
+  }
+}
+
+@media (min-width: 2560px) {
+  html {
+    font-size: 18px;
+  }
 }
 
 /* Desktop Light Theme – ruhiger, cleaner Look */
@@ -1915,7 +2045,7 @@ body[data-legal-page="true"] {
     z-index: 1;
   }
 
-  /* Desktop: wie Pricing „Brewery Pro“ – border-black/10 + ring-2 ring-[#e07a40]/35 */
+  /* Desktop: wie Pricing „Brauerei Premium“ – border-black/10 + ring-2 ring-[#e07a40]/35 */
   #section-4.insurance-card-theme .flip-card-front,
   #section-4.insurance-card-theme .flip-card-back {
     border-color: rgba(0, 0, 0, 0.1);
@@ -2046,6 +2176,30 @@ body[data-legal-page="true"] {
 
 .btn-cta:hover {
   transform: scale(1.03);
+}
+
+/* Global clean hover for glass/liquid cards */
+.evg-clean-hover {
+  transform: translateZ(0);
+  will-change: transform;
+  transition-property: transform, box-shadow, border-color, background-color;
+  transition-duration: 420ms;
+  transition-timing-function: cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+@media (hover: hover) and (pointer: fine) {
+  .evg-clean-hover:hover {
+    transform: translate3d(0, -2px, 0) scale(1.015);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .evg-clean-hover {
+    transition-duration: 0.01ms !important;
+  }
+  .evg-clean-hover:hover {
+    transform: none !important;
+  }
 }
 
 /* Flip Cards */
@@ -2507,7 +2661,7 @@ body[data-legal-page="true"] {
   perspective: 2500px;
   perspective-origin: center center;
   -webkit-tap-highlight-color: transparent;
-  touch-action: manipulation;
+  touch-action: auto;
   position: relative;
   width: 100%;
   height: 100%;
@@ -2516,13 +2670,19 @@ body[data-legal-page="true"] {
   transform-style: preserve-3d;
 }
 
+@media (max-width: 767px) {
+  .flip-card {
+    touch-action: manipulation;
+  }
+}
+
 /* Hover: deutliches Scale-up */
 @media (hover: hover) {
   .flip-card {
     transition: transform 0.35s cubic-bezier(0.34, 1.56, 0.64, 1);
   }
   .flip-card:hover {
-    transform: scale(1.14) translateY(-8px);
+    transform: translateY(-8px);
     z-index: 10;
     transition: transform 0.35s cubic-bezier(0.34, 1.56, 0.64, 1);
   }
@@ -2679,13 +2839,12 @@ body[data-legal-page="true"] {
 }
 
 .flip-card-back .flip-card-back-content {
-  overflow-y: auto;
+  overflow-y: visible;
   overflow-x: visible;
   flex: 1;
   min-height: 0;
   display: flex;
   flex-direction: column;
-  -webkit-overflow-scrolling: touch;
 }
 
 /* Dezente Scrollbar für lange Texte auf der Rückseite */
@@ -3139,6 +3298,13 @@ body[data-legal-page="true"] {
   transition-delay: 0.48s;
 }
 
+/* Add-ons/Upsells: expliziter clean hover, damit Stagger-Transforms nie den Lift "auffressen" */
+#pakete-preise .pricing-card-slide-addon-0:hover,
+#pakete-preise .pricing-card-slide-addon-1:hover,
+#pakete-preise .pricing-card-slide-addon-2:hover {
+  transform: translate3d(0, -2px, 0) scale(1.015) !important;
+}
+
 /* Trust-Badges unter Pricing – dezente, clean animierte Aufmerksamkeit */
 @keyframes pricing-trust-badge-in {
   from {
@@ -3225,10 +3391,11 @@ body[data-legal-page="true"] {
    Einblendung per transition (keine transform-Keyframes) – sonst blockiert animation bei :hover den Lift. */
 .pricing-card {
   transition:
-    opacity 0.45s cubic-bezier(0.22, 1, 0.36, 1),
-    transform 0.45s cubic-bezier(0.22, 1, 0.36, 1),
-    box-shadow 0.3s ease,
-    border-color 0.3s ease;
+    opacity 0.42s cubic-bezier(0.22, 1, 0.36, 1),
+    transform 0.42s cubic-bezier(0.22, 1, 0.36, 1),
+    box-shadow 0.42s cubic-bezier(0.22, 1, 0.36, 1),
+    border-color 0.42s cubic-bezier(0.22, 1, 0.36, 1);
+  will-change: transform;
 }
 
 .pricing-card-enter {
@@ -3237,12 +3404,12 @@ body[data-legal-page="true"] {
 }
 
 .pricing-card:hover {
-  transform: translateY(-4px);
+  transform: translate3d(0, -2px, 0) scale(1.015);
   border-color: rgba(251, 146, 60, 0.35);
   box-shadow:
     0 14px 36px rgba(0, 0, 0, 0.32),
     0 0 26px rgba(224, 122, 64, 0.16);
-  transition-delay: 0s;
+  transition-delay: 0s !important;
 }
 
 @media (min-width: 768px) {
@@ -3289,15 +3456,15 @@ body[data-legal-page="true"] {
       0 8px 32px rgba(0, 0, 0, 0.2),
       0 0 50px rgba(224, 122, 64, 0.14) !important;
     transition:
-      opacity 0.35s cubic-bezier(0.22, 1, 0.36, 1),
-      transform 0.35s cubic-bezier(0.22, 1, 0.36, 1),
-      box-shadow 0.3s ease,
-      border-color 0.3s ease;
+      opacity 0.42s cubic-bezier(0.22, 1, 0.36, 1),
+      transform 0.42s cubic-bezier(0.22, 1, 0.36, 1),
+      box-shadow 0.42s cubic-bezier(0.22, 1, 0.36, 1),
+      border-color 0.42s cubic-bezier(0.22, 1, 0.36, 1);
   }
 
   /* Gleicher Hover wie Add-ons; stagger von Einblendung darf Hover nicht verzögern */
   #pakete-preise .pricing-card:hover {
-    transform: translateY(-4px);
+    transform: translate3d(0, -2px, 0) scale(1.015);
     border-color: rgba(251, 146, 60, 0.35) !important;
     box-shadow:
       0 14px 36px rgba(0, 0, 0, 0.32),
@@ -3348,12 +3515,14 @@ body[data-legal-page="true"] {
   }
   footer#contact a[href*="linkedin"],
   footer#contact a[href="/impressum"],
-  footer#contact a[href="/datenschutz"] {
+  footer#contact a[href="/datenschutz"],
+  footer#contact a[href="/agb"] {
     color: #6b6b6b !important;
   }
   footer#contact a[href*="linkedin"]:hover,
   footer#contact a[href="/impressum"]:hover,
-  footer#contact a[href="/datenschutz"]:hover {
+  footer#contact a[href="/datenschutz"]:hover,
+  footer#contact a[href="/agb"]:hover {
     color: #c65a20 !important;
   }
   footer#contact span {

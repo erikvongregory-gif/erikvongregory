@@ -55,7 +55,7 @@ export const HeroSection = React.forwardRef<HTMLDivElement, HeroSectionProps>(
       <div
         ref={ref}
         className={cn(
-          "relative flex w-full flex-col items-center justify-center overflow-x-hidden p-4 md:p-6",
+          "relative flex w-full min-w-0 max-w-full flex-col items-center justify-center p-4 md:p-6",
           className,
         )}
         {...props}
@@ -80,7 +80,7 @@ export const HeroSection = React.forwardRef<HTMLDivElement, HeroSectionProps>(
             </p>
           </div>
 
-          <div className="relative flex h-[320px] w-full max-w-4xl items-center justify-center sm:h-[380px] md:h-[440px]">
+          <div className="relative flex w-full max-w-4xl items-center justify-center pb-8 pt-2 min-h-[340px] h-[340px] sm:min-h-[400px] sm:h-[400px] md:min-h-[520px] md:h-[520px] md:pb-10 md:pt-4">
             <div
               className="relative flex h-full w-full items-center justify-center [perspective:1000px]"
               style={{ transformStyle: "preserve-3d" }}
@@ -113,21 +113,23 @@ export const HeroSection = React.forwardRef<HTMLDivElement, HeroSectionProps>(
                       visibility: Math.abs(pos) > 1 ? "hidden" : "visible",
                     }}
                   >
-                    {/* blur() auf äußerem Layer „leckt“ visuell ins Zentrum; innen + overflow-hidden begrenzt das */}
+                    {/* Schatten auf äußerem Wrapper ohne overflow-hidden, damit er nicht abgeschnitten wird */}
                     <div
-                      className="h-full w-full overflow-hidden rounded-3xl shadow-2xl"
-                      style={
-                        isCenter
-                          ? undefined
-                          : { filter: "blur(4px)", WebkitFilter: "blur(4px)" }
-                      }
+                      className="h-full w-full rounded-3xl"
                     >
-                      {/* eslint-disable-next-line @next/next/no-img-element -- 3D-Carousel mit dynamischem transform */}
-                      <img
-                        src={image.src}
-                        alt={image.alt}
-                        className="h-full w-full border-2 border-white/15 object-cover md:border-zinc-200/80"
-                      />
+                      <div className="h-full w-full overflow-hidden rounded-3xl">
+                        {/* eslint-disable-next-line @next/next/no-img-element -- 3D-Carousel mit dynamischem transform */}
+                        <img
+                          src={image.src}
+                          alt={image.alt}
+                          className="h-full w-full object-cover transition-[filter,transform] duration-500 ease-in-out"
+                          style={
+                            isCenter
+                              ? { transform: "scale(1.01)" }
+                              : { filter: "blur(3px)", WebkitFilter: "blur(3px)", transform: "scale(1.04)" }
+                          }
+                        />
+                      </div>
                     </div>
                   </div>
                 );
