@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import { CONTAINED_SHADER_BG, ShaderCanvas } from "@/components/ui/animated-glassy-pricing";
 
 /** Statische Section 4 – Meine 5 Lösungen */
 export function DesktopSection4() {
@@ -83,10 +84,11 @@ export function DesktopSection4() {
           className="section4-loop-shader-backdrop pointer-events-none absolute inset-x-0 -inset-y-12 -z-10 overflow-hidden rounded-[1.75rem] sm:-inset-y-16 sm:rounded-3xl lg:-inset-y-24"
           aria-hidden
         >
-          <div className="section4-loop-static-bg">
-            <span className="section4-loop section4-loop-left" />
-            <span className="section4-loop section4-loop-right" />
-          </div>
+          <ShaderCanvas
+            mode="contained"
+            shape="loop"
+            backgroundRgb={CONTAINED_SHADER_BG.desktopLight}
+          />
         </div>
         <div className="section4-loop-content-stack relative z-20 min-w-0 transform-gpu pb-20 lg:pb-28">
           <h2 className="mb-6 text-center text-xl font-bold tracking-tight text-zinc-900 drop-shadow-sm sm:mb-8 sm:text-3xl md:text-4xl">

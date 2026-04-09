@@ -1295,38 +1295,6 @@ body[data-legal-page="true"] {
   z-index: -1 !important;
 }
 
-#section-4.insurance-card-theme .section4-loop-static-bg {
-  position: absolute;
-  inset: 0;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  gap: clamp(0.75rem, 2.2vw, 2rem);
-  transform: translateY(3%);
-}
-
-#section-4.insurance-card-theme .section4-loop {
-  display: block;
-  width: clamp(200px, 28vw, 360px);
-  aspect-ratio: 1 / 1;
-  border-radius: 9999px;
-  border: clamp(7px, 0.95vw, 11px) solid rgba(87, 88, 255, 0.7);
-  background: transparent;
-  box-shadow:
-    0 0 0 2px rgba(192, 120, 255, 0.38) inset,
-    0 0 18px rgba(87, 88, 255, 0.25);
-  opacity: 0.62;
-  filter: saturate(1.04);
-}
-
-#section-4.insurance-card-theme .section4-loop-left {
-  transform: rotate(-9deg);
-}
-
-#section-4.insurance-card-theme .section4-loop-right {
-  transform: rotate(9deg);
-}
-
 #section-4.insurance-card-theme .section4-loop-content-stack {
   position: relative;
   z-index: 6 !important;
@@ -1390,7 +1358,7 @@ body[data-legal-page="true"] {
 
 #section-4.insurance-card-theme .flip-card-front,
 #section-4.insurance-card-theme .flip-card-back {
-  background: linear-gradient(to bottom right, rgba(0, 0, 0, 0.05) 0%, rgba(0, 0, 0, 0) 100%);
+  background: linear-gradient(to bottom right, rgba(255, 252, 247, 0.96) 0%, rgba(255, 250, 242, 0.9) 100%);
   backdrop-filter: blur(14px);
   -webkit-backdrop-filter: blur(14px);
   border: 1px solid rgba(0, 0, 0, 0.1);
@@ -1401,7 +1369,7 @@ body[data-legal-page="true"] {
 }
 
 #section-4.insurance-card-theme .flip-card-back {
-  background: linear-gradient(to bottom right, rgba(0, 0, 0, 0.06) 0%, rgba(0, 0, 0, 0.02) 100%);
+  background: linear-gradient(to bottom right, rgba(255, 251, 244, 0.98) 0%, rgba(255, 248, 237, 0.92) 100%);
 }
 
 #section-4.insurance-card-theme .flip-card-front::before {
