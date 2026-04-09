@@ -3,6 +3,7 @@
  */
 export const KI_BEISPIELE = [
   { src: "/ki-beispiel-3.svg", alt: "KI-Werbebild Beispiel 3 – Lünebräu" },
+  { src: "/hero-brauerei-live-bg.png", alt: "Lünebräu – Produktfoto mit Zitrone und Hopfen" },
   { src: "/ki-beispiel-hafen.webp", alt: "Lünebräu – Lifestyle-Foto am Hafen Lübeck" },
   { src: "/ki-beispiel-strand.webp", alt: "Lünebräu – Lifestyle-Foto am Strand" },
   { src: "/ki-beispiel-biergarten.webp", alt: "Lünebräu – Lifestyle-Foto im Biergarten" },
