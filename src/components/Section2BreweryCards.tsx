@@ -47,7 +47,9 @@ export function Section2BreweryCards({
                     fill="currentColor"
                   />
                 </svg>
-                <span className="relative z-10 mx-auto block w-fit text-5xl font-semibold text-[#c65a20]">100%</span>
+                <span className="absolute inset-0 z-10 flex items-center justify-center text-5xl font-semibold text-[#c65a20]">
+                  100%
+                </span>
               </div>
               <h2 className="mt-6 text-center text-2xl font-semibold text-zinc-900">Brauerei-Fokus</h2>
               <p className="mt-3 text-center leading-relaxed text-zinc-600">

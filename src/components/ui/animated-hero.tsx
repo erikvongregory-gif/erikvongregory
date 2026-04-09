@@ -154,7 +154,7 @@ function Hero() {
 
   return (
     <div className="relative w-full overflow-visible">
-      <Floating sensitivity={-0.5} className="pointer-events-none absolute inset-0 z-0 h-full min-h-full" aria-hidden>
+      <Floating sensitivity={-0.5} className="pointer-events-none absolute inset-0 z-0 hidden h-full min-h-full md:block" aria-hidden>
         {HERO_FLOAT_LAYOUT.map((slot, i) => {
           const imgIndex = i < KI_BEISPIELE.length ? i : 1;
           const img = KI_BEISPIELE[imgIndex];
@@ -173,21 +173,21 @@ function Hero() {
         })}
       </Floating>
       <div className="container mx-auto">
-        <div className="relative z-10 flex items-center justify-center flex-col gap-8 py-20 lg:py-40">
-          <div>
+        <div className="relative z-10 flex flex-col items-center justify-center gap-8 py-20 max-md:gap-6 max-md:py-12 sm:max-md:py-16 lg:py-40">
+          <div className="hidden md:block">
             <Button variant="secondary" size="sm" className="gap-4">
               Kategorie-Fokus: KI-Content-System für Brauereien <MoveRight className="w-4 h-4" />
             </Button>
           </div>
-          <div className="flex flex-col gap-4">
-            <h1 className="max-w-2xl text-center text-5xl font-regular tracking-tighter md:text-7xl">
+          <div className="flex flex-col gap-4 max-md:mx-auto max-md:w-[min(92vw,22rem)]">
+            <h1 className="max-w-2xl text-center text-5xl font-regular tracking-tighter max-md:mx-auto max-md:w-full max-md:max-w-[18.5rem] max-md:text-[2rem] max-md:leading-[1.12] md:text-7xl">
               <span className="text-spektr-cyan-50">KI-Content-System für Brauereien</span>
-              <span className="relative flex w-full justify-center overflow-hidden text-center md:pb-4 md:pt-1">
+              <span className="relative flex w-full justify-center overflow-hidden text-center max-md:mt-2 max-md:min-h-[2.6rem] sm:max-md:min-h-[3rem] md:min-h-0 md:pb-4 md:pt-1">
                 &nbsp;
                 {titles.map((title, index) => (
                   <motion.span
                     key={index}
-                    className="absolute font-semibold"
+                    className="absolute font-semibold max-md:px-1 max-md:text-[1.6rem] sm:max-md:text-[1.85rem] md:px-0 md:text-inherit"
                     initial={{ opacity: 0, y: "-100" }}
                     transition={{ type: "spring", stiffness: 50 }}
                     animate={
@@ -202,25 +202,50 @@ function Hero() {
               </span>
             </h1>
 
-            <p className="max-w-2xl text-center text-lg leading-relaxed tracking-tight text-muted-foreground md:text-xl">
-              Weniger Aufwand, bessere Ergebnisse: planbare KI-Produktfotos, Kampagnenmotive und Social-Content
-              in deinem Markenstil.
+            <p className="max-w-2xl text-center text-lg leading-relaxed tracking-tight text-muted-foreground max-md:mx-auto max-md:w-full max-md:max-w-[21rem] max-md:px-2 max-md:text-[1rem] max-md:leading-[1.42] sm:max-md:text-lg md:text-xl">
+              <span className="max-md:text-zinc-700">Weniger Aufwand, bessere Ergebnisse:</span>{" "}
+              <span className="hero-mobile-subtitle-shine">planbare KI-Produktfotos, Kampagnenmotive und Social-Content</span>{" "}
+              <span className="max-md:text-zinc-600">in deinem Markenstil.</span>
             </p>
           </div>
-          <div className="flex flex-row flex-wrap items-center justify-center gap-3">
-            <LiquidMetalButton
-              label={primaryCtaLabel}
-              onClick={onPrimaryCtaClick}
-            />
-            <LiquidMetalButton
-              label="Beispiele ansehen"
-              onClick={() => {
-                if (typeof window === "undefined") return;
-                const el = document.getElementById("echte-beispiele-aus-der-praxis");
-                if (!el) return;
-                el.scrollIntoView({ behavior: "smooth", block: "start" });
-              }}
-            />
+          <div className="hidden flex-row flex-wrap items-center justify-center gap-3 md:flex">
+            <div>
+              <LiquidMetalButton
+                label={primaryCtaLabel}
+                onClick={onPrimaryCtaClick}
+              />
+            </div>
+            <div>
+              <LiquidMetalButton
+                label="Beispiele ansehen"
+                onClick={() => {
+                  if (typeof window === "undefined") return;
+                  const el = document.getElementById("echte-beispiele-aus-der-praxis");
+                  if (!el) return;
+                  el.scrollIntoView({ behavior: "smooth", block: "start" });
+                }}
+              />
+            </div>
+          </div>
+
+          <div className="flex w-full flex-col items-center gap-3 md:hidden">
+            <div className="flex w-[min(92vw,22rem)] justify-center">
+              <LiquidMetalButton
+                label={primaryCtaLabel}
+                onClick={onPrimaryCtaClick}
+              />
+            </div>
+            <div className="flex w-[min(92vw,22rem)] justify-center">
+              <LiquidMetalButton
+                label="Beispiele ansehen"
+                onClick={() => {
+                  if (typeof window === "undefined") return;
+                  const el = document.getElementById("echte-beispiele-aus-der-praxis");
+                  if (!el) return;
+                  el.scrollIntoView({ behavior: "smooth", block: "start" });
+                }}
+              />
+            </div>
           </div>
         </div>
       </div>

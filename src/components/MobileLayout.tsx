@@ -1,8 +1,7 @@
 "use client";
 
 import { useLoading } from "@/context/LoadingContext";
-import { AnimatedHeroMobile } from "@/components/ui/animated-hero-mobile";
-import { HeroDigitalSerenityEffect } from "@/components/HeroDigitalSerenityEffect";
+import { Hero } from "@/components/ui/animated-hero";
 import { ScrollReveal } from "./ScrollReveal";
 import { Section2BreweryCards } from "@/components/Section2BreweryCards";
 import { CONTAINED_SHADER_BG, ShaderCanvas } from "@/components/ui/animated-glassy-pricing";
@@ -41,13 +40,12 @@ export function MobileLayout() {
   return (
     <>
       <div className="relative z-10 flex flex-col">
-        {/* Hero: gleicher Aufbau wie Desktop (Parallax, TextRotate, CTAs), für Mobile skaliert */}
+        {/* Hero: exakt wie Desktop */}
         <div
           className={`section1-wrapper relative mx-auto w-full max-w-screen-2xl ${heroReady ? "section1-ready" : ""}`}
         >
-          <HeroDigitalSerenityEffect mode="mobile" />
           <div className="min-w-0">
-            <AnimatedHeroMobile />
+            <Hero />
           </div>
         </div>
         {/* Section 2 – Karten wie Desktop */}

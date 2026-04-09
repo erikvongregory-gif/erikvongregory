@@ -3261,21 +3261,15 @@ body[data-legal-page="true"] {
 }
 
 .pricing-in-view .pricing-card-slide-0 {
-  opacity: 1;
-  transform: translateY(0);
-  transition-delay: 0.08s;
+  animation: pricing-card-enter 0.45s cubic-bezier(0.22, 1, 0.36, 1) 0.08s both;
 }
 
 .pricing-in-view .pricing-card-slide-1 {
-  opacity: 1;
-  transform: translateY(0);
-  transition-delay: 0.16s;
+  animation: pricing-card-enter 0.45s cubic-bezier(0.22, 1, 0.36, 1) 0.16s both;
 }
 
 .pricing-in-view .pricing-card-slide-2 {
-  opacity: 1;
-  transform: translateY(0);
-  transition-delay: 0.24s;
+  animation: pricing-card-enter 0.45s cubic-bezier(0.22, 1, 0.36, 1) 0.24s both;
 }
 
 /* Add-ons unter Paketen – eigenes Stagger (keine Kollision mit Paket-Klassen) */
@@ -3287,21 +3281,15 @@ body[data-legal-page="true"] {
 }
 
 .pricing-in-view .pricing-card-slide-addon-0 {
-  opacity: 1;
-  transform: translateY(0);
-  transition-delay: 0.32s;
+  animation: pricing-card-enter 0.45s cubic-bezier(0.22, 1, 0.36, 1) 0.32s both;
 }
 
 .pricing-in-view .pricing-card-slide-addon-1 {
-  opacity: 1;
-  transform: translateY(0);
-  transition-delay: 0.4s;
+  animation: pricing-card-enter 0.45s cubic-bezier(0.22, 1, 0.36, 1) 0.4s both;
 }
 
 .pricing-in-view .pricing-card-slide-addon-2 {
-  opacity: 1;
-  transform: translateY(0);
-  transition-delay: 0.48s;
+  animation: pricing-card-enter 0.45s cubic-bezier(0.22, 1, 0.36, 1) 0.48s both;
 }
 
 /* Add-ons/Upsells: expliziter clean hover, damit Stagger-Transforms nie den Lift "auffressen" */

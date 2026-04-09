@@ -101,35 +101,34 @@ export function DesktopHero({ variant = "desktop" }: { variant?: DesktopHeroVari
           : "h-screen min-h-[600px] overflow-hidden pb-8 pt-16 md:overflow-visible sm:pb-12",
       )}
     >
-      <Floating
-        sensitivity={-0.5}
-        className={cn(
-          "pointer-events-none z-[15] h-full min-h-full",
-          isMobile && "opacity-90",
-        )}
-        aria-hidden
-      >
-        {HERO_FLOAT_LAYOUT.map((slot, i) => {
-          const imgIndex = i < KI_BEISPIELE.length ? i : 1;
-          const img = KI_BEISPIELE[imgIndex];
-          return (
-            <FloatingElement
-              key={`hero-float-${i}-${img.src}`}
-              depth={slot.depth}
-              className={slot.className}
-            >
-              <motion.img
-                src={img.src}
-                alt=""
-                className={`cursor-default rounded-xl object-cover shadow-2xl duration-200 blur-[2px] sm:blur-[3px] md:blur-[4px] ${slot.imgClass}`}
-                initial={{ opacity: 0 }}
-                animate={{ opacity: 1 }}
-                transition={{ delay: slot.delay }}
-              />
-            </FloatingElement>
-          );
-        })}
-      </Floating>
+      {!isMobile ? (
+        <Floating
+          sensitivity={-0.5}
+          className="pointer-events-none z-[15] h-full min-h-full"
+          aria-hidden
+        >
+          {HERO_FLOAT_LAYOUT.map((slot, i) => {
+            const imgIndex = i < KI_BEISPIELE.length ? i : 1;
+            const img = KI_BEISPIELE[imgIndex];
+            return (
+              <FloatingElement
+                key={`hero-float-${i}-${img.src}`}
+                depth={slot.depth}
+                className={slot.className}
+              >
+                <motion.img
+                  src={img.src}
+                  alt=""
+                  className={`cursor-default rounded-xl object-cover shadow-2xl duration-200 blur-[2px] sm:blur-[3px] md:blur-[4px] ${slot.imgClass}`}
+                  initial={{ opacity: 0 }}
+                  animate={{ opacity: 1 }}
+                  transition={{ delay: slot.delay }}
+                />
+              </FloatingElement>
+            );
+          })}
+        </Floating>
+      ) : null}
 
       <div
         className={cn(
