@@ -1295,6 +1295,40 @@ body[data-legal-page="true"] {
   z-index: -1 !important;
 }
 
+#section-4.insurance-card-theme .section4-loop-static-bg {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: clamp(0.75rem, 2.2vw, 2rem);
+  transform: translateY(3%);
+}
+
+#section-4.insurance-card-theme .section4-loop {
+  display: block;
+  width: clamp(200px, 28vw, 360px);
+  aspect-ratio: 1 / 1;
+  border-radius: 9999px;
+  border: clamp(10px, 1.3vw, 14px) solid transparent;
+  background:
+    linear-gradient(135deg, rgba(148, 52, 255, 0.86), rgba(55, 68, 245, 0.92)) border-box,
+    radial-gradient(circle at 30% 30%, rgba(255, 255, 255, 0.35), rgba(255, 255, 255, 0.05)) padding-box;
+  box-shadow:
+    0 0 0 1px rgba(255, 255, 255, 0.24) inset,
+    0 12px 30px rgba(27, 34, 120, 0.24);
+  opacity: 0.88;
+  filter: saturate(1.08);
+}
+
+#section-4.insurance-card-theme .section4-loop-left {
+  transform: rotate(-9deg);
+}
+
+#section-4.insurance-card-theme .section4-loop-right {
+  transform: rotate(9deg);
+}
+
 #section-4.insurance-card-theme .section4-loop-content-stack {
   position: relative;
   z-index: 6 !important;
