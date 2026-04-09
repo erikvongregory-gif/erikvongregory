@@ -1292,15 +1292,21 @@ body[data-legal-page="true"] {
 }
 
 #section-4.insurance-card-theme .section4-loop-stack-root .section4-loop-shader-backdrop {
-  z-index: 0 !important;
+  z-index: -1 !important;
 }
 
 #section-4.insurance-card-theme .section4-loop-content-stack {
   position: relative;
-  z-index: 3 !important;
+  z-index: 6 !important;
   isolation: isolate;
   transform: translate3d(0, 0, 0);
   -webkit-transform: translate3d(0, 0, 0);
+}
+
+#section-4.insurance-card-theme .section4-flip-cards-grid,
+#section-4.insurance-card-theme .section4-flip-cards-grid .flip-card {
+  position: relative;
+  z-index: 2;
 }
 
 /* Pakete & Preise – gleiche Shader-Hintergrund-Logik */
@@ -1336,7 +1342,7 @@ body[data-legal-page="true"] {
 
   #pakete-preise .pricing-loop-shader-backdrop,
   #section-4.insurance-card-theme .section4-loop-shader-backdrop {
-    z-index: 0 !important;
+    z-index: -1 !important;
     transform: translateZ(0);
     -webkit-transform: translateZ(0);
   }
