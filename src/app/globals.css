@@ -3257,19 +3257,21 @@ body[data-legal-page="true"] {
 .pricing-card-slide-1,
 .pricing-card-slide-2 {
   opacity: 0;
-  transform: translateY(20px);
 }
 
 .pricing-in-view .pricing-card-slide-0 {
-  animation: pricing-card-enter 0.45s cubic-bezier(0.22, 1, 0.36, 1) 0.08s both;
+  opacity: 1;
+  transition-delay: 0.08s;
 }
 
 .pricing-in-view .pricing-card-slide-1 {
-  animation: pricing-card-enter 0.45s cubic-bezier(0.22, 1, 0.36, 1) 0.16s both;
+  opacity: 1;
+  transition-delay: 0.16s;
 }
 
 .pricing-in-view .pricing-card-slide-2 {
-  animation: pricing-card-enter 0.45s cubic-bezier(0.22, 1, 0.36, 1) 0.24s both;
+  opacity: 1;
+  transition-delay: 0.24s;
 }
 
 /* Add-ons unter Paketen – eigenes Stagger (keine Kollision mit Paket-Klassen) */
@@ -3277,26 +3279,21 @@ body[data-legal-page="true"] {
 .pricing-card-slide-addon-1,
 .pricing-card-slide-addon-2 {
   opacity: 0;
-  transform: translateY(20px);
 }
 
 .pricing-in-view .pricing-card-slide-addon-0 {
-  animation: pricing-card-enter 0.45s cubic-bezier(0.22, 1, 0.36, 1) 0.32s both;
+  opacity: 1;
+  transition-delay: 0.32s;
 }
 
 .pricing-in-view .pricing-card-slide-addon-1 {
-  animation: pricing-card-enter 0.45s cubic-bezier(0.22, 1, 0.36, 1) 0.4s both;
+  opacity: 1;
+  transition-delay: 0.4s;
 }
 
 .pricing-in-view .pricing-card-slide-addon-2 {
-  animation: pricing-card-enter 0.45s cubic-bezier(0.22, 1, 0.36, 1) 0.48s both;
-}
-
-/* Add-ons/Upsells: expliziter clean hover, damit Stagger-Transforms nie den Lift "auffressen" */
-#pakete-preise .pricing-card-slide-addon-0:hover,
-#pakete-preise .pricing-card-slide-addon-1:hover,
-#pakete-preise .pricing-card-slide-addon-2:hover {
-  transform: translate3d(0, -2px, 0) scale(1.015) !important;
+  opacity: 1;
+  transition-delay: 0.48s;
 }
 
 /* Trust-Badges unter Pricing – dezente, clean animierte Aufmerksamkeit */

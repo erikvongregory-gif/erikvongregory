@@ -18,45 +18,6 @@ type Slide = {
   icon: React.ComponentType<{ className?: string }>;
 };
 
-type PlaceholderImageOptions = {
-  title: string;
-  startColor: string;
-  endColor: string;
-  accentColor: string;
-};
-
-function createPlaceholderImage({
-  title,
-  startColor,
-  endColor,
-  accentColor,
-}: PlaceholderImageOptions) {
-  const safeTitle = title
-    .replaceAll("&", "&amp;")
-    .replaceAll("<", "&lt;")
-    .replaceAll(">", "&gt;")
-    .replaceAll('"', "&quot;")
-    .replaceAll("'", "&apos;");
-  const svg = `
-<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="720" viewBox="0 0 1200 720" fill="none">
-  <defs>
-    <linearGradient id="bg" x1="0" y1="0" x2="1200" y2="720" gradientUnits="userSpaceOnUse">
-      <stop stop-color="${startColor}" />
-      <stop offset="1" stop-color="${endColor}" />
-    </linearGradient>
-  </defs>
-  <rect width="1200" height="720" rx="40" fill="url(#bg)" />
-  <rect x="96" y="96" width="1008" height="528" rx="30" fill="${accentColor}" fill-opacity="0.18" />
-  <circle cx="270" cy="220" r="54" fill="${accentColor}" fill-opacity="0.7" />
-  <rect x="352" y="184" width="552" height="72" rx="20" fill="${accentColor}" fill-opacity="0.68" />
-  <rect x="196" y="350" width="404" height="36" rx="18" fill="${accentColor}" fill-opacity="0.62" />
-  <rect x="196" y="410" width="620" height="30" rx="15" fill="${accentColor}" fill-opacity="0.56" />
-  <rect x="196" y="456" width="720" height="30" rx="15" fill="${accentColor}" fill-opacity="0.46" />
-  <text x="196" y="565" fill="${accentColor}" font-family="Arial, Helvetica, sans-serif" font-size="46" font-weight="700">${safeTitle}</text>
-</svg>`;
-  return `data:image/svg+xml;utf8,${encodeURIComponent(svg)}`;
-}
-
 const slides: Slide[] = [
   {
     id: "welcome",
@@ -65,12 +26,7 @@ const slides: Slide[] = [
     title: "Willkommen im Dashboard",
     description:
       "Hier siehst du zentrale Kennzahlen wie Tokens, aktive Kampagnen und aktuelle Aktivitäten auf einen Blick.",
-    image: createPlaceholderImage({
-      title: "Dashboard Übersicht",
-      startColor: "#EAF2FF",
-      endColor: "#CDE2FF",
-      accentColor: "#0B1E47",
-    }),
+    image: "/onboarding/dashboard-overview.svg",
   },
   {
     id: "content",
@@ -79,12 +35,7 @@ const slides: Slide[] = [
     title: "Inhalte erstellen mit KI",
     description:
       "Im Bereich Inhalte erstellen erzeugst du Prompts, nutzt Referenzbilder und generierst neue Motive für deine Brauerei.",
-    image: createPlaceholderImage({
-      title: "KI Content Workflow",
-      startColor: "#E8FFF7",
-      endColor: "#CAF6E8",
-      accentColor: "#0A3D30",
-    }),
+    image: "/onboarding/content-workflow.svg",
   },
   {
     id: "library",
@@ -93,12 +44,7 @@ const slides: Slide[] = [
     title: "Mediathek und Downloads",
     description:
       "Alle generierten Bilder werden in der Mediathek gespeichert. Dort kannst du Prompts prüfen und Dateien direkt herunterladen.",
-    image: createPlaceholderImage({
-      title: "Mediathek",
-      startColor: "#FFF6E8",
-      endColor: "#FFE8C2",
-      accentColor: "#4A2B00",
-    }),
+    image: "/onboarding/media-library.svg",
   },
   {
     id: "subscription",
@@ -107,12 +53,7 @@ const slides: Slide[] = [
     title: "Abo und Token-Verbrauch",
     description:
       "Unter Abo & Tokens verwaltest du deinen Tarif, siehst den Verbrauch und kannst bei Bedarf auf einen anderen Plan wechseln.",
-    image: createPlaceholderImage({
-      title: "Abo & Tokens",
-      startColor: "#F2ECFF",
-      endColor: "#E1D4FF",
-      accentColor: "#2D1457",
-    }),
+    image: "/onboarding/subscription-tokens.svg",
   },
 ];
 

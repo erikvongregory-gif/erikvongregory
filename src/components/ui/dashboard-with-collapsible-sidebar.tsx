@@ -28,8 +28,6 @@ import {
 } from "@/components/dashboard/BrewerySubscriptionPlans";
 import { ImagePromptWorkflow } from "@/components/dashboard/ImagePromptWorkflow";
 import { OnboardingDialog } from "@/components/ui/onboarding-dialog";
-import { createClient as createSupabaseClient } from "@/lib/supabase/client";
-import { isSupabaseConfigured } from "@/lib/supabase/env";
 
 type OptionProps = {
   Icon: LucideIcon;
@@ -56,7 +54,6 @@ type ToggleCloseProps = {
 
 type ExampleContentProps = {
   isDark: boolean;
-  setIsDark: React.Dispatch<React.SetStateAction<boolean>>;
   applyTheme: (nextDark: boolean) => void;
   userEmail?: string;
   userName?: string;
@@ -65,10 +62,11 @@ type ExampleContentProps = {
 };
 
 type ActivityItem = {
-  icon: LucideIcon;
+  id: string;
+  type: "media" | "team" | "billing";
   title: string;
   desc: string;
-  time: string;
+  time: string; // ISO
   color: "orange" | "blue" | "purple" | "green";
 };
 
@@ -88,12 +86,43 @@ const PLAN_LABELS: Record<SubscriptionPlanKey, string> = {
   pro: "Brauerei Pro",
 };
 
-const activityItems: ActivityItem[] = [
-  { icon: Wand2, title: "Neuer Beitrag erstellt", desc: "Fruehlingsbier-Post wurde vorbereitet", time: "vor 12 Min.", color: "orange" },
-  { icon: Image, title: "Bild exportiert", desc: "Plakatmotiv in hoher Aufloesung gespeichert", time: "vor 34 Min.", color: "blue" },
-  { icon: Users, title: "Teammitglied eingeladen", desc: "marketing@deinebrauerei.de hinzugefuegt", time: "vor 2 Std.", color: "purple" },
-  { icon: CreditCard, title: "Abo erfolgreich verlaengert", desc: "Plan Brauerei Wachstum bis Mai aktiv", time: "gestern", color: "green" },
-];
+function getActivityIcon(type: ActivityItem["type"]): LucideIcon {
+  if (type === "media") return Image;
+  if (type === "team") return Users;
+  return CreditCard;
+}
+
+function formatRelativeTime(isoDate: string): string {
+  const diffMs = Date.now() - new Date(isoDate).getTime();
+  if (!Number.isFinite(diffMs) || diffMs < 0) return "gerade eben";
+  const mins = Math.floor(diffMs / 60_000);
+  if (mins < 1) return "gerade eben";
+  if (mins < 60) return `vor ${mins} Min.`;
+  const hours = Math.floor(mins / 60);
+  if (hours < 24) return `vor ${hours} Std.`;
+  const days = Math.floor(hours / 24);
+  if (days === 1) return "gestern";
+  return `vor ${days} Tagen`;
+}
+
+type TeamMember = {
+  id: string;
+  email: string;
+  name: string;
+  role: "owner" | "admin" | "editor" | "viewer";
+  status: "active" | "invited";
+  invitedAt: string;
+};
+
+type DashboardSummary = {
+  tokens: { monthly: number; used: number; remaining: number };
+  postsThisMonth: number;
+  activeCampaigns: number;
+  teamMembers: number;
+  openInvites: number;
+  billingStatus: string;
+  plan: SubscriptionPlanKey | null;
+};
 
 const USE_CASE_FLOWS = [
   {
@@ -116,28 +145,25 @@ type ExampleProps = {
 };
 
 export const Example = ({ userEmail, userName }: ExampleProps) => {
-  const [isDark, setIsDark] = useState(false);
+  const [isDark, setIsDark] = useState(() => {
+    if (typeof window === "undefined") return false;
+    const saved = window.localStorage.getItem("evglab-dashboard-theme");
+    if (saved === "dark" || saved === "light") return saved === "dark";
+    return window.matchMedia("(prefers-color-scheme: dark)").matches;
+  });
   const [selectedTab, setSelectedTab] = useState<DashboardTab>("Dashboard");
 
   const applyTheme = useCallback((nextDark: boolean) => {
-    if (typeof window === "undefined") return;
-    const root = document.documentElement;
-    root.classList.toggle("dark", nextDark);
-    root.style.colorScheme = nextDark ? "dark" : "light";
-    window.localStorage.setItem("evglab-dashboard-theme", nextDark ? "dark" : "light");
     setIsDark(nextDark);
   }, []);
 
   useEffect(() => {
     if (typeof window === "undefined") return;
-    const saved = window.localStorage.getItem("evglab-dashboard-theme");
-    if (saved === "dark" || saved === "light") {
-      applyTheme(saved === "dark");
-      return;
-    }
-    const prefersDark = window.matchMedia("(prefers-color-scheme: dark)").matches;
-    applyTheme(prefersDark);
-  }, [applyTheme]);
+    const root = document.documentElement;
+    root.classList.toggle("dark", isDark);
+    root.style.colorScheme = isDark ? "dark" : "light";
+    window.localStorage.setItem("evglab-dashboard-theme", isDark ? "dark" : "light");
+  }, [isDark]);
 
   return (
     <div className={`flex min-h-screen w-full ${isDark ? "dark" : ""}`}>
@@ -145,7 +171,6 @@ export const Example = ({ userEmail, userName }: ExampleProps) => {
         <Sidebar selected={selectedTab} setSelected={setSelectedTab} userEmail={userEmail} />
         <ExampleContent
           isDark={isDark}
-          setIsDark={setIsDark}
           applyTheme={applyTheme}
           userEmail={userEmail}
           userName={userName}
@@ -422,7 +447,7 @@ const ToggleClose = ({ open, setOpen }: ToggleCloseProps) => {
   );
 };
 
-const ExampleContent = ({ isDark, setIsDark, applyTheme, userEmail, userName, selectedTab, setSelectedTab }: ExampleContentProps) => {
+const ExampleContent = ({ isDark, applyTheme, userEmail, userName, selectedTab, setSelectedTab }: ExampleContentProps) => {
   const [mediaItems, setMediaItems] = useState<MediaLibraryItem[]>([]);
   const [expandedPromptId, setExpandedPromptId] = useState<string | null>(null);
   const [downloadingMediaId, setDownloadingMediaId] = useState<string | null>(null);
@@ -443,6 +468,18 @@ const ExampleContent = ({ isDark, setIsDark, applyTheme, userEmail, userName, se
   const [weeklySummary, setWeeklySummary] = useState(true);
   const [savingProfile, setSavingProfile] = useState(false);
   const [profileSaveMessage, setProfileSaveMessage] = useState("");
+  const [dashboardSummary, setDashboardSummary] = useState<DashboardSummary | null>(null);
+  const [activityItems, setActivityItems] = useState<ActivityItem[]>([]);
+  const [teamMembers, setTeamMembers] = useState<TeamMember[]>([]);
+  const [teamInviteEmail, setTeamInviteEmail] = useState("");
+  const [teamInviteName, setTeamInviteName] = useState("");
+  const [teamInviteRole, setTeamInviteRole] = useState<"admin" | "editor" | "viewer">("editor");
+  const [teamMessage, setTeamMessage] = useState("");
+  const [teamSaving, setTeamSaving] = useState(false);
+  const [supportSubject, setSupportSubject] = useState("");
+  const [supportMessage, setSupportMessage] = useState("");
+  const [supportInfoMessage, setSupportInfoMessage] = useState("");
+  const [globalErrorMessage, setGlobalErrorMessage] = useState("");
   const displayName = breweryName || profileName || "deine Brauerei";
   const tabTitle = selectedTab;
 
@@ -450,50 +487,6 @@ const ExampleContent = ({ isDark, setIsDark, applyTheme, userEmail, userName, se
     typeof window !== "undefined"
       ? `evglab-dashboard-onboarding-v1:${userEmail ?? "default"}`
       : "evglab-dashboard-onboarding-v1:default";
-  const mediaLibraryStorageKey =
-    typeof window !== "undefined"
-      ? `evglab-media-library-v2:${userEmail ?? "default"}`
-      : "evglab-media-library-v2:default";
-  const profileSettingsStorageKey =
-    typeof window !== "undefined"
-      ? `evglab-profile-settings-v1:${userEmail ?? "default"}`
-      : "evglab-profile-settings-v1:default";
-
-  useEffect(() => {
-    if (typeof window === "undefined") return;
-    try {
-      const raw = window.localStorage.getItem(mediaLibraryStorageKey);
-      if (!raw) return;
-      const parsed = JSON.parse(raw) as MediaLibraryItem[];
-      if (Array.isArray(parsed)) {
-        setMediaItems(parsed.slice(0, 100));
-      }
-    } catch {
-      // ignore parse/localStorage errors
-    }
-  }, [mediaLibraryStorageKey]);
-
-  useEffect(() => {
-    if (typeof window === "undefined") return;
-    try {
-      const raw = window.localStorage.getItem(profileSettingsStorageKey);
-      if (!raw) return;
-      const parsed = JSON.parse(raw) as {
-        profileName?: string;
-        breweryName?: string;
-        profilePhone?: string;
-        emailNotifications?: boolean;
-        weeklySummary?: boolean;
-      };
-      if (typeof parsed.profileName === "string") setProfileName(parsed.profileName);
-      if (typeof parsed.breweryName === "string") setBreweryName(parsed.breweryName);
-      if (typeof parsed.profilePhone === "string") setProfilePhone(parsed.profilePhone);
-      if (typeof parsed.emailNotifications === "boolean") setEmailNotifications(parsed.emailNotifications);
-      if (typeof parsed.weeklySummary === "boolean") setWeeklySummary(parsed.weeklySummary);
-    } catch {
-      // ignore parse/localStorage errors
-    }
-  }, [profileSettingsStorageKey]);
 
   useEffect(() => {
     if (typeof window === "undefined") return;
@@ -513,6 +506,66 @@ const ExampleContent = ({ isDark, setIsDark, applyTheme, userEmail, userName, se
     window.addEventListener("evglab-restart-onboarding", onRestart as EventListener);
     return () => {
       window.removeEventListener("evglab-restart-onboarding", onRestart as EventListener);
+    };
+  }, []);
+
+  useEffect(() => {
+    let ignore = false;
+    const loadDashboardData = async () => {
+      try {
+        const [mediaRes, settingsRes, summaryRes, teamRes] = await Promise.all([
+          fetch("/api/dashboard/media", { cache: "no-store" }),
+          fetch("/api/dashboard/settings", { cache: "no-store" }),
+          fetch("/api/dashboard/summary", { cache: "no-store" }),
+          fetch("/api/dashboard/team", { cache: "no-store" }),
+        ]);
+
+        if (!ignore && mediaRes.ok) {
+          const mediaData = (await mediaRes.json()) as { items?: MediaLibraryItem[] };
+          if (Array.isArray(mediaData.items)) {
+            setMediaItems(mediaData.items);
+          }
+        }
+        if (!ignore && settingsRes.ok) {
+          const settingsData = (await settingsRes.json()) as {
+            settings?: {
+              profileName?: string;
+              breweryName?: string;
+              profilePhone?: string;
+              emailNotifications?: boolean;
+              weeklySummary?: boolean;
+            };
+          };
+          const settings = settingsData.settings;
+          if (settings) {
+            if (typeof settings.profileName === "string") setProfileName(settings.profileName);
+            if (typeof settings.breweryName === "string") setBreweryName(settings.breweryName);
+            if (typeof settings.profilePhone === "string") setProfilePhone(settings.profilePhone);
+            if (typeof settings.emailNotifications === "boolean") setEmailNotifications(settings.emailNotifications);
+            if (typeof settings.weeklySummary === "boolean") setWeeklySummary(settings.weeklySummary);
+          }
+        }
+        if (!ignore && summaryRes.ok) {
+          const summaryData = (await summaryRes.json()) as {
+            summary?: DashboardSummary;
+            activities?: ActivityItem[];
+          };
+          if (summaryData.summary) setDashboardSummary(summaryData.summary);
+          if (Array.isArray(summaryData.activities)) setActivityItems(summaryData.activities);
+        }
+        if (!ignore && teamRes.ok) {
+          const teamData = (await teamRes.json()) as { members?: TeamMember[] };
+          if (Array.isArray(teamData.members)) setTeamMembers(teamData.members);
+        }
+      } catch {
+        if (!ignore) {
+          setGlobalErrorMessage("Einige Dashboard-Daten konnten nicht geladen werden.");
+        }
+      }
+    };
+    void loadDashboardData();
+    return () => {
+      ignore = true;
     };
   }, []);
 
@@ -650,6 +703,16 @@ const ExampleContent = ({ isDark, setIsDark, applyTheme, userEmail, userName, se
     }
   };
 
+  const removeMediaItem = async (id: string) => {
+    setMediaItems((prev) => prev.filter((item) => item.id !== id));
+    try {
+      await fetch(`/api/dashboard/media?id=${encodeURIComponent(id)}`, { method: "DELETE" });
+      await refreshSummary();
+    } catch {
+      setGlobalErrorMessage("Mediathek-Eintrag konnte nicht gelöscht werden.");
+    }
+  };
+
   const tabDescriptions: Record<DashboardTab, string> = {
     Dashboard: "Hier siehst du alle wichtigen Zahlen fuer dein Content- und Abo-Management.",
     "Inhalte erstellen": "Plane und erstelle neue Inhalte fuer Social Media, Events und Kampagnen.",
@@ -666,6 +729,7 @@ const ExampleContent = ({ isDark, setIsDark, applyTheme, userEmail, userName, se
 
   const handleSelectPlan = async (plan: SubscriptionPlanKey) => {
     try {
+      setGlobalErrorMessage("");
       setLoadingPlan(plan);
       setCheckoutMessage("Sandbox wird geoeffnet...");
       setIsCheckoutLoading(true);
@@ -679,6 +743,8 @@ const ExampleContent = ({ isDark, setIsDark, applyTheme, userEmail, userName, se
         return;
       }
       if (!res.ok) {
+        const payload = (await res.json().catch(() => ({}))) as { error?: string };
+        setGlobalErrorMessage(payload.error ?? "Checkout konnte nicht gestartet werden.");
         setIsCheckoutLoading(false);
         setLoadingPlan(null);
         return;
@@ -690,8 +756,8 @@ const ExampleContent = ({ isDark, setIsDark, applyTheme, userEmail, userName, se
       }
       setIsCheckoutLoading(false);
       setLoadingPlan(null);
-    } catch {
-      // ignore network errors
+    } catch (error) {
+      setGlobalErrorMessage(error instanceof Error ? error.message : "Checkout fehlgeschlagen.");
       setIsCheckoutLoading(false);
       setLoadingPlan(null);
     }
@@ -699,10 +765,13 @@ const ExampleContent = ({ isDark, setIsDark, applyTheme, userEmail, userName, se
 
   const handleOpenBillingPortal = async () => {
     try {
+      setGlobalErrorMessage("");
       setCheckoutMessage("Abo-Verwaltung wird geoeffnet...");
       setIsCheckoutLoading(true);
       const res = await fetch("/api/billing/portal", { method: "POST" });
       if (!res.ok) {
+        const payload = (await res.json().catch(() => ({}))) as { error?: string };
+        setGlobalErrorMessage(payload.error ?? "Billing-Portal konnte nicht geöffnet werden.");
         setIsCheckoutLoading(false);
         return;
       }
@@ -712,14 +781,15 @@ const ExampleContent = ({ isDark, setIsDark, applyTheme, userEmail, userName, se
         return;
       }
       setIsCheckoutLoading(false);
-    } catch {
-      // ignore network errors
+    } catch (error) {
+      setGlobalErrorMessage(error instanceof Error ? error.message : "Billing-Portal fehlgeschlagen.");
       setIsCheckoutLoading(false);
     }
   };
 
   const handleBuyTokenPack = async (pack: "tokens_500" | "tokens_2000") => {
     try {
+      setGlobalErrorMessage("");
       setCheckoutMessage("Token-Kauf wird vorbereitet...");
       setIsCheckoutLoading(true);
       const res = await fetch("/api/billing/buy-tokens", {
@@ -728,6 +798,8 @@ const ExampleContent = ({ isDark, setIsDark, applyTheme, userEmail, userName, se
         body: JSON.stringify({ pack }),
       });
       if (!res.ok) {
+        const payload = (await res.json().catch(() => ({}))) as { error?: string };
+        setGlobalErrorMessage(payload.error ?? "Token-Kauf konnte nicht gestartet werden.");
         setIsCheckoutLoading(false);
         return;
       }
@@ -737,8 +809,8 @@ const ExampleContent = ({ isDark, setIsDark, applyTheme, userEmail, userName, se
         return;
       }
       setIsCheckoutLoading(false);
-    } catch {
-      // ignore network errors
+    } catch (error) {
+      setGlobalErrorMessage(error instanceof Error ? error.message : "Token-Kauf fehlgeschlagen.");
       setIsCheckoutLoading(false);
     }
   };
@@ -748,39 +820,100 @@ const ExampleContent = ({ isDark, setIsDark, applyTheme, userEmail, userName, se
     setUsedTokens((prev) => Math.min(prev + amount, monthlyTokens));
   };
 
+  const applyBillingUpdateFromGeneration = (billing: {
+    monthlyTokens?: number;
+    usedTokens?: number;
+    remainingTokens?: number;
+    consumed?: number;
+    freeTrial?: boolean;
+  }) => {
+    if (typeof billing.monthlyTokens === "number") setMonthlyTokens(billing.monthlyTokens);
+    if (typeof billing.usedTokens === "number") setUsedTokens(billing.usedTokens);
+    if (billing.freeTrial) setFreeTrialImageUsed(true);
+  };
+
   const toggleTheme = () => applyTheme(!isDark);
 
   const saveProfileSettings = async () => {
     setSavingProfile(true);
     setProfileSaveMessage("");
     try {
-      if (typeof window !== "undefined") {
-        const payload = {
-          profileName,
-          breweryName,
-          profilePhone,
-          emailNotifications,
-          weeklySummary,
-        };
-        window.localStorage.setItem(profileSettingsStorageKey, JSON.stringify(payload));
-      }
-
-      if (isSupabaseConfigured()) {
-        const supabase = createSupabaseClient();
-        await supabase.auth.updateUser({
-          data: {
-            full_name: profileName || null,
-            brewery: breweryName || null,
-            phone: profilePhone || null,
-          },
-        });
+      const payload = { profileName, breweryName, profilePhone, emailNotifications, weeklySummary };
+      const res = await fetch("/api/dashboard/settings", {
+        method: "PUT",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(payload),
+      });
+      if (!res.ok) {
+        const data = (await res.json()) as { error?: string };
+        throw new Error(data.error ?? "Einstellungen konnten nicht gespeichert werden.");
       }
       setProfileSaveMessage("Einstellungen gespeichert.");
-    } catch {
-      setProfileSaveMessage("Speichern fehlgeschlagen. Bitte erneut versuchen.");
+    } catch (error) {
+      setProfileSaveMessage(error instanceof Error ? error.message : "Speichern fehlgeschlagen.");
     } finally {
       setSavingProfile(false);
     }
+  };
+
+  const refreshSummary = async () => {
+    try {
+      const res = await fetch("/api/dashboard/summary", { cache: "no-store" });
+      if (!res.ok) return;
+      const data = (await res.json()) as { summary?: DashboardSummary; activities?: ActivityItem[] };
+      if (data.summary) setDashboardSummary(data.summary);
+      if (Array.isArray(data.activities)) setActivityItems(data.activities);
+    } catch {
+      // ignore
+    }
+  };
+
+  const inviteTeamMember = async () => {
+    setTeamMessage("");
+    setTeamSaving(true);
+    try {
+      const res = await fetch("/api/dashboard/team", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ email: teamInviteEmail, name: teamInviteName, role: teamInviteRole }),
+      });
+      const data = (await res.json()) as { error?: string; members?: TeamMember[] };
+      if (!res.ok) throw new Error(data.error ?? "Einladung fehlgeschlagen.");
+      setTeamMembers(data.members ?? []);
+      setTeamInviteEmail("");
+      setTeamInviteName("");
+      setTeamMessage("Einladung wurde per E-Mail versendet.");
+      await refreshSummary();
+    } catch (error) {
+      setTeamMessage(error instanceof Error ? error.message : "Einladung fehlgeschlagen.");
+    } finally {
+      setTeamSaving(false);
+    }
+  };
+
+  const updateTeamRole = async (memberId: string, role: "admin" | "editor" | "viewer") => {
+    const res = await fetch("/api/dashboard/team", {
+      method: "PATCH",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ memberId, role }),
+    });
+    const data = (await res.json()) as { error?: string; members?: TeamMember[] };
+    if (!res.ok) {
+      setTeamMessage(data.error ?? "Rolle konnte nicht aktualisiert werden.");
+      return;
+    }
+    setTeamMembers(data.members ?? []);
+  };
+
+  const removeTeamMember = async (memberId: string) => {
+    const res = await fetch(`/api/dashboard/team?memberId=${encodeURIComponent(memberId)}`, { method: "DELETE" });
+    const data = (await res.json()) as { error?: string; members?: TeamMember[] };
+    if (!res.ok) {
+      setTeamMessage(data.error ?? "Mitglied konnte nicht entfernt werden.");
+      return;
+    }
+    setTeamMembers(data.members ?? []);
+    await refreshSummary();
   };
 
   const renderTabPanel = () => {
@@ -796,7 +929,9 @@ const ExampleContent = ({ isDark, setIsDark, applyTheme, userEmail, userName, se
                 <span className="text-xs font-medium text-emerald-600 dark:text-emerald-400">+180</span>
               </div>
               <h3 className="mb-1 font-medium text-gray-600 dark:text-gray-400">Verfuegbare Tokens</h3>
-              <p className="text-2xl font-bold text-gray-900 dark:text-gray-100">{remainingTokens.toLocaleString("de-DE")}</p>
+              <p className="text-2xl font-bold text-gray-900 dark:text-gray-100">
+                {(dashboardSummary?.tokens.remaining ?? remainingTokens).toLocaleString("de-DE")}
+              </p>
               <p className="mt-1 text-sm text-emerald-600 dark:text-emerald-400">
                 {hasActiveBilling ? `${usedTokens.toLocaleString("de-DE")} verbraucht` : "kein Abo aktiv"}
               </p>
@@ -810,8 +945,8 @@ const ExampleContent = ({ isDark, setIsDark, applyTheme, userEmail, userName, se
                 <span className="text-xs font-medium text-emerald-600 dark:text-emerald-400">+12%</span>
               </div>
               <h3 className="mb-1 font-medium text-gray-600 dark:text-gray-400">Posts im April</h3>
-              <p className="text-2xl font-bold text-gray-900 dark:text-gray-100">18</p>
-              <p className="mt-1 text-sm text-emerald-600 dark:text-emerald-400">4 davon als Bildserie</p>
+              <p className="text-2xl font-bold text-gray-900 dark:text-gray-100">{dashboardSummary?.postsThisMonth ?? 0}</p>
+              <p className="mt-1 text-sm text-emerald-600 dark:text-emerald-400">aus deiner Mediathek berechnet</p>
             </div>
 
             <div className="rounded-xl border border-gray-200 bg-white p-6 shadow-sm transition-shadow hover:shadow-md dark:border-gray-800 dark:bg-gray-900">
@@ -822,8 +957,8 @@ const ExampleContent = ({ isDark, setIsDark, applyTheme, userEmail, userName, se
                 <span className="text-xs font-medium text-violet-600 dark:text-violet-400">Saisonaktion</span>
               </div>
               <h3 className="mb-1 font-medium text-gray-600 dark:text-gray-400">Kampagnen aktiv</h3>
-              <p className="text-2xl font-bold text-gray-900 dark:text-gray-100">3</p>
-              <p className="mt-1 text-sm text-violet-600 dark:text-violet-400">Fruehling, Tour, Neuheiten</p>
+              <p className="text-2xl font-bold text-gray-900 dark:text-gray-100">{dashboardSummary?.activeCampaigns ?? 0}</p>
+              <p className="mt-1 text-sm text-violet-600 dark:text-violet-400">automatisch aus Aktivität abgeleitet</p>
             </div>
 
             <div className="rounded-xl border border-gray-200 bg-white p-6 shadow-sm transition-shadow hover:shadow-md dark:border-gray-800 dark:bg-gray-900">
@@ -834,8 +969,10 @@ const ExampleContent = ({ isDark, setIsDark, applyTheme, userEmail, userName, se
                 <span className="text-xs font-medium text-orange-600 dark:text-orange-400">+1</span>
               </div>
               <h3 className="mb-1 font-medium text-gray-600 dark:text-gray-400">Teammitglieder</h3>
-              <p className="text-2xl font-bold text-gray-900 dark:text-gray-100">4</p>
-              <p className="mt-1 text-sm text-orange-600 dark:text-orange-400">1 Einladung offen</p>
+              <p className="text-2xl font-bold text-gray-900 dark:text-gray-100">{dashboardSummary?.teamMembers ?? teamMembers.length}</p>
+              <p className="mt-1 text-sm text-orange-600 dark:text-orange-400">
+                {dashboardSummary?.openInvites ?? teamMembers.filter((member) => member.status === "invited").length} Einladung(en) offen
+              </p>
             </div>
           </div>
 
@@ -849,8 +986,10 @@ const ExampleContent = ({ isDark, setIsDark, applyTheme, userEmail, userName, se
                   </button>
                 </div>
                 <div className="space-y-4">
-                  {activityItems.map((activity, i) => (
-                    <div key={i} className="flex cursor-pointer items-center space-x-4 rounded-lg p-3 transition-colors hover:bg-gray-50 dark:hover:bg-gray-800">
+                  {activityItems.map((activity) => {
+                    const ActivityIcon = getActivityIcon(activity.type);
+                    return (
+                    <div key={activity.id} className="flex cursor-pointer items-center space-x-4 rounded-lg p-3 transition-colors hover:bg-gray-50 dark:hover:bg-gray-800">
                       <div
                         className={`rounded-lg p-2 ${
                           activity.color === "green"
@@ -862,7 +1001,7 @@ const ExampleContent = ({ isDark, setIsDark, applyTheme, userEmail, userName, se
                                 : "bg-orange-50 dark:bg-orange-900/20"
                         }`}
                       >
-                        <activity.icon
+                        <ActivityIcon
                           className={`h-4 w-4 ${
                             activity.color === "green"
                               ? "text-green-600 dark:text-green-400"
@@ -878,9 +1017,10 @@ const ExampleContent = ({ isDark, setIsDark, applyTheme, userEmail, userName, se
                         <p className="truncate text-sm font-medium text-gray-900 dark:text-gray-100">{activity.title}</p>
                         <p className="truncate text-xs text-gray-500 dark:text-gray-400">{activity.desc}</p>
                       </div>
-                      <div className="text-xs text-gray-400 dark:text-gray-500">{activity.time}</div>
+                      <div className="text-xs text-gray-400 dark:text-gray-500">{formatRelativeTime(activity.time)}</div>
                     </div>
-                  ))}
+                  );
+                  })}
                 </div>
               </div>
             </div>
@@ -889,15 +1029,24 @@ const ExampleContent = ({ isDark, setIsDark, applyTheme, userEmail, userName, se
               <div className="rounded-xl border border-gray-200 bg-white p-6 shadow-sm dark:border-gray-800 dark:bg-gray-900">
                 <h3 className="mb-4 text-lg font-semibold text-gray-900 dark:text-gray-100">Schnellaktionen</h3>
                 <div className="space-y-4">
-                  <button className="flex w-full items-center justify-between rounded-lg border border-gray-200 px-3 py-2 text-left text-sm transition-colors hover:bg-gray-50 dark:border-gray-700 dark:hover:bg-gray-800">
+                  <button
+                    onClick={() => setSelectedTab("Inhalte erstellen")}
+                    className="flex w-full items-center justify-between rounded-lg border border-gray-200 px-3 py-2 text-left text-sm transition-colors hover:bg-gray-50 dark:border-gray-700 dark:hover:bg-gray-800"
+                  >
                     <span>Neuen Social-Post erstellen</span>
                     <Wand2 className="h-4 w-4 text-gray-500" />
                   </button>
-                  <button className="flex w-full items-center justify-between rounded-lg border border-gray-200 px-3 py-2 text-left text-sm transition-colors hover:bg-gray-50 dark:border-gray-700 dark:hover:bg-gray-800">
+                  <button
+                    onClick={() => setSelectedTab("Inhalte erstellen")}
+                    className="flex w-full items-center justify-between rounded-lg border border-gray-200 px-3 py-2 text-left text-sm transition-colors hover:bg-gray-50 dark:border-gray-700 dark:hover:bg-gray-800"
+                  >
                     <span>Bild fuer Event generieren</span>
                     <Image className="h-4 w-4 text-gray-500" />
                   </button>
-                  <button className="flex w-full items-center justify-between rounded-lg border border-gray-200 px-3 py-2 text-left text-sm transition-colors hover:bg-gray-50 dark:border-gray-700 dark:hover:bg-gray-800">
+                  <button
+                    onClick={() => setSelectedTab("Team")}
+                    className="flex w-full items-center justify-between rounded-lg border border-gray-200 px-3 py-2 text-left text-sm transition-colors hover:bg-gray-50 dark:border-gray-700 dark:hover:bg-gray-800"
+                  >
                     <span>Teammitglied einladen</span>
                     <Users className="h-4 w-4 text-gray-500" />
                   </button>
@@ -1041,6 +1190,15 @@ const ExampleContent = ({ isDark, setIsDark, applyTheme, userEmail, userName, se
                       >
                         {downloadingMediaId === item.id ? "Download..." : "Herunterladen"}
                       </button>
+                      <button
+                        type="button"
+                        onClick={() => {
+                          void removeMediaItem(item.id);
+                        }}
+                        className="inline-flex h-8 items-center rounded-md border border-red-200 px-2.5 text-xs font-medium text-red-600 transition hover:bg-red-50 dark:border-red-900/50 dark:text-red-300 dark:hover:bg-red-900/20"
+                      >
+                        Entfernen
+                      </button>
                     </div>
                   </div>
                 </article>
@@ -1142,6 +1300,148 @@ const ExampleContent = ({ isDark, setIsDark, applyTheme, userEmail, userName, se
       );
     }
 
+    if (selectedTab === "Team") {
+      return (
+        <section className="rounded-2xl border border-gray-200 bg-white p-6 shadow-sm dark:border-gray-800 dark:bg-gray-900">
+          <div className="mb-6 flex items-center justify-between">
+            <h2 className="text-xl font-semibold text-gray-900 dark:text-gray-100">Team verwalten</h2>
+            <span className="rounded-full bg-purple-50 px-3 py-1 text-xs font-medium text-purple-700 dark:bg-purple-900/30 dark:text-purple-300">
+              {teamMembers.length} Mitglieder
+            </span>
+          </div>
+          <div className="grid gap-3 md:grid-cols-4">
+            <input
+              value={teamInviteEmail}
+              onChange={(e) => setTeamInviteEmail(e.target.value)}
+              placeholder="E-Mail"
+              className="h-10 rounded-md border border-gray-300 px-3 text-sm dark:border-gray-700 dark:bg-gray-950"
+            />
+            <input
+              value={teamInviteName}
+              onChange={(e) => setTeamInviteName(e.target.value)}
+              placeholder="Name (optional)"
+              className="h-10 rounded-md border border-gray-300 px-3 text-sm dark:border-gray-700 dark:bg-gray-950"
+            />
+            <select
+              value={teamInviteRole}
+              onChange={(e) => setTeamInviteRole(e.target.value as "admin" | "editor" | "viewer")}
+              className="h-10 rounded-md border border-gray-300 px-3 text-sm dark:border-gray-700 dark:bg-gray-950"
+            >
+              <option value="admin">Admin</option>
+              <option value="editor">Editor</option>
+              <option value="viewer">Viewer</option>
+            </select>
+            <button
+              type="button"
+              disabled={teamSaving || !teamInviteEmail}
+              onClick={() => {
+                void inviteTeamMember();
+              }}
+              className="h-10 rounded-md bg-[#c65a20] px-4 text-sm font-medium text-white hover:bg-[#b14f1c] disabled:opacity-50"
+            >
+              {teamSaving ? "Einladen..." : "Einladung senden"}
+            </button>
+          </div>
+          {teamMessage ? <p className="mt-3 text-sm text-gray-600 dark:text-gray-300">{teamMessage}</p> : null}
+          <div className="mt-6 space-y-3">
+            {teamMembers.map((member) => (
+              <article key={member.id} className="rounded-lg border border-gray-200 p-3 dark:border-gray-700">
+                <div className="flex flex-wrap items-center justify-between gap-3">
+                  <div>
+                    <p className="text-sm font-medium text-gray-900 dark:text-gray-100">{member.name}</p>
+                    <p className="text-xs text-gray-500 dark:text-gray-400">{member.email}</p>
+                    <p className="text-xs text-gray-500 dark:text-gray-400">
+                      {member.status === "invited" ? "Einladung offen" : "Aktiv"} • {formatRelativeTime(member.invitedAt)}
+                    </p>
+                  </div>
+                  <div className="flex items-center gap-2">
+                    <select
+                      disabled={member.role === "owner"}
+                      value={member.role}
+                      onChange={(e) => {
+                        void updateTeamRole(member.id, e.target.value as "admin" | "editor" | "viewer");
+                      }}
+                      className="h-8 rounded-md border border-gray-300 px-2 text-xs dark:border-gray-700 dark:bg-gray-950"
+                    >
+                      <option value="owner">Owner</option>
+                      <option value="admin">Admin</option>
+                      <option value="editor">Editor</option>
+                      <option value="viewer">Viewer</option>
+                    </select>
+                    {member.role !== "owner" ? (
+                      <button
+                        type="button"
+                        onClick={() => {
+                          void removeTeamMember(member.id);
+                        }}
+                        className="h-8 rounded-md border border-red-200 px-2 text-xs text-red-600 hover:bg-red-50 dark:border-red-900/50 dark:text-red-300"
+                      >
+                        Entfernen
+                      </button>
+                    ) : null}
+                  </div>
+                </div>
+              </article>
+            ))}
+          </div>
+        </section>
+      );
+    }
+
+    if (selectedTab === "Hilfe & Support") {
+      return (
+        <section className="rounded-2xl border border-gray-200 bg-white p-6 shadow-sm dark:border-gray-800 dark:bg-gray-900">
+          <h2 className="mb-2 text-xl font-semibold text-gray-900 dark:text-gray-100">Hilfe & Support</h2>
+          <p className="mb-6 text-sm text-gray-600 dark:text-gray-400">
+            Erreiche den Support direkt oder nutze die Schnellhilfe für typische Fragen.
+          </p>
+          <div className="grid gap-3 md:grid-cols-2">
+            <a href="mailto:support@evglab.ai" className="rounded-lg border border-gray-200 p-4 text-sm hover:bg-gray-50 dark:border-gray-700 dark:hover:bg-gray-800">
+              <p className="font-semibold text-gray-900 dark:text-gray-100">E-Mail Support</p>
+              <p className="mt-1 text-gray-600 dark:text-gray-400">support@evglab.ai</p>
+            </a>
+            <a href="/impressum" className="rounded-lg border border-gray-200 p-4 text-sm hover:bg-gray-50 dark:border-gray-700 dark:hover:bg-gray-800">
+              <p className="font-semibold text-gray-900 dark:text-gray-100">Kontakt & Impressum</p>
+              <p className="mt-1 text-gray-600 dark:text-gray-400">Direkte Kontaktwege und Unternehmensdaten.</p>
+            </a>
+          </div>
+          <div className="mt-6 rounded-xl border border-gray-200 bg-gray-50 p-4 dark:border-gray-700 dark:bg-gray-950">
+            <p className="mb-2 text-sm font-semibold text-gray-900 dark:text-gray-100">Support-Nachricht senden</p>
+            <input
+              value={supportSubject}
+              onChange={(e) => setSupportSubject(e.target.value)}
+              placeholder="Betreff"
+              className="mb-2 h-10 w-full rounded-md border border-gray-300 bg-white px-3 text-sm dark:border-gray-700 dark:bg-gray-900"
+            />
+            <textarea
+              value={supportMessage}
+              onChange={(e) => setSupportMessage(e.target.value)}
+              placeholder="Beschreibe kurz dein Anliegen..."
+              className="h-28 w-full rounded-md border border-gray-300 bg-white p-3 text-sm dark:border-gray-700 dark:bg-gray-900"
+            />
+            <div className="mt-3 flex items-center gap-3">
+              <button
+                type="button"
+                onClick={() => {
+                  if (!supportSubject || !supportMessage) {
+                    setSupportInfoMessage("Bitte Betreff und Nachricht ausfüllen.");
+                    return;
+                  }
+                  const mailto = `mailto:support@evglab.ai?subject=${encodeURIComponent(supportSubject)}&body=${encodeURIComponent(supportMessage)}`;
+                  window.location.href = mailto;
+                  setSupportInfoMessage("Mail-App wurde geöffnet.");
+                }}
+                className="h-9 rounded-md bg-[#c65a20] px-4 text-sm font-medium text-white hover:bg-[#b14f1c]"
+              >
+                Support kontaktieren
+              </button>
+              {supportInfoMessage ? <p className="text-xs text-gray-600 dark:text-gray-300">{supportInfoMessage}</p> : null}
+            </div>
+          </div>
+        </section>
+      );
+    }
+
     return (
       <section className="rounded-2xl border border-gray-200 bg-white p-6 shadow-sm dark:border-gray-800 dark:bg-gray-900">
         <div className="mb-5 flex items-center justify-between">
@@ -1187,6 +1487,11 @@ const ExampleContent = ({ isDark, setIsDark, applyTheme, userEmail, userName, se
       ) : null}
       <OnboardingDialog open={showOnboarding} onClose={closeOnboarding} />
       <MobileTabBar selected={selectedTab} setSelected={setSelectedTab} />
+      {globalErrorMessage ? (
+        <div className="mb-4 rounded-lg border border-red-200 bg-red-50 px-3 py-2 text-sm text-red-700 dark:border-red-900/40 dark:bg-red-900/20 dark:text-red-300">
+          {globalErrorMessage}
+        </div>
+      ) : null}
       <div className="mb-6 flex flex-col gap-4 sm:mb-8 sm:flex-row sm:items-start sm:justify-between">
         <div>
           <h1 className="text-2xl font-bold text-gray-900 dark:text-gray-100 sm:text-3xl">{tabTitle}</h1>
@@ -1246,15 +1551,20 @@ const ExampleContent = ({ isDark, setIsDark, applyTheme, userEmail, userName, se
             hasFreeTrialAvailable={hasFreeTrialAvailable}
             remainingTokens={remainingTokens}
             onConsumeTokens={consumeTokens}
+            onBillingStateUpdate={applyBillingUpdateFromGeneration}
             onFreeTrialConsumed={() => setFreeTrialImageUsed(true)}
             onRequireSubscription={() => setSelectedTab("Abo & Tokens")}
             onImageGenerated={(item) => {
               setMediaItems((prev) => {
                 const next = [item, ...prev.filter((entry) => entry.id !== item.id)].slice(0, 100);
-                if (typeof window !== "undefined") {
-                  window.localStorage.setItem(mediaLibraryStorageKey, JSON.stringify(next));
-                }
                 return next;
+              });
+              void fetch("/api/dashboard/media", {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify(item),
+              }).then(() => refreshSummary()).catch(() => {
+                setGlobalErrorMessage("Bild wurde erstellt, konnte aber nicht in der Mediathek gespeichert werden.");
               });
             }}
           />

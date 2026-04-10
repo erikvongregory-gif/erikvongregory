@@ -97,6 +97,13 @@ type ImagePromptWorkflowProps = {
   hasFreeTrialAvailable?: boolean;
   remainingTokens?: number;
   onConsumeTokens?: (amount: number) => void;
+  onBillingStateUpdate?: (billing: {
+    monthlyTokens?: number;
+    usedTokens?: number;
+    remainingTokens?: number;
+    consumed?: number;
+    freeTrial?: boolean;
+  }) => void;
   onFreeTrialConsumed?: () => void;
   onRequireSubscription?: () => void;
 };
@@ -1291,6 +1298,7 @@ export function ImagePromptWorkflow({
   hasFreeTrialAvailable = false,
   remainingTokens = 0,
   onConsumeTokens,
+  onBillingStateUpdate,
   onFreeTrialConsumed,
   onRequireSubscription,
 }: ImagePromptWorkflowProps) {
@@ -1965,6 +1973,13 @@ export function ImagePromptWorkflow({
         const createData = (await createRes.json()) as {
           taskId?: string;
           usedModel?: string;
+          billing?: {
+            monthlyTokens?: number;
+            usedTokens?: number;
+            remainingTokens?: number;
+            consumed?: number;
+            freeTrial?: boolean;
+          };
           error?: string;
           raw?: Record<string, unknown>;
         };
@@ -1976,6 +1991,9 @@ export function ImagePromptWorkflow({
         }
         if (createData.usedModel) {
           setLastUsedModel(createData.usedModel);
+        }
+        if (createData.billing) {
+          onBillingStateUpdate?.(createData.billing);
         }
         return createData.taskId;
       };
