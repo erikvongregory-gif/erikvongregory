@@ -24,25 +24,25 @@ export async function GET() {
   if (!user) return NextResponse.json({ error: "Nicht angemeldet." }, { status: 401 });
 
   const dashboard = getDashboardMetadata(user.user_metadata);
-  const settings = dashboard.settings ?? {};
+  const settings = dashboard.settings;
   return NextResponse.json({
     settings: {
-      profileName: typeof settings.profileName === "string" ? settings.profileName : "",
+      profileName: typeof settings?.profileName === "string" ? settings.profileName : "",
       breweryName:
-        typeof settings.breweryName === "string"
+        typeof settings?.breweryName === "string"
           ? settings.breweryName
           : typeof user.user_metadata?.brewery === "string"
             ? user.user_metadata.brewery
             : "",
       profilePhone:
-        typeof settings.profilePhone === "string"
+        typeof settings?.profilePhone === "string"
           ? settings.profilePhone
           : typeof user.user_metadata?.phone === "string"
             ? user.user_metadata.phone
             : "",
       emailNotifications:
-        typeof settings.emailNotifications === "boolean" ? settings.emailNotifications : true,
-      weeklySummary: typeof settings.weeklySummary === "boolean" ? settings.weeklySummary : true,
+        typeof settings?.emailNotifications === "boolean" ? settings.emailNotifications : true,
+      weeklySummary: typeof settings?.weeklySummary === "boolean" ? settings.weeklySummary : true,
     },
   });
 }

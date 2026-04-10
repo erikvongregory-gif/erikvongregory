@@ -135,7 +135,7 @@ export async function POST(req: Request) {
       email,
       name: parsed.data.name?.trim() || email.split("@")[0] || "Neu",
       role: parsed.data.role,
-      status: "invited",
+      status: "invited" as const,
       invitedAt: now,
     },
   ].slice(0, 50);
