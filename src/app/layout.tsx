@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import Script from "next/script";
 import { Inter, Playfair_Display } from "next/font/google";
 import { Analytics } from "@vercel/analytics/react";
+import { SpeedInsights } from "@vercel/speed-insights/next";
 import { AppShell } from "@/components/AppShell";
 import { LoadingProvider } from "@/context/LoadingContext";
 import { JsonLd } from "@/components/JsonLd";
@@ -105,6 +106,7 @@ export default function RootLayout({
           <AppShell>{children}</AppShell>
         </LoadingProvider>
         <Analytics />
+        <SpeedInsights />
       </body>
     </html>
   );
