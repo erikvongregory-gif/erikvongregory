@@ -12,7 +12,7 @@ import {
 const mediaSchema = z.object({
   id: z.string().min(1).max(120),
   imageUrl: z.string().url().max(2000),
-  prompt: z.string().min(1).max(12000),
+  prompt: z.string().min(1).max(240),
   createdAt: z.string().datetime(),
   aspectRatio: z.string().max(20),
   resolution: z.enum(["1K", "2K", "4K"]),
@@ -33,7 +33,7 @@ export async function GET() {
   const media = (dashboard.mediaLibrary ?? [])
     .slice()
     .sort((a, b) => +new Date(b.createdAt) - +new Date(a.createdAt))
-    .slice(0, 100);
+    .slice(0, 12);
   return NextResponse.json({ items: media });
 }
 
@@ -62,7 +62,7 @@ export async function POST(req: Request) {
   const current = getDashboardMetadata(user.user_metadata).mediaLibrary ?? [];
   const next = [item, ...current.filter((entry) => entry.id !== item.id)]
     .sort((a, b) => +new Date(b.createdAt) - +new Date(a.createdAt))
-    .slice(0, 100);
+    .slice(0, 12);
   const merged = mergeDashboardMetadata(user.user_metadata, { mediaLibrary: next });
   const { error } = await supabase.auth.updateUser({ data: merged });
   if (error) {

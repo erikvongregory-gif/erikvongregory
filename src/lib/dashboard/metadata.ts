@@ -40,14 +40,25 @@ function asObj(value: unknown): Record<string, unknown> {
 export function getDashboardMetadata(userMetadata: unknown): DashboardMetadata {
   const base = asObj(userMetadata);
   const dashboard = asObj(base.dashboard);
+  const rawMedia = Array.isArray(dashboard.mediaLibrary)
+    ? (dashboard.mediaLibrary as DashboardMediaItem[])
+    : [];
+  const mediaLibrary = rawMedia
+    .map((item) => ({
+      ...item,
+      prompt: String(item.prompt ?? "").slice(0, 240),
+      imageUrl: String(item.imageUrl ?? "").slice(0, 1200),
+    }))
+    .slice(0, 12);
+
+  const rawTeam = Array.isArray(dashboard.teamMembers)
+    ? (dashboard.teamMembers as DashboardTeamMember[])
+    : [];
+  const teamMembers = rawTeam.slice(0, 20);
 
   return {
-    mediaLibrary: Array.isArray(dashboard.mediaLibrary)
-      ? (dashboard.mediaLibrary as DashboardMediaItem[]).slice(0, 150)
-      : [],
-    teamMembers: Array.isArray(dashboard.teamMembers)
-      ? (dashboard.teamMembers as DashboardTeamMember[]).slice(0, 50)
-      : [],
+    mediaLibrary,
+    teamMembers,
     settings: asObj(dashboard.settings) as DashboardSettings,
   };
 }

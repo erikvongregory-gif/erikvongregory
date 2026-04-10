@@ -1555,14 +1555,15 @@ const ExampleContent = ({ isDark, applyTheme, userEmail, userName, selectedTab, 
             onFreeTrialConsumed={() => setFreeTrialImageUsed(true)}
             onRequireSubscription={() => setSelectedTab("Abo & Tokens")}
             onImageGenerated={(item) => {
+              const compactItem = { ...item, prompt: item.prompt.slice(0, 240) };
               setMediaItems((prev) => {
-                const next = [item, ...prev.filter((entry) => entry.id !== item.id)].slice(0, 100);
+                const next = [compactItem, ...prev.filter((entry) => entry.id !== item.id)].slice(0, 12);
                 return next;
               });
               void fetch("/api/dashboard/media", {
                 method: "POST",
                 headers: { "Content-Type": "application/json" },
-                body: JSON.stringify(item),
+                body: JSON.stringify(compactItem),
               }).then(() => refreshSummary()).catch(() => {
                 setGlobalErrorMessage("Bild wurde erstellt, konnte aber nicht in der Mediathek gespeichert werden.");
               });

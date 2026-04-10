@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import Script from "next/script";
 import { Inter, Playfair_Display } from "next/font/google";
+import { Analytics } from "@vercel/analytics/react";
 import { AppShell } from "@/components/AppShell";
 import { LoadingProvider } from "@/context/LoadingContext";
 import { JsonLd } from "@/components/JsonLd";
@@ -101,8 +102,9 @@ export default function RootLayout({
         <JsonLd />
         <FaviconReminder />
         <LoadingProvider>
-        <AppShell>{children}</AppShell>
+          <AppShell>{children}</AppShell>
         </LoadingProvider>
+        <Analytics />
       </body>
     </html>
   );
