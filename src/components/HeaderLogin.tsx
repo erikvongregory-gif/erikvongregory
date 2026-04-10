@@ -29,16 +29,15 @@ export function HeaderLogin({ variant, className }: HeaderLoginProps) {
   const [mode, setMode] = useState<"signin">("signin");
   const [open, setOpen] = useState(false);
   const [isAuthenticated, setIsAuthenticated] = useState(false);
+  const [isAdmin, setIsAdmin] = useState(false);
   const [authError, setAuthError] = useState<string | null>(null);
   const [authNotice, setAuthNotice] = useState<string | null>(null);
   const lockedScrollYRef = useRef(0);
   const pathname = usePathname();
-  const nextPath = pathname?.startsWith("/") ? pathname : "/";
   const idSuffix = variant === "desktop" ? "desktop" : "mobile";
 
   useEffect(() => {
     if (!isSupabaseConfigured()) {
-      setIsAuthenticated(false);
       return;
     }
 
@@ -50,15 +49,22 @@ export function HeaderLogin({ variant, className }: HeaderLoginProps) {
       if (!isActive) return;
       if (!sessionData.session) {
         setIsAuthenticated(false);
+        setIsAdmin(false);
         return;
       }
       const { data, error } = await supabase.auth.getUser();
       if (!isActive) return;
       if (error) {
         setIsAuthenticated(false);
+        setIsAdmin(false);
         return;
       }
       setIsAuthenticated(Boolean(data.user));
+      const role =
+        typeof data.user?.user_metadata?.role === "string"
+          ? String(data.user.user_metadata.role).toLowerCase()
+          : "";
+      setIsAdmin(role === "admin");
     };
 
     void syncAuthState();
@@ -68,6 +74,11 @@ export function HeaderLogin({ variant, className }: HeaderLoginProps) {
     } = supabase.auth.onAuthStateChange((_event, session) => {
       if (!isActive) return;
       setIsAuthenticated(Boolean(session?.user));
+      const role =
+        typeof session?.user?.user_metadata?.role === "string"
+          ? String(session.user.user_metadata.role).toLowerCase()
+          : "";
+      setIsAdmin(role === "admin");
     });
 
     const onFocus = () => {
@@ -94,21 +105,27 @@ export function HeaderLogin({ variant, className }: HeaderLoginProps) {
     if (typeof window === "undefined") return;
     const url = new URL(window.location.href);
     const authAction = url.searchParams.get("auth");
-    setAuthError(url.searchParams.get("error"));
-    setAuthNotice(url.searchParams.get("notice"));
+    const nextError = url.searchParams.get("error");
+    const nextNotice = url.searchParams.get("notice");
+    queueMicrotask(() => {
+      setAuthError(nextError);
+      setAuthNotice(nextNotice);
+    });
 
     if (isAuthenticated) return;
     if (authAction !== "signin" && authAction !== "signup") return;
 
-    setMode("signin");
-    setOpen(true);
+    queueMicrotask(() => {
+      setMode("signin");
+      setOpen(true);
+    });
     url.searchParams.delete("auth");
     window.history.replaceState({}, "", `${url.pathname}${url.search}${url.hash}`);
   }, [isAuthenticated, pathname]);
 
   useEffect(() => {
     if (typeof window === "undefined") return;
-    const onOpenAuth = (event: Event) => {
+    const onOpenAuth = () => {
       if (isAuthenticated) return;
       setMode("signin");
       setOpen(true);
@@ -231,7 +248,6 @@ export function HeaderLogin({ variant, className }: HeaderLoginProps) {
           Bitte bestätige zuerst deine E-Mail und melde dich danach an.
         </p>
       ) : null}
-
       <div className="flex items-center gap-3 before:h-px before:flex-1 before:bg-border after:h-px after:flex-1 after:bg-border">
         <span className="text-xs text-muted-foreground">Oder</span>
       </div>
@@ -271,6 +287,16 @@ export function HeaderLogin({ variant, className }: HeaderLoginProps) {
               >
                 <Link href="/dashboard">Zum Dashboard</Link>
               </Button>
+              {isAdmin ? (
+                <Button
+                  asChild
+                  size="sm"
+                  variant="outline"
+                  className="h-9 rounded-full border border-black/10 bg-gradient-to-br from-black/5 to-black/0 px-4 text-zinc-900 shadow-[0_10px_22px_-18px_rgba(24,24,27,0.28)] backdrop-blur-[14px] transition duration-300 hover:-translate-y-0.5 hover:border-[#e07a40]/35 hover:shadow-[0_16px_34px_-20px_rgba(198,90,32,0.24)]"
+                >
+                  <Link href="/admin">Admin</Link>
+                </Button>
+              ) : null}
               <form action="/auth/signout" method="post">
                 <Button
                   type="submit"
@@ -322,6 +348,17 @@ export function HeaderLogin({ variant, className }: HeaderLoginProps) {
             >
               <Link href="/dashboard">Zum Dashboard</Link>
             </Button>
+            {isAdmin ? (
+              <Button
+                asChild
+                size="sm"
+                variant="outline"
+                className="h-10 w-full rounded-full border border-black/10 bg-gradient-to-br from-black/5 to-black/0 px-4 text-zinc-900 shadow-[0_10px_22px_-18px_rgba(24,24,27,0.28)] backdrop-blur-[14px] transition duration-300 hover:-translate-y-0.5 hover:border-[#e07a40]/35 hover:shadow-[0_16px_34px_-20px_rgba(198,90,32,0.24)]"
+                role="menuitem"
+              >
+                <Link href="/admin">Admin</Link>
+              </Button>
+            ) : null}
             <form action="/auth/signout" method="post" className="w-full">
               <Button
                 type="submit"

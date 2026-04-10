@@ -33,7 +33,7 @@ export async function POST(request: Request) {
   });
 
   if (error) {
-    return NextResponse.redirect(`${origin}/?auth=signup&error=auth`, 303);
+    return NextResponse.redirect(`${origin}/?auth=signup&error=auth&reason=${encodeURIComponent(error.message)}`, 303);
   }
 
   if (data.user && !data.session) {

@@ -1739,9 +1739,18 @@ export function ImagePromptWorkflow({
         setGeneratedRatio(fallback.ratio);
         setQualityPassed(runQualityCheck(effectiveBrief, constrainedFallbackPrompt, fallback.ratio));
         const msg = error instanceof Error ? error.message : "";
-        if (msg.toLowerCase().includes("credit balance is too low")) {
+        const lower = msg.toLowerCase();
+        if (lower.includes("credit balance is too low")) {
           setGenerationError(
             "Claude ist verbunden, aber dein Anthropic-Guthaben ist zu niedrig. Bitte in Anthropic > Plans & Billing Credits aufladen. Lokaler Fallback-Prompt wurde verwendet.",
+          );
+        } else if (lower.includes("anthropic_api_key") || lower.includes("api key") || lower.includes("authentifizierung")) {
+          setGenerationError(
+            "Claude ist nicht konfiguriert: ANTHROPIC_API_KEY fehlt oder ist ungültig. Lokaler Fallback-Prompt wurde verwendet.",
+          );
+        } else if (lower.includes("modell") || lower.includes("model")) {
+          setGenerationError(
+            "Claude-Modell ist nicht verfügbar. Bitte ANTHROPIC_MODEL prüfen. Lokaler Fallback-Prompt wurde verwendet.",
           );
         } else {
           setGenerationError(

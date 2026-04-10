@@ -57,6 +57,13 @@ function getClaudeSystemPrompt(): string {
   return fromEnv || DEFAULT_BREWERY_IMAGE_SKILL_SYSTEM_PROMPT;
 }
 
+function getPreferredModel(): string {
+  const fromEnv = process.env.ANTHROPIC_MODEL?.trim();
+  if (fromEnv) return fromEnv;
+  // Stable default alias from Anthropic docs; avoids brittle hard-coded snapshot names.
+  return "claude-3-5-sonnet-latest";
+}
+
 function buildClaudeInput(body: PromptRequestBody): string {
   const strictGlassRule = getStrictGlassRule(body.biertyp ?? "");
   const containerRule =
@@ -127,20 +134,39 @@ export async function POST(req: Request) {
 
     const body = parseResult.data as PromptRequestBody;
     const anthropic = new Anthropic({ apiKey });
-    const model = process.env.ANTHROPIC_MODEL || "claude-sonnet-4-6";
+    const modelCandidates = Array.from(
+      new Set([
+        getPreferredModel(),
+        "claude-3-5-sonnet-latest",
+        "claude-3-5-haiku-latest",
+      ]),
+    );
 
-    const response = await anthropic.messages.create({
-      model,
-      max_tokens: 1000,
-      temperature: 0.4,
-      system: getClaudeSystemPrompt(),
-      messages: [
-        {
-          role: "user",
-          content: buildClaudeInput(body),
-        },
-      ],
-    });
+    let response: Awaited<ReturnType<typeof anthropic.messages.create>> | null = null;
+    let lastError: unknown = null;
+    for (const model of modelCandidates) {
+      try {
+        response = await anthropic.messages.create({
+          model,
+          max_tokens: 1000,
+          temperature: 0.4,
+          system: getClaudeSystemPrompt(),
+          messages: [
+            {
+              role: "user",
+              content: buildClaudeInput(body),
+            },
+          ],
+        });
+        break;
+      } catch (error) {
+        lastError = error;
+      }
+    }
+
+    if (!response) {
+      throw lastError ?? new Error("Claude-Model konnte nicht geladen werden.");
+    }
 
     const textBlock = response.content.find((item) => item.type === "text");
     const promptRaw = textBlock?.type === "text" ? textBlock.text.trim() : "";
@@ -153,6 +179,13 @@ export async function POST(req: Request) {
     return NextResponse.json({ prompt });
   } catch (error) {
     console.error("Claude API error:", error);
+    const message = error instanceof Error ? error.message : "";
+    if (/api key/i.test(message) || /authentication/i.test(message) || /unauthorized/i.test(message)) {
+      return NextResponse.json({ error: "Anthropic-Authentifizierung fehlgeschlagen. Prüfe ANTHROPIC_API_KEY." }, { status: 500 });
+    }
+    if (/model/i.test(message) || /not found/i.test(message)) {
+      return NextResponse.json({ error: "Anthropic-Modell nicht verfügbar. Prüfe ANTHROPIC_MODEL in den Umgebungsvariablen." }, { status: 500 });
+    }
     return NextResponse.json({ error: "Claude-Anfrage fehlgeschlagen." }, { status: 500 });
   }
 }
