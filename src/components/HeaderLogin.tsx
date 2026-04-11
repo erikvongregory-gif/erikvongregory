@@ -240,6 +240,8 @@ export function HeaderLogin({ variant, className }: HeaderLoginProps) {
               ? "Login ist aktuell nicht verfügbar. Bitte später erneut versuchen."
               : authError === "google"
                 ? "Google-Anmeldung fehlgeschlagen. Bitte erneut versuchen."
+              : authError === "auth"
+                ? "E-Mail oder Passwort ist falsch, oder die E-Mail wurde noch nicht bestätigt."
                 : "Anmeldung oder Registrierung fehlgeschlagen. Bitte prüfe deine Eingaben."}
         </p>
       ) : null}

@@ -39,6 +39,7 @@ type PersonenOption =
   | "Hände/Arme ohne Gesicht"
   | "Person ohne Gesicht"
   | "Person mit Gesicht";
+type PersonGeschlecht = "Frau" | "Mann" | "Egal";
 type ShotType =
   | "45° Hero Shot"
   | "Eye-Level"
@@ -73,6 +74,7 @@ type PromptBrief = {
   kiPlattform: KiPlattform;
   etikettModus: EtikettOption | "";
   personenModus: PersonenOption | "";
+  personGeschlecht: PersonGeschlecht | "";
   shotType: ShotType | "";
   referenzStaerke: ReferenzStaerkeOption;
   besondererHintergrund: string;
@@ -134,6 +136,7 @@ const initialBrief: PromptBrief = {
   kiPlattform: "Nano Banana Pro",
   etikettModus: "",
   personenModus: "",
+  personGeschlecht: "Egal",
   shotType: "45° Hero Shot",
   referenzStaerke: "Mittel",
   besondererHintergrund: "",
@@ -838,6 +841,7 @@ function buildPrompt(brief: PromptBrief) {
     brief.personenModus === "Person mit Gesicht"
       ? "Composition mandate: include at least one person in foreground or midground with a clearly readable face and natural expression; avoid product-only framing. Keep person and product both important in frame."
       : "";
+  const genderPart = getGenderPromptSentence(brief, "assistant");
   const studioLockRule = isStudioProduct
     ? "Studio lock (non-negotiable): no outdoor scenery, no mountains/forest/river/sky, no beer garden/bar/restaurant context, no location storytelling. Keep this a controlled studio setup with product-first composition."
     : "";
@@ -900,6 +904,7 @@ function buildPrompt(brief: PromptBrief) {
   if (brief.kiPlattform === "Midjourney") {
     const core = [
       `${brief.biertyp} beer ${brandPart}`,
+      genderPart,
       `${liquid}`,
       `${foam}`,
       `${carbonation}`,
@@ -945,6 +950,7 @@ function buildPrompt(brief: PromptBrief) {
     personRule,
     personCompositionRule,
     personNegativeRule,
+    genderPart,
     studioLockRule,
     studioStyleRule,
     studioPropsRule,
@@ -1011,6 +1017,34 @@ function enforcePeopleConstraints(prompt: string, brief: PromptBrief): string {
   }
 
   return `${prompt} Hard validation: image is invalid if any humans, hands, or body parts are visible.`;
+}
+
+function getGenderPromptSentence(brief: PromptBrief, promptMode?: "assistant" | "manual"): string {
+  if (!brief.personGeschlecht || brief.personGeschlecht === "Egal") {
+    return "";
+  }
+  const humanInBrief = Boolean(brief.personenModus && brief.personenModus !== "Kein Mensch");
+  if (!humanInBrief && promptMode !== "manual") {
+    return "";
+  }
+  if (brief.personenModus === "Kein Mensch") {
+    return "";
+  }
+  if (brief.personGeschlecht === "Frau") {
+    return "Gender depiction lock (MANDATORY): any visible human subject or body parts must read clearly as an adult woman (female-presenting). For hands/arms-only shots, show a woman's hands/arms with believable female-coded proportions. Do not depict an obviously male-presenting subject.";
+  }
+  return "Gender depiction lock (MANDATORY): any visible human subject or body parts must read clearly as an adult man (male-presenting). For hands/arms-only shots, show a man's hands/arms with believable male-coded proportions. Do not depict an obviously female-presenting subject.";
+}
+
+function appendGenderConstraint(
+  prompt: string,
+  brief: PromptBrief,
+  promptMode?: "assistant" | "manual",
+): string {
+  const sentence = getGenderPromptSentence(brief, promptMode);
+  if (!sentence) return prompt;
+  if (/Gender depiction lock \(MANDATORY\)/i.test(prompt)) return prompt;
+  return `${prompt} ${sentence}`;
 }
 
 function runQualityCheck(brief: PromptBrief, prompt: string, ratio: string) {
@@ -1488,6 +1522,13 @@ export function ImagePromptWorkflow({
       options: ["Kein Mensch", "Hände/Arme ohne Gesicht", "Person ohne Gesicht", "Person mit Gesicht"],
     },
     {
+      key: "personGeschlecht",
+      label: "10b) Geschlecht (wenn Person im Bild)",
+      required: true,
+      type: "select",
+      options: ["Frau", "Mann", "Egal"],
+    },
+    {
       key: "shotType",
       label: "11) Bildausschnitt & Kamerawinkel",
       required: true,
@@ -1537,9 +1578,10 @@ export function ImagePromptWorkflow({
     return steps.filter((step) => {
       if (step.key === "studioStyle" && bildtyp !== "Produkt-Studio") return false;
       if (step.key === "studioProps" && bildtyp !== "Produkt-Studio") return false;
+      if (step.key === "personGeschlecht" && brief.personenModus === "Kein Mensch") return false;
       return !hidden.has(step.key);
     });
-  }, [brief.bildtyp]);
+  }, [brief.bildtyp, brief.personenModus]);
   const stepIndexByKey = useMemo(
     () => new Map(visibleSteps.map((step, idx) => [step.key, idx] as const)),
     [visibleSteps],
@@ -1607,6 +1649,11 @@ export function ImagePromptWorkflow({
       return changed ? next : prev;
     });
   }, [brief.bildtyp]);
+
+  useEffect(() => {
+    if (brief.personenModus !== "Kein Mensch") return;
+    setBrief((prev) => (prev.personGeschlecht === "Egal" ? prev : { ...prev, personGeschlecht: "Egal" }));
+  }, [brief.personenModus]);
 
   useEffect(() => {
     setStepIndex((prev) => Math.min(prev, Math.max(visibleSteps.length - 1, 0)));
@@ -1722,7 +1769,11 @@ export function ImagePromptWorkflow({
           throw new Error("Leere Claude-Antwort");
         }
 
-        const constrainedPrompt = enforcePeopleConstraints(enforceContainerConstraints(prompt, effectiveBrief), effectiveBrief);
+        const constrainedPrompt = appendGenderConstraint(
+          enforcePeopleConstraints(enforceContainerConstraints(prompt, effectiveBrief), effectiveBrief),
+          effectiveBrief,
+          promptMode,
+        );
         setGeneratedPrompt(constrainedPrompt);
         setPromptForGeneration(constrainedPrompt);
         setQualityPassed(runQualityCheck(effectiveBrief, constrainedPrompt, result.ratio));
@@ -1730,9 +1781,10 @@ export function ImagePromptWorkflow({
         const fixed = applySceneAutoFixes(brief);
         const effectiveBrief = fixed.brief;
         const fallback = buildPrompt(effectiveBrief);
-        const constrainedFallbackPrompt = enforcePeopleConstraints(
-          enforceContainerConstraints(fallback.prompt, effectiveBrief),
+        const constrainedFallbackPrompt = appendGenderConstraint(
+          enforcePeopleConstraints(enforceContainerConstraints(fallback.prompt, effectiveBrief), effectiveBrief),
           effectiveBrief,
+          promptMode,
         );
         setGeneratedPrompt(constrainedFallbackPrompt);
         setPromptForGeneration(constrainedFallbackPrompt);
@@ -1866,7 +1918,11 @@ export function ImagePromptWorkflow({
     for (const testBrief of scenarios) {
       const fixed = applySceneAutoFixes(testBrief);
       const built = buildPrompt(fixed.brief);
-      const constrained = enforcePeopleConstraints(enforceContainerConstraints(built.prompt, fixed.brief), fixed.brief);
+      const constrained = appendGenderConstraint(
+        enforcePeopleConstraints(enforceContainerConstraints(built.prompt, fixed.brief), fixed.brief),
+        fixed.brief,
+        "assistant",
+      );
       const preflight = evaluatePreflight(fixed.brief, constrained, false, fixed.autoFixes);
       const quality = runQualityCheck(fixed.brief, constrained, built.ratio);
       const ok = preflight.blockers.length === 0 && quality;
@@ -1879,7 +1935,11 @@ export function ImagePromptWorkflow({
     let invalidBlocked = 0;
     for (const invalid of invalidScenarios) {
       const built = buildPrompt(invalid);
-      const constrained = enforcePeopleConstraints(enforceContainerConstraints(built.prompt, invalid), invalid);
+      const constrained = appendGenderConstraint(
+        enforcePeopleConstraints(enforceContainerConstraints(built.prompt, invalid), invalid),
+        invalid,
+        "assistant",
+      );
       const preflight = evaluatePreflight(invalid, constrained, false, []);
       if (preflight.blockers.length > 0) invalidBlocked += 1;
     }
@@ -1946,9 +2006,10 @@ export function ImagePromptWorkflow({
       } else {
         setLastAutoFixes([]);
       }
-      const constrainedFinalPrompt = enforcePeopleConstraints(
-        enforceContainerConstraints(finalPrompt, effectiveBrief),
+      const constrainedFinalPrompt = appendGenderConstraint(
+        enforcePeopleConstraints(enforceContainerConstraints(finalPrompt, effectiveBrief), effectiveBrief),
         effectiveBrief,
+        promptMode,
       );
       const preflight = evaluatePreflight(effectiveBrief, constrainedFinalPrompt, hasReferenceImage, fixed.autoFixes);
       setLastPreflight(preflight);
@@ -2395,6 +2456,36 @@ export function ImagePromptWorkflow({
         </div>
         {promptMode === "manual" || generatedPrompt || generatedImageUrl || isImageGenerating ? (
           <div className="mt-4">
+            <div className="mb-3 rounded-lg border border-gray-200 bg-white p-3 dark:border-gray-700 dark:bg-gray-950">
+              <p className="text-xs font-medium text-gray-800 dark:text-gray-200">Geschlecht (für Person im Bild)</p>
+              <p className="mt-0.5 text-[11px] text-gray-500 dark:text-gray-400">
+                Wird dem Prompt hinzugefügt, sobald eine Person, Hände oder Arme vorgesehen sind. Bei „Kein Mensch“ nicht relevant.
+              </p>
+              <div className="mt-2 flex flex-wrap gap-2">
+                {(["Frau", "Mann", "Egal"] as const).map((option) => {
+                  const disabled = brief.personenModus === "Kein Mensch";
+                  const active = brief.personGeschlecht === option;
+                  return (
+                    <button
+                      key={option}
+                      type="button"
+                      disabled={disabled}
+                      onClick={() => updateField("personGeschlecht", option)}
+                      className={cn(
+                        "inline-flex h-9 min-w-[4.5rem] items-center justify-center rounded-md border px-3 text-xs font-medium transition",
+                        disabled
+                          ? "cursor-not-allowed border-gray-200 bg-gray-100 text-gray-400 dark:border-gray-800 dark:bg-gray-900 dark:text-gray-600"
+                          : active
+                            ? "border-[#c65a20] bg-[#c65a20]/10 text-[#b14f1c] dark:border-[#e07a40] dark:bg-[#c65a20]/20 dark:text-[#ffd4a8]"
+                            : "border-gray-300 text-gray-700 hover:bg-gray-50 dark:border-gray-600 dark:text-gray-200 dark:hover:bg-gray-800",
+                      )}
+                    >
+                      {option}
+                    </button>
+                  );
+                })}
+              </div>
+            </div>
             <PromptInputBox
               value={promptForGeneration}
               onValueChange={setPromptForGeneration}

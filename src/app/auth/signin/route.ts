@@ -1,6 +1,6 @@
 import { NextResponse } from "next/server";
 import { isSupabaseConfigured } from "@/lib/supabase/env";
-import { createClient } from "@/lib/supabase/server";
+import { createRouteHandlerClient } from "@/lib/supabase/server";
 
 export async function POST(request: Request) {
   const { origin } = new URL(request.url);
@@ -17,12 +17,15 @@ export async function POST(request: Request) {
     return NextResponse.redirect(`${origin}/?auth=signin&error=missing`, 303);
   }
 
-  const supabase = await createClient();
+  const safeNext = next.startsWith("/") ? next : "/dashboard";
+  const redirectResponse = NextResponse.redirect(`${origin}${safeNext}`, 303);
+  redirectResponse.headers.set("Cache-Control", "no-store, max-age=0");
+
+  const supabase = createRouteHandlerClient(request, redirectResponse);
   const { error } = await supabase.auth.signInWithPassword({ email, password });
   if (error) {
     return NextResponse.redirect(`${origin}/?auth=signin&error=auth`, 303);
   }
 
-  const safeNext = next.startsWith("/") ? next : "/dashboard";
-  return NextResponse.redirect(`${origin}${safeNext}`, 303);
+  return redirectResponse;
 }

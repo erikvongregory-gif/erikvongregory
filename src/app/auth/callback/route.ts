@@ -1,7 +1,7 @@
 import { NextResponse } from "next/server";
 import type { EmailOtpType } from "@supabase/supabase-js";
 import { isSupabaseConfigured } from "@/lib/supabase/env";
-import { createClient } from "@/lib/supabase/server";
+import { createRouteHandlerClient } from "@/lib/supabase/server";
 
 export async function GET(request: Request) {
   const { searchParams, origin } = new URL(request.url);
@@ -15,16 +15,20 @@ export async function GET(request: Request) {
     return NextResponse.redirect(`${origin}/?auth=signin&error=config`, 303);
   }
 
-  const supabase = await createClient();
-
   if (tokenHash && type) {
+    const redirectResponse = NextResponse.redirect(`${origin}${safeNext}`, 303);
+    redirectResponse.headers.set("Cache-Control", "no-store, max-age=0");
+    const supabase = createRouteHandlerClient(request, redirectResponse);
     const { error } = await supabase.auth.verifyOtp({ type, token_hash: tokenHash });
-    if (!error) return NextResponse.redirect(`${origin}${safeNext}`, 303);
+    if (!error) return redirectResponse;
   }
 
   if (code) {
+    const redirectResponse = NextResponse.redirect(`${origin}${safeNext}`, 303);
+    redirectResponse.headers.set("Cache-Control", "no-store, max-age=0");
+    const supabase = createRouteHandlerClient(request, redirectResponse);
     const { error } = await supabase.auth.exchangeCodeForSession(code);
-    if (!error) return NextResponse.redirect(`${origin}${safeNext}`, 303);
+    if (!error) return redirectResponse;
   }
 
   return NextResponse.redirect(`${origin}/?auth=signin&error=auth`, 303);

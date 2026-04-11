@@ -1,6 +1,6 @@
 import { NextResponse } from "next/server";
 import { isSupabaseConfigured } from "@/lib/supabase/env";
-import { createClient } from "@/lib/supabase/server";
+import { createRouteHandlerClient } from "@/lib/supabase/server";
 
 export async function GET(request: Request) {
   const { origin, searchParams } = new URL(request.url);
@@ -11,7 +11,8 @@ export async function GET(request: Request) {
     return NextResponse.redirect(`${origin}/?auth=signin&error=config`, 303);
   }
 
-  const supabase = await createClient();
+  const cookieCarrier = NextResponse.next();
+  const supabase = createRouteHandlerClient(request, cookieCarrier);
   const { data, error } = await supabase.auth.signInWithOAuth({
     provider: "google",
     options: {
@@ -27,5 +28,10 @@ export async function GET(request: Request) {
     return NextResponse.redirect(`${origin}/?auth=signin&error=google`, 303);
   }
 
-  return NextResponse.redirect(data.url, 303);
+  const redirect = NextResponse.redirect(data.url, 303);
+  redirect.headers.set("Cache-Control", "no-store, max-age=0");
+  for (const line of cookieCarrier.headers.getSetCookie()) {
+    redirect.headers.append("Set-Cookie", line);
+  }
+  return redirect;
 }

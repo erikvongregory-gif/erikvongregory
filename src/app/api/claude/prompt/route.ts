@@ -19,6 +19,7 @@ type PromptRequestBody = {
   saisonalerBezug?: string;
   textImLabel?: string;
   vermeiden?: string;
+  personGeschlecht?: "Frau" | "Mann" | "Egal";
 };
 
 const promptRequestSchema = z.object({
@@ -36,6 +37,7 @@ const promptRequestSchema = z.object({
   saisonalerBezug: z.string().trim().max(240).optional(),
   textImLabel: z.string().trim().max(240).optional(),
   vermeiden: z.string().trim().max(500).optional(),
+  personGeschlecht: z.enum(["Frau", "Mann", "Egal"]).optional(),
 });
 
 function getStrictGlassRule(biertyp: string): string {
@@ -103,6 +105,7 @@ function buildClaudeInput(body: PromptRequestBody): string {
     "- Baue Biertyp, Stimmung, Plattform, Licht, Kamera/Linse und Kompositionshinweise ein.",
     "- Wenn Label-Text angegeben ist, integriere ihn klar lesbar.",
     "- Wenn 'vermeiden' gesetzt ist, beruecksichtige es im Prompt.",
+    "- Wenn personGeschlecht 'Frau' oder 'Mann' ist (und Menschen vorgesehen sind), muss der englische Prompt das Geschlecht der dargestellten Person(en) klar und konsistent festlegen (nur Erwachsene, keine widersprüchliche Darstellung).",
     `- ${referenceStrengthRule}`,
     `- ${labelFidelityRule}`,
     `- ${physicalRealismRule}`,
