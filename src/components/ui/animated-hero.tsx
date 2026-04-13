@@ -173,7 +173,7 @@ function Hero() {
         })}
       </Floating>
       <div className="container mx-auto">
-        <div className="relative z-10 flex flex-col items-center justify-center gap-8 py-20 max-md:gap-6 max-md:py-12 sm:max-md:py-16 lg:py-40">
+        <div className="relative z-10 flex flex-col items-center justify-center gap-8 py-20 max-md:gap-6 max-md:pb-12 max-md:pt-28 sm:max-md:pb-16 sm:max-md:pt-32 lg:py-40">
           <div className="hidden md:block">
             <Button variant="secondary" size="sm" className="gap-4">
               Kategorie-Fokus: KI-Content-System für Brauereien <MoveRight className="w-4 h-4" />
@@ -187,7 +187,7 @@ function Hero() {
                 {titles.map((title, index) => (
                   <motion.span
                     key={index}
-                    className="absolute font-semibold max-md:px-1 max-md:text-[1.6rem] sm:max-md:text-[1.85rem] md:px-0 md:text-inherit"
+                    className="absolute font-semibold max-md:px-1 max-md:text-[2rem] sm:max-md:text-[2.25rem] md:px-0 md:text-[1.12em]"
                     initial={{ opacity: 0, y: "-100" }}
                     transition={{ type: "spring", stiffness: 50 }}
                     animate={
@@ -204,7 +204,7 @@ function Hero() {
 
             <p className="max-w-2xl text-center text-lg leading-relaxed tracking-tight text-muted-foreground max-md:mx-auto max-md:w-full max-md:max-w-[21rem] max-md:px-2 max-md:text-[1rem] max-md:leading-[1.42] sm:max-md:text-lg md:text-xl">
               <span className="max-md:text-zinc-700">Weniger Aufwand, bessere Ergebnisse:</span>{" "}
-              <span className="hero-mobile-subtitle-shine">planbare KI-Produktfotos, Kampagnenmotive und Social-Content</span>{" "}
+              <span className="hero-mobile-subtitle-shine">KI-Produktfotos, Kampagnenmotive und Social-Content</span>{" "}
               <span className="max-md:text-zinc-600">in deinem Markenstil.</span>
             </p>
           </div>

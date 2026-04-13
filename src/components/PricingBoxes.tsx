@@ -189,10 +189,10 @@ const DASHBOARD_SUBSCRIPTION_PACKAGES: PricingPackageDef[] = [
   },
 ];
 
-/** Desktop: Starter | Brauerei Premium (Mitte) | Wachstum — Mobile: Reihenfolge im Array. */
-const PRICING_DESKTOP_ORDER = [0, 2, 1] as const;
-/** Desktop: Start | Pro (Mitte) | Growth — Mobile: Reihenfolge im Array. */
-const DASHBOARD_DESKTOP_ORDER = [0, 2, 1] as const;
+/** Desktop: von günstig nach teuer (teuerste Karte rechts) — Mobile: Reihenfolge im Array. */
+const PRICING_DESKTOP_ORDER = [0, 1, 2] as const;
+/** Desktop: von günstig nach teuer (teuerste Karte rechts) — Mobile: Reihenfolge im Array. */
+const DASHBOARD_DESKTOP_ORDER = [0, 1, 2] as const;
 
 const ADDONS: AddonRow[] = [
   {
@@ -220,6 +220,8 @@ const ADDONS: AddonRow[] = [
     priceSubtext: "pro Event",
   },
 ];
+/** Desktop: von günstig nach teuer (teuerste Karte rechts). */
+const ADDONS_DESKTOP_ORDER = [0, 2, 1] as const;
 
 /** Öffnet den ContactFunnel wie ein Klick auf `a[href="#contact"][data-paket]`. */
 function scrollToContactPaket(paketName: string) {
@@ -538,26 +540,23 @@ export function PricingBoxes() {
           <div className="mb-6 grid gap-2 md:mb-7 md:grid-cols-3 md:gap-3">
             {PRICING_DESKTOP_ORDER.map((pkgIndex) => {
               const pkg = PRICING_PACKAGES[pkgIndex]!;
-              const isPro = pkg.highlight;
               return (
                 <article
                   key={`fit-${pkg.name}`}
                   className={cn(
                     "rounded-lg border border-black/10 bg-gradient-to-br from-black/5 to-black/0 p-2.5 text-left shadow-[0_10px_22px_-18px_rgba(24,24,27,0.28)] backdrop-blur-[14px] md:rounded-xl",
-                    isPro
-                      ? "md:scale-105 md:border-[#e07a40]/35 md:p-3.5 md:shadow-[0_16px_30px_-22px_rgba(198,90,32,0.35)]"
-                      : "md:p-3",
+                    "md:p-3",
                     "evg-clean-hover hover:border-[#e07a40]/35 hover:shadow-[0_16px_34px_-20px_rgba(198,90,32,0.24)]",
                   )}
                 >
                   <p className="text-[11px] font-semibold uppercase tracking-[0.08em] text-zinc-500">{pkg.name}</p>
-                  <p className={cn("mt-1 font-medium leading-snug text-zinc-800", isPro ? "text-[13px]" : "text-xs")}>
+                  <p className="mt-1 text-xs font-medium leading-snug text-zinc-800">
                     Für wen: {pkg.fit}
                   </p>
-                  <p className={cn("mt-0.5 leading-snug text-zinc-600", isPro ? "text-[13px]" : "text-xs")}>
+                  <p className="mt-0.5 text-xs leading-snug text-zinc-600">
                     Ergebnis: {pkg.outcome}
                   </p>
-                  <p className={cn("mt-1 font-medium text-[#c65a20]", isPro ? "text-xs" : "text-[11px]")}>{pkg.startIn}</p>
+                  <p className="mt-1 text-[11px] font-medium text-[#c65a20]">{pkg.startIn}</p>
                 </article>
               );
             })}
@@ -580,14 +579,14 @@ export function PricingBoxes() {
             />
           </div>
 
-          <div className="hidden flex-col items-center justify-center gap-8 py-6 md:flex md:flex-row md:gap-6">
+          <div className="hidden flex-col items-center justify-center gap-8 py-6 md:flex md:flex-row md:items-stretch md:gap-6">
             {PRICING_DESKTOP_ORDER.map((pkgIndex, position) => {
               const pkg = PRICING_PACKAGES[pkgIndex];
               return (
                 <PricingCard
                   key={pkg.name}
                   {...toPricingCardProps(pkg)}
-                  className={`pricing-card-slide-${position}`}
+                  className={`pricing-card-slide-${position} h-full md:scale-100`}
                 />
               );
             })}
@@ -634,14 +633,14 @@ export function PricingBoxes() {
               />
             </div>
 
-            <div className="hidden flex-col items-center justify-center gap-8 py-2 md:flex md:flex-row md:gap-6">
+            <div className="hidden flex-col items-center justify-center gap-8 py-2 md:flex md:flex-row md:items-stretch md:gap-6">
               {DASHBOARD_DESKTOP_ORDER.map((pkgIndex, index) => {
                 const pkg = DASHBOARD_SUBSCRIPTION_PACKAGES[pkgIndex]!;
                 return (
                 <PricingCard
                   key={pkg.name}
                   {...toPricingCardProps(pkg)}
-                  className={`pricing-card-slide-sub-${index}`}
+                  className={`pricing-card-slide-sub-${index} h-full md:scale-100`}
                 />
                 );
               })}
@@ -680,13 +679,16 @@ export function PricingBoxes() {
             </div>
 
             <div className="hidden flex-col items-center justify-center gap-5 py-2 md:flex md:flex-row md:flex-wrap md:gap-5">
-              {ADDONS.map((addon, index) => (
-                <PricingCard
-                  key={addon.name}
-                  {...toAddonPricingCardProps(addon, index)}
-                  className={`pricing-card-slide-addon-${index} evg-clean-hover`}
-                />
-              ))}
+              {ADDONS_DESKTOP_ORDER.map((addonIndex, index) => {
+                const addon = ADDONS[addonIndex]!;
+                return (
+                  <PricingCard
+                    key={addon.name}
+                    {...toAddonPricingCardProps(addon, addonIndex)}
+                    className={`pricing-card-slide-addon-${index} evg-clean-hover`}
+                  />
+                );
+              })}
             </div>
           </div>
 

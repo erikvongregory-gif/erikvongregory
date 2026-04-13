@@ -1,10 +1,16 @@
 import Link from "next/link";
 import { redirect } from "next/navigation";
+import type { Metadata } from "next";
 import { createClient } from "@/lib/supabase/server";
 import { isSupabaseConfigured } from "@/lib/supabase/env";
 import { Example as DashboardWithSidebar } from "@/components/ui/dashboard-with-collapsible-sidebar";
 
 export const dynamic = "force-dynamic";
+export const metadata: Metadata = {
+  title: {
+    absolute: "EvGlab - Dashboard",
+  },
+};
 
 export default async function DashboardPage() {
   if (!isSupabaseConfigured()) {

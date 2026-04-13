@@ -27,7 +27,7 @@ import {
   type SubscriptionPlanKey,
 } from "@/components/dashboard/BrewerySubscriptionPlans";
 import { ImagePromptWorkflow } from "@/components/dashboard/ImagePromptWorkflow";
-import { OnboardingDialog } from "@/components/ui/onboarding-dialog";
+import { OnboardingDialog, type OnboardingStep } from "@/components/ui/onboarding-dialog";
 
 type OptionProps = {
   Icon: LucideIcon;
@@ -138,6 +138,58 @@ const USE_CASE_FLOWS = [
     steps: ["Produkt + Zielgruppe wählen", "Co-Branding-Bilder erzeugen", "Pakete an Partner senden"],
   },
 ] as const;
+
+const DASHBOARD_ONBOARDING_STEPS: OnboardingStep[] = [
+  {
+    id: "overview",
+    tab: "Dashboard",
+    targetSelector: '[data-onboarding-nav="dashboard"]',
+    title: "Dashboard",
+    description: "Hier startet deine Übersicht mit allen wichtigen Kennzahlen.",
+  },
+  {
+    id: "content",
+    tab: "Inhalte erstellen",
+    targetSelector: '[data-onboarding-nav="content"]',
+    title: "Inhalte erstellen",
+    description: "In diesem Bereich erstellst du Prompts und generierst neue Motive.",
+  },
+  {
+    id: "library",
+    tab: "Mediathek",
+    targetSelector: '[data-onboarding-nav="library"]',
+    title: "Mediathek",
+    description: "Alle generierten Bilder werden hier gespeichert und können direkt heruntergeladen werden.",
+  },
+  {
+    id: "billing",
+    tab: "Abo & Tokens",
+    targetSelector: '[data-onboarding-nav="billing"]',
+    title: "Abo & Tokens",
+    description: "Hier verwaltest du Tarif, Token-Verbrauch und Zukäufe.",
+  },
+  {
+    id: "team",
+    tab: "Team",
+    targetSelector: '[data-onboarding-nav="team"]',
+    title: "Team",
+    description: "Lade hier Teammitglieder ein, passe Rollen an und verwalte Zugriffe.",
+  },
+  {
+    id: "settings",
+    tab: "Einstellungen",
+    targetSelector: '[data-onboarding-nav="settings"]',
+    title: "Einstellungen",
+    description: "Passe Profil, Kontodaten und Benachrichtigungen an.",
+  },
+  {
+    id: "support",
+    tab: "Hilfe & Support",
+    targetSelector: '[data-onboarding-nav="support"]',
+    title: "Hilfe & Support",
+    description: "Hier findest du Hilfe und kannst direkt den Support kontaktieren.",
+  },
+];
 
 type ExampleProps = {
   userEmail?: string;
@@ -279,20 +331,14 @@ const MobileTabBar = ({
   const activeTab = tabs.find((tab) => tab.title === selected) ?? tabs[0];
 
   return (
-    <div className="-mx-4 mb-4 border-y border-gray-200 bg-white px-4 py-3 dark:border-gray-800 dark:bg-gray-900 sm:-mx-6 sm:px-6 lg:hidden">
+    <div className="-mx-4 mb-4 bg-transparent px-4 py-3 sm:-mx-6 sm:px-6 lg:hidden">
       <button
         type="button"
         onClick={() => setMenuOpen((prev) => !prev)}
-        className="flex w-full items-center justify-between rounded-lg border border-gray-200 bg-white px-3 py-2 text-sm font-medium text-gray-700 dark:border-gray-700 dark:bg-gray-900 dark:text-gray-200"
+        aria-label={menuOpen ? "Menü schließen" : "Menü öffnen"}
+        className="ml-auto inline-flex h-10 w-10 items-center justify-center rounded-md bg-transparent text-gray-800 transition-colors hover:bg-black/5 dark:text-gray-100 dark:hover:bg-white/10"
       >
-        <span className="inline-flex items-center gap-2">
-          <activeTab.Icon className="h-4 w-4" />
-          {activeTab.title}
-        </span>
-        <span className="inline-flex items-center gap-2 text-xs text-gray-500 dark:text-gray-400">
-          Menü
-          <Menu className="h-4 w-4" />
-        </span>
+        <Menu className="h-5 w-5" />
       </button>
 
       {menuOpen && (
@@ -328,10 +374,20 @@ const MobileTabBar = ({
 
 const Option = ({ Icon, title, selected, setSelected, open, notifs }: OptionProps) => {
   const isSelected = selected === title;
+  const onboardingKey: Record<DashboardTab, string> = {
+    Dashboard: "dashboard",
+    "Inhalte erstellen": "content",
+    Mediathek: "library",
+    "Abo & Tokens": "billing",
+    Team: "team",
+    Einstellungen: "settings",
+    "Hilfe & Support": "support",
+  };
 
   return (
     <button
       onClick={() => setSelected(title)}
+      data-onboarding-nav={onboardingKey[title]}
       className={`relative flex h-11 w-full items-center rounded-md transition-all duration-200 ${
         isSelected
           ? "border-l-2 border-blue-500 bg-blue-50 text-blue-700 shadow-sm dark:bg-blue-900/50 dark:text-blue-300"
@@ -398,8 +454,15 @@ const TitleSection = ({ open, userEmail, planLabel }: { open: boolean; userEmail
         {open && <ChevronDown className={`h-4 w-4 text-gray-400 transition-transform dark:text-gray-500 ${menuOpen ? "rotate-180" : ""}`} />}
       </button>
 
-      {open && menuOpen ? (
-        <div className="mt-2 space-y-1 rounded-md border border-gray-200 bg-white p-1 shadow-sm dark:border-gray-700 dark:bg-gray-900">
+      {open ? (
+        <div
+          className={`mt-2 origin-top overflow-hidden rounded-md border border-gray-200 bg-white p-1 shadow-sm transition-all duration-150 ease-[cubic-bezier(0.2,0.8,0.2,1)] dark:border-gray-700 dark:bg-gray-900 ${
+            menuOpen
+              ? "max-h-28 translate-y-0 scale-100 opacity-100"
+              : "pointer-events-none max-h-0 -translate-y-1 scale-[0.98] opacity-0"
+          }`}
+          aria-hidden={!menuOpen}
+        >
           <button
             type="button"
             onClick={handleBackToHomepage}
@@ -920,7 +983,7 @@ const ExampleContent = ({ isDark, applyTheme, userEmail, userName, selectedTab, 
     if (selectedTab === "Dashboard") {
       return (
         <>
-          <div className="mb-8 grid grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-4">
+          <div data-onboarding="dashboard-overview" className="mb-8 grid grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-4">
             <div className="rounded-xl border border-gray-200 bg-white p-6 shadow-sm transition-shadow hover:shadow-md dark:border-gray-800 dark:bg-gray-900">
               <div className="mb-4 flex items-center justify-between">
                 <div className="rounded-lg bg-orange-50 p-2 dark:bg-orange-900/20">
@@ -1071,7 +1134,7 @@ const ExampleContent = ({ isDark, applyTheme, userEmail, userName, selectedTab, 
     if (selectedTab === "Abo & Tokens") {
       return (
         <div className="space-y-6">
-          <section className="rounded-2xl border border-gray-200 bg-white p-6 shadow-sm dark:border-gray-800 dark:bg-gray-900">
+          <section data-onboarding="billing-overview" className="rounded-2xl border border-gray-200 bg-white p-6 shadow-sm dark:border-gray-800 dark:bg-gray-900">
             <div className="mb-5 flex flex-wrap items-center justify-between gap-3">
               <h2 className="text-xl font-semibold text-gray-900 dark:text-gray-100">Abo & Tokens</h2>
               <span className="rounded-full bg-emerald-50 px-3 py-1 text-xs font-medium text-emerald-700 dark:bg-emerald-900/30 dark:text-emerald-300">
@@ -1131,7 +1194,7 @@ const ExampleContent = ({ isDark, applyTheme, userEmail, userName, selectedTab, 
 
     if (selectedTab === "Mediathek") {
       return (
-        <section className="rounded-2xl border border-gray-200 bg-white p-6 shadow-sm dark:border-gray-800 dark:bg-gray-900">
+        <section data-onboarding="media-library" className="rounded-2xl border border-gray-200 bg-white p-6 shadow-sm dark:border-gray-800 dark:bg-gray-900">
           <div className="mb-5 flex items-center justify-between">
             <h2 className="text-xl font-semibold text-gray-900 dark:text-gray-100">Mediathek</h2>
             <span className="rounded-full bg-blue-50 px-3 py-1 text-xs font-medium text-blue-700 dark:bg-blue-900/30 dark:text-blue-300">
@@ -1212,7 +1275,7 @@ const ExampleContent = ({ isDark, applyTheme, userEmail, userName, selectedTab, 
 
     if (selectedTab === "Einstellungen") {
       return (
-        <section className="rounded-2xl border border-gray-200 bg-white p-6 shadow-sm dark:border-gray-800 dark:bg-gray-900">
+        <section data-onboarding="team-overview" className="rounded-2xl border border-gray-200 bg-white p-6 shadow-sm dark:border-gray-800 dark:bg-gray-900">
           <div className="mb-6 flex items-center justify-between">
             <h2 className="text-xl font-semibold text-gray-900 dark:text-gray-100">Profil-Einstellungen</h2>
             <button
@@ -1485,7 +1548,18 @@ const ExampleContent = ({ isDark, applyTheme, userEmail, userName, selectedTab, 
           </div>
         </div>
       ) : null}
-      <OnboardingDialog open={showOnboarding} onClose={closeOnboarding} />
+      <OnboardingDialog
+        open={showOnboarding}
+        onClose={closeOnboarding}
+        steps={DASHBOARD_ONBOARDING_STEPS}
+        onStepChange={(step) => {
+          if (step.tab) {
+            window.requestAnimationFrame(() => {
+              setSelectedTab(step.tab as DashboardTab);
+            });
+          }
+        }}
+      />
       <MobileTabBar selected={selectedTab} setSelected={setSelectedTab} />
       {globalErrorMessage ? (
         <div className="mb-4 rounded-lg border border-red-200 bg-red-50 px-3 py-2 text-sm text-red-700 dark:border-red-900/40 dark:bg-red-900/20 dark:text-red-300">
@@ -1523,7 +1597,7 @@ const ExampleContent = ({ isDark, applyTheme, userEmail, userName, selectedTab, 
 
       <div className={selectedTab === "Inhalte erstellen" ? "block" : "hidden"} aria-hidden={selectedTab !== "Inhalte erstellen"}>
         <div className="space-y-6">
-          <section className="rounded-2xl border border-gray-200 bg-white p-6 shadow-sm dark:border-gray-800 dark:bg-gray-900">
+          <section data-onboarding="content-workflow" className="rounded-2xl border border-gray-200 bg-white p-6 shadow-sm dark:border-gray-800 dark:bg-gray-900">
             <div className="mb-4 flex items-center justify-between gap-3">
               <h2 className="text-xl font-semibold text-gray-900 dark:text-gray-100">Produkt-Workflow</h2>
               <span className="rounded-full bg-orange-50 px-3 py-1 text-xs font-medium text-[#c65a20] dark:bg-orange-900/30 dark:text-orange-300">

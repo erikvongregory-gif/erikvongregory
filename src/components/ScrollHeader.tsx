@@ -199,7 +199,7 @@ export function ScrollHeader() {
         <div ref={mobileNavRef} className="pointer-events-auto relative shrink-0">
           <button
             type="button"
-            className="inline-flex h-10 w-10 items-center justify-center rounded-lg border border-zinc-200 bg-white text-neutral-800 shadow-sm focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-neutral-400 focus-visible:ring-offset-2"
+            className="inline-flex h-10 w-10 items-center justify-center rounded-lg bg-transparent text-neutral-900 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-neutral-400 focus-visible:ring-offset-2"
             aria-expanded={dropdownOpen}
             aria-haspopup="menu"
             aria-label={dropdownOpen ? "Menü schließen" : "Menü öffnen"}
