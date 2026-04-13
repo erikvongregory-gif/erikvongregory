@@ -232,7 +232,7 @@ export function ContactFunnel() {
                 id="contact-funnel-title"
                 className="mt-1 text-xl font-light italic font-austera-green-fade sm:text-2xl"
               >
-                Kostenloses Erstgespräch
+                Kontakt aufnehmen
               </h2>
               <p className="mt-1.5 text-sm text-white/60">
                 {selectedOffer ? (
@@ -241,7 +241,7 @@ export function ContactFunnel() {
                     <span className="font-medium text-[#f4a574]">{selectedOffer}</span>
                   </>
                 ) : (
-                  "Unverbindlich & direkt."
+                  "Direkt und unverbindlich."
                 )}
               </p>
 

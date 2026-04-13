@@ -90,7 +90,7 @@ export function AnimatedHeroMobile({ className }: AnimatedHeroProps) {
               whileHover={{ scale: 1.05, transition: { type: "spring", damping: 30, stiffness: 400 } }}
             >
               <span className="text-center">
-                Kostenloses Erstgespraech <span className="ml-1 font-serif" aria-hidden>→</span>
+                Kontakt aufnehmen <span className="ml-1 font-serif" aria-hidden>→</span>
               </span>
             </motion.a>
             <motion.div

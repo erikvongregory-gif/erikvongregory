@@ -17,6 +17,7 @@ export function Section2BreweryCards({
   const glassCardClass =
     "rounded-2xl border border-white/55 bg-white/38 backdrop-blur-xl shadow-[0_14px_30px_-20px_rgba(24,24,27,0.26)]";
   const glassInnerClass = "border-white/50 bg-white/45 backdrop-blur-md";
+  const revealCardClass = "section2-box-slide";
 
   return (
     <section className={cn("py-16 md:py-24", className)}>
@@ -32,7 +33,10 @@ export function Section2BreweryCards({
         </div>
 
         <div className="grid grid-cols-6 gap-4">
-          <Card className={cn("relative col-span-full flex overflow-hidden lg:col-span-2", glassCardClass)}>
+          <Card
+            className={cn("relative col-span-full flex overflow-hidden lg:col-span-2", glassCardClass, revealCardClass)}
+            style={{ animationDelay: "0ms" }}
+          >
             <CardContent className="relative m-auto size-fit p-6 md:p-7">
               <div className="relative flex h-24 w-56 items-center justify-center">
                 <svg
@@ -58,7 +62,10 @@ export function Section2BreweryCards({
             </CardContent>
           </Card>
 
-          <Card className={cn("relative col-span-full overflow-hidden sm:col-span-3 lg:col-span-2", glassCardClass)}>
+          <Card
+            className={cn("relative col-span-full overflow-hidden sm:col-span-3 lg:col-span-2", glassCardClass, revealCardClass)}
+            style={{ animationDelay: "90ms" }}
+          >
             <CardContent className="p-6 pt-6 md:p-7 md:pt-6">
               <div className={cn("relative mx-auto flex aspect-square size-24 rounded-full border", glassInnerClass)}>
                 <Shield className="m-auto size-10 text-zinc-700" strokeWidth={1.5} />
@@ -72,7 +79,10 @@ export function Section2BreweryCards({
             </CardContent>
           </Card>
 
-          <Card className={cn("relative col-span-full overflow-hidden sm:col-span-3 lg:col-span-2", glassCardClass)}>
+          <Card
+            className={cn("relative col-span-full overflow-hidden sm:col-span-3 lg:col-span-2", glassCardClass, revealCardClass)}
+            style={{ animationDelay: "180ms" }}
+          >
             <CardContent className="p-6 pt-6 md:p-7 md:pt-6">
               <div className={cn("relative mx-auto flex aspect-square size-24 rounded-full border", glassInnerClass)}>
                 <TrendingUp className="m-auto size-10 text-[#c65a20]" strokeWidth={1.5} />
@@ -86,7 +96,10 @@ export function Section2BreweryCards({
             </CardContent>
           </Card>
 
-          <Card className={cn("relative col-span-full overflow-hidden lg:col-span-3", glassCardClass)}>
+          <Card
+            className={cn("relative col-span-full overflow-hidden lg:col-span-3", glassCardClass, revealCardClass)}
+            style={{ animationDelay: "270ms" }}
+          >
             <CardContent className="grid gap-5 p-6 sm:grid-cols-2 md:p-7">
               <div className="relative z-10 flex flex-col justify-between space-y-8">
                 <div className={cn("relative flex aspect-square size-12 rounded-full border", glassInnerClass)}>
@@ -108,7 +121,10 @@ export function Section2BreweryCards({
             </CardContent>
           </Card>
 
-          <Card className={cn("relative col-span-full overflow-hidden lg:col-span-3", glassCardClass)}>
+          <Card
+            className={cn("relative col-span-full overflow-hidden lg:col-span-3", glassCardClass, revealCardClass)}
+            style={{ animationDelay: "360ms" }}
+          >
             <CardContent className="grid h-full gap-5 p-6 sm:grid-cols-2 md:p-7">
               <div className="relative z-10 flex flex-col justify-between space-y-8">
                 <div className={cn("relative flex aspect-square size-12 rounded-full border", glassInnerClass)}>

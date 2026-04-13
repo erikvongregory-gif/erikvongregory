@@ -129,7 +129,7 @@ export function HeroSectionOne() {
                   <div key={1} className="rounded-[14px] border bg-foreground/10 p-0.5">
                     <Button asChild size="lg" className="rounded-xl px-5 text-base">
                       <Link href="#contact">
-                        <span className="text-nowrap">Kostenloses Erstgespraech</span>
+                        <span className="text-nowrap">Kontakt aufnehmen</span>
                       </Link>
                     </Button>
                   </div>

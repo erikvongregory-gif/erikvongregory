@@ -61,18 +61,32 @@ export function AppShell({ children }: AppShellProps) {
                 >
                   LinkedIn
                 </a>
+                <a
+                  href="https://wa.me/4915565602176"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="text-sm text-[#b45309] transition-colors hover:text-[#c65a20] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-orange-400 focus-visible:ring-offset-2 focus-visible:ring-offset-transparent rounded"
+                >
+                  WhatsApp
+                </a>
               </div>
             </div>
             <div>
               <p className="text-sm font-semibold text-zinc-800">Kontakt</p>
               <p className="mt-2 text-sm text-zinc-600">
-                Kostenloses Erstgespraech - unverbindlich & direkt.
+                Kontaktieren - direkt und unkompliziert.
               </p>
               <a
-                href="#contact"
+                href="mailto:kontakt@evglab.com"
                 className="mt-3 inline-flex items-center gap-2 rounded-lg bg-[#c65a20] px-4 py-2.5 text-sm font-medium text-white transition-all duration-200 hover:bg-[#d46830] hover:scale-[1.02] active:scale-[0.98] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-orange-400 focus-visible:ring-offset-2 focus-visible:ring-offset-transparent rounded"
               >
                 E-Mail schreiben
+              </a>
+              <a
+                href="mailto:kontakt@evglab.com"
+                className="mt-2 block text-sm text-[#b45309] transition-colors hover:text-[#c65a20] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-orange-400 focus-visible:ring-offset-2 focus-visible:ring-offset-transparent rounded"
+              >
+                kontakt@evglab.com
               </a>
             </div>
             <div>

@@ -20,9 +20,12 @@ export function LoadingScreen() {
   }, []);
 
   useEffect(() => {
-    const t1 = setTimeout(() => setPhase("fade"), duration - FADE_OUT_MS);
-    const t2 = setTimeout(() => {
+    const fadeStart = Math.max(duration - FADE_OUT_MS, 0);
+    const t1 = setTimeout(() => {
       setLoadComplete();
+      setPhase("fade");
+    }, fadeStart);
+    const t2 = setTimeout(() => {
       setPhase("done");
     }, duration);
     return () => {

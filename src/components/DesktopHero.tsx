@@ -217,7 +217,7 @@ export function DesktopHero({ variant = "desktop" }: { variant?: DesktopHeroVari
             }}
           >
             <span className="text-center">
-              Kostenloses Erstgespräch{" "}
+              Kontakt aufnehmen{" "}
               <span className={cn("font-serif", isMobile ? "ml-0.5" : "ml-1")} aria-hidden>
                 →
               </span>
