@@ -1,5 +1,5 @@
 import { NextResponse } from "next/server";
-import { isSupabaseConfigured } from "@/lib/supabase/env";
+import { isInviteOnlyEnabled, isSupabaseConfigured } from "@/lib/supabase/env";
 import { createRouteHandlerClient } from "@/lib/supabase/server";
 
 export async function GET(request: Request) {
@@ -9,6 +9,9 @@ export async function GET(request: Request) {
 
   if (!isSupabaseConfigured()) {
     return NextResponse.redirect(`${origin}/?auth=signin&error=config`, 303);
+  }
+  if (isInviteOnlyEnabled()) {
+    return NextResponse.redirect(`${origin}/?auth=signin&error=invite_only`, 303);
   }
 
   const cookieCarrier = NextResponse.next();

@@ -54,6 +54,7 @@ type AddonRow = {
   price: string;
   priceSubtext: string;
 };
+type OfferPath = "service" | "dashboard";
 
 function trackEvent(event: string, payload?: Record<string, unknown>) {
   if (typeof window === "undefined") return;
@@ -459,6 +460,7 @@ export function PricingBoxes() {
   const sectionRef = useRef<HTMLElement>(null);
   const [inView, setInView] = useState(false);
   const [isDesktop, setIsDesktop] = useState(false);
+  const [selectedPath, setSelectedPath] = useState<OfferPath | null>(null);
 
   useEffect(() => {
     const q = () => setIsDesktop(window.matchMedia("(min-width: 768px)").matches);
@@ -481,6 +483,25 @@ export function PricingBoxes() {
     observer.observe(el);
     return () => observer.disconnect();
   }, []);
+
+  useEffect(() => {
+    if (typeof window === "undefined") return;
+    if (!selectedPath) return;
+
+    const kickLayout = () => {
+      window.dispatchEvent(new Event("resize"));
+    };
+
+    const rafId = window.requestAnimationFrame(kickLayout);
+    const t1 = window.setTimeout(kickLayout, 80);
+    const t2 = window.setTimeout(kickLayout, 180);
+
+    return () => {
+      window.cancelAnimationFrame(rafId);
+      window.clearTimeout(t1);
+      window.clearTimeout(t2);
+    };
+  }, [selectedPath]);
 
   return (
     <section ref={sectionRef} className={`mt-10 ${inView ? "pricing-in-view" : ""}`}>
@@ -508,191 +529,228 @@ export function PricingBoxes() {
               </h3>
             </div>
             <div className="grid gap-3 md:grid-cols-2">
-              <article className="evg-clean-hover rounded-xl border border-black/10 bg-gradient-to-br from-black/5 to-black/0 p-4 backdrop-blur-[14px] hover:border-[#e07a40]/35 hover:shadow-[0_16px_34px_-20px_rgba(198,90,32,0.24)]">
+              <button
+                type="button"
+                onClick={() => setSelectedPath((prev) => (prev === "service" ? null : "service"))}
+                className={cn(
+                  "evg-clean-hover rounded-xl border border-black/10 bg-gradient-to-br from-black/5 to-black/0 p-4 text-left backdrop-blur-[14px] hover:border-[#e07a40]/35 hover:shadow-[0_16px_34px_-20px_rgba(198,90,32,0.24)]",
+                  selectedPath === "service" && "border-[#e07a40]/45 ring-1 ring-[#e07a40]/40",
+                )}
+              >
                 <p className="text-xs font-semibold uppercase tracking-[0.08em] text-zinc-500">Option 1</p>
                 <h4 className="mt-1 text-base font-semibold text-zinc-900">Ich mache es für dich</h4>
                 <p className="mt-2 text-sm leading-relaxed text-zinc-600">
                   Höherpreisige Premium-Umsetzung mit maximaler Qualität. Du bekommst fertige Ergebnisse, ich übernehme Strategie,
                   Gestaltung und saubere Ausspielung.
                 </p>
-              </article>
-              <article className="evg-clean-hover rounded-xl border border-black/10 bg-gradient-to-br from-black/5 to-black/0 p-4 backdrop-blur-[14px] hover:border-[#e07a40]/35 hover:shadow-[0_16px_34px_-20px_rgba(198,90,32,0.24)]">
+              </button>
+              <button
+                type="button"
+                onClick={() => setSelectedPath((prev) => (prev === "dashboard" ? null : "dashboard"))}
+                className={cn(
+                  "evg-clean-hover rounded-xl border border-black/10 bg-gradient-to-br from-black/5 to-black/0 p-4 text-left backdrop-blur-[14px] hover:border-[#e07a40]/35 hover:shadow-[0_16px_34px_-20px_rgba(198,90,32,0.24)]",
+                  selectedPath === "dashboard" && "border-[#e07a40]/45 ring-1 ring-[#e07a40]/40",
+                )}
+              >
                 <p className="text-xs font-semibold uppercase tracking-[0.08em] text-zinc-500">Option 2</p>
                 <h4 className="mt-1 text-base font-semibold text-zinc-900">Du nutzt mein Abo-Tool</h4>
                 <p className="mt-2 text-sm leading-relaxed text-zinc-600">
                   Günstiger und flexibel. Du generierst Bilder selbst im Dashboard, bleibst schnell handlungsfähig und steuerst deinen
                   Output eigenständig.
                 </p>
-              </article>
+              </button>
             </div>
-          </div>
-
-          <div className="mb-8 flex flex-col items-center gap-4 text-center">
-            <span className="pricing-section-badge section7-badge section7-badge-pulse inline-flex items-center gap-2 rounded-full border border-[rgba(224,122,64,0.35)] bg-[rgba(224,122,64,0.15)] px-4 py-1.5 text-sm font-medium text-[#c65a20] pricing-slide-in">
-              <span aria-hidden>✦</span>
-              Aktuelle Angebote
-            </span>
-            <h3 className="pricing-slide-in pricing-slide-in-delay-1 text-2xl font-bold text-zinc-800 sm:text-3xl md:text-zinc-900">
-              Pakete & Preise
-            </h3>
-          </div>
-
-          <div className="mb-6 grid gap-2 md:mb-7 md:grid-cols-3 md:gap-3">
-            {PRICING_DESKTOP_ORDER.map((pkgIndex) => {
-              const pkg = PRICING_PACKAGES[pkgIndex]!;
-              return (
-                <article
-                  key={`fit-${pkg.name}`}
-                  className={cn(
-                    "rounded-lg border border-black/10 bg-gradient-to-br from-black/5 to-black/0 p-2.5 text-left shadow-[0_10px_22px_-18px_rgba(24,24,27,0.28)] backdrop-blur-[14px] md:rounded-xl",
-                    "md:p-3",
-                    "evg-clean-hover hover:border-[#e07a40]/35 hover:shadow-[0_16px_34px_-20px_rgba(198,90,32,0.24)]",
-                  )}
-                >
-                  <p className="text-[11px] font-semibold uppercase tracking-[0.08em] text-zinc-500">{pkg.name}</p>
-                  <p className="mt-1 text-xs font-medium leading-snug text-zinc-800">
-                    Für wen: {pkg.fit}
-                  </p>
-                  <p className="mt-0.5 text-xs leading-snug text-zinc-600">
-                    Ergebnis: {pkg.outcome}
-                  </p>
-                  <p className="mt-1 text-[11px] font-medium text-[#c65a20]">{pkg.startIn}</p>
-                </article>
-              );
-            })}
-          </div>
-
-          <div className="md:hidden">
-            <MobilePricingSnapCarousel
-              ariaLabel="Pakete durchblättern"
-              dotsNavLabel="Paket wählen"
-              slideKeys={PRICING_PACKAGES.map((p) => p.name)}
-              renderSlide={(index) => {
-                const pkg = PRICING_PACKAGES[index]!;
-                return (
-                  <PricingCard
-                    {...toPricingCardProps(pkg)}
-                    className={`pricing-card-slide-${index} w-full max-w-sm`}
-                  />
-                );
-              }}
-            />
-          </div>
-
-          <div className="hidden flex-col items-center justify-center gap-8 py-6 md:flex md:flex-row md:items-stretch md:gap-6">
-            {PRICING_DESKTOP_ORDER.map((pkgIndex, position) => {
-              const pkg = PRICING_PACKAGES[pkgIndex];
-              return (
-                <PricingCard
-                  key={pkg.name}
-                  {...toPricingCardProps(pkg)}
-                  className={`pricing-card-slide-${position} h-full md:scale-100`}
-                />
-              );
-            })}
-          </div>
-
-          <div className="relative mt-10 overflow-hidden rounded-3xl pt-2">
-            <div
-              className="pointer-events-none absolute inset-0 -z-10 opacity-95"
-              aria-hidden
-            >
-              <ShaderCanvas
-                mode="contained"
-                shape="loop"
-                backgroundRgb={
-                  isDesktop ? CONTAINED_SHADER_BG.desktopLight : CONTAINED_SHADER_BG.mobileDark
-                }
-              />
-            </div>
-
-            <div className="mb-8 flex flex-col items-center gap-3 text-center">
-              <span className="section7-badge section7-badge-pulse inline-flex items-center gap-2 rounded-full border border-[rgba(224,122,64,0.35)] bg-[rgba(224,122,64,0.15)] px-4 py-1.5 text-sm font-medium text-[#c65a20]">
-                <span aria-hidden>✦</span>
-                Neue Abo-Pläne
-              </span>
-              <h3 className="text-2xl font-bold text-zinc-800 sm:text-3xl md:text-zinc-900">
-                Dashboard Abos
-              </h3>
-            </div>
-
-            <div className="md:hidden">
-              <MobilePricingSnapCarousel
-                ariaLabel="Dashboard-Abos durchblättern"
-                dotsNavLabel="Abo wählen"
-                slideKeys={DASHBOARD_SUBSCRIPTION_PACKAGES.map((p) => p.name)}
-                renderSlide={(index) => {
-                  const pkg = DASHBOARD_SUBSCRIPTION_PACKAGES[index]!;
-                  return (
-                    <PricingCard
-                      {...toPricingCardProps(pkg)}
-                      className={`pricing-card-slide-sub-${index} w-full max-w-sm`}
-                    />
-                  );
-                }}
-              />
-            </div>
-
-            <div className="hidden flex-col items-center justify-center gap-8 py-2 md:flex md:flex-row md:items-stretch md:gap-6">
-              {DASHBOARD_DESKTOP_ORDER.map((pkgIndex, index) => {
-                const pkg = DASHBOARD_SUBSCRIPTION_PACKAGES[pkgIndex]!;
-                return (
-                <PricingCard
-                  key={pkg.name}
-                  {...toPricingCardProps(pkg)}
-                  className={`pricing-card-slide-sub-${index} h-full md:scale-100`}
-                />
-                );
-              })}
-            </div>
-          </div>
-
-          <div className="mt-10 pt-2">
-            <div className="mb-8 flex flex-col items-center gap-3 text-center">
-              <span className="section7-badge section7-badge-pulse inline-flex items-center gap-2 rounded-full border border-[rgba(224,122,64,0.35)] bg-[rgba(224,122,64,0.15)] px-4 py-1.5 text-sm font-medium text-[#c65a20]">
-                <span aria-hidden>✦</span>
-                Erweiterungen
-              </span>
-              <h3 className="text-2xl font-bold text-zinc-800 sm:text-3xl md:text-zinc-900">
-                Add-ons &amp; Upsells
-              </h3>
-              <p className="max-w-xl text-sm text-zinc-600">
-                Kombinierbar mit jedem Paket – für mehr Wirkung.
+            {selectedPath === null ? (
+              <p className="mt-4 text-center text-xs text-zinc-600">
+                Wähle zuerst einen Weg, dann zeigen wir dir die passenden Detailpläne.
               </p>
-            </div>
+            ) : null}
+          </div>
 
-            <div className="md:hidden">
-              <MobilePricingSnapCarousel
-                ariaLabel="Add-ons durchblättern"
-                dotsNavLabel="Add-on wählen"
-                slideKeys={ADDONS.map((a) => a.name)}
-                renderSlide={(index) => {
-                  const addon = ADDONS[index]!;
+          <div
+            className={cn(
+              "overflow-hidden transition-all duration-300 ease-out",
+              selectedPath === "service"
+                ? "max-h-[2600px] opacity-100"
+                : "pointer-events-none max-h-0 opacity-0",
+            )}
+            aria-hidden={selectedPath !== "service"}
+          >
+              <div className="mb-8 flex flex-col items-center gap-4 text-center">
+                <span className="pricing-section-badge section7-badge section7-badge-pulse inline-flex items-center gap-2 rounded-full border border-[rgba(224,122,64,0.35)] bg-[rgba(224,122,64,0.15)] px-4 py-1.5 text-sm font-medium text-[#c65a20] pricing-slide-in">
+                  <span aria-hidden>✦</span>
+                  Aktuelle Angebote
+                </span>
+                <h3 className="pricing-slide-in pricing-slide-in-delay-1 text-2xl font-bold text-zinc-800 sm:text-3xl md:text-zinc-900">
+                  Pakete & Preise
+                </h3>
+              </div>
+
+              <div className="mb-6 grid gap-2 md:mb-7 md:grid-cols-3 md:gap-3">
+                {PRICING_DESKTOP_ORDER.map((pkgIndex) => {
+                  const pkg = PRICING_PACKAGES[pkgIndex]!;
+                  return (
+                    <article
+                      key={`fit-${pkg.name}`}
+                      className={cn(
+                        "rounded-lg border border-black/10 bg-gradient-to-br from-black/5 to-black/0 p-2.5 text-left shadow-[0_10px_22px_-18px_rgba(24,24,27,0.28)] backdrop-blur-[14px] md:rounded-xl",
+                        "md:p-3",
+                        "evg-clean-hover hover:border-[#e07a40]/35 hover:shadow-[0_16px_34px_-20px_rgba(198,90,32,0.24)]",
+                      )}
+                    >
+                      <p className="text-[11px] font-semibold uppercase tracking-[0.08em] text-zinc-500">{pkg.name}</p>
+                      <p className="mt-1 text-xs font-medium leading-snug text-zinc-800">
+                        Für wen: {pkg.fit}
+                      </p>
+                      <p className="mt-0.5 text-xs leading-snug text-zinc-600">
+                        Ergebnis: {pkg.outcome}
+                      </p>
+                      <p className="mt-1 text-[11px] font-medium text-[#c65a20]">{pkg.startIn}</p>
+                    </article>
+                  );
+                })}
+              </div>
+
+              <div className="md:hidden">
+                <MobilePricingSnapCarousel
+                  ariaLabel="Pakete durchblättern"
+                  dotsNavLabel="Paket wählen"
+                  slideKeys={PRICING_PACKAGES.map((p) => p.name)}
+                  renderSlide={(index) => {
+                    const pkg = PRICING_PACKAGES[index]!;
+                    return (
+                      <PricingCard
+                        {...toPricingCardProps(pkg)}
+                        className={`pricing-card-slide-${index} w-full max-w-sm`}
+                      />
+                    );
+                  }}
+                />
+              </div>
+
+              <div className="hidden flex-col items-center justify-center gap-8 py-6 md:flex md:flex-row md:items-stretch md:gap-6">
+                {PRICING_DESKTOP_ORDER.map((pkgIndex, position) => {
+                  const pkg = PRICING_PACKAGES[pkgIndex];
                   return (
                     <PricingCard
-                      {...toAddonPricingCardProps(addon, index)}
-                      className={`pricing-card-slide-addon-${index} evg-clean-hover w-full max-w-[300px]`}
+                      key={pkg.name}
+                      {...toPricingCardProps(pkg)}
+                      className={`pricing-card-slide-${position} h-full md:scale-100`}
                     />
                   );
-                }}
-              />
-            </div>
+                })}
+              </div>
+          </div>
 
-            <div className="hidden flex-col items-center justify-center gap-5 py-2 md:flex md:flex-row md:flex-wrap md:gap-5">
-              {ADDONS_DESKTOP_ORDER.map((addonIndex, index) => {
-                const addon = ADDONS[addonIndex]!;
-                return (
+          <div
+            className={cn(
+              "transition-all duration-300 ease-out",
+              selectedPath === "dashboard"
+                ? "max-h-[2200px] overflow-visible opacity-100"
+                : "pointer-events-none max-h-0 overflow-hidden opacity-0",
+            )}
+            aria-hidden={selectedPath !== "dashboard"}
+          >
+            <div className="relative mt-10 overflow-hidden rounded-3xl pt-2">
+
+              <div className="mb-8 flex flex-col items-center gap-3 text-center">
+                <span className="section7-badge section7-badge-pulse inline-flex items-center gap-2 rounded-full border border-[rgba(224,122,64,0.35)] bg-[rgba(224,122,64,0.15)] px-4 py-1.5 text-sm font-medium text-[#c65a20]">
+                  <span aria-hidden>✦</span>
+                  Neue Abo-Pläne
+                </span>
+                <h3 className="text-2xl font-bold text-zinc-800 sm:text-3xl md:text-zinc-900">
+                  Dashboard Abos
+                </h3>
+              </div>
+
+              <div className="md:hidden">
+                <MobilePricingSnapCarousel
+                  ariaLabel="Dashboard-Abos durchblättern"
+                  dotsNavLabel="Abo wählen"
+                  slideKeys={DASHBOARD_SUBSCRIPTION_PACKAGES.map((p) => p.name)}
+                  renderSlide={(index) => {
+                    const pkg = DASHBOARD_SUBSCRIPTION_PACKAGES[index]!;
+                    return (
+                      <PricingCard
+                        {...toPricingCardProps(pkg)}
+                        className={`pricing-card-slide-sub-${index} w-full max-w-sm`}
+                      />
+                    );
+                  }}
+                />
+              </div>
+
+              <div className="hidden flex-col items-center justify-center gap-8 py-2 md:flex md:flex-row md:items-stretch md:gap-6">
+                {DASHBOARD_DESKTOP_ORDER.map((pkgIndex, index) => {
+                  const pkg = DASHBOARD_SUBSCRIPTION_PACKAGES[pkgIndex]!;
+                  return (
                   <PricingCard
-                    key={addon.name}
-                    {...toAddonPricingCardProps(addon, addonIndex)}
-                    className={`pricing-card-slide-addon-${index} evg-clean-hover`}
+                    key={pkg.name}
+                    {...toPricingCardProps(pkg)}
+                    className={`pricing-card-slide-sub-${index} h-full md:scale-100`}
                   />
-                );
-              })}
+                  );
+                })}
+              </div>
             </div>
           </div>
 
-          <div className="evg-clean-hover mt-8 rounded-2xl border border-zinc-200/70 bg-transparent p-2 hover:border-[#e07a40]/35 hover:shadow-[0_16px_34px_-20px_rgba(198,90,32,0.24)] md:p-3">
+          <div
+            className={cn(
+              "overflow-hidden transition-all duration-300 ease-out",
+              selectedPath === "service"
+                ? "max-h-[1700px] opacity-100"
+                : "pointer-events-none max-h-0 opacity-0",
+            )}
+            aria-hidden={selectedPath !== "service"}
+          >
+            <div className="mt-10 pt-2">
+              <div className="mb-8 flex flex-col items-center gap-3 text-center">
+                <span className="section7-badge section7-badge-pulse inline-flex items-center gap-2 rounded-full border border-[rgba(224,122,64,0.35)] bg-[rgba(224,122,64,0.15)] px-4 py-1.5 text-sm font-medium text-[#c65a20]">
+                  <span aria-hidden>✦</span>
+                  Erweiterungen
+                </span>
+                <h3 className="text-2xl font-bold text-zinc-800 sm:text-3xl md:text-zinc-900">
+                  Add-ons &amp; Upsells
+                </h3>
+                <p className="max-w-xl text-sm text-zinc-600">
+                  Kombinierbar mit jedem Paket – für mehr Wirkung.
+                </p>
+              </div>
+
+              <div className="md:hidden">
+                <MobilePricingSnapCarousel
+                  ariaLabel="Add-ons durchblättern"
+                  dotsNavLabel="Add-on wählen"
+                  slideKeys={ADDONS.map((a) => a.name)}
+                  renderSlide={(index) => {
+                    const addon = ADDONS[index]!;
+                    return (
+                      <PricingCard
+                        {...toAddonPricingCardProps(addon, index)}
+                        className={`pricing-card-slide-addon-${index} evg-clean-hover w-full max-w-[300px]`}
+                      />
+                    );
+                  }}
+                />
+              </div>
+
+              <div className="hidden flex-col items-center justify-center gap-5 py-2 md:flex md:flex-row md:flex-wrap md:gap-5">
+                {ADDONS_DESKTOP_ORDER.map((addonIndex, index) => {
+                  const addon = ADDONS[addonIndex]!;
+                  return (
+                    <PricingCard
+                      key={addon.name}
+                      {...toAddonPricingCardProps(addon, addonIndex)}
+                      className={`pricing-card-slide-addon-${index} evg-clean-hover`}
+                    />
+                  );
+                })}
+              </div>
+            </div>
+          </div>
+
+          <div className="evg-clean-hover mt-8 rounded-2xl border border-zinc-200/70 bg-white/20 p-2 backdrop-blur-[10px] hover:border-[#e07a40]/35 hover:shadow-[0_16px_34px_-20px_rgba(198,90,32,0.24)] md:p-3">
             <FAQsComponent />
           </div>
         </div>

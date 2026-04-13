@@ -1,14 +1,11 @@
 import { NextResponse } from "next/server";
-import { isSupabaseConfigured } from "@/lib/supabase/env";
-import { createClient } from "@/lib/supabase/server";
+import { createAdminClient } from "@/lib/supabase/admin";
+import { isInviteOnlyEnabled, isSupabaseConfigured } from "@/lib/supabase/env";
+import { createRouteHandlerClient } from "@/lib/supabase/server";
+import { consumeInviteByToken } from "@/lib/invite/server";
 
 export async function POST(request: Request) {
   const { origin } = new URL(request.url);
-  return NextResponse.redirect(`${origin}/?auth=signin&error=signup_disabled`, 303);
-
-  // Registrierungen sind aktuell bewusst deaktiviert.
-  // Den bestehenden Code behalten wir darunter, um ihn später schnell reaktivieren zu können.
-  /*
   if (!isSupabaseConfigured()) {
     return NextResponse.redirect(`${origin}/?auth=signup&error=config`, 303);
   }
@@ -17,29 +14,55 @@ export async function POST(request: Request) {
   const email = String(formData.get("email") ?? "").trim();
   const password = String(formData.get("password") ?? "");
   const breweryName = String(formData.get("brewery") ?? "").trim();
+  const inviteToken = String(formData.get("inviteToken") ?? "").trim();
+  const next = String(formData.get("next") ?? "/dashboard");
+  const safeNext = next.startsWith("/") ? next : "/dashboard";
 
   if (!email || !password) {
     return NextResponse.redirect(`${origin}/?auth=signup&error=missing`, 303);
   }
 
-  const supabase = await createClient();
-  const { data, error } = await supabase.auth.signUp({
+  if (isInviteOnlyEnabled() && !inviteToken) {
+    return NextResponse.redirect(`${origin}/?auth=signup&error=invite_required`, 303);
+  }
+
+  if (isInviteOnlyEnabled()) {
+    const consumed = await consumeInviteByToken(inviteToken, email);
+    if (!consumed.ok) {
+      const reason =
+        consumed.status === "expired"
+          ? "invite_expired"
+          : consumed.status === "used"
+            ? "invite_used"
+            : consumed.status === "email_mismatch"
+              ? "invite_email_mismatch"
+              : "invite_invalid";
+      return NextResponse.redirect(`${origin}/?auth=signup&error=${reason}`, 303);
+    }
+  }
+
+  const admin = createAdminClient();
+  const { data, error } = await admin.auth.admin.createUser({
     email,
     password,
-    options: {
-      emailRedirectTo: `${origin}/auth/callback?next=/dashboard`,
-      data: { brewery_name: breweryName || null },
+    email_confirm: true,
+    user_metadata: {
+      brewery_name: breweryName || null,
+      invited_account: isInviteOnlyEnabled(),
     },
   });
 
-  if (error) {
-    return NextResponse.redirect(`${origin}/?auth=signup&error=auth&reason=${encodeURIComponent(error.message)}`, 303);
+  if (error || !data.user) {
+    return NextResponse.redirect(`${origin}/?auth=signup&error=auth`, 303);
   }
 
-  if (data.user && !data.session) {
-    return NextResponse.redirect(`${origin}/?auth=signin&notice=confirm`, 303);
+  const redirectResponse = NextResponse.redirect(`${origin}${safeNext}`, 303);
+  redirectResponse.headers.set("Cache-Control", "no-store, max-age=0");
+  const supabase = createRouteHandlerClient(request, redirectResponse);
+  const { error: signInError } = await supabase.auth.signInWithPassword({ email, password });
+  if (signInError) {
+    return NextResponse.redirect(`${origin}/?auth=signin&error=auth`, 303);
   }
 
-  return NextResponse.redirect(`${origin}/dashboard`, 303);
-  */
+  return redirectResponse;
 }

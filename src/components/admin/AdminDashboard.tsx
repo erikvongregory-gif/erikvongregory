@@ -13,13 +13,25 @@ type AdminUser = {
   lastSignInAt: string | null;
 };
 
+type BillingRow = {
+  userId: string;
+  email: string;
+  plan: string | null;
+  monthlyTokens: number;
+  usedTokens: number;
+  remainingTokens: number;
+  status: string;
+  currentPeriodEnd: string | null;
+  hasStripeCustomer: boolean;
+};
+
 export function AdminDashboard() {
   const [tab, setTab] = useState<AdminTab>("users");
   const [q, setQ] = useState("");
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
   const [users, setUsers] = useState<AdminUser[]>([]);
-  const [billingRows, setBillingRows] = useState<Array<Record<string, unknown>>>([]);
+  const [billingRows, setBillingRows] = useState<BillingRow[]>([]);
   const [teamRows, setTeamRows] = useState<Array<Record<string, unknown>>>([]);
   const [contentRows, setContentRows] = useState<Array<Record<string, unknown>>>([]);
 
@@ -32,7 +44,7 @@ export function AdminDashboard() {
 
   const loadBilling = async () => {
     const res = await fetch("/api/admin/billing", { cache: "no-store" });
-    const data = (await res.json()) as { error?: string; rows?: Array<Record<string, unknown>> };
+    const data = (await res.json()) as { error?: string; rows?: BillingRow[] };
     if (!res.ok) throw new Error(data.error ?? "Billing konnte nicht geladen werden.");
     setBillingRows(data.rows ?? []);
   };
@@ -148,6 +160,50 @@ export function AdminDashboard() {
     </div>
   );
 
+  const billingView = (
+    <div className="space-y-3">
+      <div className="overflow-x-auto rounded-lg border border-gray-200 dark:border-gray-700">
+        <table className="min-w-full text-sm">
+          <thead className="bg-gray-50 text-left dark:bg-gray-900">
+            <tr>
+              <th className="px-3 py-2">User ID</th>
+              <th className="px-3 py-2">E-Mail</th>
+              <th className="px-3 py-2">Plan</th>
+              <th className="px-3 py-2">Monatlich</th>
+              <th className="px-3 py-2">Verbraucht</th>
+              <th className="px-3 py-2">Verfügbar</th>
+              <th className="px-3 py-2">Status</th>
+              <th className="px-3 py-2">Periode bis</th>
+            </tr>
+          </thead>
+          <tbody>
+            {billingRows.map((row) => (
+              <tr key={row.userId} className="border-t border-gray-100 dark:border-gray-800">
+                <td className="px-3 py-2 font-mono text-xs">{row.userId}</td>
+                <td className="px-3 py-2">{row.email || "-"}</td>
+                <td className="px-3 py-2">{row.plan ?? "-"}</td>
+                <td className="px-3 py-2">{row.monthlyTokens.toLocaleString("de-DE")}</td>
+                <td className="px-3 py-2">{row.usedTokens.toLocaleString("de-DE")}</td>
+                <td className="px-3 py-2 font-semibold text-emerald-700 dark:text-emerald-300">
+                  {row.remainingTokens.toLocaleString("de-DE")}
+                </td>
+                <td className="px-3 py-2">{row.status}</td>
+                <td className="px-3 py-2">{row.currentPeriodEnd ? new Date(row.currentPeriodEnd).toLocaleString("de-DE") : "-"}</td>
+              </tr>
+            ))}
+            {billingRows.length === 0 ? (
+              <tr>
+                <td colSpan={8} className="px-3 py-6 text-center text-gray-500 dark:text-gray-400">
+                  Keine Billing-Daten gefunden.
+                </td>
+              </tr>
+            ) : null}
+          </tbody>
+        </table>
+      </div>
+    </div>
+  );
+
   const genericTable = (rows: Array<Record<string, unknown>>) => (
     <div className="overflow-x-auto rounded-lg border border-gray-200 dark:border-gray-700">
       <pre className="max-h-[60vh] overflow-auto p-3 text-xs">{JSON.stringify(rows, null, 2)}</pre>
@@ -167,7 +223,7 @@ export function AdminDashboard() {
         <p className="mb-3 rounded-md border border-red-200 bg-red-50 px-3 py-2 text-sm text-red-700">{error}</p>
       ) : null}
       {!loading && tab === "users" ? usersView : null}
-      {!loading && tab === "billing" ? genericTable(billingRows) : null}
+      {!loading && tab === "billing" ? billingView : null}
       {!loading && tab === "team" ? genericTable(teamRows) : null}
       {!loading && tab === "content" ? (
         <div className="space-y-3">

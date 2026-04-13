@@ -4,8 +4,10 @@ import { useEffect, useMemo, useState } from "react";
 import { motion } from "framer-motion";
 import { MoveRight } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import { BlurFade } from "@/components/ui/blur-fade";
 import { LiquidMetalButton } from "@/components/ui/liquid-metal-button";
 import Floating, { FloatingElement } from "@/components/ui/parallax-floating";
+import { useLoading } from "@/context/LoadingContext";
 import { KI_BEISPIELE } from "@/lib/kiBeispiele";
 import { createClient as createSupabaseClient } from "@/lib/supabase/client";
 import { isSupabaseConfigured } from "@/lib/supabase/env";
@@ -44,6 +46,7 @@ const HERO_FLOAT_LAYOUT = [
 ] as const;
 
 function Hero() {
+  const { heroReady } = useLoading();
   const [titleNumber, setTitleNumber] = useState(0);
   const titles = useMemo(() => ["KI-gestützt", "automatisiert", "skalierbar"], []);
   const [isAuthenticated, setIsAuthenticated] = useState(false);
@@ -160,93 +163,108 @@ function Hero() {
           const img = KI_BEISPIELE[imgIndex];
           return (
             <FloatingElement key={`hero-float-${i}-${img.src}`} depth={slot.depth} className={slot.className}>
-              <motion.img
-                src={img.src}
-                alt=""
-                className={`cursor-default rounded-xl object-cover shadow-2xl duration-200 blur-[2px] sm:blur-[3px] md:blur-[4px] ${slot.imgClass}`}
-                initial={{ opacity: 0 }}
-                animate={{ opacity: 1 }}
-                transition={{ delay: slot.delay }}
-              />
+              {heroReady ? (
+                <BlurFade delay={slot.delay} duration={0.45} blur="8px">
+                  <motion.img
+                    src={img.src}
+                    alt=""
+                    className={`cursor-default rounded-xl object-cover shadow-2xl duration-200 blur-[2px] sm:blur-[3px] md:blur-[4px] ${slot.imgClass}`}
+                  />
+                </BlurFade>
+              ) : null}
             </FloatingElement>
           );
         })}
       </Floating>
       <div className="container mx-auto">
         <div className="relative z-10 flex flex-col items-center justify-center gap-8 py-20 max-md:gap-6 max-md:pb-12 max-md:pt-28 sm:max-md:pb-16 sm:max-md:pt-32 lg:py-40">
-          <div className="hidden md:block">
-            <Button variant="secondary" size="sm" className="gap-4">
-              Kategorie-Fokus: KI-Content-System für Brauereien <MoveRight className="w-4 h-4" />
-            </Button>
-          </div>
-          <div className="flex flex-col gap-4 max-md:mx-auto max-md:w-[min(92vw,22rem)]">
-            <h1 className="max-w-2xl text-center text-5xl font-regular tracking-tighter max-md:mx-auto max-md:w-full max-md:max-w-[18.5rem] max-md:text-[2rem] max-md:leading-[1.12] md:text-7xl">
-              <span className="text-spektr-cyan-50">KI-Content-System für Brauereien</span>
-              <span className="relative flex w-full justify-center overflow-hidden text-center max-md:mt-2 max-md:min-h-[2.6rem] sm:max-md:min-h-[3rem] md:min-h-0 md:pb-4 md:pt-1">
-                &nbsp;
-                {titles.map((title, index) => (
-                  <motion.span
-                    key={index}
-                    className="absolute font-semibold max-md:px-1 max-md:text-[2rem] sm:max-md:text-[2.25rem] md:px-0 md:text-[1.12em]"
-                    initial={{ opacity: 0, y: "-100" }}
-                    transition={{ type: "spring", stiffness: 50 }}
-                    animate={
-                      titleNumber === index
-                        ? { y: 0, opacity: 1 }
-                        : { y: titleNumber > index ? -150 : 150, opacity: 0 }
-                    }
+          {heroReady ? (
+            <>
+              <BlurFade delay={0.04} duration={0.45} className="hidden md:block">
+                <Button variant="secondary" size="sm" className="gap-4">
+                  Fokus: KI-Content für Brauereien <MoveRight className="w-4 h-4" />
+                </Button>
+              </BlurFade>
+              <BlurFade delay={0.04} duration={0.45} className="md:hidden">
+                <Button variant="secondary" size="sm" className="gap-2 text-xs">
+                  Fokus: KI-Content für Brauereien <MoveRight className="h-3.5 w-3.5" />
+                </Button>
+              </BlurFade>
+
+              <BlurFade delay={0.12} duration={0.48} className="flex flex-col gap-4 max-md:mx-auto max-md:w-[min(92vw,22rem)]">
+                <h1 className="max-w-2xl text-center text-5xl font-regular tracking-tighter max-md:mx-auto max-md:w-full max-md:max-w-[18.5rem] max-md:text-[2rem] max-md:leading-[1.12] md:text-7xl">
+                  <span className="text-spektr-cyan-50">KI-Content-System für Brauereien</span>
+                  <span className="relative flex w-full justify-center overflow-hidden text-center max-md:mt-2 max-md:min-h-[2.6rem] sm:max-md:min-h-[3rem] md:min-h-0 md:pb-4 md:pt-1">
+                    &nbsp;
+                    {titles.map((title, index) => (
+                      <motion.span
+                        key={index}
+                        className="absolute font-semibold max-md:px-1 max-md:text-[2rem] sm:max-md:text-[2.25rem] md:px-0 md:text-[1.12em]"
+                        initial={{ opacity: 0, y: "-100" }}
+                        transition={{ type: "spring", stiffness: 50 }}
+                        animate={
+                          titleNumber === index
+                            ? { y: 0, opacity: 1 }
+                            : { y: titleNumber > index ? -150 : 150, opacity: 0 }
+                        }
+                      >
+                        {title}
+                      </motion.span>
+                    ))}
+                  </span>
+                </h1>
+
+                <p className="max-w-2xl text-center text-lg leading-relaxed tracking-tight text-muted-foreground max-md:mx-auto max-md:w-full max-md:max-w-[21rem] max-md:px-2 max-md:text-[1rem] max-md:leading-[1.42] sm:max-md:text-lg md:text-xl">
+                  <span className="max-md:text-zinc-700">Weniger Aufwand, bessere Ergebnisse:</span>{" "}
+                  <span className="hero-mobile-subtitle-shine">KI-Produktfotos, Kampagnenmotive und Social-Content</span>{" "}
+                  <span className="max-md:text-zinc-600">in deinem Markenstil.</span>
+                </p>
+              </BlurFade>
+
+              <BlurFade delay={0.2} duration={0.5} className="hidden flex-row flex-wrap items-center justify-center gap-3 md:flex">
+                <div>
+                  <LiquidMetalButton
+                    label={primaryCtaLabel}
+                    onClick={onPrimaryCtaClick}
+                  />
+                </div>
+                <div>
+                  <LiquidMetalButton
+                    label="Beispiele ansehen"
+                    onClick={() => {
+                      if (typeof window === "undefined") return;
+                      const el = document.getElementById("echte-beispiele-aus-der-praxis");
+                      if (!el) return;
+                      el.scrollIntoView({ behavior: "smooth", block: "start" });
+                    }}
+                  />
+                </div>
+              </BlurFade>
+
+              <BlurFade delay={0.2} duration={0.5} className="flex w-full flex-col items-center gap-3 md:hidden">
+                <div className="flex justify-center">
+                  <Button
+                    onClick={onPrimaryCtaClick}
+                    className="h-[50px] w-[224px] rounded-[100px] bg-[#c65a20] text-[15px] font-normal text-white transition hover:bg-[#b14f1c]"
                   >
-                    {title}
-                  </motion.span>
-                ))}
-              </span>
-            </h1>
-
-            <p className="max-w-2xl text-center text-lg leading-relaxed tracking-tight text-muted-foreground max-md:mx-auto max-md:w-full max-md:max-w-[21rem] max-md:px-2 max-md:text-[1rem] max-md:leading-[1.42] sm:max-md:text-lg md:text-xl">
-              <span className="max-md:text-zinc-700">Weniger Aufwand, bessere Ergebnisse:</span>{" "}
-              <span className="hero-mobile-subtitle-shine">KI-Produktfotos, Kampagnenmotive und Social-Content</span>{" "}
-              <span className="max-md:text-zinc-600">in deinem Markenstil.</span>
-            </p>
-          </div>
-          <div className="hidden flex-row flex-wrap items-center justify-center gap-3 md:flex">
-            <div>
-              <LiquidMetalButton
-                label={primaryCtaLabel}
-                onClick={onPrimaryCtaClick}
-              />
-            </div>
-            <div>
-              <LiquidMetalButton
-                label="Beispiele ansehen"
-                onClick={() => {
-                  if (typeof window === "undefined") return;
-                  const el = document.getElementById("echte-beispiele-aus-der-praxis");
-                  if (!el) return;
-                  el.scrollIntoView({ behavior: "smooth", block: "start" });
-                }}
-              />
-            </div>
-          </div>
-
-          <div className="flex w-full flex-col items-center gap-3 md:hidden">
-            <div className="flex w-[min(92vw,22rem)] justify-center">
-              <LiquidMetalButton
-                label={primaryCtaLabel}
-                onClick={onPrimaryCtaClick}
-              />
-            </div>
-            <div className="flex w-[min(92vw,22rem)] justify-center">
-              <LiquidMetalButton
-                label="Beispiele ansehen"
-                onClick={() => {
-                  if (typeof window === "undefined") return;
-                  const el = document.getElementById("echte-beispiele-aus-der-praxis");
-                  if (!el) return;
-                  el.scrollIntoView({ behavior: "smooth", block: "start" });
-                }}
-              />
-            </div>
-          </div>
+                    {primaryCtaLabel}
+                  </Button>
+                </div>
+                <div className="flex w-[min(92vw,22rem)] justify-center">
+                  <LiquidMetalButton
+                    label="Beispiele ansehen"
+                    size="large"
+                    onClick={() => {
+                      if (typeof window === "undefined") return;
+                      const el = document.getElementById("echte-beispiele-aus-der-praxis");
+                      if (!el) return;
+                      el.scrollIntoView({ behavior: "smooth", block: "start" });
+                    }}
+                  />
+                </div>
+              </BlurFade>
+            </>
+          ) : null}
         </div>
       </div>
     </div>

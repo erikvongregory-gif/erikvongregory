@@ -45,6 +45,11 @@ export default async function DashboardPage() {
       : typeof user.user_metadata?.full_name === "string"
         ? user.user_metadata.full_name
         : undefined;
+  const userRole =
+    typeof user.user_metadata?.role === "string"
+      ? String(user.user_metadata.role).toLowerCase()
+      : "user";
+  const isAdmin = userRole === "admin";
 
-  return <DashboardWithSidebar userEmail={user.email} userName={userName} />;
+  return <DashboardWithSidebar userEmail={user.email} userName={userName} isAdmin={isAdmin} />;
 }

@@ -12,3 +12,7 @@ export function getSupabaseUrl(): string | undefined {
 export function isSupabaseConfigured(): boolean {
   return Boolean(getSupabaseUrl() && getSupabaseAnonKey());
 }
+
+export function isInviteOnlyEnabled(): boolean {
+  return process.env.AUTH_INVITE_ONLY !== "false";
+}

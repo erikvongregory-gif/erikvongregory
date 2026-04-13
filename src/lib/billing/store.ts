@@ -138,6 +138,26 @@ export async function consumeTokens(userId: string, amount: number) {
   };
 }
 
+export async function refundTokens(userId: string, amount: number) {
+  const admin = createAdminClient();
+  const row = await getBillingRow(userId);
+  if (!row) {
+    return { ok: false as const, error: "Kein Billing-Profil vorhanden." };
+  }
+  if (amount <= 0) {
+    return { ok: true as const, state: row };
+  }
+  const nextUsed = Math.max(row.used_tokens - amount, 0);
+  const { error } = await admin.from("billing_subscriptions").update({ used_tokens: nextUsed }).eq("user_id", userId);
+  if (error) {
+    return { ok: false as const, error: "Token-Rueckerstattung konnte nicht gespeichert werden." };
+  }
+  return {
+    ok: true as const,
+    state: { ...row, used_tokens: nextUsed },
+  };
+}
+
 export async function addMonthlyTokens(userId: string, amount: number) {
   const admin = createAdminClient();
   const row = await getBillingRow(userId);

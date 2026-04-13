@@ -9,12 +9,14 @@ interface LiquidMetalButtonProps {
   label?: string;
   onClick?: () => void;
   viewMode?: "text" | "icon";
+  size?: "default" | "large";
 }
 
 export function LiquidMetalButton({
   label = "Get Started",
   onClick,
   viewMode = "text",
+  size = "default",
 }: LiquidMetalButtonProps) {
   const [isHovered, setIsHovered] = useState(false);
   const [isPressed, setIsPressed] = useState(false);
@@ -38,14 +40,14 @@ export function LiquidMetalButton({
     }
 
     return {
-      width: 210,
-      height: 46,
-      innerWidth: 206,
-      innerHeight: 42,
-      shaderWidth: 210,
-      shaderHeight: 46,
+      width: size === "large" ? 224 : 210,
+      height: size === "large" ? 50 : 46,
+      innerWidth: size === "large" ? 220 : 206,
+      innerHeight: size === "large" ? 46 : 42,
+      shaderWidth: size === "large" ? 224 : 210,
+      shaderHeight: size === "large" ? 50 : 46,
     };
-  }, [viewMode]);
+  }, [size, viewMode]);
 
   useEffect(() => {
     const styleId = "shader-canvas-style-exploded";
@@ -208,7 +210,7 @@ export function LiquidMetalButton({
             {viewMode === "text" && (
               <span
                 style={{
-                  fontSize: "14px",
+                  fontSize: size === "large" ? "15px" : "14px",
                   color: "#ffffff",
                   fontWeight: 400,
                   textShadow: "0px 1px 2px rgba(0, 0, 0, 0.5)",

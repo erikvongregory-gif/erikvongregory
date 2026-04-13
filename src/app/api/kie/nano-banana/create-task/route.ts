@@ -5,6 +5,7 @@ import { isSupabaseConfigured } from "@/lib/supabase/env";
 import { consumeTokens, ensureBillingRow, getBillingRow } from "@/lib/billing/store";
 import { enforceRateLimit, enforceSameOrigin } from "@/lib/security/requestGuards";
 import { createAdminClient } from "@/lib/supabase/admin";
+import { withPendingTask } from "@/lib/kie/taskBillingMetadata";
 
 type CreateTaskBody = {
   prompt: string;
@@ -259,6 +260,20 @@ export async function POST(req: Request) {
     const consumeResult = await consumeTokens(userId, tokenCost);
     if (!consumeResult.ok) {
       return NextResponse.json({ error: consumeResult.error }, { status: 402 });
+    }
+    const admin = createAdminClient();
+    const { error: pendingBillingError } = await admin.auth.admin.updateUserById(userId, {
+      user_metadata: withPendingTask(currentUserMetadata, taskId, {
+        consumed: tokenCost,
+        createdAt: new Date().toISOString(),
+        freeTrial: false,
+      }),
+    });
+    if (pendingBillingError) {
+      return NextResponse.json(
+        { error: "Tokenverbrauch wurde verbucht, aber Task-Buchung konnte nicht gespeichert werden." },
+        { status: 500 },
+      );
     }
     const response = NextResponse.json({
       taskId,

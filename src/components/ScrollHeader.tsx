@@ -60,6 +60,7 @@ const GLOW_NAV_ITEMS: GlowMenuItem[] = [
 export function ScrollHeader() {
   const pathname = usePathname();
   const [dropdownOpen, setDropdownOpen] = useState(false);
+  const [mobileAuthDialogOpen, setMobileAuthDialogOpen] = useState(false);
   const [activeSection, setActiveSection] = useState<string>("");
   const mobileNavRef = useRef<HTMLDivElement>(null);
   const contactLinkRef = useRef<HTMLAnchorElement>(null);
@@ -84,6 +85,7 @@ export function ScrollHeader() {
   useEffect(() => {
     if (!dropdownOpen) return;
     const onPointer = (e: MouseEvent | TouchEvent) => {
+      if (mobileAuthDialogOpen) return;
       const el = mobileNavRef.current;
       if (!el) return;
       const target = e.target;
@@ -95,7 +97,19 @@ export function ScrollHeader() {
       document.removeEventListener("mousedown", onPointer);
       document.removeEventListener("touchstart", onPointer);
     };
-  }, [dropdownOpen]);
+  }, [dropdownOpen, mobileAuthDialogOpen]);
+
+  useEffect(() => {
+    const onAuthDialogOpenChange = (event: Event) => {
+      const customEvent = event as CustomEvent<{ open?: boolean }>;
+      setMobileAuthDialogOpen(Boolean(customEvent.detail?.open));
+    };
+
+    window.addEventListener("evglab-mobile-auth-dialog-open-change", onAuthDialogOpenChange as EventListener);
+    return () => {
+      window.removeEventListener("evglab-mobile-auth-dialog-open-change", onAuthDialogOpenChange as EventListener);
+    };
+  }, []);
 
   useEffect(() => {
     const sectionIds = GLOW_NAV_ITEMS.map((item) => item.href.replace(/^#/, ""));

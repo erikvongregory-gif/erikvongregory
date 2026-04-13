@@ -14,12 +14,19 @@ export async function GET() {
   } = await supabase.auth.getUser();
   if (!user) return NextResponse.json({ error: "Nicht angemeldet." }, { status: 401 });
 
-  await ensureBillingRow(user.id);
-  const billing = await getBillingRow(user.id);
+  let billing = null as Awaited<ReturnType<typeof getBillingRow>>;
+  let degradedBilling = false;
+  try {
+    await ensureBillingRow(user.id);
+    billing = await getBillingRow(user.id);
+  } catch (error) {
+    degradedBilling = true;
+    console.error("dashboard.summary: billing fallback aktiv", error);
+  }
   const dashboard = getDashboardMetadata(user.user_metadata);
   const media = dashboard.mediaLibrary ?? [];
   const team = dashboard.teamMembers ?? [];
-  const activeCampaigns = Math.min(6, Math.max(1, Math.ceil(media.length / 5)));
+  const activeCampaigns = media.length === 0 ? 0 : Math.min(6, Math.ceil(media.length / 5));
 
   const sortedMedia = media.slice().sort((a, b) => +new Date(b.createdAt) - +new Date(a.createdAt));
   const mediaActivities = sortedMedia.slice(0, 6).map((item) => ({
@@ -67,6 +74,7 @@ export async function GET() {
       openInvites: invitedCount,
       billingStatus: billing?.subscription_status ?? "none",
       plan: billing?.plan ?? null,
+      degradedBilling,
     },
     activities,
   });

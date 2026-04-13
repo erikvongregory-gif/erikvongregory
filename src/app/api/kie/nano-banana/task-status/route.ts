@@ -1,6 +1,11 @@
 import { NextResponse } from "next/server";
 import { z } from "zod";
+import { refundTokens } from "@/lib/billing/store";
+import { getPendingTaskBillingMap, withoutPendingTask } from "@/lib/kie/taskBillingMetadata";
 import { enforceRateLimit, sanitizeTaskId } from "@/lib/security/requestGuards";
+import { createAdminClient } from "@/lib/supabase/admin";
+import { createClient } from "@/lib/supabase/server";
+import { isSupabaseConfigured } from "@/lib/supabase/env";
 
 function findFirstUrl(input: unknown): string | null {
   if (typeof input === "string" && /^https?:\/\//i.test(input)) return input;
@@ -28,6 +33,20 @@ export async function GET(req: Request) {
       windowMs: 60_000,
     });
     if (rateError) return rateError;
+
+    let userId: string | null = null;
+    let currentUserMetadata: Record<string, unknown> = {};
+    if (isSupabaseConfigured()) {
+      const supabase = await createClient();
+      const {
+        data: { user },
+      } = await supabase.auth.getUser();
+      if (!user) {
+        return NextResponse.json({ error: "Nicht angemeldet." }, { status: 401 });
+      }
+      userId = user.id;
+      currentUserMetadata = (user.user_metadata as Record<string, unknown> | null) ?? {};
+    }
 
     const apiKey = process.env.KIE_API_KEY;
     if (!apiKey) {
@@ -75,6 +94,21 @@ export async function GET(req: Request) {
         imageUrl = findFirstUrl(parsed);
       } catch {
         // ignore parse errors and keep null
+      }
+    }
+
+    if (userId) {
+      const pending = getPendingTaskBillingMap(currentUserMetadata)[taskId];
+      const finishedSuccess = ["success", "succeeded", "completed", "done"].includes(state) && Boolean(imageUrl);
+      const finishedError = ["failed", "error", "cancelled", "canceled"].includes(state);
+      if (pending && (finishedSuccess || finishedError)) {
+        if (finishedError && pending.consumed > 0) {
+          await refundTokens(userId, pending.consumed);
+        }
+        const admin = createAdminClient();
+        await admin.auth.admin.updateUserById(userId, {
+          user_metadata: withoutPendingTask(currentUserMetadata, taskId),
+        });
       }
     }
 

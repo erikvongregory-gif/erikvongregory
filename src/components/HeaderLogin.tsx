@@ -172,6 +172,22 @@ export function HeaderLogin({ variant, className }: HeaderLoginProps) {
     };
   }, [open]);
 
+  useEffect(() => {
+    if (variant !== "mobile") return;
+    window.dispatchEvent(
+      new CustomEvent("evglab-mobile-auth-dialog-open-change", {
+        detail: { open },
+      }),
+    );
+    return () => {
+      window.dispatchEvent(
+        new CustomEvent("evglab-mobile-auth-dialog-open-change", {
+          detail: { open: false },
+        }),
+      );
+    };
+  }, [open, variant]);
+
   const loginDialog = (
     <DialogContent className="w-[min(92vw,30rem)] max-w-[30rem] overflow-x-hidden">
       <div className="flex flex-col items-center gap-2">
@@ -236,6 +252,18 @@ export function HeaderLogin({ variant, className }: HeaderLoginProps) {
             ? "Bitte fülle alle Pflichtfelder aus."
             : authError === "signup_disabled"
               ? "Registrierung ist aktuell deaktiviert. Bitte nutze ein bestehendes Konto."
+            : authError === "invite_only"
+              ? "Google-Login ist im Invite-Only-Modus deaktiviert."
+            : authError === "invite_required"
+              ? "Registrierung ist nur mit gültiger Einladung möglich."
+            : authError === "invite_invalid"
+              ? "Einladung ist ungültig. Bitte prüfe den Link."
+            : authError === "invite_expired"
+              ? "Diese Einladung ist abgelaufen. Bitte fordere eine neue Einladung an."
+            : authError === "invite_used"
+              ? "Diese Einladung wurde bereits verwendet."
+            : authError === "invite_email_mismatch"
+              ? "Diese Einladung gilt für eine andere E-Mail-Adresse."
             : authError === "config"
               ? "Login ist aktuell nicht verfügbar. Bitte später erneut versuchen."
               : authError === "google"
@@ -265,7 +293,7 @@ export function HeaderLogin({ variant, className }: HeaderLoginProps) {
       </button>
 
       <p className="text-center text-sm text-muted-foreground">
-        Registrierung ist aktuell deaktiviert.
+        Registrierung ist nur per Einladung möglich.
       </p>
     </DialogContent>
   );

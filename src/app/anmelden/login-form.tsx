@@ -23,6 +23,8 @@ export function LoginForm({ nextPath = "/dashboard", urlError }: LoginFormProps)
       ? "Anmeldung fehlgeschlagen. Bitte erneut versuchen."
       : urlError === "config"
         ? "Supabase ist auf diesem Deployment noch nicht konfiguriert."
+      : urlError === "invite_required"
+        ? "Registrierung ist nur mit Einladung möglich."
         : null,
   );
   const [loading, setLoading] = useState(false);
@@ -121,10 +123,7 @@ export function LoginForm({ nextPath = "/dashboard", urlError }: LoginFormProps)
       </form>
 
       <p className="mt-5 text-center text-sm text-muted-foreground">
-        Noch kein Konto?{" "}
-        <a className="font-medium underline hover:no-underline" href="/registrieren">
-          Registrieren
-        </a>
+        Noch kein Konto? Du brauchst eine Einladung.
       </p>
     </div>
   );

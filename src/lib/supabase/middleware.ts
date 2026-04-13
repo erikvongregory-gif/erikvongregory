@@ -1,9 +1,9 @@
 import { createServerClient } from "@supabase/ssr";
 import { NextResponse, type NextRequest } from "next/server";
-import { getSupabaseAnonKey, getSupabaseUrl } from "@/lib/supabase/env";
+import { getSupabaseAnonKey, getSupabaseUrl, isInviteOnlyEnabled } from "@/lib/supabase/env";
 
 export async function updateSession(request: NextRequest) {
-  let supabaseResponse = NextResponse.next({ request });
+  const supabaseResponse = NextResponse.next({ request });
 
   const url = getSupabaseUrl();
   const key = getSupabaseAnonKey();
@@ -39,6 +39,10 @@ export async function updateSession(request: NextRequest) {
 
   if (!user && pathname.startsWith("/dashboard")) {
     return NextResponse.redirect(new URL("/?auth=signin", request.url));
+  }
+
+  if (isInviteOnlyEnabled() && pathname === "/registrieren") {
+    return NextResponse.redirect(new URL("/?auth=signin&error=invite_required", request.url));
   }
 
   return supabaseResponse;

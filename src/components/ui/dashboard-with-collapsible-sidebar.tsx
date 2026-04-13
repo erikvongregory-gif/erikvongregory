@@ -22,6 +22,7 @@ import {
   Wand2,
   type LucideIcon,
 } from "lucide-react";
+import { AdminDashboard } from "@/components/admin/AdminDashboard";
 import {
   BrewerySubscriptionPlans,
   type SubscriptionPlanKey,
@@ -44,6 +45,7 @@ type DashboardTab =
   | "Mediathek"
   | "Abo & Tokens"
   | "Team"
+  | "Admin Center"
   | "Einstellungen"
   | "Hilfe & Support";
 
@@ -59,6 +61,7 @@ type ExampleContentProps = {
   userName?: string;
   selectedTab: DashboardTab;
   setSelectedTab: React.Dispatch<React.SetStateAction<DashboardTab>>;
+  isAdmin?: boolean;
 };
 
 type ActivityItem = {
@@ -122,6 +125,7 @@ type DashboardSummary = {
   openInvites: number;
   billingStatus: string;
   plan: SubscriptionPlanKey | null;
+  degradedBilling?: boolean;
 };
 
 const USE_CASE_FLOWS = [
@@ -194,9 +198,10 @@ const DASHBOARD_ONBOARDING_STEPS: OnboardingStep[] = [
 type ExampleProps = {
   userEmail?: string;
   userName?: string;
+  isAdmin?: boolean;
 };
 
-export const Example = ({ userEmail, userName }: ExampleProps) => {
+export const Example = ({ userEmail, userName, isAdmin = false }: ExampleProps) => {
   const [isDark, setIsDark] = useState(() => {
     if (typeof window === "undefined") return false;
     const saved = window.localStorage.getItem("evglab-dashboard-theme");
@@ -220,7 +225,7 @@ export const Example = ({ userEmail, userName }: ExampleProps) => {
   return (
     <div className={`flex min-h-screen w-full ${isDark ? "dark" : ""}`}>
       <div className="flex w-full flex-col bg-gray-50 text-gray-900 dark:bg-gray-950 dark:text-gray-100 lg:flex-row">
-        <Sidebar selected={selectedTab} setSelected={setSelectedTab} userEmail={userEmail} />
+        <Sidebar selected={selectedTab} setSelected={setSelectedTab} userEmail={userEmail} isAdmin={isAdmin} />
         <ExampleContent
           isDark={isDark}
           applyTheme={applyTheme}
@@ -228,6 +233,7 @@ export const Example = ({ userEmail, userName }: ExampleProps) => {
           userName={userName}
           selectedTab={selectedTab}
           setSelectedTab={setSelectedTab}
+          isAdmin={isAdmin}
         />
       </div>
     </div>
@@ -238,10 +244,12 @@ const Sidebar = ({
   selected,
   setSelected,
   userEmail,
+  isAdmin = false,
 }: {
   selected: DashboardTab;
   setSelected: React.Dispatch<React.SetStateAction<DashboardTab>>;
   userEmail?: string;
+  isAdmin?: boolean;
 }) => {
   const [open, setOpen] = useState(true);
   const [activeSubscription, setActiveSubscription] = useState<SubscriptionPlanKey | null>(null);
@@ -295,6 +303,7 @@ const Sidebar = ({
         <Option Icon={Image} title="Mediathek" selected={selected} setSelected={setSelected} open={open} />
         <Option Icon={CreditCard} title="Abo & Tokens" selected={selected} setSelected={setSelected} open={open} />
         <Option Icon={Users} title="Team" selected={selected} setSelected={setSelected} open={open} notifs={1} />
+        {isAdmin ? <Option Icon={Settings} title="Admin Center" selected={selected} setSelected={setSelected} open={open} /> : null}
       </div>
 
       {open && (
@@ -313,9 +322,11 @@ const Sidebar = ({
 const MobileTabBar = ({
   selected,
   setSelected,
+  isAdmin = false,
 }: {
   selected: DashboardTab;
   setSelected: React.Dispatch<React.SetStateAction<DashboardTab>>;
+  isAdmin?: boolean;
 }) => {
   const [menuOpen, setMenuOpen] = useState(false);
   const tabs: Array<{ title: DashboardTab; Icon: LucideIcon }> = [
@@ -327,6 +338,9 @@ const MobileTabBar = ({
     { title: "Einstellungen", Icon: Settings },
     { title: "Hilfe & Support", Icon: HelpCircle },
   ];
+  if (isAdmin) {
+    tabs.splice(5, 0, { title: "Admin Center", Icon: Settings });
+  }
 
   const activeTab = tabs.find((tab) => tab.title === selected) ?? tabs[0];
 
@@ -380,6 +394,7 @@ const Option = ({ Icon, title, selected, setSelected, open, notifs }: OptionProp
     Mediathek: "library",
     "Abo & Tokens": "billing",
     Team: "team",
+    "Admin Center": "settings",
     Einstellungen: "settings",
     "Hilfe & Support": "support",
   };
@@ -510,7 +525,7 @@ const ToggleClose = ({ open, setOpen }: ToggleCloseProps) => {
   );
 };
 
-const ExampleContent = ({ isDark, applyTheme, userEmail, userName, selectedTab, setSelectedTab }: ExampleContentProps) => {
+const ExampleContent = ({ isDark, applyTheme, userEmail, userName, selectedTab, setSelectedTab, isAdmin = false }: ExampleContentProps) => {
   const [mediaItems, setMediaItems] = useState<MediaLibraryItem[]>([]);
   const [expandedPromptId, setExpandedPromptId] = useState<string | null>(null);
   const [downloadingMediaId, setDownloadingMediaId] = useState<string | null>(null);
@@ -767,11 +782,18 @@ const ExampleContent = ({ isDark, applyTheme, userEmail, userName, selectedTab, 
   };
 
   const removeMediaItem = async (id: string) => {
+    const previousItems = mediaItems;
     setMediaItems((prev) => prev.filter((item) => item.id !== id));
     try {
-      await fetch(`/api/dashboard/media?id=${encodeURIComponent(id)}`, { method: "DELETE" });
+      const res = await fetch(`/api/dashboard/media?id=${encodeURIComponent(id)}`, { method: "DELETE" });
+      if (!res.ok) {
+        setMediaItems(previousItems);
+        setGlobalErrorMessage("Mediathek-Eintrag konnte nicht gelöscht werden.");
+        return;
+      }
       await refreshSummary();
     } catch {
+      setMediaItems(previousItems);
       setGlobalErrorMessage("Mediathek-Eintrag konnte nicht gelöscht werden.");
     }
   };
@@ -782,6 +804,7 @@ const ExampleContent = ({ isDark, applyTheme, userEmail, userName, selectedTab, 
     Mediathek: "Verwalte deine Bilder, Vorlagen und exportierten Assets zentral an einem Ort.",
     "Abo & Tokens": "Behalte deinen Tarif, Verbrauch und kommende Aufladungen im Blick.",
     Team: "Lade Kolleginnen und Kollegen ein und verwalte Rollen im Team.",
+    "Admin Center": "Als Admin verwaltest du hier Nutzer, Rollen, Billing, Team und Inhalte zentral.",
     Einstellungen: "Passe Konto, Branding und Standard-Einstellungen fuer Inhalte an.",
     "Hilfe & Support": "Finde Antworten und kontaktiere bei Bedarf direkt den Support.",
   };
@@ -1451,6 +1474,14 @@ const ExampleContent = ({ isDark, applyTheme, userEmail, userName, selectedTab, 
       );
     }
 
+    if (selectedTab === "Admin Center" && isAdmin) {
+      return (
+        <section className="rounded-2xl border border-gray-200 bg-white p-4 shadow-sm dark:border-gray-800 dark:bg-gray-900">
+          <AdminDashboard />
+        </section>
+      );
+    }
+
     if (selectedTab === "Hilfe & Support") {
       return (
         <section className="rounded-2xl border border-gray-200 bg-white p-6 shadow-sm dark:border-gray-800 dark:bg-gray-900">
@@ -1560,7 +1591,7 @@ const ExampleContent = ({ isDark, applyTheme, userEmail, userName, selectedTab, 
           }
         }}
       />
-      <MobileTabBar selected={selectedTab} setSelected={setSelectedTab} />
+      <MobileTabBar selected={selectedTab} setSelected={setSelectedTab} isAdmin={isAdmin} />
       {globalErrorMessage ? (
         <div className="mb-4 rounded-lg border border-red-200 bg-red-50 px-3 py-2 text-sm text-red-700 dark:border-red-900/40 dark:bg-red-900/20 dark:text-red-300">
           {globalErrorMessage}
@@ -1570,6 +1601,11 @@ const ExampleContent = ({ isDark, applyTheme, userEmail, userName, selectedTab, 
         <div>
           <h1 className="text-2xl font-bold text-gray-900 dark:text-gray-100 sm:text-3xl">{tabTitle}</h1>
           <p className="mt-1 text-sm text-gray-600 dark:text-gray-400 sm:text-base">{tabDescriptions[selectedTab]}</p>
+          {isAdmin ? (
+            <p className="mt-1 inline-flex rounded-full bg-orange-50 px-2 py-0.5 text-xs font-medium text-[#c65a20] dark:bg-orange-900/30 dark:text-orange-300">
+              Admin-Modus aktiv
+            </p>
+          ) : null}
           <p className="mt-1 text-sm text-gray-500 dark:text-gray-400">Angemeldet als {displayName}</p>
           {userEmail ? <p className="mt-1 text-sm text-gray-500 dark:text-gray-400">{userEmail}</p> : null}
         </div>

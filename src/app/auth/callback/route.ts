@@ -1,6 +1,6 @@
 import { NextResponse } from "next/server";
 import type { EmailOtpType } from "@supabase/supabase-js";
-import { isSupabaseConfigured } from "@/lib/supabase/env";
+import { isInviteOnlyEnabled, isSupabaseConfigured } from "@/lib/supabase/env";
 import { createRouteHandlerClient } from "@/lib/supabase/server";
 
 export async function GET(request: Request) {
@@ -13,6 +13,9 @@ export async function GET(request: Request) {
 
   if (!isSupabaseConfigured()) {
     return NextResponse.redirect(`${origin}/?auth=signin&error=config`, 303);
+  }
+  if (isInviteOnlyEnabled() && type === "signup") {
+    return NextResponse.redirect(`${origin}/?auth=signin&error=invite_required`, 303);
   }
 
   if (tokenHash && type) {

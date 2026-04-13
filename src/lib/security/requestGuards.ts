@@ -51,13 +51,34 @@ export function sanitizeTaskId(taskId: string): string {
 }
 
 export function enforceSameOrigin(req: Request): NextResponse | null {
-  const requestOrigin = req.headers.get("origin");
-  if (!requestOrigin) {
-    return NextResponse.json({ error: "Origin-Header fehlt." }, { status: 403 });
-  }
   const targetOrigin = new URL(req.url).origin;
-  if (requestOrigin !== targetOrigin) {
-    return NextResponse.json({ error: "Ungültige Herkunft." }, { status: 403 });
+  const requestOrigin = req.headers.get("origin");
+  if (requestOrigin) {
+    if (requestOrigin !== targetOrigin) {
+      return NextResponse.json({ error: "Ungültige Herkunft." }, { status: 403 });
+    }
+    return null;
   }
-  return null;
+
+  const referer = req.headers.get("referer");
+  if (referer) {
+    try {
+      if (new URL(referer).origin === targetOrigin) return null;
+    } catch {
+      return NextResponse.json({ error: "Ungültige Herkunft." }, { status: 403 });
+    }
+  }
+
+  const forwardedHost = req.headers.get("x-forwarded-host");
+  if (forwardedHost) {
+    const forwardedProto = req.headers.get("x-forwarded-proto") ?? "https";
+    if (`${forwardedProto}://${forwardedHost}` === targetOrigin) return null;
+  }
+
+  const fetchSite = req.headers.get("sec-fetch-site");
+  if (fetchSite === "same-origin" || fetchSite === "same-site" || fetchSite === "none") {
+    return null;
+  }
+
+  return NextResponse.json({ error: "Origin-Header fehlt." }, { status: 403 });
 }
