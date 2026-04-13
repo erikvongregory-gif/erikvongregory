@@ -1,7 +1,18 @@
 import { redirect } from "next/navigation";
+import type { Metadata } from "next";
 import { createClient } from "@/lib/supabase/server";
 
 export const dynamic = "force-dynamic";
+export const metadata: Metadata = {
+  title: {
+    absolute: "EvGlab - Sicherheitscode",
+  },
+  robots: {
+    index: false,
+    follow: false,
+    googleBot: { index: false, follow: false },
+  },
+};
 
 type Props = {
   searchParams?: Promise<Record<string, string | string[] | undefined>>;

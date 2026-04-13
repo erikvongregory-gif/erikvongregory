@@ -1,4 +1,5 @@
 import Link from "next/link";
+import type { Metadata } from "next";
 import { evaluateInvite, getInviteByToken } from "@/lib/invite/server";
 import { isInviteOnlyEnabled } from "@/lib/supabase/env";
 
@@ -11,6 +12,17 @@ function statusMessage(status: string) {
   if (status === "used") return "Diese Einladung wurde bereits verwendet.";
   return "Der Einladungslink ist ungueltig.";
 }
+
+export const metadata: Metadata = {
+  title: {
+    absolute: "EvGlab - Einladung",
+  },
+  robots: {
+    index: false,
+    follow: false,
+    googleBot: { index: false, follow: false },
+  },
+};
 
 export default async function InviteTokenPage({ params }: InvitePageProps) {
   const { token } = await params;

@@ -22,7 +22,7 @@ export function AppShell({ children }: AppShellProps) {
   const skipLoadingScreen = isDashboardRoute || isAdminRoute;
 
   if (skipLoadingScreen) {
-    return <main id="main" className="relative min-h-screen bg-gray-50">{children}</main>;
+    return <main id="main" className="relative min-h-[100dvh] bg-gray-50">{children}</main>;
   }
 
   return (

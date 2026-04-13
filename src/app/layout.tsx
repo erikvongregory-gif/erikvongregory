@@ -48,7 +48,13 @@ export const metadata: Metadata = {
     follow: true,
     googleBot: { index: true, follow: true },
   },
-  alternates: { canonical: SITE.baseUrl },
+  alternates: {
+    canonical: SITE.baseUrl,
+    languages: {
+      "de-DE": SITE.baseUrl,
+      "x-default": SITE.baseUrl,
+    },
+  },
   openGraph: {
     type: "website",
     locale: "de_DE",

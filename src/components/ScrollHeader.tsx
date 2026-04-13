@@ -192,9 +192,9 @@ export function ScrollHeader() {
 
   return (
     <>
-      {/* Mobile & schmale Tablets: kein Premium-Header – nur Logo + Dropdown */}
+      {/* Mobile: kompakter Header mit Dropdown */}
       <header
-        className="mobile-top-header pointer-events-none fixed left-0 right-0 top-0 z-[100] box-border flex items-center justify-between gap-3 bg-transparent pl-[max(1rem,env(safe-area-inset-left))] pr-[max(1rem,env(safe-area-inset-right))] pt-[max(0.35rem,env(safe-area-inset-top))] pb-1 lg:hidden"
+        className="mobile-top-header pointer-events-none fixed left-0 right-0 top-0 z-[100] box-border flex items-center justify-between gap-3 bg-transparent pl-[max(1rem,env(safe-area-inset-left))] pr-[max(1rem,env(safe-area-inset-right))] pt-[max(0.35rem,env(safe-area-inset-top))] pb-1 md:hidden"
         aria-label="Seitennavigation"
       >
         <a
@@ -265,10 +265,10 @@ export function ScrollHeader() {
         </div>
       </header>
 
-      {/* Desktop: bisheriger Premium-Header mit Glow-Menü */}
+      {/* Tablet/Desktop: Premium-Header mit Glow-Menü */}
       <header
         className={cn(
-          "premium-header hidden lg:block",
+          "premium-header hidden md:block",
           shouldUseHeaderLightTheme && "header-light-theme",
         )}
       >

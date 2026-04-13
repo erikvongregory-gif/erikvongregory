@@ -47,6 +47,20 @@
   --ui-motion-ease: cubic-bezier(0.22, 1, 0.36, 1);
 }
 
+html,
+body {
+  width: 100%;
+  max-width: 100%;
+  overflow-x: clip;
+}
+
+img,
+video,
+canvas,
+svg {
+  max-width: 100%;
+}
+
 .dark {
   --color-background: oklch(0.1 0 0);
   --color-foreground: oklch(0.985 0 0);

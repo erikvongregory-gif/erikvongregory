@@ -10,6 +10,11 @@ export const metadata: Metadata = {
   title: {
     absolute: "EvGlab - Dashboard",
   },
+  robots: {
+    index: false,
+    follow: false,
+    googleBot: { index: false, follow: false },
+  },
 };
 
 export default async function DashboardPage() {

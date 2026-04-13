@@ -35,7 +35,7 @@ export default function Home() {
       <div id="mobile-content" className="mobile-root block md:hidden">
         <main
           id="main"
-          className="relative min-h-screen overflow-x-hidden bg-transparent pt-14 sm:pt-16"
+          className="relative min-h-[100dvh] overflow-x-hidden bg-transparent pt-14 sm:pt-16"
         >
           <MobileLayout />
         </main>

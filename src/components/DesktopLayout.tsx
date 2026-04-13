@@ -10,7 +10,7 @@ export function DesktopLayout() {
   const { heroReady } = useLoading();
 
   return (
-    <main id="main" className="desktop-light-theme relative min-h-screen overflow-x-hidden pt-14 sm:pt-16">
+    <main id="main" className="desktop-light-theme relative min-h-[100dvh] overflow-x-hidden pt-14 sm:pt-16">
       <div
         className={`section1-wrapper relative mx-auto w-full max-w-screen-2xl ${heroReady ? "section1-ready" : ""}`}
       >
