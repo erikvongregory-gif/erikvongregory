@@ -298,6 +298,7 @@ export interface PricingCardProps {
   popularLabel?: string;
   onCtaClick?: () => void;
   buttonLoading?: boolean;
+  buttonDisabled?: boolean;
   "data-paket"?: string;
   className?: string;
   /** Kleinere Typo & Padding – z. B. Add-ons unter den Hauptpaketen. */
@@ -318,6 +319,7 @@ export const PricingCard = ({
   popularLabel = "Most Popular",
   onCtaClick,
   buttonLoading = false,
+  buttonDisabled = false,
   "data-paket": dataPaket,
   className,
   compact = false,
@@ -341,6 +343,7 @@ export const PricingCard = ({
     buttonVariant === "primary"
       ? "bg-[#c65a20] text-white hover:bg-[#d46830]"
       : "border border-black/20 bg-black/10 text-zinc-900 hover:bg-black/20",
+    buttonDisabled ? "cursor-not-allowed opacity-60" : "",
   );
 
   return (
@@ -445,7 +448,7 @@ export const PricingCard = ({
         className={buttonClasses}
         onClick={onCtaClick}
         loading={buttonLoading}
-        disabled={buttonLoading}
+        disabled={buttonLoading || buttonDisabled}
         data-paket={dataPaket}
       >
         {buttonText}

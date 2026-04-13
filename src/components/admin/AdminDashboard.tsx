@@ -25,6 +25,8 @@ type BillingRow = {
   hasStripeCustomer: boolean;
 };
 
+type PlanOption = "start" | "growth" | "pro";
+
 export function AdminDashboard() {
   const [tab, setTab] = useState<AdminTab>("users");
   const [q, setQ] = useState("");
@@ -32,6 +34,8 @@ export function AdminDashboard() {
   const [error, setError] = useState("");
   const [users, setUsers] = useState<AdminUser[]>([]);
   const [billingRows, setBillingRows] = useState<BillingRow[]>([]);
+  const [billingPlanDrafts, setBillingPlanDrafts] = useState<Record<string, PlanOption>>({});
+  const [billingSavingUserId, setBillingSavingUserId] = useState<string | null>(null);
   const [teamRows, setTeamRows] = useState<Array<Record<string, unknown>>>([]);
   const [contentRows, setContentRows] = useState<Array<Record<string, unknown>>>([]);
 
@@ -46,7 +50,40 @@ export function AdminDashboard() {
     const res = await fetch("/api/admin/billing", { cache: "no-store" });
     const data = (await res.json()) as { error?: string; rows?: BillingRow[] };
     if (!res.ok) throw new Error(data.error ?? "Billing konnte nicht geladen werden.");
-    setBillingRows(data.rows ?? []);
+    const rows = data.rows ?? [];
+    setBillingRows(rows);
+    setBillingPlanDrafts((prev) => {
+      const next = { ...prev };
+      rows.forEach((row) => {
+        if (row.plan === "start" || row.plan === "growth" || row.plan === "pro") {
+          next[row.userId] = row.plan;
+        } else if (!next[row.userId]) {
+          next[row.userId] = "start";
+        }
+      });
+      return next;
+    });
+  };
+
+  const updateUserPlan = async (userId: string, plan: PlanOption | null) => {
+    setBillingSavingUserId(userId);
+    setError("");
+    try {
+      const res = await fetch("/api/admin/billing", {
+        method: "PATCH",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ userId, plan }),
+      });
+      const data = (await res.json()) as { error?: string };
+      if (!res.ok) {
+        throw new Error(data.error ?? "Plan konnte nicht aktualisiert werden.");
+      }
+      await loadBilling();
+    } catch (e) {
+      setError(e instanceof Error ? e.message : "Plan konnte nicht aktualisiert werden.");
+    } finally {
+      setBillingSavingUserId(null);
+    }
   };
 
   const loadTeam = async () => {
@@ -174,6 +211,7 @@ export function AdminDashboard() {
               <th className="px-3 py-2">Verfügbar</th>
               <th className="px-3 py-2">Status</th>
               <th className="px-3 py-2">Periode bis</th>
+              <th className="px-3 py-2">Aktion</th>
             </tr>
           </thead>
           <tbody>
@@ -189,11 +227,46 @@ export function AdminDashboard() {
                 </td>
                 <td className="px-3 py-2">{row.status}</td>
                 <td className="px-3 py-2">{row.currentPeriodEnd ? new Date(row.currentPeriodEnd).toLocaleString("de-DE") : "-"}</td>
+                <td className="px-3 py-2">
+                  <div className="flex min-w-[15rem] items-center gap-2">
+                    <select
+                      value={billingPlanDrafts[row.userId] ?? "start"}
+                      onChange={(e) =>
+                        setBillingPlanDrafts((prev) => ({
+                          ...prev,
+                          [row.userId]: e.target.value as PlanOption,
+                        }))
+                      }
+                      className="h-8 rounded-md border border-gray-300 bg-white px-2 text-xs dark:border-gray-700 dark:bg-gray-900"
+                      disabled={billingSavingUserId === row.userId}
+                    >
+                      <option value="start">Start</option>
+                      <option value="growth">Growth</option>
+                      <option value="pro">Pro</option>
+                    </select>
+                    <button
+                      type="button"
+                      onClick={() => updateUserPlan(row.userId, billingPlanDrafts[row.userId] ?? "start")}
+                      disabled={billingSavingUserId === row.userId}
+                      className="rounded-md border border-gray-300 px-2 py-1 text-xs hover:bg-gray-50 disabled:cursor-not-allowed disabled:opacity-60 dark:border-gray-700 dark:hover:bg-gray-800"
+                    >
+                      Freischalten
+                    </button>
+                    <button
+                      type="button"
+                      onClick={() => updateUserPlan(row.userId, null)}
+                      disabled={billingSavingUserId === row.userId}
+                      className="rounded-md border border-red-300 px-2 py-1 text-xs text-red-700 hover:bg-red-50 disabled:cursor-not-allowed disabled:opacity-60 dark:border-red-800 dark:text-red-300 dark:hover:bg-red-950/40"
+                    >
+                      Entziehen
+                    </button>
+                  </div>
+                </td>
               </tr>
             ))}
             {billingRows.length === 0 ? (
               <tr>
-                <td colSpan={8} className="px-3 py-6 text-center text-gray-500 dark:text-gray-400">
+                <td colSpan={9} className="px-3 py-6 text-center text-gray-500 dark:text-gray-400">
                   Keine Billing-Daten gefunden.
                 </td>
               </tr>

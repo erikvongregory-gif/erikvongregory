@@ -1,5 +1,6 @@
 import { NextResponse } from "next/server";
 import { enforceRateLimit } from "@/lib/security/requestGuards";
+import { SUBSCRIPTION_PLAN_TOKENS, type SubscriptionPlanKey } from "@/lib/billing/tokenState";
 import { createAdminClient } from "@/lib/supabase/admin";
 import { getAdminSession } from "@/lib/admin/auth";
 
@@ -20,26 +21,23 @@ export async function GET(req: Request) {
     .order("user_id", { ascending: true });
   if (error) return NextResponse.json({ error: error.message }, { status: 500 });
 
-  const rows = await Promise.all(
-    (data ?? []).map(async (row) => {
-      let email = emailByUserId.get(row.user_id) ?? "";
-      if (!email) {
-        const { data: userById } = await client.auth.admin.getUserById(row.user_id);
-        email = userById.user?.email ?? "";
-      }
-      return {
-        userId: row.user_id,
-        email,
-        plan: row.plan,
-        monthlyTokens: row.monthly_tokens,
-        usedTokens: row.used_tokens,
-        remainingTokens: Math.max((row.monthly_tokens ?? 0) - (row.used_tokens ?? 0), 0),
-        status: row.subscription_status,
-        currentPeriodEnd: row.current_period_end,
-        hasStripeCustomer: Boolean(row.stripe_customer_id),
-      };
-    }),
-  );
+  const billingByUserId = new Map((data ?? []).map((row) => [row.user_id, row]));
+  const rows = (userList.users ?? []).map((user) => {
+    const row = billingByUserId.get(user.id);
+    const monthlyTokens = row?.monthly_tokens ?? 0;
+    const usedTokens = row?.used_tokens ?? 0;
+    return {
+      userId: user.id,
+      email: user.email ?? "",
+      plan: row?.plan ?? null,
+      monthlyTokens,
+      usedTokens,
+      remainingTokens: Math.max(monthlyTokens - usedTokens, 0),
+      status: row?.subscription_status ?? "none",
+      currentPeriodEnd: row?.current_period_end ?? null,
+      hasStripeCustomer: Boolean(row?.stripe_customer_id),
+    };
+  });
 
   const summary = {
     total: rows.length,
@@ -49,4 +47,66 @@ export async function GET(req: Request) {
   };
 
   return NextResponse.json({ summary, rows });
+}
+
+type PatchPayload = {
+  userId?: string;
+  plan?: SubscriptionPlanKey | null;
+};
+
+const ALLOWED_PLANS = new Set<SubscriptionPlanKey>(["start", "growth", "pro"]);
+
+export async function PATCH(req: Request) {
+  const rateError = enforceRateLimit(req, { keyPrefix: "admin-billing-patch", limit: 30, windowMs: 60_000 });
+  if (rateError) return rateError;
+  const admin = await getAdminSession();
+  if (!admin) return NextResponse.json({ error: "Kein Admin-Zugriff." }, { status: 403 });
+
+  let payload: PatchPayload;
+  try {
+    payload = (await req.json()) as PatchPayload;
+  } catch {
+    return NextResponse.json({ error: "Ungültiger Request-Body." }, { status: 400 });
+  }
+
+  const userId = typeof payload.userId === "string" ? payload.userId.trim() : "";
+  if (!userId) {
+    return NextResponse.json({ error: "userId fehlt." }, { status: 400 });
+  }
+
+  const plan = payload.plan ?? null;
+  if (plan !== null && !ALLOWED_PLANS.has(plan)) {
+    return NextResponse.json({ error: "Ungültiger Plan." }, { status: 400 });
+  }
+
+  const client = createAdminClient();
+
+  const patch =
+    plan === null
+      ? {
+          plan: null,
+          monthly_tokens: 0,
+          used_tokens: 0,
+          subscription_status: "none",
+          current_period_end: null,
+          stripe_subscription_id: null,
+        }
+      : {
+          plan,
+          monthly_tokens: SUBSCRIPTION_PLAN_TOKENS[plan],
+          used_tokens: 0,
+          subscription_status: "active",
+          current_period_end: null,
+        };
+
+  const { error } = await client.from("billing_subscriptions").upsert(
+    {
+      user_id: userId,
+      ...patch,
+    },
+    { onConflict: "user_id" },
+  );
+  if (error) return NextResponse.json({ error: error.message }, { status: 500 });
+
+  return NextResponse.json({ ok: true });
 }

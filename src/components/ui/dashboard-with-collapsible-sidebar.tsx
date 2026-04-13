@@ -89,6 +89,8 @@ const PLAN_LABELS: Record<SubscriptionPlanKey, string> = {
   pro: "Brauerei Pro",
 };
 
+const BILLING_CHECKOUT_ENABLED = false;
+
 function getActivityIcon(type: ActivityItem["type"]): LucideIcon {
   if (type === "media") return Image;
   if (type === "team") return Users;
@@ -202,12 +204,8 @@ type ExampleProps = {
 };
 
 export const Example = ({ userEmail, userName, isAdmin = false }: ExampleProps) => {
-  const [isDark, setIsDark] = useState(() => {
-    if (typeof window === "undefined") return false;
-    const saved = window.localStorage.getItem("evglab-dashboard-theme");
-    if (saved === "dark" || saved === "light") return saved === "dark";
-    return window.matchMedia("(prefers-color-scheme: dark)").matches;
-  });
+  const [isDark, setIsDark] = useState(false);
+  const [themeReady, setThemeReady] = useState(false);
   const [selectedTab, setSelectedTab] = useState<DashboardTab>("Dashboard");
 
   const applyTheme = useCallback((nextDark: boolean) => {
@@ -216,11 +214,23 @@ export const Example = ({ userEmail, userName, isAdmin = false }: ExampleProps) 
 
   useEffect(() => {
     if (typeof window === "undefined") return;
+    const saved = window.localStorage.getItem("evglab-dashboard-theme");
+    const nextDark =
+      saved === "dark" || saved === "light"
+        ? saved === "dark"
+        : window.matchMedia("(prefers-color-scheme: dark)").matches;
+    setIsDark(nextDark);
+    setThemeReady(true);
+  }, []);
+
+  useEffect(() => {
+    if (!themeReady || typeof window === "undefined") return;
+    if (typeof window === "undefined") return;
     const root = document.documentElement;
     root.classList.toggle("dark", isDark);
     root.style.colorScheme = isDark ? "dark" : "light";
     window.localStorage.setItem("evglab-dashboard-theme", isDark ? "dark" : "light");
-  }, [isDark]);
+  }, [isDark, themeReady]);
 
   return (
     <div className={`flex min-h-screen w-full ${isDark ? "dark" : ""}`}>
@@ -1167,6 +1177,11 @@ const ExampleContent = ({ isDark, applyTheme, userEmail, userName, selectedTab, 
             <p className="text-sm text-gray-600 dark:text-gray-400">
               Verwalte deinen Tarif, sehe den aktuellen Verbrauch und waehle bei Bedarf einen neuen Plan.
             </p>
+            {!BILLING_CHECKOUT_ENABLED ? (
+              <div className="mt-3 rounded-lg border border-amber-300 bg-amber-50 p-3 text-xs text-amber-900 dark:border-amber-800 dark:bg-amber-900/30 dark:text-amber-200">
+                Testmodus aktiv: Abo-Abschlüsse und Token-Käufe sind aktuell deaktiviert.
+              </div>
+            ) : null}
             <div className="mt-3 rounded-lg border border-gray-200 bg-gray-50 p-3 text-xs text-gray-700 dark:border-gray-700 dark:bg-gray-950 dark:text-gray-300">
               <p>Monatliche Tokens: {monthlyTokens.toLocaleString("de-DE")}</p>
               <p>Verbraucht: {usedTokens.toLocaleString("de-DE")}</p>
@@ -1178,7 +1193,7 @@ const ExampleContent = ({ isDark, applyTheme, userEmail, userName, selectedTab, 
                 onClick={() => {
                   void handleOpenBillingPortal();
                 }}
-                disabled={!hasActiveBilling}
+                disabled={!hasActiveBilling || !BILLING_CHECKOUT_ENABLED}
                 className="inline-flex h-9 items-center rounded-md border border-gray-300 px-3 text-sm font-medium text-gray-700 transition hover:bg-gray-50 disabled:cursor-not-allowed disabled:opacity-50 dark:border-gray-700 dark:text-gray-200 dark:hover:bg-gray-800"
               >
                 Abo verwalten / kuendigen
@@ -1188,7 +1203,7 @@ const ExampleContent = ({ isDark, applyTheme, userEmail, userName, selectedTab, 
                 onClick={() => {
                   void handleBuyTokenPack("tokens_500");
                 }}
-                disabled={!hasActiveBilling}
+                disabled={!hasActiveBilling || !BILLING_CHECKOUT_ENABLED}
                 className="inline-flex h-9 items-center rounded-md bg-[#c65a20] px-3 text-sm font-medium text-white transition hover:bg-[#b14f1c] disabled:cursor-not-allowed disabled:opacity-50"
               >
                 +500 Tokens kaufen
@@ -1198,7 +1213,7 @@ const ExampleContent = ({ isDark, applyTheme, userEmail, userName, selectedTab, 
                 onClick={() => {
                   void handleBuyTokenPack("tokens_2000");
                 }}
-                disabled={!hasActiveBilling}
+                disabled={!hasActiveBilling || !BILLING_CHECKOUT_ENABLED}
                 className="inline-flex h-9 items-center rounded-md bg-[#7b4bf9] px-3 text-sm font-medium text-white transition hover:bg-[#6a3ee3] disabled:cursor-not-allowed disabled:opacity-50"
               >
                 +2.000 Tokens kaufen
@@ -1207,9 +1222,10 @@ const ExampleContent = ({ isDark, applyTheme, userEmail, userName, selectedTab, 
           </section>
           <BrewerySubscriptionPlans
             activePlan={activeSubscription}
-            onSelectPlan={handleSelectPlan}
+            onSelectPlan={BILLING_CHECKOUT_ENABLED ? handleSelectPlan : undefined}
             loadingPlan={loadingPlan}
-            isLoading={isCheckoutLoading}
+            isLoading={BILLING_CHECKOUT_ENABLED ? isCheckoutLoading : false}
+            checkoutEnabled={BILLING_CHECKOUT_ENABLED}
           />
         </div>
       );

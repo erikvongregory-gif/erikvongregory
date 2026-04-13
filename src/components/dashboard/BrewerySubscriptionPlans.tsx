@@ -24,7 +24,7 @@ const BREWERY_SUBSCRIPTION_PLANS: PricingCardProps[] = [
     currencyPrefix: "",
     priceSubtext: "pro Monat zzgl. MwSt.",
     buttonText: "Plan wählen",
-    buttonVariant: "secondary",
+    buttonVariant: "primary",
     className: DASHBOARD_PLAN_CARD_CLASS,
     features: [
       "1.200 Tokens / Monat",
@@ -79,9 +79,16 @@ type BrewerySubscriptionPlansProps = {
   onSelectPlan?: (plan: SubscriptionPlanKey) => void;
   loadingPlan?: SubscriptionPlanKey | null;
   isLoading?: boolean;
+  checkoutEnabled?: boolean;
 };
 
-export function BrewerySubscriptionPlans({ activePlan, onSelectPlan, loadingPlan = null, isLoading = false }: BrewerySubscriptionPlansProps) {
+export function BrewerySubscriptionPlans({
+  activePlan,
+  onSelectPlan,
+  loadingPlan = null,
+  isLoading = false,
+  checkoutEnabled = true,
+}: BrewerySubscriptionPlansProps) {
   const planKeyByName: Record<string, SubscriptionPlanKey> = {
     "Brauerei Start": "start",
     "Brauerei Wachstum": "growth",
@@ -111,9 +118,21 @@ export function BrewerySubscriptionPlans({ activePlan, onSelectPlan, loadingPlan
             <PricingCard
               key={plan.planName}
               {...plan}
-              buttonText={isActive ? "Aktiver Plan" : isCurrentLoading ? "Weiterleitung..." : isLoading ? "Bitte warten..." : plan.buttonText}
+              buttonText={
+                !checkoutEnabled
+                  ? "Testphase aktiv"
+                  : isActive
+                    ? "Aktiver Plan"
+                    : isCurrentLoading
+                      ? "Weiterleitung..."
+                      : isLoading
+                        ? "Bitte warten..."
+                        : plan.buttonText
+              }
               buttonLoading={isCurrentLoading}
+              buttonDisabled={!checkoutEnabled}
               onCtaClick={() => {
+                if (!checkoutEnabled) return;
                 if (isLoading) return;
                 if (!isActive && key && onSelectPlan) onSelectPlan(key);
               }}

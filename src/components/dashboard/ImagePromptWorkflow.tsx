@@ -29,6 +29,7 @@ type FlaschenTyp =
   | "Stubbi / NRW"
   | "Euroflasche"
   | "Bügelflasche"
+  // Legacy Alias: wird intern auf "Stubbi / NRW" normalisiert.
   | "Weizenbierflasche"
   | "Dose";
 type FlaschenVolumen = "330ml" | "500ml" | "750ml";
@@ -196,6 +197,11 @@ const QUICK_BRIEFS: Array<{ label: string; preset: Partial<PromptBrief> }> = [
     },
   },
 ];
+
+function normalizeFlaschenTyp(value: FlaschenTyp | ""): FlaschenTyp | "" {
+  if (value === "Weizenbierflasche") return "Stubbi / NRW";
+  return value;
+}
 
 const glassByBeer: Array<{ match: RegExp; glass: string }> = [
   { match: /(weizen|weissbier|hefeweizen)/i, glass: "tall curved Weizen glass" },
@@ -606,7 +612,7 @@ const BEER_SERVING_COMPATIBILITY: Record<BeerFamily, BeerServingRule> = {
   weizen: {
     preferredGlassRegex: /(weizen glass|weissbier|weißbier|hefeweizen|weizenbierflasche)/i,
     allowedGlassRegexes: [/(weizen glass|weissbier|weißbier|hefeweizen)/i],
-    allowedBottleTypes: ["Weizenbierflasche", "Bügelflasche"],
+    allowedBottleTypes: ["Stubbi / NRW", "Bügelflasche"],
     strictNoSubstitution: true,
   },
   pils: {
@@ -654,13 +660,13 @@ const BEER_SERVING_COMPATIBILITY: Record<BeerFamily, BeerServingRule> = {
   alkoholfrei: {
     preferredGlassRegex: /(willibecher|pilsner flute|weizen glass)/i,
     allowedGlassRegexes: [/(willibecher|pilsner flute|weizen glass|stange)/i],
-    allowedBottleTypes: ["Longneck", "Euroflasche", "Stubbi / NRW", "Bügelflasche", "Weizenbierflasche", "Dose"],
+    allowedBottleTypes: ["Longneck", "Euroflasche", "Stubbi / NRW", "Bügelflasche", "Dose"],
     strictNoSubstitution: true,
   },
   generic: {
     preferredGlassRegex: /(willibecher|pilsner|glass)/i,
     allowedGlassRegexes: [/(glass|willibecher|pilsner|weizen)/i],
-    allowedBottleTypes: ["Longneck", "Euroflasche", "Stubbi / NRW", "Bügelflasche", "Weizenbierflasche", "Dose"],
+    allowedBottleTypes: ["Longneck", "Euroflasche", "Stubbi / NRW", "Bügelflasche", "Dose"],
     strictNoSubstitution: false,
   },
 };
@@ -705,7 +711,8 @@ function validateServingCompatibility(brief: PromptBrief) {
 
   const bottleVisible = brief.behaelter === "Nur Flasche" || brief.behaelter === "Flasche + Glas";
   if (bottleVisible && brief.flaschenTyp) {
-    const bottleAllowed = rule.allowedBottleTypes.includes(brief.flaschenTyp as FlaschenTyp);
+    const bottleType = normalizeFlaschenTyp(brief.flaschenTyp as FlaschenTyp);
+    const bottleAllowed = rule.allowedBottleTypes.includes(bottleType);
     if (!bottleAllowed) {
       blockers.push(`Flaschentyp passt nicht zum Biertyp (${brief.biertyp || "Bier"}).`);
       fixSuggestions.push({ text: "Wähle einen passenden Flaschentyp für den Biertyp.", field: "flaschenTyp" });
@@ -1123,8 +1130,29 @@ function buildPhysicalRealismRule(brief: PromptBrief): string {
           ? "Physical scale lock: 750ml bottle can appear larger but still human-hand plausible, never toy-like or giant."
           : "Physical scale lock: bottle size must remain anatomically plausible relative to hands, arms, and body.";
 
+  const bottleType = normalizeFlaschenTyp(brief.flaschenTyp as FlaschenTyp | "");
+  const bottleShapeRule =
+    bottleType === "Longneck"
+      ? "Bottle geometry lock (Longneck): slim cylindrical body with clearly elongated narrow neck and realistic shoulder transition; never short, wide, or bulky."
+      : bottleType === "Stubbi / NRW"
+        ? "Bottle geometry lock (Stubbi/NRW): compact bottle silhouette with shorter neck, but still realistic proportions and no exaggerated width."
+        : bottleType === "Euroflasche"
+          ? "Bottle geometry lock (Euroflasche): classic balanced returnable silhouette with medium neck and realistic body taper."
+          : bottleType === "Bügelflasche"
+            ? "Bottle geometry lock (Bügelflasche): swing-top silhouette with authentic closure and physically plausible neck/body proportions."
+            : bottleType === "Dose"
+              ? "Container geometry lock (Dose): standard cylindrical can silhouette with realistic dimensions."
+              : "Bottle geometry lock: maintain realistic brewery container proportions.";
+
+  const ipaGlassRule =
+    detectBeerFamily(brief) === "ipa"
+      ? "IPA glass lock: poured beer must be in a nonic pint IPA glass. Forbidden glass types: Weizen glass, Pilsner flute, Stange, stein, goblet."
+      : "";
+
   return [
     bottleScaleRule,
+    bottleShapeRule,
+    ipaGlassRule,
     "No cutout/sticker look: object must be fully integrated into scene with consistent perspective and lens distortion.",
     "Require realistic contact cues: finger occlusion, grip pressure, tiny deformations, and natural hand-to-glass interaction.",
     "Require coherent lighting and shadowing: contact shadows on fingers/palm, matching highlights, and color bleed from environment.",
@@ -1179,7 +1207,7 @@ function applySceneAutoFixes(brief: PromptBrief) {
   // Hard boundaries: never auto-rewrite product-truth fields.
   next.biertyp = brief.biertyp;
   next.behaelter = brief.behaelter;
-  next.flaschenTyp = brief.flaschenTyp;
+  next.flaschenTyp = normalizeFlaschenTyp(brief.flaschenTyp as FlaschenTyp | "");
   next.flaschenVolumen = brief.flaschenVolumen;
   next.etikettModus = brief.etikettModus;
 
@@ -1380,7 +1408,11 @@ export function ImagePromptWorkflow({
   };
 
   const applyQuickBrief = (preset: Partial<PromptBrief>) => {
-    setBrief((prev) => ({ ...prev, ...preset }));
+    setBrief((prev) => ({
+      ...prev,
+      ...preset,
+      flaschenTyp: normalizeFlaschenTyp((preset.flaschenTyp ?? prev.flaschenTyp) as FlaschenTyp | ""),
+    }));
     setStepIndex(0);
   };
 
@@ -1407,7 +1439,12 @@ export function ImagePromptWorkflow({
   }, [brief]);
 
   const updateField = (key: keyof PromptBrief, value: string) => {
-    setBrief((prev) => ({ ...prev, [key]: value }));
+    setBrief((prev) => {
+      if (key === "flaschenTyp") {
+        return { ...prev, flaschenTyp: normalizeFlaschenTyp(value as FlaschenTyp | "") };
+      }
+      return { ...prev, [key]: value };
+    });
   };
 
   const selectedStudioProps = useMemo(
@@ -1477,7 +1514,7 @@ export function ImagePromptWorkflow({
       key: "flaschenTyp",
       label: "3) Flaschentyp (wenn Flasche sichtbar)",
       type: "select",
-      options: ["Longneck", "Stubbi / NRW", "Euroflasche", "Bügelflasche", "Weizenbierflasche", "Dose"],
+      options: ["Longneck", "Stubbi / NRW", "Euroflasche", "Bügelflasche", "Dose"],
     },
     {
       key: "flaschenVolumen",
@@ -1836,6 +1873,11 @@ export function ImagePromptWorkflow({
     if (!isAspectRatioLockedByPlatform) return;
     setImageAspectRatio(platformLockedAspectRatio as typeof imageAspectRatio);
   }, [isAspectRatioLockedByPlatform, platformLockedAspectRatio]);
+
+  useEffect(() => {
+    if (brief.flaschenTyp !== "Weizenbierflasche") return;
+    setBrief((prev) => ({ ...prev, flaschenTyp: "Stubbi / NRW" }));
+  }, [brief.flaschenTyp]);
 
   const delay = (ms: number) =>
     new Promise<void>((resolve) => {
