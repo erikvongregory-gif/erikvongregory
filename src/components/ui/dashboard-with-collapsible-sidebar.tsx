@@ -89,7 +89,7 @@ const PLAN_LABELS: Record<SubscriptionPlanKey, string> = {
   pro: "Brauerei Pro",
 };
 
-const BILLING_CHECKOUT_ENABLED = true;
+const BILLING_CHECKOUT_ENABLED = false;
 
 function getActivityIcon(type: ActivityItem["type"]): LucideIcon {
   if (type === "media") return Image;
@@ -866,7 +866,36 @@ const ExampleContent = ({ isDark, applyTheme, userEmail, userName, selectedTab, 
 
   const handleClaimCredits = async () => {
     if (!BILLING_CHECKOUT_ENABLED) {
-      setSelectedTab("Abo & Tokens");
+      try {
+        setGlobalErrorMessage("");
+        const res = await fetch("/api/billing/onboarding-bonus", { method: "POST" });
+        if (!res.ok) {
+          const payload = (await res.json().catch(() => ({}))) as { error?: string };
+          setGlobalErrorMessage(payload.error ?? "Bonus-Credits konnten nicht freigeschaltet werden.");
+          return;
+        }
+        const data = (await res.json()) as {
+          state?: {
+            plan: SubscriptionPlanKey | null;
+            monthlyTokens: number;
+            usedTokens: number;
+            status?: string;
+          };
+        };
+        if (data.state) {
+          setActiveSubscription(data.state.plan);
+          setMonthlyTokens(data.state.monthlyTokens);
+          setUsedTokens(data.state.usedTokens);
+          setBillingStatus(data.state.status ?? "active");
+          if (typeof window !== "undefined") {
+            window.dispatchEvent(new CustomEvent("evglab-billing-updated"));
+          }
+        }
+        setShowCreditsOffer(false);
+        setSelectedTab("Inhalte erstellen");
+      } catch (error) {
+        setGlobalErrorMessage(error instanceof Error ? error.message : "Bonus-Credits konnten nicht freigeschaltet werden.");
+      }
       return;
     }
     await handleSelectPlan("start");
