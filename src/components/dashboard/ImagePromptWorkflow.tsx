@@ -712,7 +712,7 @@ function validateServingCompatibility(brief: PromptBrief) {
   const bottleVisible = brief.behaelter === "Nur Flasche" || brief.behaelter === "Flasche + Glas";
   if (bottleVisible && brief.flaschenTyp) {
     const bottleType = normalizeFlaschenTyp(brief.flaschenTyp as FlaschenTyp);
-    const bottleAllowed = rule.allowedBottleTypes.includes(bottleType);
+    const bottleAllowed = bottleType ? rule.allowedBottleTypes.includes(bottleType) : false;
     if (!bottleAllowed) {
       blockers.push(`Flaschentyp passt nicht zum Biertyp (${brief.biertyp || "Bier"}).`);
       fixSuggestions.push({ text: "Wähle einen passenden Flaschentyp für den Biertyp.", field: "flaschenTyp" });
