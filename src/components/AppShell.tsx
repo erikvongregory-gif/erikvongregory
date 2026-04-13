@@ -16,8 +16,11 @@ type AppShellProps = {
 export function AppShell({ children }: AppShellProps) {
   const pathname = usePathname();
   const isDashboardRoute = pathname?.startsWith("/dashboard") ?? false;
+  const isAdmin2FARoute = pathname?.startsWith("/admin/2fa-email") ?? false;
+  const isAdminRoute = pathname?.startsWith("/admin") ?? false;
+  const skipLoadingScreen = isDashboardRoute || isAdminRoute || isAdmin2FARoute;
 
-  if (isDashboardRoute) {
+  if (skipLoadingScreen) {
     return <main id="main" className="relative min-h-screen bg-gray-50">{children}</main>;
   }
 
