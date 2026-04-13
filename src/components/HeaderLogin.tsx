@@ -283,6 +283,10 @@ export function HeaderLogin({ variant, className }: HeaderLoginProps) {
         <p className="rounded-md border border-emerald-200 bg-emerald-50 px-3 py-2 text-sm text-emerald-900">
           Bitte bestätige zuerst deine E-Mail und melde dich danach an.
         </p>
+      ) : authNotice === "invite_ready" ? (
+        <p className="rounded-md border border-emerald-200 bg-emerald-50 px-3 py-2 text-sm text-emerald-900">
+          Einladung angenommen. Bitte melde dich jetzt mit deinem neuen Passwort an.
+        </p>
       ) : null}
       <div className="flex items-center gap-3 before:h-px before:flex-1 before:bg-border after:h-px after:flex-1 after:bg-border">
         <span className="text-xs text-muted-foreground">Oder</span>
@@ -330,7 +334,7 @@ export function HeaderLogin({ variant, className }: HeaderLoginProps) {
                   variant="outline"
                   className="h-9 rounded-full border border-black/10 bg-gradient-to-br from-black/5 to-black/0 px-4 text-zinc-900 shadow-[0_10px_22px_-18px_rgba(24,24,27,0.28)] backdrop-blur-[14px] transition duration-300 hover:-translate-y-0.5 hover:border-[#e07a40]/35 hover:shadow-[0_16px_34px_-20px_rgba(198,90,32,0.24)]"
                 >
-                  <Link href="/admin">Admin</Link>
+                  <Link href="/dashboard">Admin Center</Link>
                 </Button>
               ) : null}
               <form action="/auth/signout" method="post">
@@ -392,7 +396,7 @@ export function HeaderLogin({ variant, className }: HeaderLoginProps) {
                 className="h-10 w-full rounded-full border border-black/10 bg-gradient-to-br from-black/5 to-black/0 px-4 text-zinc-900 shadow-[0_10px_22px_-18px_rgba(24,24,27,0.28)] backdrop-blur-[14px] transition duration-300 hover:-translate-y-0.5 hover:border-[#e07a40]/35 hover:shadow-[0_16px_34px_-20px_rgba(198,90,32,0.24)]"
                 role="menuitem"
               >
-                <Link href="/admin">Admin</Link>
+                <Link href="/dashboard">Admin Center</Link>
               </Button>
             ) : null}
             <form action="/auth/signout" method="post" className="w-full">

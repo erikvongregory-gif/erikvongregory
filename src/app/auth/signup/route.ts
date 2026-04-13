@@ -1,7 +1,6 @@
 import { NextResponse } from "next/server";
 import { createAdminClient } from "@/lib/supabase/admin";
 import { isInviteOnlyEnabled, isSupabaseConfigured } from "@/lib/supabase/env";
-import { createRouteHandlerClient } from "@/lib/supabase/server";
 import { consumeInviteByToken } from "@/lib/invite/server";
 
 export async function POST(request: Request) {
@@ -56,13 +55,9 @@ export async function POST(request: Request) {
     return NextResponse.redirect(`${origin}/?auth=signup&error=auth`, 303);
   }
 
-  const redirectResponse = NextResponse.redirect(`${origin}${safeNext}`, 303);
-  redirectResponse.headers.set("Cache-Control", "no-store, max-age=0");
-  const supabase = createRouteHandlerClient(request, redirectResponse);
-  const { error: signInError } = await supabase.auth.signInWithPassword({ email, password });
-  if (signInError) {
-    return NextResponse.redirect(`${origin}/?auth=signin&error=auth`, 303);
+  if (isInviteOnlyEnabled()) {
+    return NextResponse.redirect(`${origin}/?auth=signin&notice=invite_ready`, 303);
   }
 
-  return redirectResponse;
+  return NextResponse.redirect(`${origin}${safeNext}`, 303);
 }

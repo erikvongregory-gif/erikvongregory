@@ -57,7 +57,7 @@ export async function POST(request: Request) {
       code,
       ttlSeconds: 600,
     });
-    const response = NextResponse.redirect(`${origin}/admin/2fa-email`, 303);
+    const response = NextResponse.redirect(`${origin}/dashboard/2fa-email`, 303);
     response.cookies.set(getPendingCookieName(), pendingToken, {
       httpOnly: true,
       sameSite: "lax",

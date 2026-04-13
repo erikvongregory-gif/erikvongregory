@@ -89,7 +89,7 @@ const PLAN_LABELS: Record<SubscriptionPlanKey, string> = {
   pro: "Brauerei Pro",
 };
 
-const BILLING_CHECKOUT_ENABLED = false;
+const BILLING_CHECKOUT_ENABLED = true;
 
 function getActivityIcon(type: ActivityItem["type"]): LucideIcon {
   if (type === "media") return Image;
@@ -541,6 +541,7 @@ const ExampleContent = ({ isDark, applyTheme, userEmail, userName, selectedTab, 
   const [downloadingMediaId, setDownloadingMediaId] = useState<string | null>(null);
   const [downloadErrorMessage, setDownloadErrorMessage] = useState("");
   const [showOnboarding, setShowOnboarding] = useState(false);
+  const [showCreditsOffer, setShowCreditsOffer] = useState(false);
   const [activeSubscription, setActiveSubscription] = useState<SubscriptionPlanKey | null>(null);
   const [monthlyTokens, setMonthlyTokens] = useState(0);
   const [usedTokens, setUsedTokens] = useState(0);
@@ -751,6 +752,10 @@ const ExampleContent = ({ isDark, applyTheme, userEmail, userName, selectedTab, 
 
   const closeOnboarding = () => {
     setShowOnboarding(false);
+    const hasActivePlan = Boolean(activeSubscription) && billingStatus !== "none" && billingStatus !== "canceled";
+    if (!hasActivePlan) {
+      setShowCreditsOffer(true);
+    }
     if (typeof window === "undefined") return;
     try {
       window.localStorage.setItem(onboardingStorageKey, "seen");
@@ -857,6 +862,14 @@ const ExampleContent = ({ isDark, applyTheme, userEmail, userName, selectedTab, 
       setIsCheckoutLoading(false);
       setLoadingPlan(null);
     }
+  };
+
+  const handleClaimCredits = async () => {
+    if (!BILLING_CHECKOUT_ENABLED) {
+      setSelectedTab("Abo & Tokens");
+      return;
+    }
+    await handleSelectPlan("start");
   };
 
   const handleOpenBillingPortal = async () => {
@@ -1592,6 +1605,28 @@ const ExampleContent = ({ isDark, applyTheme, userEmail, userName, selectedTab, 
               <p className="text-sm font-semibold">{checkoutMessage}</p>
             </div>
             <p className="text-xs text-gray-200">Bitte kurz warten. Stripe wird in einem Moment geoeffnet.</p>
+          </div>
+        </div>
+      ) : null}
+      {showCreditsOffer ? (
+        <div className="fixed inset-0 z-[125] flex items-center justify-center bg-black/60 px-4">
+          <div className="w-full max-w-md rounded-2xl border border-orange-200 bg-white p-6 shadow-2xl dark:border-orange-900/40 dark:bg-gray-900">
+            <div className="mb-3 inline-flex items-center rounded-full bg-orange-100 px-3 py-1 text-xs font-semibold uppercase tracking-wide text-orange-700 dark:bg-orange-900/30 dark:text-orange-300">
+              Willkommen-Bonus
+            </div>
+            <h3 className="text-xl font-semibold text-gray-900 dark:text-gray-100">Du bekommst 300 freie Credits</h3>
+            <p className="mt-2 text-sm text-gray-600 dark:text-gray-300">
+              Klicke auf den Button, um deine Credits freizuschalten. Die Freischaltung erfolgt im Abo-Checkout.
+            </p>
+            <button
+              type="button"
+              onClick={() => {
+                void handleClaimCredits();
+              }}
+              className="mt-5 inline-flex h-11 w-full items-center justify-center rounded-md bg-[#c65a20] px-4 text-sm font-semibold text-white transition hover:bg-[#b14f1c]"
+            >
+              300 Credits sichern und Abo starten
+            </button>
           </div>
         </div>
       ) : null}

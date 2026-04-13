@@ -43,7 +43,7 @@ export async function requireAdminPageAccess(options?: { allowWithout2FA?: boole
   if (!options?.allowWithout2FA) {
     const cookieStore = await cookies();
     const verifiedToken = cookieStore.get(getVerifiedCookieName())?.value ?? null;
-    if (!isVerified2FAForUser(verifiedToken, user.id)) redirect("/admin/2fa-email");
+    if (!isVerified2FAForUser(verifiedToken, user.id)) redirect("/dashboard/2fa-email");
   }
   return {
     userId: user.id,

@@ -16,7 +16,7 @@ export async function POST(request: NextRequest) {
   const action = String(formData.get("action") ?? "verify");
   const code = String(formData.get("code") ?? "").trim();
 
-  const response = NextResponse.redirect(`${origin}/admin/2fa-email`, 303);
+  const response = NextResponse.redirect(`${origin}/dashboard/2fa-email`, 303);
   const supabase = createRouteHandlerClient(request, response);
   const {
     data: { user },
@@ -39,7 +39,7 @@ export async function POST(request: NextRequest) {
     try {
       await sendAdmin2FACodeEmail({ to: user.email, code: newCode });
     } catch {
-      return NextResponse.redirect(`${origin}/admin/2fa-email?error=email_failed`, 303);
+      return NextResponse.redirect(`${origin}/dashboard/2fa-email?error=email_failed`, 303);
     }
     const nextPending = buildPending2FAToken({
       userId: user.id,
@@ -54,11 +54,11 @@ export async function POST(request: NextRequest) {
       path: "/",
       maxAge: 60 * 10,
     });
-    return NextResponse.redirect(`${origin}/admin/2fa-email?notice=resent`, 303);
+    return NextResponse.redirect(`${origin}/dashboard/2fa-email?notice=resent`, 303);
   }
 
   if (!code) {
-    return NextResponse.redirect(`${origin}/admin/2fa-email?error=missing_code`, 303);
+    return NextResponse.redirect(`${origin}/dashboard/2fa-email?error=missing_code`, 303);
   }
 
   const result = verifyPending2FACode(pendingToken, {
@@ -66,14 +66,14 @@ export async function POST(request: NextRequest) {
     code,
   });
   if (!result.ok) {
-    return NextResponse.redirect(`${origin}/admin/2fa-email?error=invalid_code`, 303);
+    return NextResponse.redirect(`${origin}/dashboard/2fa-email?error=invalid_code`, 303);
   }
 
   const verifiedToken = buildVerified2FAToken({
     userId: user.id,
     ttlSeconds: 60 * 60 * 12,
   });
-  const done = NextResponse.redirect(`${origin}/admin`, 303);
+  const done = NextResponse.redirect(`${origin}/dashboard`, 303);
   done.cookies.set(getVerifiedCookieName(), verifiedToken, {
     httpOnly: true,
     sameSite: "lax",

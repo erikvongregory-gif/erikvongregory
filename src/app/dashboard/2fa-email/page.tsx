@@ -1,4 +1,5 @@
-import { requireAdminPageAccess } from "@/lib/admin/auth";
+import { redirect } from "next/navigation";
+import { createClient } from "@/lib/supabase/server";
 
 export const dynamic = "force-dynamic";
 
@@ -10,8 +11,17 @@ function readValue(v: string | string[] | undefined) {
   return Array.isArray(v) ? v[0] : v;
 }
 
-export default async function AdminEmail2FAPage({ searchParams }: Props) {
-  await requireAdminPageAccess({ allowWithout2FA: true });
+export default async function DashboardEmail2FAPage({ searchParams }: Props) {
+  const supabase = await createClient();
+  const {
+    data: { user },
+  } = await supabase.auth.getUser();
+  const role =
+    typeof user?.user_metadata?.role === "string"
+      ? String(user.user_metadata.role).toLowerCase()
+      : "";
+  if (!user || role !== "admin") redirect("/dashboard");
+
   const params = (await searchParams) ?? {};
   const error = readValue(params.error);
   const notice = readValue(params.notice);
@@ -19,9 +29,9 @@ export default async function AdminEmail2FAPage({ searchParams }: Props) {
   return (
     <main className="min-h-screen bg-gray-50 px-4 py-8 dark:bg-gray-950 sm:px-6">
       <section className="mx-auto mt-16 w-full max-w-md rounded-2xl border border-gray-200 bg-white p-6 shadow-sm dark:border-gray-800 dark:bg-gray-900">
-        <h1 className="text-xl font-semibold text-gray-900 dark:text-gray-100">Admin-E-Mail-Code bestätigen</h1>
+        <h1 className="text-xl font-semibold text-gray-900 dark:text-gray-100">Sicherheitscode fürs Dashboard</h1>
         <p className="mt-2 text-sm text-gray-600 dark:text-gray-400">
-          Wir haben dir einen 6-stelligen Sicherheitscode per E-Mail gesendet. Bitte bestätige ihn, um den Admin-Bereich zu öffnen.
+          Wir haben dir einen 6-stelligen Code per E-Mail gesendet. Bitte bestätige ihn, um den Admin-Bereich im Dashboard freizuschalten.
         </p>
 
         {notice === "resent" ? (
@@ -55,7 +65,7 @@ export default async function AdminEmail2FAPage({ searchParams }: Props) {
             type="submit"
             className="inline-flex h-11 w-full items-center justify-center rounded-md bg-[#c65a20] px-4 text-sm font-medium text-white transition hover:bg-[#b14f1c]"
           >
-            Admin-Zugang freigeben
+            Dashboard freigeben
           </button>
         </form>
 
