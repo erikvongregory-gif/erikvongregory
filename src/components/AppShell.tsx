@@ -7,6 +7,7 @@ import { ContactFunnel } from "@/components/ContactFunnel";
 import { LoadingScreen } from "@/components/LoadingScreen";
 import { LegalPageTheme } from "@/components/LegalPageTheme";
 import { SiteGradientBackdrop } from "@/components/ui/gradient-backgrounds";
+import { useLoading } from "@/context/LoadingContext";
 import { SITE } from "@/lib/siteConfig";
 
 type AppShellProps = {
@@ -15,6 +16,7 @@ type AppShellProps = {
 
 export function AppShell({ children }: AppShellProps) {
   const pathname = usePathname();
+  const { isLoadComplete } = useLoading();
   const isDashboardRoute = pathname?.startsWith("/dashboard") ?? false;
   const isAdminRoute = pathname?.startsWith("/admin") ?? false;
   const skipLoadingScreen = isDashboardRoute || isAdminRoute;
@@ -36,7 +38,13 @@ export function AppShell({ children }: AppShellProps) {
       <ContactFunnel />
       <CookieBanner />
       <LegalPageTheme />
-      <ScrollHeader />
+      <div
+        className={`transition-opacity duration-500 ease-out ${
+          isLoadComplete ? "opacity-100" : "pointer-events-none opacity-0"
+        }`}
+      >
+        <ScrollHeader />
+      </div>
       {children}
       <footer id="contact" className="relative z-[70] border-t border-zinc-200/80 bg-transparent py-12 sm:py-16">
         <div className="mx-auto max-w-6xl px-4 sm:px-6">

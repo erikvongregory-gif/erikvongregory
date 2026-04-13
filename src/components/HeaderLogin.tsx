@@ -37,26 +37,48 @@ export function HeaderLogin({ variant, className }: HeaderLoginProps) {
   const idSuffix = variant === "desktop" ? "desktop" : "mobile";
 
   useEffect(() => {
-    if (!isSupabaseConfigured()) {
-      return;
-    }
-
-    const supabase = createSupabaseClient();
     let isActive = true;
 
+    const syncFromServer = async () => {
+      try {
+        const res = await fetch("/api/auth/status", {
+          method: "GET",
+          cache: "no-store",
+          credentials: "include",
+        });
+        if (!isActive) return;
+        if (!res.ok) {
+          setIsAuthenticated(false);
+          setIsAdmin(false);
+          return;
+        }
+        const payload = (await res.json()) as { authenticated?: boolean; admin?: boolean };
+        setIsAuthenticated(Boolean(payload.authenticated));
+        setIsAdmin(Boolean(payload.admin));
+      } catch {
+        if (!isActive) return;
+        setIsAuthenticated(false);
+        setIsAdmin(false);
+      }
+    };
+
     const syncAuthState = async () => {
+      if (!isSupabaseConfigured()) {
+        await syncFromServer();
+        return;
+      }
+
+      const supabase = createSupabaseClient();
       const { data: sessionData } = await supabase.auth.getSession();
       if (!isActive) return;
       if (!sessionData.session) {
-        setIsAuthenticated(false);
-        setIsAdmin(false);
+        await syncFromServer();
         return;
       }
       const { data, error } = await supabase.auth.getUser();
       if (!isActive) return;
       if (error) {
-        setIsAuthenticated(false);
-        setIsAdmin(false);
+        await syncFromServer();
         return;
       }
       setIsAuthenticated(Boolean(data.user));
@@ -69,17 +91,18 @@ export function HeaderLogin({ variant, className }: HeaderLoginProps) {
 
     void syncAuthState();
 
-    const {
-      data: { subscription },
-    } = supabase.auth.onAuthStateChange((_event, session) => {
-      if (!isActive) return;
-      setIsAuthenticated(Boolean(session?.user));
-      const role =
-        typeof session?.user?.user_metadata?.role === "string"
-          ? String(session.user.user_metadata.role).toLowerCase()
-          : "";
-      setIsAdmin(role === "admin");
-    });
+    const supabase = isSupabaseConfigured() ? createSupabaseClient() : null;
+    const subscription = supabase
+      ? supabase.auth.onAuthStateChange((_event, session) => {
+          if (!isActive) return;
+          setIsAuthenticated(Boolean(session?.user));
+          const role =
+            typeof session?.user?.user_metadata?.role === "string"
+              ? String(session.user.user_metadata.role).toLowerCase()
+              : "";
+          setIsAdmin(role === "admin");
+        }).data.subscription
+      : null;
 
     const onFocus = () => {
       void syncAuthState();
@@ -97,7 +120,7 @@ export function HeaderLogin({ variant, className }: HeaderLoginProps) {
       isActive = false;
       window.removeEventListener("focus", onFocus);
       document.removeEventListener("visibilitychange", onVisibility);
-      subscription.unsubscribe();
+      subscription?.unsubscribe();
     };
   }, [pathname]);
 
