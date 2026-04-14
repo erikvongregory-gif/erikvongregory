@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import { PromptInputBox } from "@/components/ui/ai-prompt-box";
 import { ImageGeneration } from "@/components/ui/ai-chat-image-generation-1";
 import { AiLoader } from "../ui/ai-loader";
@@ -93,6 +93,25 @@ type GeneratedMediaItem = {
   resolution: "1K" | "2K" | "4K";
   outputFormat: "png" | "jpg";
 };
+
+type PendingKieTaskSession = {
+  taskId: string;
+  prompt: string;
+  aspectRatio: string;
+  resolution: "1K" | "2K" | "4K";
+  outputFormat: "png" | "jpg";
+  tokenCost: number;
+  startedAt: number;
+  doneWithoutUrlSince?: number | null;
+};
+
+const KIE_MAX_WAIT_MS = 8 * 60 * 1000;
+const KIE_DONE_GRACE_MS = 90 * 1000;
+const KIE_BASE_DELAY_MS = 2200;
+const KIE_MAX_DELAY_MS = 8000;
+const KIE_STATUS_TIMEOUT_MS = 15_000;
+const KIE_TRANSIENT_RETRY_LIMIT = 3;
+const KIE_PENDING_TASK_SESSION_KEY = "evglab_kie_pending_task";
 
 type ImagePromptWorkflowProps = {
   onImageGenerated?: (item: GeneratedMediaItem) => void;
@@ -324,7 +343,33 @@ const DEFAULT_NEGATIVE_PROMPTS = [
   "no extra limbs/fingers when humans are present",
 ] as const;
 
-type SceneConfig = {
+type ScenePreset = {
+  label: string;
+  preset: Partial<PromptBrief>;
+};
+
+type ScenePromptContract = {
+  mustInclude: RegExp[];
+  mustExclude: RegExp[];
+  hardLocks: string[];
+  blockerMessage: string;
+};
+
+type SceneAutoFixPolicy = {
+  fallbackMood: Stimmung;
+  fallbackShotType: ShotType;
+  fallbackPersonMode?: PersonenOption;
+  defaultBackground?: string;
+  defaultSeason?: string;
+};
+
+type SceneFieldPolicy = {
+  hiddenStepKeys: Array<keyof PromptBrief>;
+  requiredKeys: Array<keyof PromptBrief>;
+  optionOverrides?: Partial<Record<keyof PromptBrief, string[]>>;
+};
+
+type SceneConfigBase = {
   aliases: string[];
   short: string;
   sceneType: string;
@@ -339,7 +384,23 @@ type SceneConfig = {
   guidanceTips: string[];
 };
 
-const SCENE_CONFIG: Record<BildtypOption, SceneConfig> = {
+type SceneConfig = SceneConfigBase & {
+  fieldPolicy: SceneFieldPolicy;
+  scenePresets: ScenePreset[];
+  promptContract: ScenePromptContract;
+  autoFixPolicy: SceneAutoFixPolicy;
+};
+
+const STUDIO_BACKGROUND_PRESET_OPTIONS = [
+  "Seamless Weiß (High-Key)",
+  "Seamless Hellgrau",
+  "Seamless Dunkelgrau (Low-Key)",
+  "Farbverlauf Weiß -> Hellgrau",
+  "Acrylfläche mit weicher Spiegelung",
+  "Stein-/Beton-Look neutral (Studio)",
+] as const;
+
+const SCENE_CONFIG_BASE: Record<BildtypOption, SceneConfigBase> = {
   "Produkt-Studio": {
     aliases: ["Produktstudio"],
     short: "Studio-Produktbild mit kontrollierter Deko/Props.",
@@ -485,6 +546,216 @@ const SCENE_CONFIG: Record<BildtypOption, SceneConfig> = {
   },
 };
 
+function getSceneFieldPolicy(scene: BildtypOption, base: SceneConfigBase): SceneFieldPolicy {
+  const hiddenStepKeys = [...(base.hiddenStepKeys ?? [])];
+  const requiredKeys: Array<keyof PromptBrief> = ["stimmung", "shotType", "personenModus"];
+  const optionOverrides: Partial<Record<keyof PromptBrief, string[]>> = {};
+
+  if (scene === "Produkt-Studio") {
+    requiredKeys.push("studioStyle", "besondererHintergrund");
+    optionOverrides.besondererHintergrund = [...STUDIO_BACKGROUND_PRESET_OPTIONS];
+  }
+  if (scene === "Food-Pairing") {
+    requiredKeys.push("besondererHintergrund");
+  }
+  if (scene === "Makro/Detail") {
+    hiddenStepKeys.push("saisonalerBezug");
+  }
+  return { hiddenStepKeys, requiredKeys, optionOverrides };
+}
+
+function getScenePresets(scene: BildtypOption): ScenePreset[] {
+  const commonBase: Partial<PromptBrief> = {
+    plattform: "Instagram Post",
+    referenzStaerke: "Mittel",
+    etikettModus: "Generisch",
+    behaelter: "Flasche + Glas",
+    flaschenVolumen: "500ml",
+    markenname: "generisch",
+  };
+  switch (scene) {
+    case "Produkt-Studio":
+      return [
+        {
+          label: "Studio Hero",
+          preset: {
+            ...commonBase,
+            bildtyp: scene,
+            stimmung: "Premium/Luxus",
+            studioStyle: "Premium Hero",
+            besondererHintergrund: STUDIO_BACKGROUND_PRESET_OPTIONS[0],
+            personenModus: "Kein Mensch",
+            shotType: "45° Hero Shot",
+            flaschenTyp: "Longneck",
+            biertyp: "Helles",
+          },
+        },
+      ];
+    case "Event/Promotion":
+      return [
+        {
+          label: "Promo Kampagne",
+          preset: {
+            ...commonBase,
+            bildtyp: scene,
+            stimmung: "Aktiv/Frisch",
+            personenModus: "Person ohne Gesicht",
+            shotType: "Low Angle",
+            saisonalerBezug: "Sommer-Event",
+            besondererHintergrund: "promo stage lighting with clear copy-space zone",
+            flaschenTyp: "Euroflasche",
+            biertyp: "Helles",
+          },
+        },
+      ];
+    case "Food-Pairing":
+      return [
+        {
+          label: "Pairing Tischszene",
+          preset: {
+            ...commonBase,
+            bildtyp: scene,
+            stimmung: "Nachhaltig/Rustikal",
+            personenModus: "Hände/Arme ohne Gesicht",
+            shotType: "Eye-Level",
+            besondererHintergrund: "wooden dining table with plated food pairing (pretzel, cheese, charcuterie)",
+            flaschenTyp: "Longneck",
+            biertyp: "Märzen",
+          },
+        },
+      ];
+    default:
+      return [
+        {
+          label: `${scene} Preset`,
+          preset: {
+            ...commonBase,
+            bildtyp: scene,
+          },
+        },
+      ];
+  }
+}
+
+function getScenePromptContract(scene: BildtypOption): ScenePromptContract {
+  switch (scene) {
+    case "Produkt-Studio":
+      return {
+        mustInclude: [/(studio lock|controlled studio|seamless|catalog-ready)/i],
+        mustExclude: [/(outdoor|beer garden|mountain|forest|restaurant terrace)/i],
+        hardLocks: ["Scene lock: keep a controlled studio setup with neutral backdrop and product-first framing."],
+        blockerMessage: "Produkt-Studio-Contract verletzt: Studio-Setup nicht klar genug erzwungen.",
+      };
+    case "Biergarten/Genussmoment":
+      return {
+        mustInclude: [/(beer garden|outdoor|table-led|social atmosphere)/i],
+        mustExclude: [/(seamless studio|isolated packshot)/i],
+        hardLocks: ["Scene lock: enforce authentic outdoor beer-garden enjoyment context with social table cues."],
+        blockerMessage: "Biergarten/Genussmoment-Contract verletzt: Outdoor-Genusssignale fehlen.",
+      };
+    case "Gastro-Serviermoment":
+      return {
+        mustInclude: [/(service interaction|serving action|handoff|pour)/i],
+        mustExclude: [/(picnic|beer garden leisure)/i],
+        hardLocks: ["Scene lock: show active gastronomy serving interaction, not a static product display."],
+        blockerMessage: "Gastro-Serviermoment-Contract verletzt: Servieraktion fehlt.",
+      };
+    case "Event/Promotion":
+      return {
+        mustInclude: [/(campaign|copy-space|headline|cta|promo)/i],
+        mustExclude: [/(random clutter|cramped framing)/i],
+        hardLocks: ["Scene lock: preserve campaign hierarchy with clean copy-space and promotional energy."],
+        blockerMessage: "Event/Promotion-Contract verletzt: Kampagnen-Hierarchie oder Copy-Space fehlt.",
+      };
+    case "Food-Pairing":
+      return {
+        mustInclude: [/(food|dish|pairing|plating|cuisine)/i],
+        mustExclude: [/(no-food|foodless packshot)/i],
+        hardLocks: ["Scene lock: include clearly visible plated food pairing supporting the beer hero."],
+        blockerMessage: "Food-Pairing-Contract verletzt: sichtbares Food-Element fehlt.",
+      };
+    case "Makro/Detail":
+      return {
+        mustInclude: [/(macro|close-up|texture|micro-detail|focus falloff)/i],
+        mustExclude: [/(wide environmental|distant full-scene)/i],
+        hardLocks: ["Scene lock: enforce true macro-detail optics with tactile texture realism."],
+        blockerMessage: "Makro/Detail-Contract verletzt: echter Makro-/Detailfokus fehlt.",
+      };
+    case "Lifestyle":
+    default:
+      return {
+        mustInclude: [/(lifestyle|authentic|everyday|human interaction)/i],
+        mustExclude: [/(sterile packshot|seamless studio)/i],
+        hardLocks: ["Scene lock: maintain authentic lifestyle context with believable human/product interaction."],
+        blockerMessage: "Lifestyle-Contract verletzt: authentischer Kontext fehlt.",
+      };
+  }
+}
+
+function getSceneAutoFixPolicy(scene: BildtypOption): SceneAutoFixPolicy {
+  switch (scene) {
+    case "Produkt-Studio":
+      return {
+        fallbackMood: "Modern/Minimalistisch",
+        fallbackShotType: "45° Hero Shot",
+        fallbackPersonMode: "Kein Mensch",
+        defaultBackground: STUDIO_BACKGROUND_PRESET_OPTIONS[0],
+      };
+    case "Biergarten/Genussmoment":
+      return {
+        fallbackMood: "Nachhaltig/Rustikal",
+        fallbackShotType: "Eye-Level",
+        defaultBackground: "outdoor beer garden table with warm social atmosphere",
+        defaultSeason: "Sommer-Event",
+      };
+    case "Gastro-Serviermoment":
+      return {
+        fallbackMood: "Modern/Minimalistisch",
+        fallbackShotType: "POV / Over-Shoulder",
+        defaultBackground: "bar counter service setup with active serving gesture",
+      };
+    case "Event/Promotion":
+      return {
+        fallbackMood: "Aktiv/Frisch",
+        fallbackShotType: "Low Angle",
+        defaultBackground: "campaign backdrop with clean copy-space and event lighting rhythm",
+        defaultSeason: "Aktionskampagne",
+      };
+    case "Food-Pairing":
+      return {
+        fallbackMood: "Nachhaltig/Rustikal",
+        fallbackShotType: "Eye-Level",
+        defaultBackground: "dining table with plated pairing food (pretzel, cheese, charcuterie)",
+      };
+    case "Makro/Detail":
+      return {
+        fallbackMood: "Premium/Luxus",
+        fallbackShotType: "Close-Up / Detail",
+        fallbackPersonMode: "Kein Mensch",
+      };
+    case "Lifestyle":
+    default:
+      return {
+        fallbackMood: "Aktiv/Frisch",
+        fallbackShotType: "45° Hero Shot",
+        defaultBackground: "natural everyday environment with coherent social context",
+      };
+  }
+}
+
+const SCENE_CONFIG: Record<BildtypOption, SceneConfig> = Object.fromEntries(
+  (Object.entries(SCENE_CONFIG_BASE) as Array<[BildtypOption, SceneConfigBase]>).map(([scene, config]) => [
+    scene,
+    {
+      ...config,
+      fieldPolicy: getSceneFieldPolicy(scene, config),
+      scenePresets: getScenePresets(scene),
+      promptContract: getScenePromptContract(scene),
+      autoFixPolicy: getSceneAutoFixPolicy(scene),
+    },
+  ]),
+) as Record<BildtypOption, SceneConfig>;
+
 const sceneByBildtyp: Record<BildtypOption, string> = Object.fromEntries(
   (Object.entries(SCENE_CONFIG) as Array<[BildtypOption, SceneConfig]>).map(([scene, config]) => [scene, config.sceneType]),
 ) as Record<BildtypOption, string>;
@@ -504,14 +775,7 @@ const BILDTYP_OVERVIEW: Array<{ value: BildtypOption; short: string }> = (Object
   (value) => ({ value, short: SCENE_CONFIG[value].short }),
 );
 
-const STUDIO_BACKGROUND_OPTIONS = [
-  "Seamless Weiß (High-Key)",
-  "Seamless Hellgrau",
-  "Seamless Dunkelgrau (Low-Key)",
-  "Farbverlauf Weiß -> Hellgrau",
-  "Acrylfläche mit weicher Spiegelung",
-  "Stein-/Beton-Look neutral (Studio)",
-] as const;
+const STUDIO_BACKGROUND_OPTIONS = STUDIO_BACKGROUND_PRESET_OPTIONS;
 
 const STUDIO_STYLE_OPTIONS: StudioStyleOption[] = ["Clean Catalog", "Premium Hero", "Macro Commercial"];
 const STUDIO_STYLE_LABELS: Record<StudioStyleOption, string> = {
@@ -572,26 +836,6 @@ const studioPropsRuleByStyle: Record<StudioStyleOption, string> = {
   "Macro Commercial":
     "Props directive: allow tight foreground/background prop accents with shallow depth of field; preserve clear product identity and label readability.",
 };
-
-const HIDDEN_STEP_KEYS_BY_BILDTYP: Partial<Record<BildtypOption, Array<keyof PromptBrief>>> = Object.fromEntries(
-  (Object.entries(SCENE_CONFIG) as Array<[BildtypOption, SceneConfig]>)
-    .filter(([, config]) => Array.isArray(config.hiddenStepKeys))
-    .map(([scene, config]) => [scene, config.hiddenStepKeys ?? []]),
-) as Partial<Record<BildtypOption, Array<keyof PromptBrief>>>;
-
-const STIMMUNG_OPTIONS_BY_BILDTYP: Partial<Record<BildtypOption, Stimmung[]>> = Object.fromEntries(
-  (Object.entries(SCENE_CONFIG) as Array<[BildtypOption, SceneConfig]>).map(([scene, config]) => [scene, config.allowedMoods]),
-) as Partial<Record<BildtypOption, Stimmung[]>>;
-
-const PERSONEN_OPTIONS_BY_BILDTYP: Partial<Record<BildtypOption, PersonenOption[]>> = Object.fromEntries(
-  (Object.entries(SCENE_CONFIG) as Array<[BildtypOption, SceneConfig]>)
-    .filter(([, config]) => Array.isArray(config.allowedPersonModes))
-    .map(([scene, config]) => [scene, config.allowedPersonModes ?? []]),
-) as Partial<Record<BildtypOption, PersonenOption[]>>;
-
-const SHOT_OPTIONS_BY_BILDTYP: Partial<Record<BildtypOption, ShotType[]>> = Object.fromEntries(
-  (Object.entries(SCENE_CONFIG) as Array<[BildtypOption, SceneConfig]>).map(([scene, config]) => [scene, config.allowedShotTypes]),
-) as Partial<Record<BildtypOption, ShotType[]>>;
 
 const SHOT_OPTIONS_BY_PERSONENMODUS: Partial<Record<PersonenOption, ShotType[]>> = {
   "Person mit Gesicht": ["45° Hero Shot", "Eye-Level", "Low Angle", "Wide Environmental"],
@@ -769,6 +1013,33 @@ function getScenePromptParts(brief: PromptBrief) {
   };
 }
 
+function getSceneStepOptions(brief: PromptBrief, key: keyof PromptBrief): string[] | undefined {
+  const scene = brief.bildtyp as BildtypOption | "";
+  if (!scene) return undefined;
+  const config = SCENE_CONFIG[scene];
+  const optionOverrides = config.fieldPolicy.optionOverrides ?? {};
+  if (optionOverrides[key]?.length) return optionOverrides[key];
+  if (key === "stimmung") return config.allowedMoods;
+  if (key === "personenModus" && config.allowedPersonModes?.length) return config.allowedPersonModes;
+  if (key === "shotType") {
+    const byPerson = brief.personenModus ? SHOT_OPTIONS_BY_PERSONENMODUS[brief.personenModus as PersonenOption] : undefined;
+    return byPerson?.length ? config.allowedShotTypes.filter((shot) => byPerson.includes(shot)) : config.allowedShotTypes;
+  }
+  return undefined;
+}
+
+function enforceSceneContract(prompt: string, brief: PromptBrief): string {
+  const scene = brief.bildtyp as BildtypOption | "";
+  if (!scene || !SCENE_CONFIG[scene]) return prompt;
+  const contract = SCENE_CONFIG[scene].promptContract;
+  const lockLine = contract.hardLocks.join(" ");
+  const negativeLine =
+    contract.mustExclude.length > 0
+      ? `Scene exclusion lock: avoid ${contract.mustExclude.map((regex) => regex.source.replace(/[()]/g, "")).join(" | ")}.`
+      : "";
+  return [prompt, lockLine, negativeLine].filter(Boolean).join(" ");
+}
+
 function buildPrompt(brief: PromptBrief) {
   const { servingType, glass, liquid, foam, carbonation } = resolveBeerProfile(brief);
   const ratio = ratioByPlatform[brief.plattform as Plattform];
@@ -819,6 +1090,10 @@ function buildPrompt(brief: PromptBrief) {
       : "";
   const sceneContextRule = sceneParts.sceneContext ? `Scene context rules: ${sceneParts.sceneContext}` : "";
   const sceneNegativeRule = sceneParts.sceneNegative || (brief.bildtyp ? sceneNegativeRulesByBildtyp[brief.bildtyp as BildtypOption] : "");
+  const sceneContractLock =
+    brief.bildtyp && SCENE_CONFIG[brief.bildtyp as BildtypOption]
+      ? SCENE_CONFIG[brief.bildtyp as BildtypOption].promptContract.hardLocks.join(" ")
+      : "";
   const macroRealismRule =
     brief.bildtyp === "Makro/Detail"
       ? [
@@ -885,8 +1160,11 @@ function buildPrompt(brief: PromptBrief) {
           .join(", ")}).`
       : "";
   const ratioLockRule = `Aspect ratio lock: final composition must strictly match ${ratio}.`;
-  const strictGlassRule = `Mandatory glass constraint: use only ${glass}. Never use a Weizen glass for ${brief.biertyp}.`;
   const servingCompatibility = validateServingCompatibility(brief);
+  const strictGlassRule =
+    servingCompatibility.beerFamily === "weizen"
+      ? `Mandatory glass constraint: use only ${glass}. Do not substitute with Pilsner flute, Willibecher, Stange, goblet, or stein.`
+      : `Mandatory glass constraint: use only ${glass}. Never use a Weizen glass for ${brief.biertyp}.`;
   const servingTruthLock = [
     `Serving truth lock: beer family is ${servingCompatibility.beerFamily}, keep bottle and poured glass in same family.`,
     `Glass exclusivity lock: do not substitute ${glass} with another glass type.`,
@@ -953,6 +1231,7 @@ function buildPrompt(brief: PromptBrief) {
     sceneHardRule,
     sceneContextRule,
     sceneNegativeRule,
+    sceneContractLock,
     macroRealismRule,
     personRule,
     personCompositionRule,
@@ -1143,6 +1422,18 @@ function buildPhysicalRealismRule(brief: PromptBrief): string {
             : bottleType === "Dose"
               ? "Container geometry lock (Dose): standard cylindrical can silhouette with realistic dimensions."
               : "Bottle geometry lock: maintain realistic brewery container proportions.";
+  const bottleTypeExclusionRule =
+    bottleType === "Longneck"
+      ? "Bottle type exclusion lock (Longneck): do NOT render Stubbi/NRW, Euroflasche, Buegelflasche, or can silhouettes."
+      : bottleType === "Stubbi / NRW"
+        ? "Bottle type exclusion lock (Stubbi/NRW): do NOT render Euroflasche, Longneck, Buegelflasche, or can silhouettes; keep neck distinctly short."
+        : bottleType === "Euroflasche"
+          ? "Bottle type exclusion lock (Euroflasche): do NOT render Stubbi/NRW, Longneck, Buegelflasche, or can silhouettes."
+          : bottleType === "Bügelflasche"
+            ? "Bottle type exclusion lock (Buegelflasche): do NOT render Stubbi/NRW, Euroflasche, Longneck, or can silhouettes."
+            : bottleType === "Dose"
+              ? "Container type exclusion lock (Can): do NOT render any bottle silhouette."
+              : "";
 
   const ipaGlassRule =
     detectBeerFamily(brief) === "ipa"
@@ -1152,6 +1443,7 @@ function buildPhysicalRealismRule(brief: PromptBrief): string {
   return [
     bottleScaleRule,
     bottleShapeRule,
+    bottleTypeExclusionRule,
     ipaGlassRule,
     "No cutout/sticker look: object must be fully integrated into scene with consistent perspective and lens distortion.",
     "Require realistic contact cues: finger occlusion, grip pressure, tiny deformations, and natural hand-to-glass interaction.",
@@ -1168,19 +1460,23 @@ function applySceneAutoFixes(brief: PromptBrief) {
     return { brief: next, autoFixes };
   }
   const config = SCENE_CONFIG[scene];
+  const autoFixPolicy = config.autoFixPolicy;
 
-  if (next.stimmung && !config.allowedMoods.includes(next.stimmung as Stimmung)) {
-    next.stimmung = config.allowedMoods[0] ?? next.stimmung;
+  if (!next.stimmung || !config.allowedMoods.includes(next.stimmung as Stimmung)) {
+    next.stimmung = autoFixPolicy.fallbackMood;
     autoFixes.push(`Stimmung an Szene angepasst (${next.stimmung}).`);
   }
 
-  if (next.shotType && !config.allowedShotTypes.includes(next.shotType as ShotType)) {
-    next.shotType = config.allowedShotTypes[0] ?? next.shotType;
+  if (!next.shotType || !config.allowedShotTypes.includes(next.shotType as ShotType)) {
+    next.shotType = autoFixPolicy.fallbackShotType;
     autoFixes.push(`Shot-Typ an Szene angepasst (${next.shotType}).`);
   }
 
-  if (config.allowedPersonModes && next.personenModus && !config.allowedPersonModes.includes(next.personenModus as PersonenOption)) {
-    next.personenModus = config.allowedPersonModes[0] ?? next.personenModus;
+  if (
+    config.allowedPersonModes &&
+    (!next.personenModus || !config.allowedPersonModes.includes(next.personenModus as PersonenOption))
+  ) {
+    next.personenModus = autoFixPolicy.fallbackPersonMode ?? config.allowedPersonModes[0] ?? next.personenModus;
     autoFixes.push(`Personenmodus an Szene angepasst (${next.personenModus}).`);
   }
 
@@ -1202,6 +1498,18 @@ function applySceneAutoFixes(brief: PromptBrief) {
   if (scene === "Produkt-Studio" && next.besondererHintergrund.trim() && !(STUDIO_BACKGROUND_OPTIONS as readonly string[]).includes(next.besondererHintergrund)) {
     next.besondererHintergrund = STUDIO_BACKGROUND_OPTIONS[0];
     autoFixes.push("Produkt-Studio-Hintergrund auf Studio-Option korrigiert.");
+  }
+  if (scene === "Produkt-Studio" && !next.besondererHintergrund.trim()) {
+    next.besondererHintergrund = autoFixPolicy.defaultBackground ?? STUDIO_BACKGROUND_OPTIONS[0];
+    autoFixes.push("Produkt-Studio-Hintergrund automatisch gesetzt.");
+  }
+  if (scene !== "Produkt-Studio" && !next.besondererHintergrund.trim() && autoFixPolicy.defaultBackground) {
+    next.besondererHintergrund = autoFixPolicy.defaultBackground;
+    autoFixes.push(`Szenen-Hintergrund für ${scene} automatisch gesetzt.`);
+  }
+  if (!next.saisonalerBezug.trim() && autoFixPolicy.defaultSeason) {
+    next.saisonalerBezug = autoFixPolicy.defaultSeason;
+    autoFixes.push(`Saisonaler Bezug für ${scene} automatisch ergänzt.`);
   }
 
   // Hard boundaries: never auto-rewrite product-truth fields.
@@ -1281,6 +1589,18 @@ function evaluatePreflight(
   }
   if (brief.personenModus === "Hände/Arme ohne Gesicht" && brief.shotType === "Wide Environmental") {
     blockers.push("Für 'Hände/Arme ohne Gesicht' bitte einen nahen Shot-Typ wählen.");
+  }
+  if (sceneConfig) {
+    const contract = sceneConfig.promptContract;
+    const missingMustInclude = contract.mustInclude.some((regex) => !regex.test(promptText));
+    if (missingMustInclude) {
+      blockers.push(contract.blockerMessage);
+      fixSuggestions.push({ text: `Szene-Regeln für ${scene} stärker erzwingen.`, field: "bildtyp" });
+    }
+    const hasForbiddenPattern = contract.mustExclude.some((regex) => regex.test(promptText));
+    if (hasForbiddenPattern) {
+      blockers.push(`Szene-Konflikt erkannt: Prompt enthält verbotene Muster für ${scene}.`);
+    }
   }
   if (isStudioProduct && brief.personenModus !== "Kein Mensch") {
     warnings.push("Produkt-Studio liefert meist bessere Ergebnisse mit 'Kein Mensch'.");
@@ -1382,6 +1702,8 @@ export function ImagePromptWorkflow({
   const [imageOutputFormat, setImageOutputFormat] = useState<"png" | "jpg">("png");
   const [isDownloading, setIsDownloading] = useState(false);
   const [imageGenerationProgress, setImageGenerationProgress] = useState(0);
+  const [pendingKieTask, setPendingKieTask] = useState<PendingKieTaskSession | null>(null);
+  const [isKieTaskInBackground, setIsKieTaskInBackground] = useState(false);
   const [imageSize, setImageSize] = useState<"1K" | "2K" | "4K">("1K");
   const [imageAspectRatio, setImageAspectRatio] = useState<
     "1:1" | "2:3" | "3:2" | "3:4" | "4:3" | "4:5" | "5:4" | "9:16" | "16:9" | "21:9" | "auto"
@@ -1395,6 +1717,7 @@ export function ImagePromptWorkflow({
     invalidBlocked: number;
     invalidTotal: number;
   } | null>(null);
+  const pollingRunRef = useRef(0);
   const requiresSubscription = !hasActiveSubscription && !hasFreeTrialAvailable;
 
   const resetPromptAssistant = () => {
@@ -1408,18 +1731,23 @@ export function ImagePromptWorkflow({
   };
 
   const applyQuickBrief = (preset: Partial<PromptBrief>) => {
-    setBrief((prev) => ({
-      ...prev,
-      ...preset,
-      flaschenTyp: normalizeFlaschenTyp((preset.flaschenTyp ?? prev.flaschenTyp) as FlaschenTyp | ""),
-    }));
+    setBrief((prev) => {
+      const merged = {
+        ...prev,
+        ...preset,
+        flaschenTyp: normalizeFlaschenTyp((preset.flaschenTyp ?? prev.flaschenTyp) as FlaschenTyp | ""),
+      };
+      return applySceneAutoFixes(merged).brief;
+    });
     setStepIndex(0);
   };
 
   const isBriefValid = useMemo(() => {
-    const requiresZielgruppe = brief.bildtyp !== "Produkt-Studio";
-    const requiresStudioBackground = brief.bildtyp === "Produkt-Studio";
-    const requiresStudioStyle = brief.bildtyp === "Produkt-Studio";
+    const config = brief.bildtyp ? SCENE_CONFIG[brief.bildtyp as BildtypOption] : null;
+    const requiredKeys = new Set(config?.fieldPolicy.requiredKeys ?? []);
+    const requiresZielgruppe = requiredKeys.has("zielgruppe");
+    const requiresSceneBackground = requiredKeys.has("besondererHintergrund");
+    const requiresStudioStyle = requiredKeys.has("studioStyle");
     return (
       brief.bildtyp &&
       (requiresStudioStyle ? Boolean(brief.studioStyle) : true) &&
@@ -1433,7 +1761,7 @@ export function ImagePromptWorkflow({
       brief.etikettModus &&
       brief.personenModus &&
       brief.shotType &&
-      (requiresStudioBackground ? Boolean(brief.besondererHintergrund) : true) &&
+      (requiresSceneBackground ? Boolean(brief.besondererHintergrund) : true) &&
       brief.referenzStaerke
     );
   }, [brief]);
@@ -1611,7 +1939,8 @@ export function ImagePromptWorkflow({
   const visibleSteps = useMemo(() => {
     const bildtyp = brief.bildtyp as BildtypOption | "";
     if (!bildtyp) return steps.filter((step) => step.key !== "studioStyle" && step.key !== "studioProps");
-    const hidden = new Set(HIDDEN_STEP_KEYS_BY_BILDTYP[bildtyp] ?? []);
+    const sceneConfig = SCENE_CONFIG[bildtyp];
+    const hidden = new Set(sceneConfig.fieldPolicy.hiddenStepKeys ?? []);
     return steps.filter((step) => {
       if (step.key === "studioStyle" && bildtyp !== "Produkt-Studio") return false;
       if (step.key === "studioProps" && bildtyp !== "Produkt-Studio") return false;
@@ -1632,7 +1961,7 @@ export function ImagePromptWorkflow({
       let changed = false;
       const next = { ...prev };
 
-      const hidden = HIDDEN_STEP_KEYS_BY_BILDTYP[bildtyp] ?? [];
+      const hidden = SCENE_CONFIG[bildtyp].fieldPolicy.hiddenStepKeys ?? [];
       for (const key of hidden) {
         if (next[key]) {
           (next[key] as string) = "";
@@ -1649,26 +1978,19 @@ export function ImagePromptWorkflow({
         changed = true;
       }
 
-      const allowedStimmungen = STIMMUNG_OPTIONS_BY_BILDTYP[bildtyp];
+      const allowedStimmungen = getSceneStepOptions(next, "stimmung");
       if (allowedStimmungen && next.stimmung && !allowedStimmungen.includes(next.stimmung as Stimmung)) {
         next.stimmung = "";
         changed = true;
       }
 
-      const allowedPersonen = PERSONEN_OPTIONS_BY_BILDTYP[bildtyp];
+      const allowedPersonen = getSceneStepOptions(next, "personenModus");
       if (allowedPersonen && next.personenModus && !allowedPersonen.includes(next.personenModus as PersonenOption)) {
         next.personenModus = "";
         changed = true;
       }
 
-      const allowedShotTypesByBildtyp = SHOT_OPTIONS_BY_BILDTYP[bildtyp];
-      const allowedShotTypesByPersonenmodus = next.personenModus
-        ? SHOT_OPTIONS_BY_PERSONENMODUS[next.personenModus as PersonenOption]
-        : undefined;
-      const allowedShotTypes =
-        allowedShotTypesByBildtyp && allowedShotTypesByPersonenmodus
-          ? allowedShotTypesByBildtyp.filter((shot) => allowedShotTypesByPersonenmodus.includes(shot))
-          : allowedShotTypesByBildtyp;
+      const allowedShotTypes = getSceneStepOptions(next, "shotType");
       if (allowedShotTypes && next.shotType && !allowedShotTypes.includes(next.shotType as ShotType)) {
         next.shotType = "";
         changed = true;
@@ -1702,39 +2024,22 @@ export function ImagePromptWorkflow({
     brief.bildtyp && SCENE_CONFIG[brief.bildtyp as BildtypOption]
       ? SCENE_CONFIG[brief.bildtyp as BildtypOption].guidanceTips
       : [];
+  const availableScenePresets =
+    brief.bildtyp && SCENE_CONFIG[brief.bildtyp as BildtypOption]
+      ? SCENE_CONFIG[brief.bildtyp as BildtypOption].scenePresets
+      : QUICK_BRIEFS;
+  const backgroundOptionsByScene = getSceneStepOptions(brief, "besondererHintergrund");
   const currentStepOptions = useMemo(() => {
     if (!currentStep.options) return undefined;
-    const bildtyp = brief.bildtyp as BildtypOption | "";
-    if (!bildtyp) return currentStep.options;
-
-    if (currentStep.key === "stimmung") {
-      return (STIMMUNG_OPTIONS_BY_BILDTYP[bildtyp] ?? currentStep.options) as string[];
-    }
-    if (currentStep.key === "personenModus") {
-      return (PERSONEN_OPTIONS_BY_BILDTYP[bildtyp] ?? currentStep.options) as string[];
-    }
-    if (currentStep.key === "shotType") {
-      const optionsByBildtyp = SHOT_OPTIONS_BY_BILDTYP[bildtyp];
-      const optionsByPersonenmodus = brief.personenModus
-        ? SHOT_OPTIONS_BY_PERSONENMODUS[brief.personenModus as PersonenOption]
-        : undefined;
-      if (!optionsByBildtyp) return currentStep.options as string[];
-      if (!optionsByPersonenmodus) return optionsByBildtyp as string[];
-      return optionsByBildtyp.filter((shot) => optionsByPersonenmodus.includes(shot)) as string[];
-    }
-
-    return currentStep.options;
+    const sceneOptions = getSceneStepOptions(brief, currentStep.key);
+    return sceneOptions ?? currentStep.options;
   }, [brief.bildtyp, brief.personenModus, currentStep]);
   const isValueAllowedForCurrentStep =
     !currentStepOptions || !currentValue || currentStepOptions.includes(currentValue);
-  const isCurrentRequired =
-    currentStep.key === "zielgruppe"
-      ? brief.bildtyp !== "Produkt-Studio"
-      : currentStep.key === "studioStyle"
-        ? brief.bildtyp === "Produkt-Studio"
-      : currentStep.key === "besondererHintergrund"
-        ? brief.bildtyp === "Produkt-Studio"
-        : Boolean(currentStep.required);
+  const currentSceneConfig = brief.bildtyp ? SCENE_CONFIG[brief.bildtyp as BildtypOption] : null;
+  const isCurrentRequired = currentSceneConfig
+    ? currentSceneConfig.fieldPolicy.requiredKeys.includes(currentStep.key)
+    : Boolean(currentStep.required);
   const requiresBottleDetails =
     brief.behaelter === "Nur Flasche" || brief.behaelter === "Flasche + Glas";
   const isCurrentValid =
@@ -1807,7 +2112,7 @@ export function ImagePromptWorkflow({
         }
 
         const constrainedPrompt = appendGenderConstraint(
-          enforcePeopleConstraints(enforceContainerConstraints(prompt, effectiveBrief), effectiveBrief),
+          enforceSceneContract(enforcePeopleConstraints(enforceContainerConstraints(prompt, effectiveBrief), effectiveBrief), effectiveBrief),
           effectiveBrief,
           promptMode,
         );
@@ -1819,7 +2124,10 @@ export function ImagePromptWorkflow({
         const effectiveBrief = fixed.brief;
         const fallback = buildPrompt(effectiveBrief);
         const constrainedFallbackPrompt = appendGenderConstraint(
-          enforcePeopleConstraints(enforceContainerConstraints(fallback.prompt, effectiveBrief), effectiveBrief),
+          enforceSceneContract(
+            enforcePeopleConstraints(enforceContainerConstraints(fallback.prompt, effectiveBrief), effectiveBrief),
+            effectiveBrief,
+          ),
           effectiveBrief,
           promptMode,
         );
@@ -1879,10 +2187,58 @@ export function ImagePromptWorkflow({
     setBrief((prev) => ({ ...prev, flaschenTyp: "Stubbi / NRW" }));
   }, [brief.flaschenTyp]);
 
+  useEffect(() => {
+    if (typeof window === "undefined") return;
+    const raw = window.sessionStorage.getItem(KIE_PENDING_TASK_SESSION_KEY);
+    if (!raw) return;
+    try {
+      const parsed = JSON.parse(raw) as PendingKieTaskSession;
+      if (!parsed.taskId || !parsed.startedAt) return;
+      if (Date.now() - parsed.startedAt > KIE_MAX_WAIT_MS + KIE_DONE_GRACE_MS) {
+        window.sessionStorage.removeItem(KIE_PENDING_TASK_SESSION_KEY);
+        return;
+      }
+      setPendingKieTask(parsed);
+      setLastTaskId(parsed.taskId);
+    } catch {
+      window.sessionStorage.removeItem(KIE_PENDING_TASK_SESSION_KEY);
+    }
+  }, []);
+
+  const persistPendingKieTask = (next: PendingKieTaskSession | null) => {
+    setPendingKieTask(next);
+    if (typeof window === "undefined") return;
+    if (!next) {
+      window.sessionStorage.removeItem(KIE_PENDING_TASK_SESSION_KEY);
+      return;
+    }
+    window.sessionStorage.setItem(KIE_PENDING_TASK_SESSION_KEY, JSON.stringify(next));
+  };
+
   const delay = (ms: number) =>
     new Promise<void>((resolve) => {
       setTimeout(resolve, ms);
     });
+
+  const getPollingDelay = (attempt: number) => {
+    const baseDelay = Math.min(KIE_BASE_DELAY_MS + attempt * 250, KIE_MAX_DELAY_MS);
+    const jitter = Math.floor(Math.random() * 450);
+    return baseDelay + jitter;
+  };
+
+  const parseRetryAfterMs = (retryAfter: string | null) => {
+    if (!retryAfter) return null;
+    const asSeconds = Number.parseInt(retryAfter, 10);
+    if (Number.isFinite(asSeconds) && asSeconds > 0) {
+      return asSeconds * 1000;
+    }
+    const asDate = Date.parse(retryAfter);
+    if (!Number.isNaN(asDate)) {
+      const diff = asDate - Date.now();
+      return diff > 0 ? diff : null;
+    }
+    return null;
+  };
 
   const runSceneMatrixCheck = () => {
     const scenarios: PromptBrief[] = (Object.keys(SCENE_CONFIG) as BildtypOption[]).map((scene) => {
@@ -1961,7 +2317,7 @@ export function ImagePromptWorkflow({
       const fixed = applySceneAutoFixes(testBrief);
       const built = buildPrompt(fixed.brief);
       const constrained = appendGenderConstraint(
-        enforcePeopleConstraints(enforceContainerConstraints(built.prompt, fixed.brief), fixed.brief),
+        enforceSceneContract(enforcePeopleConstraints(enforceContainerConstraints(built.prompt, fixed.brief), fixed.brief), fixed.brief),
         fixed.brief,
         "assistant",
       );
@@ -1978,7 +2334,7 @@ export function ImagePromptWorkflow({
     for (const invalid of invalidScenarios) {
       const built = buildPrompt(invalid);
       const constrained = appendGenderConstraint(
-        enforcePeopleConstraints(enforceContainerConstraints(built.prompt, invalid), invalid),
+        enforceSceneContract(enforcePeopleConstraints(enforceContainerConstraints(built.prompt, invalid), invalid), invalid),
         invalid,
         "assistant",
       );
@@ -2009,6 +2365,163 @@ export function ImagePromptWorkflow({
       img.onerror = () => reject(new Error("Generiertes Bild konnte nicht geladen werden."));
       img.src = url;
     });
+
+  const fetchKieTaskStatus = async (taskId: string) => {
+    const timeoutController = new AbortController();
+    const timeoutId = globalThis.setTimeout(() => timeoutController.abort(), KIE_STATUS_TIMEOUT_MS);
+    try {
+      const statusRes = await fetch(`/api/kie/nano-banana/task-status?taskId=${encodeURIComponent(taskId)}`, {
+        signal: timeoutController.signal,
+      });
+      const statusData = (await statusRes.json()) as {
+        state?: string;
+        imageUrl?: string | null;
+        error?: string;
+      };
+
+      if (!statusRes.ok) {
+        const transient = statusRes.status === 429 || statusRes.status >= 500;
+        return {
+          ok: false as const,
+          transient,
+          error: statusData.error || "Kie Statusabfrage fehlgeschlagen.",
+          retryAfterMs: parseRetryAfterMs(statusRes.headers.get("Retry-After")),
+        };
+      }
+
+      return {
+        ok: true as const,
+        state: String(statusData.state ?? "").toLowerCase(),
+        imageUrl: statusData.imageUrl || null,
+      };
+    } catch (error) {
+      return {
+        ok: false as const,
+        transient: true,
+        error:
+          error instanceof Error && error.name === "AbortError"
+            ? "Statusabfrage dauert länger als erwartet. Neuer Versuch läuft."
+            : "Temporärer Verbindungsfehler bei der Statusabfrage.",
+        retryAfterMs: null,
+      };
+    } finally {
+      globalThis.clearTimeout(timeoutId);
+    }
+  };
+
+  const resolveKieImage = async (
+    session: PendingKieTaskSession,
+    meta: {
+      tokenCost: number;
+      constrainedPrompt: string;
+      aspectRatio: string;
+      resolution: "1K" | "2K" | "4K";
+      outputFormat: "png" | "jpg";
+    },
+  ) => {
+    const runId = ++pollingRunRef.current;
+    setIsImageGenerating(true);
+    setIsKieTaskInBackground(false);
+    setImageGenerationError("");
+
+    let attempt = 0;
+    let transientRetryCount = 0;
+    let taskSession = session;
+
+    while (Date.now() - taskSession.startedAt <= KIE_MAX_WAIT_MS + KIE_DONE_GRACE_MS) {
+      if (pollingRunRef.current !== runId) {
+        return;
+      }
+
+      const elapsed = Date.now() - taskSession.startedAt;
+      const progress = Math.min(95, 10 + Math.round((Math.min(elapsed, KIE_MAX_WAIT_MS) / KIE_MAX_WAIT_MS) * 85));
+      setImageGenerationProgress(progress);
+      await delay(getPollingDelay(attempt));
+      attempt += 1;
+
+      if (pollingRunRef.current !== runId) {
+        return;
+      }
+
+      const status = await fetchKieTaskStatus(taskSession.taskId);
+      if (!status.ok) {
+        if (status.transient && transientRetryCount < KIE_TRANSIENT_RETRY_LIMIT) {
+          transientRetryCount += 1;
+          const retryWait = status.retryAfterMs ?? Math.min(1400 * 2 ** transientRetryCount, 6000);
+          setImageGenerationError(
+            status.error.includes("Rate-Limit")
+              ? "Rate-Limit erreicht, neuer Versuch läuft gleich."
+              : "KIE reagiert langsam, wir versuchen es automatisch weiter.",
+          );
+          await delay(retryWait);
+          continue;
+        }
+        throw new Error(status.error);
+      }
+
+      transientRetryCount = 0;
+      const isDoneState = ["success", "succeeded", "done", "finished", "complete", "completed"].includes(status.state);
+      const isFailedState = ["fail", "failed", "error", "cancelled", "canceled"].includes(status.state);
+
+      if (status.imageUrl) {
+        const previewUrl = `/api/kie/download?url=${encodeURIComponent(status.imageUrl)}&format=${meta.outputFormat}&taskId=${encodeURIComponent(taskSession.taskId)}`;
+        setGeneratedImageUrl(previewUrl);
+        setIsImageRevealing(true);
+        setImageGenerationProgress(0);
+        for (let i = 1; i <= 20; i += 1) {
+          await delay(45);
+          setImageGenerationProgress(i * 5);
+        }
+        setIsImageRevealing(false);
+        try {
+          await preloadImage(previewUrl);
+        } catch {
+          // Bild ist bereits gesetzt; Download-/Preview-Fehler werden separat behandelbar.
+        }
+        onImageGenerated?.({
+          id: taskSession.taskId,
+          imageUrl: status.imageUrl,
+          prompt: meta.constrainedPrompt,
+          createdAt: new Date().toISOString(),
+          aspectRatio: meta.aspectRatio,
+          resolution: meta.resolution,
+          outputFormat: meta.outputFormat,
+        });
+        if (promptMode === "assistant") {
+          resetPromptAssistant();
+        }
+        if (hasActiveSubscription) {
+          onConsumeTokens?.(meta.tokenCost);
+        } else {
+          onFreeTrialConsumed?.();
+        }
+        persistPendingKieTask(null);
+        setImageGenerationError("");
+        return;
+      }
+
+      if (isDoneState && !status.imageUrl) {
+        if (!taskSession.doneWithoutUrlSince) {
+          taskSession = { ...taskSession, doneWithoutUrlSince: Date.now() };
+          persistPendingKieTask(taskSession);
+        }
+        if (
+          taskSession.doneWithoutUrlSince &&
+          Date.now() - taskSession.doneWithoutUrlSince > KIE_DONE_GRACE_MS
+        ) {
+          throw new Error("KIE ist fertig, liefert das Bild aber verzögert. Bitte gleich erneut prüfen.");
+        }
+        continue;
+      }
+
+      if (isFailedState) {
+        persistPendingKieTask(null);
+        throw new Error("Kie konnte das Bild nicht generieren.");
+      }
+    }
+
+    throw new Error("Kie hat innerhalb von 8 Minuten noch kein fertiges Bild geliefert. Task läuft optional im Hintergrund weiter.");
+  };
 
   const generateImageWithKie = async (finalPrompt: string, files?: File[]) => {
     setImageGenerationError("");
@@ -2049,7 +2562,10 @@ export function ImagePromptWorkflow({
         setLastAutoFixes([]);
       }
       const constrainedFinalPrompt = appendGenderConstraint(
-        enforcePeopleConstraints(enforceContainerConstraints(finalPrompt, effectiveBrief), effectiveBrief),
+        enforceSceneContract(
+          enforcePeopleConstraints(enforceContainerConstraints(finalPrompt, effectiveBrief), effectiveBrief),
+          effectiveBrief,
+        ),
         effectiveBrief,
         promptMode,
       );
@@ -2119,72 +2635,58 @@ export function ImagePromptWorkflow({
       setLastTaskId(taskId);
       setImageGenerationProgress(10);
 
-      const maxAttempts = 45;
-      for (let attempt = 0; attempt < maxAttempts; attempt += 1) {
-        setImageGenerationProgress(Math.min(95, 10 + Math.round(((attempt + 1) / maxAttempts) * 85)));
-        await delay(Math.min(2200 + attempt * 250, 8000));
+      const taskSession: PendingKieTaskSession = {
+        taskId,
+        prompt: constrainedFinalPrompt,
+        aspectRatio: effectiveAspectRatio,
+        resolution: imageSize,
+        outputFormat: imageOutputFormat,
+        tokenCost,
+        startedAt: Date.now(),
+        doneWithoutUrlSince: null,
+      };
+      persistPendingKieTask(taskSession);
 
-        const statusRes = await fetch(`/api/kie/nano-banana/task-status?taskId=${encodeURIComponent(taskId)}`);
-        const statusData = (await statusRes.json()) as {
-          state?: string;
-          imageUrl?: string | null;
-          error?: string;
-        };
-        if (!statusRes.ok) {
-          throw new Error(statusData.error || "Kie Statusabfrage fehlgeschlagen.");
-        }
-
-        const state = (statusData.state || "").toLowerCase();
-        const isDoneState = ["success", "succeeded", "done", "finished", "complete", "completed"].includes(state);
-        const isFailedState = ["fail", "failed", "error", "cancelled", "canceled"].includes(state);
-
-        if (statusData.imageUrl) {
-          const previewUrl = `/api/kie/download?url=${encodeURIComponent(statusData.imageUrl)}&format=${imageOutputFormat}&taskId=${encodeURIComponent(taskId)}`;
-          // Erst echtes Ergebnis vorladen, dann Reveal starten (kein Fremdbild mehr sichtbar).
-          await preloadImage(previewUrl);
-          setGeneratedImageUrl(previewUrl);
-          setIsImageRevealing(true);
-          setImageGenerationProgress(0);
-          for (let i = 1; i <= 20; i += 1) {
-            await delay(45);
-            setImageGenerationProgress(i * 5);
-          }
-          setIsImageRevealing(false);
-          onImageGenerated?.({
-            id: lastTaskId || taskId,
-            imageUrl: statusData.imageUrl,
-            prompt: constrainedFinalPrompt,
-            createdAt: new Date().toISOString(),
-            aspectRatio: effectiveAspectRatio,
-            resolution: imageSize,
-            outputFormat: imageOutputFormat,
-          });
-          if (promptMode === "assistant") {
-            resetPromptAssistant();
-          }
-          if (hasActiveSubscription) {
-            onConsumeTokens?.(tokenCost);
-          } else {
-            onFreeTrialConsumed?.();
-          }
-          return;
-        }
-        if (isDoneState && !statusData.imageUrl) {
-          // Einige Kie-Antworten liefern verzögert die URL; wir pollen in diesem Fall weiter.
-          continue;
-        }
-        if (isFailedState) {
-          throw new Error("Kie konnte das Bild nicht generieren.");
-        }
-      }
-
-      throw new Error("Kie hat innerhalb des erweiterten Zeitlimits noch kein fertiges Bild geliefert.");
+      await resolveKieImage(taskSession, {
+        tokenCost,
+        constrainedPrompt: constrainedFinalPrompt,
+        aspectRatio: effectiveAspectRatio,
+        resolution: imageSize,
+        outputFormat: imageOutputFormat,
+      });
     } catch (error) {
       setImageGenerationError(error instanceof Error ? error.message : "Bildgenerierung fehlgeschlagen.");
     } finally {
       setIsImageRevealing(false);
       setIsImageGenerating(false);
     }
+  };
+
+  const continuePendingKieTask = async () => {
+    if (!pendingKieTask) return;
+    setImageGenerationError("");
+    setGeneratedImageUrl("");
+    setLastTaskId(pendingKieTask.taskId);
+    try {
+      await resolveKieImage(pendingKieTask, {
+        tokenCost: pendingKieTask.tokenCost,
+        constrainedPrompt: pendingKieTask.prompt,
+        aspectRatio: pendingKieTask.aspectRatio,
+        resolution: pendingKieTask.resolution,
+        outputFormat: pendingKieTask.outputFormat,
+      });
+    } catch (error) {
+      setImageGenerationError(error instanceof Error ? error.message : "Statusprüfung fehlgeschlagen.");
+      setIsImageGenerating(false);
+    }
+  };
+
+  const sendKieTaskToBackground = () => {
+    if (!pendingKieTask) return;
+    pollingRunRef.current += 1;
+    setIsKieTaskInBackground(true);
+    setIsImageGenerating(false);
+    setImageGenerationError("Task läuft im Hintergrund. Du kannst später auf \"Erneut prüfen\" klicken.");
   };
 
   const downloadGeneratedImage = async () => {
@@ -2242,7 +2744,7 @@ export function ImagePromptWorkflow({
         {promptMode === "assistant" ? (
           <>
         <div className="mb-4 flex flex-wrap items-center gap-2">
-          {QUICK_BRIEFS.map((item) => (
+          {availableScenePresets.map((item) => (
             <button
               key={item.label}
               type="button"
@@ -2299,7 +2801,7 @@ export function ImagePromptWorkflow({
 
         <label className="space-y-1 text-sm">
           <span className="text-gray-700 dark:text-gray-300">
-            {currentStep.key === "besondererHintergrund" && brief.bildtyp === "Produkt-Studio"
+            {currentStep.key === "besondererHintergrund" && backgroundOptionsByScene?.length
               ? "13) Studio-Hintergrund"
               : currentStep.label}
             {isCurrentRequired ? " *" : ""}
@@ -2366,9 +2868,9 @@ export function ImagePromptWorkflow({
               ))}
             </select>
           ) : currentStep.type === "textarea" ? (
-            currentStep.key === "besondererHintergrund" && brief.bildtyp === "Produkt-Studio" ? (
+            currentStep.key === "besondererHintergrund" && backgroundOptionsByScene?.length ? (
               <div className="grid grid-cols-1 gap-2 sm:grid-cols-2">
-                {STUDIO_BACKGROUND_OPTIONS.map((option) => {
+                {backgroundOptionsByScene.map((option) => {
                   const selected = currentValue === option;
                   return (
                     <button
@@ -2685,11 +3187,48 @@ export function ImagePromptWorkflow({
                     style={{ width: `${imageGenerationProgress}%` }}
                   />
                 </div>
+                <div className="mt-3 flex flex-wrap gap-2">
+                  <button
+                    type="button"
+                    onClick={sendKieTaskToBackground}
+                    className="inline-flex h-8 items-center rounded-md border border-gray-300 bg-white px-3 text-xs font-medium text-gray-700 transition hover:bg-gray-100 dark:border-gray-700 dark:bg-gray-900 dark:text-gray-200 dark:hover:bg-gray-800"
+                  >
+                    Im Hintergrund weiterlaufen lassen
+                  </button>
+                </div>
               </div>
             ) : null}
             {imageGenerationError ? (
               <p className="mt-3 rounded-lg border border-red-300 bg-red-50 px-3 py-2 text-xs text-red-700 dark:border-red-800 dark:bg-red-900/30 dark:text-red-300">
                 {imageGenerationError}
+              </p>
+            ) : null}
+            {!isImageGenerating && pendingKieTask ? (
+              <div className="mt-3 flex flex-wrap gap-2">
+                <button
+                  type="button"
+                  onClick={() => {
+                    void continuePendingKieTask();
+                  }}
+                  className="inline-flex h-9 items-center rounded-md bg-[#c65a20] px-3 text-xs font-medium text-white transition hover:bg-[#b14f1c]"
+                >
+                  Erneut prüfen
+                </button>
+                <button
+                  type="button"
+                  onClick={() => {
+                    persistPendingKieTask(null);
+                    setIsKieTaskInBackground(false);
+                  }}
+                  className="inline-flex h-9 items-center rounded-md border border-gray-300 bg-white px-3 text-xs font-medium text-gray-700 transition hover:bg-gray-100 dark:border-gray-700 dark:bg-gray-900 dark:text-gray-200 dark:hover:bg-gray-800"
+                >
+                  Task verwerfen
+                </button>
+              </div>
+            ) : null}
+            {isKieTaskInBackground ? (
+              <p className="mt-2 text-xs text-gray-500 dark:text-gray-400">
+                KIE-Task ist im Hintergrund vorgemerkt und kann jederzeit fortgesetzt werden.
               </p>
             ) : null}
             {generatedImageUrl || isImageGenerating ? (

@@ -5,12 +5,19 @@ import { DEFAULT_BREWERY_IMAGE_SKILL_SYSTEM_PROMPT } from "@/lib/prompts/brewery
 import { enforceRateLimit, enforceSameOrigin } from "@/lib/security/requestGuards";
 
 type PromptRequestBody = {
+  bildtyp?: string;
   biertyp: string;
   behaelter?: string;
+  flaschenTyp?: string;
+  flaschenVolumen?: string;
   markenname: string;
   zielgruppe: string;
   plattform: string;
   stimmung: string;
+  personenModus?: string;
+  shotType?: string;
+  studioStyle?: string;
+  studioProps?: string;
   kiPlattform: string;
   etikettModus?: string;
   referenzStaerke?: "Niedrig" | "Mittel" | "Hoch" | "Strikt";
@@ -23,12 +30,19 @@ type PromptRequestBody = {
 };
 
 const promptRequestSchema = z.object({
+  bildtyp: z.string().trim().max(80).optional(),
   biertyp: z.string().trim().min(1).max(80),
   behaelter: z.string().trim().max(50).optional(),
+  flaschenTyp: z.string().trim().max(50).optional(),
+  flaschenVolumen: z.string().trim().max(50).optional(),
   markenname: z.string().trim().min(1).max(120),
   zielgruppe: z.string().trim().min(1).max(80),
   plattform: z.string().trim().min(1).max(80),
   stimmung: z.string().trim().min(1).max(80),
+  personenModus: z.string().trim().max(80).optional(),
+  shotType: z.string().trim().max(80).optional(),
+  studioStyle: z.string().trim().max(80).optional(),
+  studioProps: z.string().trim().max(240).optional(),
   kiPlattform: z.string().trim().max(80),
   etikettModus: z.string().trim().max(50).optional(),
   referenzStaerke: z.enum(["Niedrig", "Mittel", "Hoch", "Strikt"]).optional(),
@@ -93,6 +107,20 @@ function buildClaudeInput(body: PromptRequestBody): string {
       : "If any label text is rendered, keep it clean and legible.";
   const physicalRealismRule =
     "Physical realism lock: bottle must have plausible real-world scale versus human anatomy and surrounding props; no giant or toy-like proportions. Enforce true scene integration with contact shadows, finger occlusion, grip pressure, and matching light direction/speculars. Absolutely avoid cutout/sticker/composited look.";
+  const sceneLockRule =
+    body.bildtyp === "Produkt-Studio"
+      ? "Scene lock: enforce controlled studio product setup with neutral backdrop, clear product hierarchy, and no location storytelling."
+      : body.bildtyp === "Biergarten/Genussmoment"
+        ? "Scene lock: enforce outdoor beer-garden enjoyment context with social table cues and warm natural ambiance."
+        : body.bildtyp === "Gastro-Serviermoment"
+          ? "Scene lock: enforce active gastronomy serving action (pour/handoff/serving gesture) with realistic bar/table context."
+          : body.bildtyp === "Event/Promotion"
+            ? "Scene lock: enforce campaign-ready composition with copy-space, focal hierarchy, and promotional visual energy."
+            : body.bildtyp === "Food-Pairing"
+              ? "Scene lock: enforce visible food pairing element with appetizing plated dish and coherent dining context."
+              : body.bildtyp === "Makro/Detail"
+                ? "Scene lock: enforce true macro-detail optics with close-up texture focus, optical falloff, and material realism."
+                : "Scene lock: enforce authentic lifestyle context with believable human/product interaction.";
 
   return [
     "Erstelle einen hochwertigen ENGLISCHEN Image-Generation Prompt fuer eine Brauerei auf Basis dieses Briefings.",
@@ -109,6 +137,7 @@ function buildClaudeInput(body: PromptRequestBody): string {
     `- ${referenceStrengthRule}`,
     `- ${labelFidelityRule}`,
     `- ${physicalRealismRule}`,
+    `- ${sceneLockRule}`,
     `- ${strictGlassRule}`,
     `- ${containerRule}`,
   ].join("\n");

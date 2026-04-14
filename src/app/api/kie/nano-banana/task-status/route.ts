@@ -7,6 +7,8 @@ import { createAdminClient } from "@/lib/supabase/admin";
 import { createClient } from "@/lib/supabase/server";
 import { isSupabaseConfigured } from "@/lib/supabase/env";
 
+const KIE_STATUS_TIMEOUT_MS = 15_000;
+
 function findFirstUrl(input: unknown): string | null {
   if (typeof input === "string" && /^https?:\/\//i.test(input)) return input;
   if (Array.isArray(input)) {
@@ -59,21 +61,43 @@ export async function GET(req: Request) {
     if (!taskIdParsed.success) {
       return NextResponse.json({ error: "taskId fehlt." }, { status: 400 });
     }
+    if (!/^[a-zA-Z0-9_-]{1,120}$/.test(taskIdParsed.data)) {
+      return NextResponse.json({ error: "taskId ist ungültig." }, { status: 400 });
+    }
     const taskId = sanitizeTaskId(taskIdParsed.data);
+    if (taskId !== taskIdParsed.data) {
+      return NextResponse.json({ error: "taskId ist ungültig." }, { status: 400 });
+    }
 
     const baseUrl = process.env.KIE_API_BASE_URL || "https://api.kie.ai";
-    const upstream = await fetch(
-      `${baseUrl}/api/v1/jobs/recordInfo?taskId=${encodeURIComponent(taskId)}`,
-      {
+    const timeoutController = new AbortController();
+    const timeoutId = globalThis.setTimeout(() => timeoutController.abort(), KIE_STATUS_TIMEOUT_MS);
+    let upstream: Response;
+    try {
+      upstream = await fetch(`${baseUrl}/api/v1/jobs/recordInfo?taskId=${encodeURIComponent(taskId)}`, {
         headers: { Authorization: `Bearer ${apiKey}` },
-      },
-    );
+        cache: "no-store",
+        signal: timeoutController.signal,
+      });
+    } finally {
+      globalThis.clearTimeout(timeoutId);
+    }
 
     const data = (await upstream.json()) as Record<string, unknown>;
     if (!upstream.ok) {
+      const retryAfter = upstream.headers.get("Retry-After");
+      const statusText =
+        typeof data?.message === "string"
+          ? data.message
+          : typeof data?.error === "string"
+            ? data.error
+            : "Kie task-status fehlgeschlagen.";
       return NextResponse.json(
-        { error: "Kie task-status fehlgeschlagen." },
-        { status: upstream.status },
+        { error: statusText },
+        {
+          status: upstream.status,
+          headers: retryAfter ? { "Retry-After": retryAfter } : undefined,
+        },
       );
     }
 
@@ -114,6 +138,12 @@ export async function GET(req: Request) {
 
     return NextResponse.json({ state, imageUrl });
   } catch (error) {
+    if (error instanceof Error && error.name === "AbortError") {
+      return NextResponse.json(
+        { error: "Kie Statusabfrage dauert zu lange. Bitte erneut versuchen." },
+        { status: 504 },
+      );
+    }
     return NextResponse.json({ error: "Kie task-status fehlgeschlagen." }, { status: 500 });
   }
 }
