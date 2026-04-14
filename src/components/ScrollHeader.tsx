@@ -167,16 +167,21 @@ export function ScrollHeader() {
     return null;
   }
 
-  const evglabWordmark = (
+  const evglabWordmarkDesktop = (
     <>
       EvG<span className="font-light italic font-austera-green-fade">lab</span>
+    </>
+  );
+  const evglabWordmarkMobile = (
+    <>
+      EvG<span className="font-light italic">lab</span>
     </>
   );
 
   const logoLinkClassBase =
     "premium-header-logo rounded text-lg leading-none tracking-tight whitespace-nowrap focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 sm:text-2xl";
 
-  const headerLogo = (
+  const headerLogoDesktop = (
     <div className="flex flex-col items-start gap-px">
       <Link
         href="/"
@@ -185,7 +190,20 @@ export function ScrollHeader() {
           "focus-visible:ring-white/60 focus-visible:ring-offset-transparent",
         )}
       >
-        {evglabWordmark}
+        {evglabWordmarkDesktop}
+      </Link>
+    </div>
+  );
+  const headerLogoMobile = (
+    <div className="flex flex-col items-start gap-px">
+      <Link
+        href="/"
+        className={cn(
+          logoLinkClassBase,
+          "focus-visible:ring-white/60 focus-visible:ring-offset-transparent",
+        )}
+      >
+        {evglabWordmarkMobile}
       </Link>
     </div>
   );
@@ -207,7 +225,7 @@ export function ScrollHeader() {
           Kontakt
         </a>
         <div className="pointer-events-auto min-w-0 shrink rounded-lg border border-black/10 bg-white/88 px-2.5 py-1 shadow-[0_6px_18px_-10px_rgba(24,24,27,0.3)] backdrop-blur-sm">
-          {headerLogo}
+          {headerLogoMobile}
         </div>
 
         <div ref={mobileNavRef} className="pointer-events-auto relative shrink-0">
@@ -275,7 +293,7 @@ export function ScrollHeader() {
         <div className="premium-header-container !max-w-none">
           <div className="grid w-full grid-cols-[1fr_auto_1fr] items-center gap-4">
             <div className="min-w-0 justify-self-start">
-              {headerLogo}
+              {headerLogoDesktop}
             </div>
             <div className="min-w-0">
               <div className="min-w-0 max-w-full overflow-x-auto [-ms-overflow-style:none] [scrollbar-width:none] [&::-webkit-scrollbar]:hidden">
