@@ -31,6 +31,8 @@ export function HeaderLogin({ variant, className }: HeaderLoginProps) {
   const [isAuthenticated, setIsAuthenticated] = useState(false);
   const [isAdmin, setIsAdmin] = useState(false);
   const [twoFARequired, setTwoFARequired] = useState(false);
+  const [isSigningIn, setIsSigningIn] = useState(false);
+  const [isVerifyingCode, setIsVerifyingCode] = useState(false);
   const [authError, setAuthError] = useState<string | null>(null);
   const [authNotice, setAuthNotice] = useState<string | null>(null);
   const [isResendingCode, setIsResendingCode] = useState(false);
@@ -60,6 +62,82 @@ export function HeaderLogin({ variant, className }: HeaderLoginProps) {
       setAuthError("email_failed");
     } finally {
       setIsResendingCode(false);
+    }
+  };
+
+  const applyAuthStateFromUrl = (urlString: string) => {
+    try {
+      const url = new URL(urlString, window.location.origin);
+      const nextError = url.searchParams.get("error");
+      const nextNotice = url.searchParams.get("notice");
+      const nextAuth = url.searchParams.get("auth");
+      setAuthError(nextError);
+      setAuthNotice(nextNotice);
+      if (nextNotice === "admin_2fa_required" || nextNotice === "admin_2fa_resent") {
+        setMode("code");
+        setOpen(true);
+      } else if (nextAuth === "signin" || nextAuth === "signup") {
+        setMode("signin");
+        setOpen(true);
+      }
+    } catch {
+      // ignore malformed URL
+    }
+  };
+
+  const handleSignInSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
+    event.preventDefault();
+    if (isSigningIn) return;
+    setIsSigningIn(true);
+    setAuthError(null);
+    try {
+      const form = event.currentTarget;
+      const formData = new FormData(form);
+      const res = await fetch("/auth/signin", {
+        method: "POST",
+        body: formData,
+        credentials: "include",
+      });
+      const finalUrl = res.url || window.location.href;
+      applyAuthStateFromUrl(finalUrl);
+      if (finalUrl.includes("/dashboard")) {
+        window.location.assign("/dashboard");
+      } else {
+        const url = new URL(finalUrl, window.location.origin);
+        window.history.replaceState({}, "", `${url.pathname}${url.search}${url.hash}`);
+      }
+    } catch {
+      setAuthError("auth");
+    } finally {
+      setIsSigningIn(false);
+    }
+  };
+
+  const handleVerifyCodeSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
+    event.preventDefault();
+    if (isVerifyingCode) return;
+    setIsVerifyingCode(true);
+    setAuthError(null);
+    try {
+      const form = event.currentTarget;
+      const formData = new FormData(form);
+      const res = await fetch("/auth/admin-2fa/verify", {
+        method: "POST",
+        body: formData,
+        credentials: "include",
+      });
+      const finalUrl = res.url || window.location.href;
+      applyAuthStateFromUrl(finalUrl);
+      if (finalUrl.includes("/dashboard")) {
+        window.location.assign("/dashboard");
+      } else {
+        const url = new URL(finalUrl, window.location.origin);
+        window.history.replaceState({}, "", `${url.pathname}${url.search}${url.hash}`);
+      }
+    } catch {
+      setAuthError("admin_2fa_invalid");
+    } finally {
+      setIsVerifyingCode(false);
     }
   };
 
@@ -282,7 +360,7 @@ export function HeaderLogin({ variant, className }: HeaderLoginProps) {
       </div>
 
       {mode === "signin" ? (
-        <form action="/auth/signin" method="post" className="space-y-5">
+        <form action="/auth/signin" method="post" className="space-y-5" onSubmit={handleSignInSubmit}>
           <input type="hidden" name="next" value="/dashboard" />
           <div className="space-y-4">
             <div className="space-y-2">
@@ -306,13 +384,13 @@ export function HeaderLogin({ variant, className }: HeaderLoginProps) {
               />
             </div>
           </div>
-          <Button type="submit" className="w-full">
-            Anmelden
+          <Button type="submit" className="w-full" disabled={isSigningIn}>
+            {isSigningIn ? "Anmeldung läuft..." : "Anmelden"}
           </Button>
         </form>
       ) : (
         <div className="space-y-3">
-          <form action="/auth/admin-2fa/verify" method="post" className="space-y-3">
+          <form action="/auth/admin-2fa/verify" method="post" className="space-y-3" onSubmit={handleVerifyCodeSubmit}>
             <div className="space-y-2">
               <Label htmlFor={`header-login-code-${idSuffix}`}>E-Mail-Code</Label>
               <Input
@@ -324,8 +402,8 @@ export function HeaderLogin({ variant, className }: HeaderLoginProps) {
                 required
               />
             </div>
-            <Button type="submit" className="w-full">
-              Dashboard freigeben
+            <Button type="submit" className="w-full" disabled={isVerifyingCode}>
+              {isVerifyingCode ? "Prüfe Code..." : "Dashboard freigeben"}
             </Button>
           </form>
           <Button
