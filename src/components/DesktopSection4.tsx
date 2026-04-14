@@ -80,12 +80,15 @@ export function DesktopSection4() {
       */}
       <div className="section4-loop-stack-root relative isolate z-0 mx-auto w-full max-w-6xl overflow-visible px-4 lg:px-6">
         <div className="section4-loop-content-stack relative z-20 min-w-0 transform-gpu pb-20 lg:pb-28">
-          <h2 className="mb-6 text-center text-xl font-bold tracking-tight text-zinc-900 drop-shadow-sm sm:mb-8 sm:text-3xl md:text-4xl">
-          Meine 5{" "}
-          <span className="font-light italic font-austera-green-fade">
-            Lösungen
-          </span>
-        </h2>
+          <h2 className="mb-6 text-center text-2xl font-bold tracking-tight text-zinc-900 drop-shadow-sm sm:mb-8 sm:text-3xl">
+            Meine 5{" "}
+            <span
+              className="font-light italic text-[#c65a20]"
+              style={{ fontFamily: "var(--font-playfair)" }}
+            >
+              Lösungen
+            </span>
+          </h2>
           <p className="-mt-4 mb-8 text-center text-sm text-zinc-600 sm:text-base">
             Klar strukturiert, praxisnah und sofort umsetzbar für Brauereien.
           </p>

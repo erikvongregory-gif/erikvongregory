@@ -2040,6 +2040,7 @@ body[data-legal-page="true"] {
     flex: 0 0 clamp(205px, 20vw, 255px);
     max-width: clamp(205px, 20vw, 255px);
     margin-left: -30px;
+    isolation: isolate;
   }
 
   .section4-arc-layout .section4-arc-card:first-child {
@@ -2047,28 +2048,28 @@ body[data-legal-page="true"] {
   }
 
   .section4-arc-layout .section4-arc-card-0 {
-    transform: translateX(34px) translateY(68px) rotate(-7deg);
-    z-index: 1;
+    transform: translateX(42px) translateY(78px) rotate(-8deg);
+    z-index: 10 !important;
   }
 
   .section4-arc-layout .section4-arc-card-1 {
-    transform: translateX(20px) translateY(30px) rotate(-4deg);
-    z-index: 2;
+    transform: translateX(26px) translateY(38px) rotate(-4deg);
+    z-index: 20 !important;
   }
 
   .section4-arc-layout .section4-arc-card-2 {
-    transform: translateY(-10px) rotate(0deg);
-    z-index: 5;
+    transform: translateX(0) translateY(-22px) rotate(0deg);
+    z-index: 50 !important;
   }
 
   .section4-arc-layout .section4-arc-card-3 {
-    transform: translateX(-20px) translateY(30px) rotate(4deg);
-    z-index: 2;
+    transform: translateX(-14px) translateY(32px) rotate(4deg);
+    z-index: 40 !important;
   }
 
   .section4-arc-layout .section4-arc-card-4 {
     transform: translateX(-34px) translateY(68px) rotate(7deg);
-    z-index: 1;
+    z-index: 30 !important;
   }
 
   /* Desktop: wie Pricing „Brauerei Premium“ – border-black/10 + ring-2 ring-[#e07a40]/35 */
