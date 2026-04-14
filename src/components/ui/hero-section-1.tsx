@@ -88,7 +88,7 @@ export function HeroSectionOne() {
                     href="#section-4"
                     className="group mx-auto flex w-fit items-center gap-4 rounded-full border bg-muted p-1 pl-4 shadow-md shadow-black/5 transition-all duration-300 hover:bg-background dark:border-t-white/5 dark:shadow-zinc-950 dark:hover:border-t-border"
                   >
-                    <span className="text-sm text-foreground">Neu: KI-Workflows fuer Brauerei-Marketing</span>
+                    <span className="text-sm text-foreground">Neu: KI-Workflows für Brauerei-Marketing</span>
                     <span className="block h-4 w-0.5 border-l bg-white dark:border-background dark:bg-zinc-700" />
 
                     <div className="size-6 overflow-hidden rounded-full bg-background duration-500 group-hover:bg-muted">
@@ -104,7 +104,7 @@ export function HeroSectionOne() {
                   </Link>
 
                   <h1 className="mx-auto mt-8 max-w-4xl text-balance text-6xl md:text-7xl lg:mt-16 xl:text-[5.25rem]">
-                    KI-Marketing fuer Brauereien und Getraenkemarken
+                    KI-Marketing für Brauereien und Getränkemarken
                   </h1>
                   <p className="mx-auto mt-8 max-w-2xl text-balance text-lg">
                     Produktfotos, Bildkampagnen und Social Content mit klarer Markenlinie - schnell produziert, sofort
@@ -168,7 +168,7 @@ export function HeroSectionOne() {
                   <img
                     className="relative z-2 aspect-15/8 rounded-2xl border border-border/25 dark:hidden"
                     src="https://images.unsplash.com/photo-1489515217757-5fd1be406fef?auto=format&fit=crop&w=2200&q=80"
-                    alt="Marketing Dashboard fuer Brauerei"
+                    alt="Marketing Dashboard für Brauerei"
                     width="2700"
                     height="1440"
                   />
@@ -189,7 +189,7 @@ export function HeroSectionOne() {
               {[
                 "Biermarken",
                 "Brauereien",
-                "Getraenke",
+                "Getränke",
                 "Gastro",
                 "Events",
                 "Social Ads",

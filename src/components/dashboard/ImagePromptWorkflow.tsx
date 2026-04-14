@@ -2580,7 +2580,7 @@ export function ImagePromptWorkflow({
         throw new Error("Dein kostenloses Bild ist bereits genutzt. Bitte aktiviere ein Abo.");
       }
       if (hasActiveSubscription && remainingTokens < tokenCost) {
-        throw new Error(`Nicht genug Tokens. Benoetigt: ${tokenCost}, verfuegbar: ${remainingTokens}.`);
+        throw new Error(`Nicht genug Tokens. Benötigt: ${tokenCost}, verfügbar: ${remainingTokens}.`);
       }
       if (effectiveBrief.etikettModus === "Ja, Etikett 1:1" && !hasReferenceImage) {
         throw new Error("Für 'Etikett 1:1' bitte mindestens ein Referenzbild anhängen.");

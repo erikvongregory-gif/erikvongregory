@@ -1,7 +1,12 @@
 "use client";
 
 import { Beer, Crown, Rocket } from "lucide-react";
-import { PricingCard, type PricingCardProps } from "@/components/ui/animated-glassy-pricing";
+import {
+  CONTAINED_SHADER_BG,
+  PricingCard,
+  ShaderCanvas,
+  type PricingCardProps,
+} from "@/components/ui/animated-glassy-pricing";
 import { SUBSCRIPTION_PLAN_TOKENS, type SubscriptionPlanKey } from "@/lib/billing/tokenState";
 
 export type { SubscriptionPlanKey } from "@/lib/billing/tokenState";
@@ -96,7 +101,18 @@ export function BrewerySubscriptionPlans({
   };
 
   return (
-    <section className="mt-8 rounded-xl border border-gray-200 bg-white p-6 shadow-sm dark:border-gray-800 dark:bg-gray-900 md:p-8">
+    <section className="dashboard-pricing-loop-stack-root relative isolate z-0 mt-8 rounded-xl border border-gray-200 bg-white p-6 shadow-sm dark:border-gray-800 dark:bg-gray-900 md:overflow-hidden md:p-8">
+      <div
+        className="dashboard-pricing-loop-shader-backdrop pointer-events-none absolute left-1/2 top-8 z-0 hidden h-[700px] w-[160%] -translate-x-1/2 overflow-visible md:block"
+        aria-hidden
+      >
+        <ShaderCanvas
+          mode="contained"
+          shape="ring"
+          backgroundRgb={CONTAINED_SHADER_BG.desktopLight}
+        />
+      </div>
+      <div className="dashboard-pricing-loop-content-stack relative z-20">
       <div className="mb-7 flex flex-col items-center gap-3 text-center">
         <span className="inline-flex items-center gap-2 rounded-full border border-blue-200 bg-blue-50 px-4 py-1.5 text-sm font-medium text-blue-700 dark:border-blue-800 dark:bg-blue-900/30 dark:text-blue-300">
           <span aria-hidden>✦</span>
@@ -139,6 +155,7 @@ export function BrewerySubscriptionPlans({
             />
           );
         })}
+      </div>
       </div>
     </section>
   );

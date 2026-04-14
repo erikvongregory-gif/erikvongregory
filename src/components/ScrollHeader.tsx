@@ -2,12 +2,16 @@
 
 import { useEffect, useRef, useState } from "react";
 import Link from "next/link";
+import dynamic from "next/dynamic";
 import { usePathname } from "next/navigation";
 import { HelpCircle, Layers, Mail, Package, Sparkles } from "lucide-react";
 import { MenuBar, type GlowMenuItem } from "@/components/ui/glow-menu";
-import { HeaderLogin } from "@/components/HeaderLogin";
 import { scrollToSection } from "@/lib/scrollToSection";
 import { cn } from "@/lib/utils";
+
+const HeaderLogin = dynamic(() => import("@/components/HeaderLogin").then((m) => m.HeaderLogin), {
+  ssr: false,
+});
 
 const GLOW_NAV_ITEMS: GlowMenuItem[] = [
   {

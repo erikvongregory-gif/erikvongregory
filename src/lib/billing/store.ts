@@ -125,7 +125,7 @@ export async function consumeTokens(userId: string, amount: number) {
   }
   const remaining = Math.max(row.monthly_tokens - row.used_tokens, 0);
   if (remaining < amount) {
-    return { ok: false as const, error: `Nicht genug Tokens. Benoetigt: ${amount}, verfuegbar: ${remaining}.` };
+    return { ok: false as const, error: `Nicht genug Tokens. Benötigt: ${amount}, verfügbar: ${remaining}.` };
   }
   const nextUsed = row.used_tokens + amount;
   const { error } = await admin.from("billing_subscriptions").update({ used_tokens: nextUsed }).eq("user_id", userId);

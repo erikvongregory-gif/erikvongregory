@@ -243,8 +243,13 @@ type ExampleProps = {
 };
 
 export const Example = ({ userEmail, userName, isAdmin = false }: ExampleProps) => {
-  const [isDark, setIsDark] = useState(false);
-  const [themeReady, setThemeReady] = useState(false);
+  const [isDark, setIsDark] = useState(() => {
+    if (typeof window === "undefined") return false;
+    const saved = window.localStorage.getItem("evglab-dashboard-theme");
+    return saved === "dark" || saved === "light"
+      ? saved === "dark"
+      : window.matchMedia("(prefers-color-scheme: dark)").matches;
+  });
   const [selectedTab, setSelectedTab] = useState<DashboardTab>("Dashboard");
 
   const applyTheme = useCallback((nextDark: boolean) => {
@@ -253,23 +258,11 @@ export const Example = ({ userEmail, userName, isAdmin = false }: ExampleProps) 
 
   useEffect(() => {
     if (typeof window === "undefined") return;
-    const saved = window.localStorage.getItem("evglab-dashboard-theme");
-    const nextDark =
-      saved === "dark" || saved === "light"
-        ? saved === "dark"
-        : window.matchMedia("(prefers-color-scheme: dark)").matches;
-    setIsDark(nextDark);
-    setThemeReady(true);
-  }, []);
-
-  useEffect(() => {
-    if (!themeReady || typeof window === "undefined") return;
-    if (typeof window === "undefined") return;
     const root = document.documentElement;
     root.classList.toggle("dark", isDark);
     root.style.colorScheme = isDark ? "dark" : "light";
     window.localStorage.setItem("evglab-dashboard-theme", isDark ? "dark" : "light");
-  }, [isDark, themeReady]);
+  }, [isDark]);
 
   return (
     <div className={`flex min-h-screen w-full ${isDark ? "dark" : ""}`}>
@@ -392,8 +385,6 @@ const MobileTabBar = ({
   if (isAdmin) {
     tabs.splice(5, 0, { title: "Admin Center", Icon: Settings });
   }
-
-  const activeTab = tabs.find((tab) => tab.title === selected) ?? tabs[0];
 
   return (
     <div className="-mx-4 mb-4 bg-transparent px-4 py-3 sm:-mx-6 sm:px-6 lg:hidden">
@@ -951,13 +942,13 @@ const ExampleContent = ({ isDark, applyTheme, userEmail, userName, selectedTab, 
   };
 
   const tabDescriptions: Record<DashboardTab, string> = {
-    Dashboard: "Hier siehst du alle wichtigen Zahlen fuer dein Content- und Abo-Management.",
-    "Inhalte erstellen": "Plane und erstelle neue Inhalte fuer Social Media, Events und Kampagnen.",
+    Dashboard: "Hier siehst du alle wichtigen Zahlen für dein Content- und Abo-Management.",
+    "Inhalte erstellen": "Plane und erstelle neue Inhalte für Social Media, Events und Kampagnen.",
     Mediathek: "Verwalte deine Bilder, Vorlagen und exportierten Assets zentral an einem Ort.",
     "Abo & Tokens": "Behalte deinen Tarif, Verbrauch und kommende Aufladungen im Blick.",
     Team: "Lade Kolleginnen und Kollegen ein und verwalte Rollen im Team.",
     "Admin Center": "Als Admin verwaltest du hier Nutzer, Rollen, Billing, Team und Inhalte zentral.",
-    Einstellungen: "Passe Konto, Branding und Standard-Einstellungen fuer Inhalte an.",
+    Einstellungen: "Passe Konto, Branding und Standard-Einstellungen für Inhalte an.",
     "Hilfe & Support": "Finde Antworten und kontaktiere bei Bedarf direkt den Support.",
   };
   const remainingTokens = Math.max(monthlyTokens - usedTokens, 0);
@@ -969,7 +960,7 @@ const ExampleContent = ({ isDark, applyTheme, userEmail, userName, selectedTab, 
     try {
       setGlobalErrorMessage("");
       setLoadingPlan(plan);
-      setCheckoutMessage("Sandbox wird geoeffnet...");
+      setCheckoutMessage("Sandbox wird geöffnet...");
       setIsCheckoutLoading(true);
       const res = await fetch("/api/billing/checkout", {
         method: "POST",
@@ -1041,7 +1032,7 @@ const ExampleContent = ({ isDark, applyTheme, userEmail, userName, selectedTab, 
   const handleOpenBillingPortal = async () => {
     try {
       setGlobalErrorMessage("");
-      setCheckoutMessage("Abo-Verwaltung wird geoeffnet...");
+      setCheckoutMessage("Abo-Verwaltung wird geöffnet...");
       setIsCheckoutLoading(true);
       const res = await fetch("/api/billing/portal", { method: "POST" });
       if (!res.ok) {
@@ -1203,7 +1194,7 @@ const ExampleContent = ({ isDark, applyTheme, userEmail, userName, selectedTab, 
                 </div>
                 <span className="text-xs font-medium text-emerald-600 dark:text-emerald-400">+180</span>
               </div>
-              <h3 className="mb-1 font-medium text-gray-600 dark:text-gray-400">Verfuegbare Tokens</h3>
+              <h3 className="mb-1 font-medium text-gray-600 dark:text-gray-400">Verfügbare Tokens</h3>
               <p className="text-2xl font-bold text-gray-900 dark:text-gray-100">
                 {(dashboardSummary?.tokens.remaining ?? remainingTokens).toLocaleString("de-DE")}
               </p>
@@ -1255,7 +1246,7 @@ const ExampleContent = ({ isDark, applyTheme, userEmail, userName, selectedTab, 
             <div className="lg:col-span-2">
               <div className="rounded-xl border border-gray-200 bg-white p-6 shadow-sm dark:border-gray-800 dark:bg-gray-900">
                 <div className="mb-6 flex items-center justify-between">
-                  <h3 className="text-lg font-semibold text-gray-900 dark:text-gray-100">Letzte Aktivitaeten</h3>
+                  <h3 className="text-lg font-semibold text-gray-900 dark:text-gray-100">Letzte Aktivitäten</h3>
                   <button className="text-sm font-medium text-blue-600 hover:text-blue-700 dark:text-blue-400 dark:hover:text-blue-300">
                     Alle anzeigen
                   </button>
@@ -1315,7 +1306,7 @@ const ExampleContent = ({ isDark, applyTheme, userEmail, userName, selectedTab, 
                     onClick={() => setSelectedTab("Inhalte erstellen")}
                     className="flex w-full items-center justify-between rounded-lg border border-gray-200 px-3 py-2 text-left text-sm transition-colors hover:bg-gray-50 dark:border-gray-700 dark:hover:bg-gray-800"
                   >
-                    <span>Bild fuer Event generieren</span>
+                    <span>Bild für Event generieren</span>
                     <Image className="h-4 w-4 text-gray-500" />
                   </button>
                   <button
@@ -1333,7 +1324,7 @@ const ExampleContent = ({ isDark, applyTheme, userEmail, userName, selectedTab, 
                 <p className="text-sm text-gray-600 dark:text-gray-400">Du nutzt aktuell den Plan</p>
                 <p className="mt-1 text-xl font-semibold text-gray-900 dark:text-gray-100">{activePlanLabel}</p>
                 <p className="mt-2 text-sm text-emerald-600 dark:text-emerald-400">
-                  {hasActiveBilling ? `${monthlyTokens.toLocaleString("de-DE")} Tokens / Monat` : "Bitte waehle einen Plan"}
+                  {hasActiveBilling ? `${monthlyTokens.toLocaleString("de-DE")} Tokens / Monat` : "Bitte wähle einen Plan"}
                 </p>
               </div>
             </div>
@@ -1354,7 +1345,7 @@ const ExampleContent = ({ isDark, applyTheme, userEmail, userName, selectedTab, 
               </span>
             </div>
             <p className="text-sm text-gray-600 dark:text-gray-400">
-              Verwalte deinen Tarif, sehe den aktuellen Verbrauch und waehle bei Bedarf einen neuen Plan.
+              Verwalte deinen Tarif, sehe den aktuellen Verbrauch und wähle bei Bedarf einen neuen Plan.
             </p>
             {!BILLING_CHECKOUT_ENABLED ? (
               <div className="mt-3 rounded-lg border border-amber-300 bg-amber-50 p-3 text-xs text-amber-900 dark:border-amber-800 dark:bg-amber-900/30 dark:text-amber-200">
@@ -1364,7 +1355,7 @@ const ExampleContent = ({ isDark, applyTheme, userEmail, userName, selectedTab, 
             <div className="mt-3 rounded-lg border border-gray-200 bg-gray-50 p-3 text-xs text-gray-700 dark:border-gray-700 dark:bg-gray-950 dark:text-gray-300">
               <p>Monatliche Tokens: {monthlyTokens.toLocaleString("de-DE")}</p>
               <p>Verbraucht: {usedTokens.toLocaleString("de-DE")}</p>
-              <p className="font-semibold">Verfuegbar: {remainingTokens.toLocaleString("de-DE")}</p>
+              <p className="font-semibold">Verfügbar: {remainingTokens.toLocaleString("de-DE")}</p>
             </div>
             <div className="mt-4 flex flex-wrap gap-2">
               <button
@@ -1375,7 +1366,7 @@ const ExampleContent = ({ isDark, applyTheme, userEmail, userName, selectedTab, 
                 disabled={!hasActiveBilling || !BILLING_CHECKOUT_ENABLED}
                 className="inline-flex h-9 items-center rounded-md border border-gray-300 px-3 text-sm font-medium text-gray-700 transition hover:bg-gray-50 disabled:cursor-not-allowed disabled:opacity-50 dark:border-gray-700 dark:text-gray-200 dark:hover:bg-gray-800"
               >
-                Abo verwalten / kuendigen
+                Abo verwalten / kündigen
               </button>
               <button
                 type="button"
@@ -1742,7 +1733,7 @@ const ExampleContent = ({ isDark, applyTheme, userEmail, userName, selectedTab, 
         <p className="mb-6 max-w-3xl text-sm text-gray-600 dark:text-gray-400">{tabDescriptions[selectedTab]}</p>
         <div className="grid grid-cols-1 gap-4 md:grid-cols-3">
           <div className="rounded-xl border border-gray-200 bg-gray-50 p-4 dark:border-gray-700 dark:bg-gray-950/60">
-            <p className="text-xs font-medium uppercase tracking-wide text-gray-500 dark:text-gray-400">Prioritaet</p>
+            <p className="text-xs font-medium uppercase tracking-wide text-gray-500 dark:text-gray-400">Priorität</p>
             <p className="mt-2 text-sm font-semibold text-gray-900 dark:text-gray-100">Heute weiterarbeiten</p>
             <p className="mt-1 text-xs text-gray-500 dark:text-gray-400">3 Aufgaben warten auf dich</p>
           </div>
@@ -1752,7 +1743,7 @@ const ExampleContent = ({ isDark, applyTheme, userEmail, userName, selectedTab, 
             <p className="mt-1 text-xs text-gray-500 dark:text-gray-400">Letztes Update vor 2 Minuten</p>
           </div>
           <div className="rounded-xl border border-gray-200 bg-gray-50 p-4 dark:border-gray-700 dark:bg-gray-950/60">
-            <p className="text-xs font-medium uppercase tracking-wide text-gray-500 dark:text-gray-400">Naechster Schritt</p>
+            <p className="text-xs font-medium uppercase tracking-wide text-gray-500 dark:text-gray-400">Nächster Schritt</p>
             <p className="mt-2 text-sm font-semibold text-gray-900 dark:text-gray-100">Bereich konfigurieren</p>
             <p className="mt-1 text-xs text-gray-500 dark:text-gray-400">Design bleibt konsistent zum Dashboard</p>
           </div>
@@ -1770,7 +1761,7 @@ const ExampleContent = ({ isDark, applyTheme, userEmail, userName, selectedTab, 
               <div className="h-5 w-5 animate-spin rounded-full border-2 border-white/30 border-t-white" />
               <p className="text-sm font-semibold">{checkoutMessage}</p>
             </div>
-            <p className="text-xs text-gray-200">Bitte kurz warten. Stripe wird in einem Moment geoeffnet.</p>
+            <p className="text-xs text-gray-200">Bitte kurz warten. Stripe wird in einem Moment geöffnet.</p>
           </div>
         </div>
       ) : null}

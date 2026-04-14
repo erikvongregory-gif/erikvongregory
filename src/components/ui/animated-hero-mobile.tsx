@@ -72,7 +72,7 @@ export function AnimatedHeroMobile({ className }: AnimatedHeroProps) {
             </h1>
 
             <p className="mx-auto max-w-2xl text-balance text-center text-base leading-relaxed tracking-tight text-zinc-600 sm:text-lg">
-              KI-Marketing fuer Brauereien und Getraenke: starke Produktbilder und Social-Content.
+              KI-Marketing für Brauereien und Getränke: starke Produktbilder und Social-Content.
             </p>
           </div>
 

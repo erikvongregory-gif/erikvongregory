@@ -178,7 +178,7 @@ export async function POST(req: Request) {
       const remainingTokens = Math.max((currentState?.monthly_tokens ?? 0) - (currentState?.used_tokens ?? 0), 0);
       if (remainingTokens < tokenCost) {
         return NextResponse.json(
-          { error: `Nicht genug Tokens. Benoetigt: ${tokenCost}, verfuegbar: ${remainingTokens}.` },
+          { error: `Nicht genug Tokens. Benötigt: ${tokenCost}, verfügbar: ${remainingTokens}.` },
           { status: 402 },
         );
       }

@@ -1,15 +1,21 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useMemo } from "react";
+import dynamic from "next/dynamic";
 import { usePathname } from "next/navigation";
 import { ScrollHeader } from "@/components/ScrollHeader";
-import { CookieBanner } from "@/components/CookieBanner";
-import { ContactFunnel } from "@/components/ContactFunnel";
 import { LoadingScreen } from "@/components/LoadingScreen";
 import { LegalPageTheme } from "@/components/LegalPageTheme";
 import { SiteGradientBackdrop } from "@/components/ui/gradient-backgrounds";
 import { useLoading } from "@/context/LoadingContext";
 import { SITE } from "@/lib/siteConfig";
+
+const CookieBanner = dynamic(() => import("@/components/CookieBanner").then((m) => m.CookieBanner), {
+  ssr: false,
+});
+const ContactFunnel = dynamic(() => import("@/components/ContactFunnel").then((m) => m.ContactFunnel), {
+  ssr: false,
+});
 
 type AppShellProps = {
   children: React.ReactNode;
@@ -18,20 +24,18 @@ type AppShellProps = {
 export function AppShell({ children }: AppShellProps) {
   const pathname = usePathname();
   const { isLoadComplete } = useLoading();
-  const [isAuthFlow, setIsAuthFlow] = useState(false);
   const isDashboardRoute = pathname?.startsWith("/dashboard") ?? false;
   const isAdminRoute = pathname?.startsWith("/admin") ?? false;
-
-  useEffect(() => {
-    if (typeof window === "undefined") return;
+  const isAuthFlow = useMemo(() => {
+    if (typeof window === "undefined") return false;
     const params = new URLSearchParams(window.location.search);
     const authQuery = params.get("auth");
     const noticeQuery = params.get("notice");
-    setIsAuthFlow(
+    return (
       authQuery === "signin" ||
-        authQuery === "signup" ||
-        noticeQuery === "admin_2fa_required" ||
-        noticeQuery === "admin_2fa_resent",
+      authQuery === "signup" ||
+      noticeQuery === "admin_2fa_required" ||
+      noticeQuery === "admin_2fa_resent"
     );
   }, [pathname]);
 
@@ -70,10 +74,10 @@ export function AppShell({ children }: AppShellProps) {
             <div>
               <p className="font-bold text-zinc-900">{SITE.name}</p>
               <p className="mt-1 text-sm font-medium text-[#b45309]">
-                KI fuer Brauereien & Gastronomie
+                KI für Brauereien & Gastronomie
               </p>
               <p className="mt-4 text-sm leading-relaxed text-zinc-600">
-                Buendig. Direkt. Fokussiert auf Automatisierung von Marketing, Content und Verkauf.
+                Bündig. Direkt. Fokussiert auf Automatisierung von Marketing, Content und Verkauf.
               </p>
             </div>
             <div>
@@ -167,7 +171,7 @@ export function AppShell({ children }: AppShellProps) {
             </span>
             <span className="max-w-[min(100%,42rem)] text-zinc-500">
               Texte, Bilder und sonstige Inhalte dieser Website unterliegen dem Urheberrecht;
-              Vervielfaeltigung nur mit Zustimmung.
+              Vervielfältigung nur mit Zustimmung.
             </span>
           </p>
         </div>

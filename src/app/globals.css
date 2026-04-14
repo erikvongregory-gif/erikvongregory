@@ -1342,11 +1342,31 @@ body[data-legal-page="true"] {
   -webkit-transform: translate3d(0, 0, 0);
 }
 
+/* Dashboard Abo – gleicher Ring/Shader-Layer wie Pakete */
+.dashboard-pricing-loop-stack-root {
+  position: relative;
+  isolation: isolate;
+  z-index: 0;
+}
+
+.dashboard-pricing-loop-shader-backdrop {
+  z-index: 0 !important;
+}
+
+.dashboard-pricing-loop-content-stack {
+  position: relative;
+  z-index: 3 !important;
+  isolation: isolate;
+  transform: translate3d(0, 0, 0);
+  -webkit-transform: translate3d(0, 0, 0);
+}
+
 /* Mobile Compositor-Schutz:
    verhindert, dass WebGL-Shader-Layer beim schnellen Scrollen kurz vor den Content rutschen. */
 @media (max-width: 768px) {
   #pakete-preise .pricing-loop-stack-root,
-  #section-4.insurance-card-theme .section4-loop-stack-root {
+  #section-4.insurance-card-theme .section4-loop-stack-root,
+  .dashboard-pricing-loop-stack-root {
     contain: paint;
     transform: translateZ(0);
     -webkit-transform: translateZ(0);
@@ -1355,14 +1375,16 @@ body[data-legal-page="true"] {
   }
 
   #pakete-preise .pricing-loop-shader-backdrop,
-  #section-4.insurance-card-theme .section4-loop-shader-backdrop {
+  #section-4.insurance-card-theme .section4-loop-shader-backdrop,
+  .dashboard-pricing-loop-shader-backdrop {
     z-index: -1 !important;
     transform: translateZ(0);
     -webkit-transform: translateZ(0);
   }
 
   #pakete-preise .pricing-loop-content-stack,
-  #section-4.insurance-card-theme .section4-loop-content-stack {
+  #section-4.insurance-card-theme .section4-loop-content-stack,
+  .dashboard-pricing-loop-content-stack {
     z-index: 5 !important;
     transform: translateZ(0);
     -webkit-transform: translateZ(0);

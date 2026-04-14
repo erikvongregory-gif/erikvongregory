@@ -25,9 +25,9 @@ interface HeroSectionProps {
 }
 
 export function HeroSection({
-  title = "KI-Marketing fuer",
+  title = "KI-Marketing für",
   highlightText = "Brauereien",
-  description = "Produktfotos, Bildkampagnen und Social-Content mit KI - schnell umgesetzt, klar auf deine Marke abgestimmt und bereit fuer mehr Sichtbarkeit.",
+  description = "Produktfotos, Bildkampagnen und Social-Content mit KI - schnell umgesetzt, klar auf deine Marke abgestimmt und bereit für mehr Sichtbarkeit.",
   buttonText = "Meine Angebote ansehen",
   onButtonClick,
   colors = ["#72b9bb", "#b5d9d9", "#ffd1bd", "#ffebe0", "#8cc5b8", "#dbf4a4"],
@@ -44,11 +44,9 @@ export function HeroSection({
   fontFamily = "var(--font-main), ui-sans-serif, system-ui, sans-serif",
   fontWeight = 700,
 }: HeroSectionProps) {
-  const [dimensions, setDimensions] = useState({ width: 1920, height: 1080 });
-  const [mounted, setMounted] = useState(false);
+  const [dimensions, setDimensions] = useState<{ width: number; height: number } | null>(null);
 
   useEffect(() => {
-    setMounted(true);
     const update = () =>
       setDimensions({
         width: window.innerWidth,
@@ -64,7 +62,7 @@ export function HeroSection({
       className={`relative flex min-h-screen w-full items-center justify-center overflow-hidden bg-background ${className}`}
     >
       <div className="absolute inset-0 h-full w-full">
-        {mounted && (
+        {dimensions && (
           <>
             <MeshGradient
               width={dimensions.width}
