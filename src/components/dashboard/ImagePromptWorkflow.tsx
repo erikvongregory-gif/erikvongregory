@@ -1597,9 +1597,13 @@ function evaluatePreflight(
       blockers.push(contract.blockerMessage);
       fixSuggestions.push({ text: `Szene-Regeln für ${scene} stärker erzwingen.`, field: "bildtyp" });
     }
-    const hasForbiddenPattern = contract.mustExclude.some((regex) => regex.test(promptText));
+    const sceneInputContext = `${brief.besondererHintergrund} ${brief.saisonalerBezug}`.trim();
+    const hasForbiddenPattern = sceneInputContext
+      ? contract.mustExclude.some((regex) => regex.test(sceneInputContext))
+      : false;
     if (hasForbiddenPattern) {
-      blockers.push(`Szene-Konflikt erkannt: Prompt enthält verbotene Muster für ${scene}.`);
+      blockers.push(`Szene-Konflikt erkannt: Eingaben enthalten verbotene Muster für ${scene}.`);
+      fixSuggestions.push({ text: `Hintergrund/Saison für ${scene} anpassen.`, field: "besondererHintergrund" });
     }
   }
   if (isStudioProduct && brief.personenModus !== "Kein Mensch") {
