@@ -21,9 +21,7 @@ import {
 import { cn } from "@/lib/utils";
 
 import {
-  CONTAINED_SHADER_BG,
   PricingCard,
-  ShaderCanvas,
   type PricingCardProps,
 } from "@/components/ui/animated-glassy-pricing";
 import FAQsComponent from "@/components/ui/faqs-component";
@@ -459,15 +457,7 @@ function toAddonPricingCardProps(addon: AddonRow, index: number): PricingCardPro
 export function PricingBoxes() {
   const sectionRef = useRef<HTMLElement>(null);
   const [inView, setInView] = useState(false);
-  const [isDesktop, setIsDesktop] = useState(false);
   const [selectedPath, setSelectedPath] = useState<OfferPath | null>(null);
-
-  useEffect(() => {
-    const q = () => setIsDesktop(window.matchMedia("(min-width: 768px)").matches);
-    q();
-    window.addEventListener("resize", q);
-    return () => window.removeEventListener("resize", q);
-  }, []);
 
   useEffect(() => {
     const el = sectionRef.current;
@@ -506,17 +496,6 @@ export function PricingBoxes() {
   return (
     <section ref={sectionRef} className={`mt-10 ${inView ? "pricing-in-view" : ""}`}>
       <div className="pricing-loop-stack-root relative isolate z-0 rounded-3xl max-md:rounded-none max-md:overflow-visible md:overflow-hidden">
-        <div
-          className="pricing-loop-shader-backdrop pointer-events-none absolute inset-x-0 top-0 h-[860px] -z-10 overflow-hidden rounded-3xl max-md:hidden md:h-[980px]"
-          aria-hidden
-        >
-          <ShaderCanvas
-            mode="contained"
-            backgroundRgb={
-              isDesktop ? CONTAINED_SHADER_BG.desktopLight : CONTAINED_SHADER_BG.mobileDark
-            }
-          />
-        </div>
         <div className="pricing-loop-content-stack relative z-20 transform-gpu px-1 py-4 sm:px-2 md:py-8">
           <div className="evg-clean-hover mb-8 rounded-2xl border border-black/10 bg-gradient-to-br from-black/5 to-black/0 p-4 shadow-[0_14px_30px_-20px_rgba(24,24,27,0.26)] backdrop-blur-[14px] hover:border-[#e07a40]/35 hover:shadow-[0_16px_34px_-20px_rgba(198,90,32,0.24)] max-md:border-transparent max-md:bg-transparent max-md:shadow-none max-md:backdrop-blur-0 md:mb-10 md:p-5">
             <div className="mb-4 flex flex-col items-center gap-2 text-center">

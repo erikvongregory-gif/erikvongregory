@@ -195,11 +195,11 @@ function Hero() {
       <div className="container mx-auto">
         <div className="relative z-10 flex flex-col items-center justify-center gap-8 py-20 max-md:gap-6 max-md:pb-12 max-md:pt-28 sm:max-md:pb-16 sm:max-md:pt-32 lg:py-40">
           <div
-            className={`w-full transition-opacity duration-500 ease-out ${
+            className={`flex w-full flex-col items-center transition-opacity duration-500 ease-out ${
               heroReady ? "opacity-100" : "opacity-0"
             }`}
           >
-              <BlurFade delay={0.04} duration={0.45} className="hidden md:flex md:justify-center">
+              <BlurFade delay={0.04} duration={0.45} className="hidden md:block">
                 <Button variant="secondary" size="sm" className="gap-4">
                   Fokus: KI-Content für Brauereien <MoveRight className="w-4 h-4" />
                 </Button>
@@ -240,7 +240,7 @@ function Hero() {
                 </p>
               </BlurFade>
 
-              <BlurFade delay={0.2} duration={0.5} className="hidden flex-row flex-wrap items-center justify-center gap-3 md:flex">
+              <BlurFade delay={0.2} duration={0.5} className="hidden flex-row flex-wrap items-center justify-center gap-3 md:mt-4 md:flex">
                 <div>
                   <LiquidMetalButton
                     label={primaryCtaLabel}
