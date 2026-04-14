@@ -17,8 +17,14 @@ export async function POST(request: NextRequest) {
   const action = String(formData.get("action") ?? "verify");
   const code = String(formData.get("code") ?? "").trim();
 
-  const response = NextResponse.redirect(`${origin}/?auth=signin&notice=admin_2fa_required`, 303);
-  const supabase = createRouteHandlerClient(request, response);
+  const authResponse = NextResponse.next();
+  const supabase = createRouteHandlerClient(request, authResponse);
+  const withAuthCookies = (response: NextResponse) => {
+    for (const cookie of authResponse.cookies.getAll()) {
+      response.cookies.set(cookie.name, cookie.value, cookie);
+    }
+    return response;
+  };
   const {
     data: { user },
   } = await supabase.auth.getUser();
@@ -48,14 +54,15 @@ export async function POST(request: NextRequest) {
       code: newCode,
       ttlSeconds: 600,
     });
-    response.cookies.set(getPendingCookieName(), nextPending, {
+    const resendResponse = NextResponse.redirect(`${origin}/?auth=signin&notice=admin_2fa_resent`, 303);
+    resendResponse.cookies.set(getPendingCookieName(), nextPending, {
       httpOnly: true,
       sameSite: "lax",
       secure: secureCookies,
       path: "/",
       maxAge: 60 * 10,
     });
-    return NextResponse.redirect(`${origin}/?auth=signin&notice=admin_2fa_resent`, 303);
+    return withAuthCookies(resendResponse);
   }
 
   if (!code) {
@@ -89,5 +96,5 @@ export async function POST(request: NextRequest) {
     path: "/",
     maxAge: 0,
   });
-  return done;
+  return withAuthCookies(done);
 }
