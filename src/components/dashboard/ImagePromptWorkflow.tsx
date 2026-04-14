@@ -1938,18 +1938,6 @@ export function ImagePromptWorkflow({
       type: "textarea",
       placeholder: "z. B. Kupferkessel, Biergarten, Urban Bar",
     },
-    {
-      key: "saisonalerBezug",
-      label: "14) Saisonaler Bezug (optional)",
-      type: "text",
-      placeholder: "z. B. Frühlingsaktion, Oktoberfest, Weihnachten",
-    },
-    {
-      key: "textImLabel",
-      label: "15) Text auf Etikett (optional)",
-      type: "text",
-      placeholder: 'z. B. "Helles Naturtrüb"',
-    },
   ];
 
   const visibleSteps = useMemo(() => {
@@ -2121,8 +2109,11 @@ export function ImagePromptWorkflow({
         });
 
         if (!res.ok) {
-          const errorPayload = (await res.json()) as { error?: string };
-          throw new Error(errorPayload.error ?? "Claude API antwortet nicht erfolgreich");
+          const errorPayload = (await res.json()) as { error?: string; code?: string };
+          const enriched = errorPayload.code
+            ? `${errorPayload.code}:${errorPayload.error ?? "Claude API antwortet nicht erfolgreich"}`
+            : (errorPayload.error ?? "Claude API antwortet nicht erfolgreich");
+          throw new Error(enriched);
         }
 
         const data = (await res.json()) as { prompt?: string };
@@ -2157,17 +2148,21 @@ export function ImagePromptWorkflow({
         setQualityPassed(runQualityCheck(effectiveBrief, constrainedFallbackPrompt, fallback.ratio));
         const msg = error instanceof Error ? error.message : "";
         const lower = msg.toLowerCase();
-        if (lower.includes("credit balance is too low")) {
+        if (lower.includes("claude_billing") || lower.includes("credit balance is too low")) {
           setGenerationError(
             "Claude ist verbunden, aber dein Anthropic-Guthaben ist zu niedrig. Bitte in Anthropic > Plans & Billing Credits aufladen. Lokaler Fallback-Prompt wurde verwendet.",
           );
-        } else if (lower.includes("anthropic_api_key") || lower.includes("api key") || lower.includes("authentifizierung")) {
+        } else if (lower.includes("claude_auth") || lower.includes("anthropic_api_key") || lower.includes("api key") || lower.includes("authentifizierung")) {
           setGenerationError(
             "Claude ist nicht konfiguriert: ANTHROPIC_API_KEY fehlt oder ist ungültig. Lokaler Fallback-Prompt wurde verwendet.",
           );
-        } else if (lower.includes("modell") || lower.includes("model")) {
+        } else if (lower.includes("claude_model") || lower.includes("modell") || lower.includes("model")) {
           setGenerationError(
-            "Claude-Modell ist nicht verfügbar. Bitte ANTHROPIC_MODEL prüfen. Lokaler Fallback-Prompt wurde verwendet.",
+            "Claude konnte mit deinem Anthropic-Account kein nutzbares Modell aufrufen. Bitte in Anthropic Konsole Modellzugriff und Billing prüfen. Lokaler Fallback-Prompt wurde verwendet.",
+          );
+        } else if (lower.includes("claude_rate_limit")) {
+          setGenerationError(
+            "Claude ist gerade rate-limited. Bitte kurz warten und erneut versuchen. Lokaler Fallback-Prompt wurde verwendet.",
           );
         } else {
           setGenerationError(
