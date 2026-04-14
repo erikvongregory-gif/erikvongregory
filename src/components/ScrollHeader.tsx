@@ -33,9 +33,9 @@ const GLOW_NAV_ITEMS: GlowMenuItem[] = [
     label: "Pakete",
     href: "#pakete-preise",
     gradient:
-      "radial-gradient(circle, rgba(34,197,94,0.18) 0%, rgba(22,163,74,0.07) 50%, rgba(21,128,61,0) 100%)",
-    iconColor: "text-emerald-600",
-    iconHoverClass: "group-hover:text-emerald-600",
+      "radial-gradient(circle, rgba(224,122,64,0.24) 0%, rgba(198,90,32,0.14) 50%, rgba(184,77,21,0) 100%)",
+    iconColor: "text-[#c65a20]",
+    iconHoverClass: "group-hover:text-[#c65a20]",
   },
   {
     icon: Sparkles,
@@ -174,7 +174,13 @@ export function ScrollHeader() {
   );
   const evglabWordmarkMobile = (
     <>
-      EvG<span className="font-light italic">lab</span>
+      EvG
+      <span
+        className="font-light italic text-[#c65a20]"
+        style={{ background: "none", WebkitTextFillColor: "#c65a20" }}
+      >
+        lab
+      </span>
     </>
   );
 

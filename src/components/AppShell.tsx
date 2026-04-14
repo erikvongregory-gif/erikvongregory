@@ -1,6 +1,7 @@
 "use client";
 
-import { usePathname, useSearchParams } from "next/navigation";
+import { useEffect, useState } from "react";
+import { usePathname } from "next/navigation";
 import { ScrollHeader } from "@/components/ScrollHeader";
 import { CookieBanner } from "@/components/CookieBanner";
 import { ContactFunnel } from "@/components/ContactFunnel";
@@ -16,17 +17,24 @@ type AppShellProps = {
 
 export function AppShell({ children }: AppShellProps) {
   const pathname = usePathname();
-  const searchParams = useSearchParams();
   const { isLoadComplete } = useLoading();
+  const [isAuthFlow, setIsAuthFlow] = useState(false);
   const isDashboardRoute = pathname?.startsWith("/dashboard") ?? false;
   const isAdminRoute = pathname?.startsWith("/admin") ?? false;
-  const authQuery = searchParams?.get("auth");
-  const noticeQuery = searchParams?.get("notice");
-  const isAuthFlow =
-    authQuery === "signin" ||
-    authQuery === "signup" ||
-    noticeQuery === "admin_2fa_required" ||
-    noticeQuery === "admin_2fa_resent";
+
+  useEffect(() => {
+    if (typeof window === "undefined") return;
+    const params = new URLSearchParams(window.location.search);
+    const authQuery = params.get("auth");
+    const noticeQuery = params.get("notice");
+    setIsAuthFlow(
+      authQuery === "signin" ||
+        authQuery === "signup" ||
+        noticeQuery === "admin_2fa_required" ||
+        noticeQuery === "admin_2fa_resent",
+    );
+  }, [pathname]);
+
   const skipLoadingScreen = isDashboardRoute || isAdminRoute || isAuthFlow;
 
   if (skipLoadingScreen) {
