@@ -33,9 +33,35 @@ export function HeaderLogin({ variant, className }: HeaderLoginProps) {
   const [twoFARequired, setTwoFARequired] = useState(false);
   const [authError, setAuthError] = useState<string | null>(null);
   const [authNotice, setAuthNotice] = useState<string | null>(null);
+  const [isResendingCode, setIsResendingCode] = useState(false);
   const lockedScrollYRef = useRef(0);
   const pathname = usePathname();
   const idSuffix = variant === "desktop" ? "desktop" : "mobile";
+
+  const handleResendTwoFactorCode = async () => {
+    if (isResendingCode) return;
+    setIsResendingCode(true);
+    setAuthError(null);
+    try {
+      const body = new URLSearchParams();
+      body.set("action", "resend");
+      const res = await fetch("/auth/admin-2fa/verify", {
+        method: "POST",
+        body,
+        credentials: "include",
+      });
+      if (!res.ok) {
+        throw new Error("Code konnte nicht erneut gesendet werden.");
+      }
+      setMode("code");
+      setOpen(true);
+      setAuthNotice("admin_2fa_resent");
+    } catch {
+      setAuthError("email_failed");
+    } finally {
+      setIsResendingCode(false);
+    }
+  };
 
   useEffect(() => {
     let isActive = true;
@@ -302,12 +328,17 @@ export function HeaderLogin({ variant, className }: HeaderLoginProps) {
               Dashboard freigeben
             </Button>
           </form>
-          <form action="/auth/admin-2fa/verify" method="post">
-            <input type="hidden" name="action" value="resend" />
-            <Button type="submit" variant="outline" className="w-full">
-              Neuen Code senden
-            </Button>
-          </form>
+          <Button
+            type="button"
+            variant="outline"
+            className="w-full"
+            onClick={() => {
+              void handleResendTwoFactorCode();
+            }}
+            disabled={isResendingCode}
+          >
+            {isResendingCode ? "Sende neuen Code..." : "Neuen Code senden"}
+          </Button>
           <Button
             type="button"
             variant="ghost"
