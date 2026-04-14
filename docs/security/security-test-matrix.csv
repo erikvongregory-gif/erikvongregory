@@ -1,0 +1,11 @@
+route,method,authn_required,authz_required,input_validation,rate_limit,csrf_origin_guard,sensitive_output_check,status
+/app/auth/signin,POST,yes,no,zod_form,yes,yes,yes,planned
+/app/auth/signup,POST,yes,no,zod_form,yes,yes,yes,planned
+/app/auth/admin-2fa/verify,POST,yes,admin,zod_form,yes_persistent,yes,yes,implemented
+/app/api/claude/prompt,POST,yes,user,zod_json,yes_persistent,yes,yes,implemented
+/app/api/admin/billing,GET,yes,admin,zod_json,yes_persistent,n/a,yes,implemented
+/app/api/admin/billing,PATCH,yes,admin,zod_json,yes_persistent,yes,yes,implemented
+/app/api/kie/nano-banana/create-task,POST,yes,user,zod_json,yes,mixed,yes,planned
+/app/api/kie/download,GET,no,n/a,query_sanitize,yes,n/a,yes,planned
+/app/api/dashboard/settings,PUT,yes,user,zod_json,yes,mixed,yes,planned
+/app/api/dashboard/team,POST|PATCH|DELETE,yes,user,zod_json,yes,mixed,yes,planned

@@ -5,7 +5,7 @@ import { createClient } from "@/lib/supabase/server";
 import { isSupabaseConfigured } from "@/lib/supabase/env";
 import { ensureBillingRow, getBillingRow, setStripeCustomerId } from "@/lib/billing/store";
 import { type SubscriptionPlanKey } from "@/lib/billing/tokenState";
-import { enforceRateLimit, enforceSameOrigin } from "@/lib/security/requestGuards";
+import { enforceRateLimitPersistent, enforceSameOrigin } from "@/lib/security/requestGuards";
 
 const checkoutSchema = z.object({
   plan: z.enum(["start", "growth", "pro"]),
@@ -24,13 +24,13 @@ function getPriceIdForPlan(plan: SubscriptionPlanKey) {
     pro: process.env.STRIPE_PRICE_PRO_MONTHLY,
   };
   const priceId = map[plan];
-  if (!priceId) throw new Error(`Stripe Price-ID fuer Plan "${plan}" fehlt.`);
+  if (!priceId) throw new Error(`Stripe Price-ID für Plan "${plan}" fehlt.`);
   return priceId;
 }
 
 export async function POST(req: Request) {
   try {
-    const rateError = enforceRateLimit(req, {
+    const rateError = await enforceRateLimitPersistent(req, {
       keyPrefix: "billing-checkout",
       limit: 10,
       windowMs: 60_000,
@@ -95,7 +95,7 @@ export async function POST(req: Request) {
     });
 
     return NextResponse.json({ url: session.url });
-  } catch (error) {
+  } catch {
     return NextResponse.json({ error: "Checkout konnte nicht gestartet werden." }, { status: 500 });
   }
 }

@@ -2,9 +2,18 @@ import { NextResponse } from "next/server";
 import { createAdminClient } from "@/lib/supabase/admin";
 import { isInviteOnlyEnabled, isSupabaseConfigured } from "@/lib/supabase/env";
 import { consumeInviteByToken } from "@/lib/invite/server";
+import { enforceRateLimitPersistent, enforceSameOrigin } from "@/lib/security/requestGuards";
 
 export async function POST(request: Request) {
   const { origin } = new URL(request.url);
+  const originError = enforceSameOrigin(request);
+  if (originError) return originError;
+  const rateError = await enforceRateLimitPersistent(request, {
+    keyPrefix: "auth-signup",
+    limit: 6,
+    windowMs: 60_000,
+  });
+  if (rateError) return rateError;
   if (!isSupabaseConfigured()) {
     return NextResponse.redirect(`${origin}/?auth=signup&error=config`, 303);
   }

@@ -4,7 +4,7 @@ import { z } from "zod";
 import { createClient } from "@/lib/supabase/server";
 import { isSupabaseConfigured } from "@/lib/supabase/env";
 import { ensureBillingRow, getBillingRow } from "@/lib/billing/store";
-import { enforceRateLimit, enforceSameOrigin } from "@/lib/security/requestGuards";
+import { enforceRateLimitPersistent, enforceSameOrigin } from "@/lib/security/requestGuards";
 
 type TokenPackKey = "tokens_500" | "tokens_2000";
 
@@ -24,7 +24,7 @@ function getPackConfig(pack: TokenPackKey) {
 
 export async function POST(req: Request) {
   try {
-    const rateError = enforceRateLimit(req, {
+    const rateError = await enforceRateLimitPersistent(req, {
       keyPrefix: "billing-buy-tokens",
       limit: 10,
       windowMs: 60_000,
@@ -51,7 +51,7 @@ export async function POST(req: Request) {
     const pack: TokenPackKey = body.data.pack;
     const packConfig = getPackConfig(pack);
     if (!packConfig?.priceId) {
-      return NextResponse.json({ error: "Preis fuer Token-Pack ist nicht konfiguriert." }, { status: 500 });
+      return NextResponse.json({ error: "Preis für Token-Pack ist nicht konfiguriert." }, { status: 500 });
     }
 
     await ensureBillingRow(user.id);
@@ -77,7 +77,7 @@ export async function POST(req: Request) {
     });
 
     return NextResponse.json({ url: session.url });
-  } catch (error) {
+  } catch {
     return NextResponse.json({ error: "Token-Pack Checkout konnte nicht gestartet werden." }, { status: 500 });
   }
 }

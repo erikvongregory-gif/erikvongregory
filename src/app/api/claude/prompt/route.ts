@@ -2,7 +2,9 @@ import Anthropic from "@anthropic-ai/sdk";
 import { NextResponse } from "next/server";
 import { z } from "zod";
 import { DEFAULT_BREWERY_IMAGE_SKILL_SYSTEM_PROMPT } from "@/lib/prompts/brewerySkill";
-import { enforceRateLimit, enforceSameOrigin } from "@/lib/security/requestGuards";
+import { enforceRateLimitPersistent, enforceSameOrigin } from "@/lib/security/requestGuards";
+import { createClient } from "@/lib/supabase/server";
+import { isSupabaseConfigured } from "@/lib/supabase/env";
 
 type PromptRequestBody = {
   bildtyp?: string;
@@ -123,16 +125,16 @@ function buildClaudeInput(body: PromptRequestBody): string {
                 : "Scene lock: enforce authentic lifestyle context with believable human/product interaction.";
 
   return [
-    "Erstelle einen hochwertigen ENGLISCHEN Image-Generation Prompt fuer eine Brauerei auf Basis dieses Briefings.",
+    "Erstelle einen hochwertigen ENGLISCHEN Image-Generation Prompt für eine Brauerei auf Basis dieses Briefings.",
     "Nutze die folgenden Briefing-Daten:",
     JSON.stringify(body, null, 2),
     "",
     "Regeln:",
-    "- Gib NUR den finalen Prompt als reinen Text aus (kein Markdown, keine Erklaerung).",
+    "- Gib NUR den finalen Prompt als reinen Text aus (kein Markdown, keine Erklärung).",
     "- Der Prompt soll fotorealistisch und werblich nutzbar sein.",
     "- Baue Biertyp, Stimmung, Plattform, Licht, Kamera/Linse und Kompositionshinweise ein.",
     "- Wenn Label-Text angegeben ist, integriere ihn klar lesbar.",
-    "- Wenn 'vermeiden' gesetzt ist, beruecksichtige es im Prompt.",
+    "- Wenn 'vermeiden' gesetzt ist, berücksichtige es im Prompt.",
     "- Wenn personGeschlecht 'Frau' oder 'Mann' ist (und Menschen vorgesehen sind), muss der englische Prompt das Geschlecht der dargestellten Person(en) klar und konsistent festlegen (nur Erwachsene, keine widersprüchliche Darstellung).",
     `- ${referenceStrengthRule}`,
     `- ${labelFidelityRule}`,
@@ -145,7 +147,7 @@ function buildClaudeInput(body: PromptRequestBody): string {
 
 export async function POST(req: Request) {
   try {
-    const rateError = enforceRateLimit(req, {
+    const rateError = await enforceRateLimitPersistent(req, {
       keyPrefix: "claude-prompt",
       limit: 20,
       windowMs: 60_000,
@@ -153,6 +155,16 @@ export async function POST(req: Request) {
     if (rateError) return rateError;
     const originError = enforceSameOrigin(req);
     if (originError) return originError;
+    if (!isSupabaseConfigured()) {
+      return NextResponse.json({ error: "Supabase-Konfiguration fehlt." }, { status: 500 });
+    }
+    const supabase = await createClient();
+    const {
+      data: { user },
+    } = await supabase.auth.getUser();
+    if (!user) {
+      return NextResponse.json({ error: "Nicht angemeldet." }, { status: 401 });
+    }
 
     const apiKey = process.env.ANTHROPIC_API_KEY;
     if (!apiKey) {
@@ -210,7 +222,7 @@ export async function POST(req: Request) {
 
     return NextResponse.json({ prompt });
   } catch (error) {
-    console.error("Claude API error:", error);
+    console.error("Claude API error");
     const message = error instanceof Error ? error.message : "";
     if (/api key/i.test(message) || /authentication/i.test(message) || /unauthorized/i.test(message)) {
       return NextResponse.json({ error: "Anthropic-Authentifizierung fehlgeschlagen. Prüfe ANTHROPIC_API_KEY." }, { status: 500 });

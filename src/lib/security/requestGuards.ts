@@ -12,6 +12,8 @@ type RateLimitBucket = {
 };
 
 const rateBuckets = new Map<string, RateLimitBucket>();
+const upstashUrl = process.env.UPSTASH_REDIS_REST_URL?.trim();
+const upstashToken = process.env.UPSTASH_REDIS_REST_TOKEN?.trim();
 
 function getClientIdentifier(req: Request): string {
   const forwardedFor = req.headers.get("x-forwarded-for");
@@ -22,9 +24,13 @@ function getClientIdentifier(req: Request): string {
   return req.headers.get("x-real-ip") || "unknown-client";
 }
 
+function buildRateLimitKey(rule: RateLimitRule, identifier: string): string {
+  return `${rule.keyPrefix}:${identifier}`;
+}
+
 export function enforceRateLimit(req: Request, rule: RateLimitRule): NextResponse | null {
   const now = Date.now();
-  const key = `${rule.keyPrefix}:${getClientIdentifier(req)}`;
+  const key = buildRateLimitKey(rule, getClientIdentifier(req));
   const entry = rateBuckets.get(key);
   if (!entry || entry.resetAt <= now) {
     rateBuckets.set(key, { count: 1, resetAt: now + rule.windowMs });
@@ -43,6 +49,58 @@ export function enforceRateLimit(req: Request, rule: RateLimitRule): NextRespons
   entry.count += 1;
   rateBuckets.set(key, entry);
   return null;
+}
+
+type PersistentRateLimitOptions = {
+  identifier?: string;
+};
+
+export async function enforceRateLimitPersistent(
+  req: Request,
+  rule: RateLimitRule,
+  options: PersistentRateLimitOptions = {},
+): Promise<NextResponse | null> {
+  const identifier = options.identifier || getClientIdentifier(req);
+  if (!upstashUrl || !upstashToken) {
+    return enforceRateLimit(req, { ...rule, keyPrefix: `${rule.keyPrefix}:fallback` });
+  }
+
+  const key = buildRateLimitKey(rule, identifier);
+  try {
+    const response = await fetch(`${upstashUrl}/pipeline`, {
+      method: "POST",
+      headers: {
+        Authorization: `Bearer ${upstashToken}`,
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify([
+        ["INCR", key],
+        ["PEXPIRE", key, String(rule.windowMs), "NX"],
+        ["PTTL", key],
+      ]),
+      cache: "no-store",
+    });
+    if (!response.ok) {
+      return enforceRateLimit(req, { ...rule, keyPrefix: `${rule.keyPrefix}:fallback` });
+    }
+
+    const payload = (await response.json()) as Array<{ result?: unknown }>;
+    const count = Number(payload?.[0]?.result ?? 0);
+    const ttlMs = Math.max(Number(payload?.[2]?.result ?? rule.windowMs), 1);
+    if (count > rule.limit) {
+      const retryAfter = Math.max(1, Math.ceil(ttlMs / 1000));
+      return NextResponse.json(
+        { error: "Zu viele Anfragen. Bitte kurz warten." },
+        {
+          status: 429,
+          headers: { "Retry-After": String(retryAfter) },
+        },
+      );
+    }
+    return null;
+  } catch {
+    return enforceRateLimit(req, { ...rule, keyPrefix: `${rule.keyPrefix}:fallback` });
+  }
 }
 
 export function sanitizeTaskId(taskId: string): string {

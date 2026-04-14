@@ -7,9 +7,18 @@ import {
 } from "@/lib/admin/emailTwoFactor";
 import { isSupabaseConfigured } from "@/lib/supabase/env";
 import { createRouteHandlerClient } from "@/lib/supabase/server";
+import { enforceRateLimitPersistent, enforceSameOrigin } from "@/lib/security/requestGuards";
 
 export async function POST(request: Request) {
   const { origin, hostname } = new URL(request.url);
+  const originError = enforceSameOrigin(request);
+  if (originError) return originError;
+  const rateError = await enforceRateLimitPersistent(request, {
+    keyPrefix: "auth-signin",
+    limit: 8,
+    windowMs: 60_000,
+  });
+  if (rateError) return rateError;
   const secureCookies = process.env.NODE_ENV === "production";
   const cookieDomain =
     secureCookies && (hostname === "evglab.com" || hostname.endsWith(".evglab.com"))

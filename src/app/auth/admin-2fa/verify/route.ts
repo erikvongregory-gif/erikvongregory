@@ -8,10 +8,13 @@ import {
   sendAdmin2FACodeEmail,
   verifyPending2FACode,
 } from "@/lib/admin/emailTwoFactor";
+import { enforceRateLimitPersistent, enforceSameOrigin } from "@/lib/security/requestGuards";
 import { createRouteHandlerClient } from "@/lib/supabase/server";
 
 export async function POST(request: NextRequest) {
   const { origin, hostname } = new URL(request.url);
+  const originError = enforceSameOrigin(request);
+  if (originError) return originError;
   const secureCookies = process.env.NODE_ENV === "production";
   const cookieDomain =
     secureCookies && (hostname === "evglab.com" || hostname.endsWith(".evglab.com"))
@@ -39,6 +42,13 @@ export async function POST(request: NextRequest) {
   if (!user || role !== "admin" || !user.email) {
     return NextResponse.redirect(`${origin}/?auth=signin&error=auth`, 303);
   }
+  const baseIdentifier = `admin2fa:${user.id}`;
+  const baseRateError = await enforceRateLimitPersistent(request, {
+    keyPrefix: "admin-2fa-verify-base",
+    limit: 20,
+    windowMs: 60_000,
+  }, { identifier: baseIdentifier });
+  if (baseRateError) return baseRateError;
 
   const pendingToken = request.cookies.get(getPendingCookieName())?.value ?? null;
   if (!pendingToken) {
@@ -46,6 +56,12 @@ export async function POST(request: NextRequest) {
   }
 
   if (action === "resend") {
+    const resendRateError = await enforceRateLimitPersistent(
+      request,
+      { keyPrefix: "admin-2fa-resend", limit: 3, windowMs: 10 * 60_000 },
+      { identifier: baseIdentifier },
+    );
+    if (resendRateError) return resendRateError;
     const newCode = createOneTimeCode();
     try {
       await sendAdmin2FACodeEmail({ to: user.email, code: newCode });
@@ -73,6 +89,12 @@ export async function POST(request: NextRequest) {
   if (!code) {
     return NextResponse.redirect(`${origin}/?auth=signin&notice=admin_2fa_required&error=missing_code`, 303);
   }
+  const verifyRateError = await enforceRateLimitPersistent(
+    request,
+    { keyPrefix: "admin-2fa-code-verify", limit: 5, windowMs: 10 * 60_000 },
+    { identifier: baseIdentifier },
+  );
+  if (verifyRateError) return verifyRateError;
 
   const result = verifyPending2FACode(pendingToken, {
     userId: user.id,

@@ -17,7 +17,11 @@ type VerifiedPayload = {
 };
 
 function getSecret() {
-  return process.env.ADMIN_2FA_SECRET || process.env.NEXTAUTH_SECRET || "dev-admin-2fa-secret-change-me";
+  const configured = process.env.ADMIN_2FA_SECRET || process.env.NEXTAUTH_SECRET;
+  if (!configured || configured.trim().length < 32) {
+    throw new Error("ADMIN_2FA_SECRET (oder NEXTAUTH_SECRET) fehlt oder ist zu kurz (min. 32 Zeichen).");
+  }
+  return configured;
 }
 
 function sign(value: string) {

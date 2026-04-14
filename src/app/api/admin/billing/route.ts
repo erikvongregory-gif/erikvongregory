@@ -1,11 +1,11 @@
 import { NextResponse } from "next/server";
-import { enforceRateLimit } from "@/lib/security/requestGuards";
+import { enforceRateLimitPersistent, enforceSameOrigin } from "@/lib/security/requestGuards";
 import { SUBSCRIPTION_PLAN_TOKENS, type SubscriptionPlanKey } from "@/lib/billing/tokenState";
 import { createAdminClient } from "@/lib/supabase/admin";
 import { getAdminSession } from "@/lib/admin/auth";
 
 export async function GET(req: Request) {
-  const rateError = enforceRateLimit(req, { keyPrefix: "admin-billing-get", limit: 60, windowMs: 60_000 });
+  const rateError = await enforceRateLimitPersistent(req, { keyPrefix: "admin-billing-get", limit: 60, windowMs: 60_000 });
   if (rateError) return rateError;
   const admin = await getAdminSession();
   if (!admin) return NextResponse.json({ error: "Kein Admin-Zugriff." }, { status: 403 });
@@ -13,7 +13,6 @@ export async function GET(req: Request) {
   const client = createAdminClient();
   const { data: userList, error: userListError } = await client.auth.admin.listUsers({ page: 1, perPage: 1000 });
   if (userListError) return NextResponse.json({ error: userListError.message }, { status: 500 });
-  const emailByUserId = new Map((userList.users ?? []).map((u) => [u.id, u.email ?? ""]));
 
   const { data, error } = await client
     .from("billing_subscriptions")
@@ -57,7 +56,9 @@ type PatchPayload = {
 const ALLOWED_PLANS = new Set<SubscriptionPlanKey>(["start", "growth", "pro"]);
 
 export async function PATCH(req: Request) {
-  const rateError = enforceRateLimit(req, { keyPrefix: "admin-billing-patch", limit: 30, windowMs: 60_000 });
+  const originError = enforceSameOrigin(req);
+  if (originError) return originError;
+  const rateError = await enforceRateLimitPersistent(req, { keyPrefix: "admin-billing-patch", limit: 30, windowMs: 60_000 });
   if (rateError) return rateError;
   const admin = await getAdminSession();
   if (!admin) return NextResponse.json({ error: "Kein Admin-Zugriff." }, { status: 403 });
