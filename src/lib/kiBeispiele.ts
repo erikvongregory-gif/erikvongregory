@@ -18,4 +18,5 @@ export const KI_CAROUSEL = [
   { src: "/ki-beispiel-strand.webp", alt: "Lünebräu – Lifestyle am Strand" },
   { src: "/ki-beispiel-praxis-6.webp", alt: "Bierflasche in der Hand im Biergarten bei Abendlicht" },
   { src: "/ki-beispiel-praxis-7.webp", alt: "Weißbier-Flasche und Glas am Bergfluss als echtes Praxisbeispiel" },
+  { src: "/ki-beispiel-praxis-8.webp", alt: "Praxisbeispiel: Person mit Bierflasche im Biergarten bei Sonnenschein" },
 ] as const;

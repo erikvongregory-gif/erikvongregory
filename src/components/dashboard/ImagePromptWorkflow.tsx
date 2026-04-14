@@ -1180,6 +1180,10 @@ function buildPrompt(brief: PromptBrief) {
     (brief.behaelter === "Nur Flasche" || brief.behaelter === "Flasche + Glas") && selectedBottleType
       ? `Bottle identity lock (NON-NEGOTIABLE): selected bottle type is ${selectedBottleType}. Render exactly this silhouette only; never reinterpret as another returnable bottle family.`
       : "";
+  const bottleShapePriorityRule =
+    selectedBottleType === "Stubbi / NRW"
+      ? "Priority geometry override (Stubbi/NRW): silhouette fidelity is mandatory. If any conflict occurs with style, scene, food styling, or lens aesthetics, keep the Stubbi/NRW geometry and sacrifice secondary styling instead."
+      : "";
   const containerRule =
     brief.behaelter === "Flasche + Glas"
       ? "Composition constraint: show BOTH a bottle/can and a poured glass in the same frame, side by side, both clearly visible."
@@ -1228,6 +1232,7 @@ function buildPrompt(brief: PromptBrief) {
     servingTruthLock,
     gastroServingLock,
     bottleIdentityLock,
+    bottleShapePriorityRule,
     containerRule,
     variantConsistencyRule,
     ratioLockRule,
@@ -1421,7 +1426,7 @@ function buildPhysicalRealismRule(brief: PromptBrief): string {
     bottleType === "Longneck"
       ? "Bottle geometry lock (Longneck): slim cylindrical body with clearly elongated narrow neck and realistic shoulder transition; never short, wide, or bulky."
       : bottleType === "Stubbi / NRW"
-        ? "Bottle geometry lock (Stubbi/NRW): compact bottle silhouette with shorter neck, but still realistic proportions and no exaggerated width."
+        ? "Bottle geometry lock (Stubbi/NRW): MUST render a compact German NRW/stubby returnable bottle silhouette with distinctly short neck, fuller shoulder/body ratio, and visibly shorter overall profile than a Longneck. Keep realistic crown-cap geometry and authentic returnable-bottle proportions."
         : bottleType === "Euroflasche"
           ? "Bottle geometry lock (Euroflasche): classic balanced returnable silhouette with medium neck and realistic body taper."
           : bottleType === "Bügelflasche"
@@ -1433,7 +1438,7 @@ function buildPhysicalRealismRule(brief: PromptBrief): string {
     bottleType === "Longneck"
       ? "Bottle type exclusion lock (Longneck): do NOT render Stubbi/NRW, Euroflasche, Buegelflasche, or can silhouettes."
       : bottleType === "Stubbi / NRW"
-        ? "Bottle type exclusion lock (Stubbi/NRW): do NOT render Euroflasche, Longneck, Buegelflasche, or can silhouettes; keep neck distinctly short and stocky. NRW/Stubbi proportion lock: short neck + compact shoulder profile, never medium-neck Euro silhouette."
+        ? "Bottle type exclusion lock (Stubbi/NRW): FORBIDDEN silhouettes are Longneck, Euroflasche, Buegelflasche, and can. Do NOT output medium/long neck bottles. NRW/Stubbi proportion lock: short neck + compact shoulder profile + visibly stubby body height, never medium-neck Euro silhouette."
         : bottleType === "Euroflasche"
           ? "Bottle type exclusion lock (Euroflasche): do NOT render Stubbi/NRW, Longneck, Buegelflasche, or can silhouettes."
           : bottleType === "Bügelflasche"
@@ -1952,10 +1957,14 @@ export function ImagePromptWorkflow({
     if (!bildtyp) return steps.filter((step) => step.key !== "studioStyle" && step.key !== "studioProps");
     const sceneConfig = SCENE_CONFIG[bildtyp];
     const hidden = new Set(sceneConfig.fieldPolicy.hiddenStepKeys ?? []);
+    const allowsOnlyNoHumanMode = sceneConfig.allowedPersonModes?.every((mode) => mode === "Kein Mensch") ?? false;
     return steps.filter((step) => {
       if (step.key === "studioStyle" && bildtyp !== "Produkt-Studio") return false;
       if (step.key === "studioProps" && bildtyp !== "Produkt-Studio") return false;
-      if (step.key === "personGeschlecht" && brief.personenModus === "Kein Mensch") return false;
+      if (step.key === "personGeschlecht") {
+        if (allowsOnlyNoHumanMode) return false;
+        if (!brief.personenModus || brief.personenModus === "Kein Mensch") return false;
+      }
       return !hidden.has(step.key);
     });
   }, [brief.bildtyp, brief.personenModus]);
