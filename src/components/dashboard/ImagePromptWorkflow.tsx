@@ -2727,7 +2727,7 @@ export function ImagePromptWorkflow({
 
   return (
     <div className="space-y-6">
-      <section className="rounded-2xl border border-gray-200 bg-white p-6 shadow-sm dark:border-gray-800 dark:bg-gray-900">
+      <section data-onboarding="content-brief" className="rounded-2xl border border-gray-200 bg-white p-6 shadow-sm dark:border-gray-800 dark:bg-gray-900">
         <div className="mb-4 flex items-center gap-2">
           <button
             type="button"
@@ -2968,7 +2968,7 @@ export function ImagePromptWorkflow({
         )}
       </section>
 
-      <section className="rounded-2xl border border-gray-200 bg-white p-6 shadow-sm dark:border-gray-800 dark:bg-gray-900">
+      <section data-onboarding="content-generate" className="rounded-2xl border border-gray-200 bg-white p-6 shadow-sm dark:border-gray-800 dark:bg-gray-900">
         <h3 className="text-lg font-semibold text-gray-900 dark:text-gray-100">Bild generieren</h3>
         <div className="mt-2 flex items-center justify-between gap-2">
           <p className="text-sm text-gray-600 dark:text-gray-400">
@@ -3068,7 +3068,7 @@ export function ImagePromptWorkflow({
             <p className="mt-2 text-xs text-gray-500 dark:text-gray-400">
               Seitenverhältnis: {generatedRatio || "-"} | Modell: {brief.kiPlattform} | Bei Etikett 1:1 bitte genau ein Referenzbild anhängen.
             </p>
-            <div className="mt-3 rounded-lg border border-gray-200 bg-gray-50 p-3 dark:border-gray-700 dark:bg-gray-950">
+            <div data-onboarding="content-preflight" className="mt-3 rounded-lg border border-gray-200 bg-gray-50 p-3 dark:border-gray-700 dark:bg-gray-950">
               <div className="flex items-center justify-between text-xs">
                 <span className="text-gray-600 dark:text-gray-300">Preflight</span>
                 <span
@@ -3243,7 +3243,7 @@ export function ImagePromptWorkflow({
               </p>
             ) : null}
             {generatedImageUrl || isImageGenerating ? (
-              <div className="mt-4">
+              <div data-onboarding="content-result" className="mt-4">
                 {generatedImageUrl ? (
                   <ImageGeneration isLoading={isImageGenerating || isImageRevealing} progress={imageGenerationProgress}>
                     <div className="flex max-h-[560px] min-h-[280px] w-full items-center justify-center bg-black/5 p-2 dark:bg-white/5">

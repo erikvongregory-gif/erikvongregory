@@ -19,6 +19,7 @@ type OnboardingDialogProps = {
 };
 
 const HIGHLIGHT_PADDING = 10;
+const MOBILE_BREAKPOINT = 768;
 
 function clamp(value: number, min: number, max: number) {
   return Math.min(Math.max(value, min), max);
@@ -65,6 +66,9 @@ export function OnboardingDialog({ open, onClose, steps, onStepChange }: Onboard
         setTargetRect(null);
         return;
       }
+      if (window.innerWidth < MOBILE_BREAKPOINT) {
+        el.scrollIntoView({ block: "center", behavior: "smooth" });
+      }
       setTargetRect(el.getBoundingClientRect());
     };
 
@@ -88,11 +92,12 @@ export function OnboardingDialog({ open, onClose, steps, onStepChange }: Onboard
   const isLastSlide = activeIndex === steps.length - 1;
   const currentStep = steps[activeIndex];
   if (!currentStep) return null;
+  const isMobile = viewport.width < MOBILE_BREAKPOINT;
 
   const rect = targetRect
     ? {
-        left: Math.max(0, targetRect.left - HIGHLIGHT_PADDING),
-        top: Math.max(0, targetRect.top - HIGHLIGHT_PADDING),
+        left: Math.max(0, targetRect.left - (isMobile ? 6 : HIGHLIGHT_PADDING)),
+        top: Math.max(0, targetRect.top - (isMobile ? 6 : HIGHLIGHT_PADDING)),
         width: Math.min(viewport.width, targetRect.width + HIGHLIGHT_PADDING * 2),
         height: Math.min(viewport.height, targetRect.height + HIGHLIGHT_PADDING * 2),
       }
@@ -114,16 +119,17 @@ export function OnboardingDialog({ open, onClose, steps, onStepChange }: Onboard
 
   const handleSkip = () => onClose();
 
-  const tooltipWidth = 360;
+  const tooltipWidth = isMobile ? Math.min(viewport.width - 20, 420) : 360;
   const fallbackTop = viewport.height / 2 - 110;
   const tooltipLeft = rect
     ? clamp(rect.left + rect.width / 2 - tooltipWidth / 2, 16, viewport.width - tooltipWidth - 16)
     : clamp(viewport.width / 2 - tooltipWidth / 2, 16, viewport.width - tooltipWidth - 16);
-  const tooltipTop = rect
+  const desktopTooltipTop = rect
     ? clamp(rect.top + rect.height + 16, 16, viewport.height - 230)
     : clamp(fallbackTop, 16, viewport.height - 230);
+  const tooltipTop = isMobile ? Math.max(viewport.height - 270, 12) : desktopTooltipTop;
 
-  const overlayClipPath = rect
+  const overlayClipPath = !isMobile && rect
     ? `polygon(
       0% 0%,
       0% 100%,
@@ -154,12 +160,16 @@ export function OnboardingDialog({ open, onClose, steps, onStepChange }: Onboard
             aria-label="Onboarding überspringen"
           />
           <div
-            className="pointer-events-none absolute inset-0 bg-black/55 backdrop-blur-[3px]"
+            className={`pointer-events-none absolute inset-0 ${isMobile ? "bg-black/35" : "bg-black/55 backdrop-blur-[3px]"}`}
             style={overlayClipPath ? { clipPath: overlayClipPath } : undefined}
           />
           {rect ? (
             <motion.div
-              className="pointer-events-none fixed rounded-xl border-2 border-[#f2a36f] shadow-[0_0_0_1px_rgba(255,255,255,0.5),0_0_0_9999px_rgba(0,0,0,0)]"
+              className={`pointer-events-none fixed rounded-xl border-2 border-[#f2a36f] ${
+                isMobile
+                  ? "shadow-[0_0_0_1px_rgba(255,255,255,0.35),0_0_0_10px_rgba(242,163,111,0.18)]"
+                  : "shadow-[0_0_0_1px_rgba(255,255,255,0.5),0_0_0_9999px_rgba(0,0,0,0)]"
+              }`}
               animate={{
                 left: rect.left,
                 top: rect.top,
@@ -171,11 +181,21 @@ export function OnboardingDialog({ open, onClose, steps, onStepChange }: Onboard
           ) : null}
 
           <motion.div
-            className="fixed w-[min(92vw,360px)] rounded-xl border border-gray-200 bg-white p-4 shadow-2xl dark:border-gray-700 dark:bg-gray-900"
-            animate={{ left: tooltipLeft, top: tooltipTop, opacity: 1 }}
+            className="fixed w-[min(92vw,360px)] rounded-xl border border-gray-200 bg-white p-4 shadow-2xl dark:border-gray-700 dark:bg-gray-900 max-md:left-3 max-md:right-3 max-md:w-auto max-md:rounded-2xl max-md:p-3 max-md:pb-3.5 max-md:overflow-y-auto"
+            animate={{ left: isMobile ? undefined : tooltipLeft, top: tooltipTop, opacity: 1 }}
             initial={{ opacity: 0, y: 8 }}
             exit={{ opacity: 0, y: 8 }}
             transition={{ duration: 0.22, ease: "easeOut" }}
+            style={
+              isMobile
+                ? {
+                    bottom: "max(10px, env(safe-area-inset-bottom))",
+                    top: "auto",
+                    width: "min(86vw, 320px)",
+                    maxHeight: "34dvh",
+                  }
+                : undefined
+            }
           >
             <div className="mb-3 flex items-center justify-between gap-3">
               <p className="text-xs font-medium uppercase tracking-wide text-[#c65a20]">
@@ -198,16 +218,16 @@ export function OnboardingDialog({ open, onClose, steps, onStepChange }: Onboard
                 exit={{ opacity: 0, x: contentDirection * -14 }}
                 transition={{ duration: 0.2, ease: "easeOut" }}
               >
-                <h2 className="text-base font-semibold text-gray-900 dark:text-gray-100">
+                <h2 className="text-base font-semibold text-gray-900 dark:text-gray-100 max-md:text-[0.95rem]">
                   {currentStep.title}
                 </h2>
-                <p className="mt-2 text-sm text-gray-700 dark:text-gray-300">
+                <p className="mt-2 text-sm text-gray-700 dark:text-gray-300 max-md:text-[0.82rem] max-md:leading-snug">
                   {currentStep.description}
                 </p>
               </motion.div>
             </AnimatePresence>
 
-            <div className="mt-4 flex items-center justify-between">
+            <div className="mt-4 flex items-center justify-between gap-2">
               <div>
                 {!isFirstSlide ? (
                   <button

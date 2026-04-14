@@ -14,6 +14,7 @@ import {
   Image,
   Moon,
   Menu,
+  RotateCcw,
   Settings,
   Sparkles,
   Sun,
@@ -197,6 +198,44 @@ const DASHBOARD_ONBOARDING_STEPS: OnboardingStep[] = [
   },
 ];
 
+const CONTENT_CREATION_TOUR_STEPS: OnboardingStep[] = [
+  {
+    id: "content-tour-workflow",
+    tab: "Inhalte erstellen",
+    targetSelector: '[data-onboarding="content-workflow"]',
+    title: "Workflow verstehen",
+    description: "Hier siehst du typische Use-Cases. Starte mit einem klaren Ziel für dein Bild.",
+  },
+  {
+    id: "content-tour-brief",
+    tab: "Inhalte erstellen",
+    targetSelector: '[data-onboarding="content-brief"]',
+    title: "Prompt-Briefing",
+    description: "Fülle das Briefing Schritt für Schritt aus. So bekommt die KI klare Vorgaben.",
+  },
+  {
+    id: "content-tour-generate",
+    tab: "Inhalte erstellen",
+    targetSelector: '[data-onboarding="content-generate"]',
+    title: "Bild generieren",
+    description: "Hier prüfst du Token, Prompt und Optionen. Dann startest du die Bildgenerierung.",
+  },
+  {
+    id: "content-tour-preflight",
+    tab: "Inhalte erstellen",
+    targetSelector: '[data-onboarding="content-preflight"]',
+    title: "Preflight prüfen",
+    description: "Achte auf Warnungen und Blocker, bevor du final generierst.",
+  },
+  {
+    id: "content-tour-result",
+    tab: "Inhalte erstellen",
+    targetSelector: '[data-onboarding="content-result"]',
+    title: "Ergebnis & Download",
+    description: "Hier siehst du das Ergebnis und kannst es direkt herunterladen.",
+  },
+];
+
 type ExampleProps = {
   userEmail?: string;
   userName?: string;
@@ -333,10 +372,12 @@ const MobileTabBar = ({
   selected,
   setSelected,
   isAdmin = false,
+  onRestartOnboarding,
 }: {
   selected: DashboardTab;
   setSelected: React.Dispatch<React.SetStateAction<DashboardTab>>;
   isAdmin?: boolean;
+  onRestartOnboarding?: () => void;
 }) => {
   const [menuOpen, setMenuOpen] = useState(false);
   const tabs: Array<{ title: DashboardTab; Icon: LucideIcon }> = [
@@ -390,6 +431,19 @@ const MobileTabBar = ({
               </button>
             );
           })}
+          <button
+            type="button"
+            onClick={() => {
+              onRestartOnboarding?.();
+              setMenuOpen(false);
+            }}
+            className="mt-1 flex w-full items-center justify-between rounded-md px-3 py-2 text-left text-sm text-gray-700 transition hover:bg-gray-50 dark:text-gray-200 dark:hover:bg-gray-800"
+          >
+            <span className="inline-flex items-center gap-2">
+              <RotateCcw className="h-4 w-4" />
+              Onboarding neu starten
+            </span>
+          </button>
         </div>
       )}
     </div>
@@ -541,6 +595,7 @@ const ExampleContent = ({ isDark, applyTheme, userEmail, userName, selectedTab, 
   const [downloadingMediaId, setDownloadingMediaId] = useState<string | null>(null);
   const [downloadErrorMessage, setDownloadErrorMessage] = useState("");
   const [showOnboarding, setShowOnboarding] = useState(false);
+  const [showContentTour, setShowContentTour] = useState(false);
   const [showCreditsOffer, setShowCreditsOffer] = useState(false);
   const [activeSubscription, setActiveSubscription] = useState<SubscriptionPlanKey | null>(null);
   const [monthlyTokens, setMonthlyTokens] = useState(0);
@@ -752,6 +807,7 @@ const ExampleContent = ({ isDark, applyTheme, userEmail, userName, selectedTab, 
 
   const closeOnboarding = () => {
     setShowOnboarding(false);
+    setSelectedTab("Dashboard");
     const hasActivePlan = Boolean(activeSubscription) && billingStatus !== "none" && billingStatus !== "canceled";
     if (!hasActivePlan) {
       setShowCreditsOffer(true);
@@ -762,6 +818,17 @@ const ExampleContent = ({ isDark, applyTheme, userEmail, userName, selectedTab, 
     } catch {
       // ignore localStorage errors
     }
+  };
+
+  const handleRestartOnboardingGlobal = () => {
+    if (typeof window === "undefined") return;
+    try {
+      window.localStorage.removeItem(onboardingStorageKey);
+    } catch {
+      // ignore localStorage errors
+    }
+    setShowOnboarding(true);
+    window.dispatchEvent(new CustomEvent("evglab-restart-onboarding"));
   };
 
   const downloadMediaItem = async (item: MediaLibraryItem) => {
@@ -1671,7 +1738,24 @@ const ExampleContent = ({ isDark, applyTheme, userEmail, userName, selectedTab, 
           }
         }}
       />
-      <MobileTabBar selected={selectedTab} setSelected={setSelectedTab} isAdmin={isAdmin} />
+      <OnboardingDialog
+        open={showContentTour}
+        onClose={() => setShowContentTour(false)}
+        steps={CONTENT_CREATION_TOUR_STEPS}
+        onStepChange={(step) => {
+          if (step.tab) {
+            window.requestAnimationFrame(() => {
+              setSelectedTab(step.tab as DashboardTab);
+            });
+          }
+        }}
+      />
+      <MobileTabBar
+        selected={selectedTab}
+        setSelected={setSelectedTab}
+        isAdmin={isAdmin}
+        onRestartOnboarding={handleRestartOnboardingGlobal}
+      />
       {globalErrorMessage ? (
         <div className="mb-4 rounded-lg border border-red-200 bg-red-50 px-3 py-2 text-sm text-red-700 dark:border-red-900/40 dark:bg-red-900/20 dark:text-red-300">
           {globalErrorMessage}
@@ -1716,9 +1800,18 @@ const ExampleContent = ({ isDark, applyTheme, userEmail, userName, selectedTab, 
           <section data-onboarding="content-workflow" className="rounded-2xl border border-gray-200 bg-white p-6 shadow-sm dark:border-gray-800 dark:bg-gray-900">
             <div className="mb-4 flex items-center justify-between gap-3">
               <h2 className="text-xl font-semibold text-gray-900 dark:text-gray-100">Produkt-Workflow</h2>
-              <span className="rounded-full bg-orange-50 px-3 py-1 text-xs font-medium text-[#c65a20] dark:bg-orange-900/30 dark:text-orange-300">
-                Prompt → Bild → Veröffentlichung
-              </span>
+              <div className="flex flex-wrap items-center justify-end gap-2">
+                <span className="rounded-full bg-orange-50 px-3 py-1 text-xs font-medium text-[#c65a20] dark:bg-orange-900/30 dark:text-orange-300">
+                  Prompt → Bild → Veröffentlichung
+                </span>
+                <button
+                  type="button"
+                  onClick={() => setShowContentTour(true)}
+                  className="inline-flex h-8 items-center rounded-full border border-gray-300 bg-white px-3 text-xs font-medium text-gray-700 transition hover:bg-gray-50 dark:border-gray-700 dark:bg-gray-900 dark:text-gray-200 dark:hover:bg-gray-800"
+                >
+                  Tour starten
+                </button>
+              </div>
             </div>
             <p className="text-sm text-gray-600 dark:text-gray-400">
               Nutze einen der typischen Brauerei-Use-Cases und arbeite ihn in 3 klaren Schritten durch.
