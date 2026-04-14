@@ -468,11 +468,11 @@ const SCENE_CONFIG_BASE: Record<BildtypOption, SceneConfigBase> = {
     short: "Servier-/Thekenszene mit Gastro-Feeling.",
     sceneType: "Scene type: gastronomy serving moment at bar/table with realistic hospitality context.",
     sceneCore:
-      "Scene core: service interaction is central; handoff/pour/serving must feel credible and operationally realistic.",
+      "Scene core: service interaction is central and non-negotiable; depict active pour or handoff in-progress (not just holding), with realistic hospitality body language and product readability.",
     sceneComposition:
-      "Scene composition: bar/table foreground with clear service gesture; product and service action both read instantly.",
+      "Scene composition: bar/table foreground with clear service gesture in mid-action; bottle neck orientation, hand position, and glass placement must read like real service workflow.",
     sceneContext:
-      "Scene context: bar, counter or dining setup with coherent hospitality details and practical lighting.",
+      "Scene context: bar, counter or dining setup with coherent hospitality details (menu/placemat/cutlery), warm practical lighting, and subtle depth-of-field separation.",
     sceneNegative:
       "Scene negatives: avoid outdoor picnic/biergarten cues, avoid isolated studio packshot look.",
     allowedMoods: ["Premium/Luxus", "Modern/Minimalistisch", "Nostalgisch/Vintage"],
@@ -481,6 +481,7 @@ const SCENE_CONFIG_BASE: Record<BildtypOption, SceneConfigBase> = {
       "Gastro braucht klaren Service-Moment (einschenken/servieren).",
       "POV funktioniert gut für Hände/Arme ohne Gesicht.",
       "Vermeide reine Outdoor-Elemente, sonst wird es Biergarten statt Gastro.",
+      "Wenn Person mit Gesicht aktiv ist: kein statisches Posing, sondern echte Servieraktion im Moment.",
     ],
   },
   "Event/Promotion": {
@@ -1172,7 +1173,12 @@ function buildPrompt(brief: PromptBrief) {
   ].join(" ");
   const gastroServingLock =
     brief.bildtyp === "Gastro-Serviermoment"
-      ? "Gastro serving lock: serving action must preserve exact same variant in bottle and glass; no cross-style pour is allowed."
+      ? "Gastro serving lock: serving action must preserve exact same variant in bottle and glass; no cross-style pour is allowed. Capture the exact moment of pour or handoff; reject static posing."
+      : "";
+  const selectedBottleType = normalizeFlaschenTyp(brief.flaschenTyp as FlaschenTyp | "");
+  const bottleIdentityLock =
+    (brief.behaelter === "Nur Flasche" || brief.behaelter === "Flasche + Glas") && selectedBottleType
+      ? `Bottle identity lock (NON-NEGOTIABLE): selected bottle type is ${selectedBottleType}. Render exactly this silhouette only; never reinterpret as another returnable bottle family.`
       : "";
   const containerRule =
     brief.behaelter === "Flasche + Glas"
@@ -1221,6 +1227,7 @@ function buildPrompt(brief: PromptBrief) {
     strictGlassRule,
     servingTruthLock,
     gastroServingLock,
+    bottleIdentityLock,
     containerRule,
     variantConsistencyRule,
     ratioLockRule,
@@ -1426,7 +1433,7 @@ function buildPhysicalRealismRule(brief: PromptBrief): string {
     bottleType === "Longneck"
       ? "Bottle type exclusion lock (Longneck): do NOT render Stubbi/NRW, Euroflasche, Buegelflasche, or can silhouettes."
       : bottleType === "Stubbi / NRW"
-        ? "Bottle type exclusion lock (Stubbi/NRW): do NOT render Euroflasche, Longneck, Buegelflasche, or can silhouettes; keep neck distinctly short."
+        ? "Bottle type exclusion lock (Stubbi/NRW): do NOT render Euroflasche, Longneck, Buegelflasche, or can silhouettes; keep neck distinctly short and stocky. NRW/Stubbi proportion lock: short neck + compact shoulder profile, never medium-neck Euro silhouette."
         : bottleType === "Euroflasche"
           ? "Bottle type exclusion lock (Euroflasche): do NOT render Stubbi/NRW, Longneck, Buegelflasche, or can silhouettes."
           : bottleType === "Bügelflasche"

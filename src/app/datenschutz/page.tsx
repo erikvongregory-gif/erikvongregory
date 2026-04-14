@@ -104,8 +104,9 @@ export default function DatenschutzPage() {
             <p>
               Diese Website wird bei externen Dienstleistern gehostet (z. B. Vercel). Die
               personenbezogenen Daten, die auf dieser Website erfasst werden, werden auf Servern
-              der Hosting-Partner gespeichert. Das Hosting erfolgt ausschließlich in der
-              Europäischen Union bzw. im Europäischen Wirtschaftsraum.
+              der Hosting-Partner gespeichert. Je nach technischer Auslieferung kann eine
+              Verarbeitung auch außerhalb der Europäischen Union bzw. des Europäischen
+              Wirtschaftsraums erfolgen.
             </p>
 
             <h3 className="mb-2 mt-5 text-base font-medium text-white md:text-zinc-900">

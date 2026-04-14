@@ -71,7 +71,11 @@ export default function ImpressumPage() {
             <h2 className="mb-3 text-lg font-semibold text-white md:text-zinc-900">
               Umsatzsteuer-Identifikationsnummer
             </h2>
-            <p>{LEGAL.ustId}</p>
+            <p>
+              {LEGAL.ustId.includes("[")
+                ? "Kleinunternehmer gemäß § 19 UStG (keine Umsatzsteuer-Identifikationsnummer)"
+                : LEGAL.ustId}
+            </p>
           </section>
 
           <section>

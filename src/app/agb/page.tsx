@@ -32,13 +32,6 @@ export default function AgbPage() {
           Allgemeine Geschäftsbedingungen (AGB)
         </h1>
 
-        <p className="mb-10 rounded-lg border border-amber-400/30 bg-amber-500/10 px-4 py-3 text-sm leading-relaxed text-amber-100/95 md:border-amber-400/45 md:bg-amber-50 md:text-amber-950">
-          <strong className="text-amber-50 md:text-amber-900">Hinweis:</strong> Diese AGB sind als Orientierungsvorlage erstellt. Ob sie
-          dein konkretes Geschäftsmodell vollständig abdecken (z.&nbsp;B. B2B vs. Verbraucher, KI-generierte Inhalte,
-          Plattformen Dritter), solltest du mit einer Rechtsanwältin bzw. einem Rechtsanwalt klären und den Text ggf.
-          anpassen lassen.
-        </p>
-
         <p className="mb-10 text-sm text-white/70 md:text-zinc-600">
           Stand: April 2026 · Anbieter: {LEGAL.name}, {LEGAL.street}, {LEGAL.city} (
           <a

@@ -8,5 +8,5 @@ export const LEGAL = {
   legalForm: "Einzelunternehmen",
   email: "kontakt@evglab.com",
   phone: "[Ihre Telefonnummer – optional]",
-  ustId: "[USt-IdNr. oder: Kleinunternehmer gemäß § 19 UStG]",
+  ustId: "Kleinunternehmer gemäß § 19 UStG",
 } as const;
