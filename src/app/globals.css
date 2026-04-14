@@ -1368,6 +1368,12 @@ body[data-legal-page="true"] {
     -webkit-transform: translateZ(0);
     will-change: transform;
   }
+
+  /* Mobile Section-4: Ring darf über den Kartenbereich hinaus sichtbar sein. */
+  #section-4.insurance-card-theme .section4-mobile-ring-unclipped {
+    contain: none !important;
+    overflow: visible !important;
+  }
 }
 
 #section-4.insurance-card-theme .flip-card-front,
