@@ -11,8 +11,12 @@ import {
 import { createRouteHandlerClient } from "@/lib/supabase/server";
 
 export async function POST(request: NextRequest) {
-  const { origin } = new URL(request.url);
+  const { origin, hostname } = new URL(request.url);
   const secureCookies = process.env.NODE_ENV === "production";
+  const cookieDomain =
+    secureCookies && (hostname === "evglab.com" || hostname.endsWith(".evglab.com"))
+      ? "evglab.com"
+      : undefined;
   const formData = await request.formData();
   const action = String(formData.get("action") ?? "verify");
   const code = String(formData.get("code") ?? "").trim();
@@ -59,6 +63,7 @@ export async function POST(request: NextRequest) {
       httpOnly: true,
       sameSite: "lax",
       secure: secureCookies,
+      ...(cookieDomain ? { domain: cookieDomain } : {}),
       path: "/",
       maxAge: 60 * 10,
     });
@@ -86,6 +91,7 @@ export async function POST(request: NextRequest) {
     httpOnly: true,
     sameSite: "lax",
     secure: secureCookies,
+    ...(cookieDomain ? { domain: cookieDomain } : {}),
     path: "/",
     maxAge: 60 * 60 * 12,
   });
@@ -93,6 +99,7 @@ export async function POST(request: NextRequest) {
     httpOnly: true,
     sameSite: "lax",
     secure: secureCookies,
+    ...(cookieDomain ? { domain: cookieDomain } : {}),
     path: "/",
     maxAge: 0,
   });

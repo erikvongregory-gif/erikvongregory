@@ -9,8 +9,12 @@ import { isSupabaseConfigured } from "@/lib/supabase/env";
 import { createRouteHandlerClient } from "@/lib/supabase/server";
 
 export async function POST(request: Request) {
-  const { origin } = new URL(request.url);
+  const { origin, hostname } = new URL(request.url);
   const secureCookies = process.env.NODE_ENV === "production";
+  const cookieDomain =
+    secureCookies && (hostname === "evglab.com" || hostname.endsWith(".evglab.com"))
+      ? "evglab.com"
+      : undefined;
   if (!isSupabaseConfigured()) {
     return NextResponse.redirect(`${origin}/?auth=signin&error=config`, 303);
   }
@@ -69,6 +73,7 @@ export async function POST(request: Request) {
       httpOnly: true,
       sameSite: "lax",
       secure: secureCookies,
+      ...(cookieDomain ? { domain: cookieDomain } : {}),
       path: "/",
       maxAge: 60 * 10,
     });
