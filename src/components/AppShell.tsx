@@ -35,9 +35,11 @@ export function AppShell({ children }: AppShellProps) {
     );
   }, [pathname]);
 
-  const skipLoadingScreen = isDashboardRoute || isAdminRoute || isAuthFlow;
+  const skipShell = isDashboardRoute || isAdminRoute;
+  const showLoadingScreen = !isAuthFlow;
+  const showHeader = isAuthFlow || isLoadComplete;
 
-  if (skipLoadingScreen) {
+  if (skipShell) {
     return <main id="main" className="relative min-h-[100dvh] bg-gray-50">{children}</main>;
   }
 
@@ -50,13 +52,13 @@ export function AppShell({ children }: AppShellProps) {
       >
         Zum Inhalt springen
       </a>
-      <LoadingScreen />
+      {showLoadingScreen ? <LoadingScreen /> : null}
       <ContactFunnel />
       <CookieBanner />
       <LegalPageTheme />
       <div
         className={`transition-opacity duration-500 ease-out ${
-          isLoadComplete ? "opacity-100" : "pointer-events-none opacity-0"
+          showHeader ? "opacity-100" : "pointer-events-none opacity-0"
         }`}
       >
         <ScrollHeader />
