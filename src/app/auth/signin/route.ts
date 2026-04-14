@@ -27,6 +27,12 @@ export async function POST(request: Request) {
   const safeNext = next.startsWith("/") ? next : "/dashboard";
   const redirectResponse = NextResponse.redirect(`${origin}${safeNext}`, 303);
   redirectResponse.headers.set("Cache-Control", "no-store, max-age=0");
+  const withAuthCookies = (response: NextResponse) => {
+    for (const cookie of redirectResponse.cookies.getAll()) {
+      response.cookies.set(cookie.name, cookie.value, cookie);
+    }
+    return response;
+  };
 
   const supabase = createRouteHandlerClient(request, redirectResponse);
   const { error } = await supabase.auth.signInWithPassword({ email, password });
@@ -67,8 +73,8 @@ export async function POST(request: Request) {
       maxAge: 60 * 10,
     });
     response.headers.set("Cache-Control", "no-store, max-age=0");
-    return response;
+    return withAuthCookies(response);
   }
 
-  return redirectResponse;
+  return withAuthCookies(redirectResponse);
 }
