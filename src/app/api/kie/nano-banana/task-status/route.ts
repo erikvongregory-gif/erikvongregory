@@ -44,7 +44,7 @@ export async function GET(req: Request) {
         data: { user },
       } = await supabase.auth.getUser();
       if (!user) {
-        return NextResponse.json({ error: "Nicht angemeldet." }, { status: 401 });
+        return NextResponse.json({ error: "Nicht angemeldet.", code: "auth_required" }, { status: 401 });
       }
       userId = user.id;
       currentUserMetadata = (user.user_metadata as Record<string, unknown> | null) ?? {};

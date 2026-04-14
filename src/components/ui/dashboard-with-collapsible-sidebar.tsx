@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useCallback, useEffect, useState } from "react";
+import React, { useCallback, useEffect, useRef, useState } from "react";
 import {
   Beer,
   Bell,
@@ -397,14 +397,28 @@ const MobileTabBar = ({
 
   return (
     <div className="-mx-4 mb-4 bg-transparent px-4 py-3 sm:-mx-6 sm:px-6 lg:hidden">
-      <button
-        type="button"
-        onClick={() => setMenuOpen((prev) => !prev)}
-        aria-label={menuOpen ? "Menü schließen" : "Menü öffnen"}
-        className="ml-auto inline-flex h-10 w-10 items-center justify-center rounded-md bg-transparent text-gray-800 transition-colors hover:bg-black/5 dark:text-gray-100 dark:hover:bg-white/10"
-      >
-        <Menu className="h-5 w-5" />
-      </button>
+      <div className="flex items-center justify-between">
+        <button
+          type="button"
+          onClick={() => {
+            if (typeof window === "undefined") return;
+            window.location.assign("/");
+          }}
+          className="inline-flex h-10 items-center gap-2 rounded-md border border-gray-200 bg-white px-3 text-sm font-medium text-gray-700 transition-colors hover:bg-gray-50 dark:border-gray-700 dark:bg-gray-900 dark:text-gray-200 dark:hover:bg-gray-800"
+          aria-label="Zur Startseite"
+        >
+          <Home className="h-4 w-4" />
+          Startseite
+        </button>
+        <button
+          type="button"
+          onClick={() => setMenuOpen((prev) => !prev)}
+          aria-label={menuOpen ? "Menü schließen" : "Menü öffnen"}
+          className="inline-flex h-10 w-10 items-center justify-center rounded-md bg-transparent text-gray-800 transition-colors hover:bg-black/5 dark:text-gray-100 dark:hover:bg-white/10"
+        >
+          <Menu className="h-5 w-5" />
+        </button>
+      </div>
 
       {menuOpen && (
         <div className="mt-2 rounded-lg border border-gray-200 bg-white p-1 shadow-sm dark:border-gray-700 dark:bg-gray-900">
@@ -624,6 +638,7 @@ const ExampleContent = ({ isDark, applyTheme, userEmail, userName, selectedTab, 
   const [supportMessage, setSupportMessage] = useState("");
   const [supportInfoMessage, setSupportInfoMessage] = useState("");
   const [globalErrorMessage, setGlobalErrorMessage] = useState("");
+  const sessionExpiredHandledRef = useRef(false);
   const displayName = breweryName || profileName || "deine Brauerei";
   const tabTitle = selectedTab;
 
@@ -710,6 +725,61 @@ const ExampleContent = ({ isDark, applyTheme, userEmail, userName, selectedTab, 
     void loadDashboardData();
     return () => {
       ignore = true;
+    };
+  }, []);
+
+  useEffect(() => {
+    let cancelled = false;
+
+    const verifySessionHealth = async () => {
+      try {
+        const res = await fetch("/api/auth/status", {
+          method: "GET",
+          cache: "no-store",
+          credentials: "include",
+        });
+        if (!res.ok) return;
+        const data = (await res.json()) as { authenticated?: boolean };
+        if (cancelled) return;
+        if (data.authenticated) {
+          sessionExpiredHandledRef.current = false;
+          setGlobalErrorMessage((prev) => (prev.includes("Session") ? "" : prev));
+          return;
+        }
+        if (!sessionExpiredHandledRef.current) {
+          sessionExpiredHandledRef.current = true;
+          setGlobalErrorMessage("Session abgelaufen. Bitte neu anmelden.");
+          if (typeof window !== "undefined") {
+            window.dispatchEvent(new CustomEvent("evglab-open-auth-modal", { detail: { mode: "signin" } }));
+          }
+        }
+      } catch {
+        // ignore short-lived network errors
+      }
+    };
+
+    const intervalId = globalThis.setInterval(() => {
+      void verifySessionHealth();
+    }, 60_000);
+
+    const onFocus = () => {
+      void verifySessionHealth();
+    };
+    const onVisibility = () => {
+      if (document.visibilityState === "visible") {
+        void verifySessionHealth();
+      }
+    };
+
+    window.addEventListener("focus", onFocus);
+    document.addEventListener("visibilitychange", onVisibility);
+    void verifySessionHealth();
+
+    return () => {
+      cancelled = true;
+      globalThis.clearInterval(intervalId);
+      window.removeEventListener("focus", onFocus);
+      document.removeEventListener("visibilitychange", onVisibility);
     };
   }, []);
 

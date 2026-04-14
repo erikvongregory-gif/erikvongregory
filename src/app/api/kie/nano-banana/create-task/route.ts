@@ -128,7 +128,7 @@ export async function POST(req: Request) {
         data: { user },
       } = await supabase.auth.getUser();
       if (!user) {
-        return NextResponse.json({ error: "Nicht angemeldet." }, { status: 401 });
+        return NextResponse.json({ error: "Nicht angemeldet.", code: "auth_required" }, { status: 401 });
       }
       userId = user.id;
       currentUserMetadata = (user.user_metadata as Record<string, unknown> | null) ?? {};
@@ -152,7 +152,7 @@ export async function POST(req: Request) {
     }
 
     if (!userId) {
-      return NextResponse.json({ error: "Nicht angemeldet." }, { status: 401 });
+      return NextResponse.json({ error: "Nicht angemeldet.", code: "auth_required" }, { status: 401 });
     }
 
     await ensureBillingRow(userId);

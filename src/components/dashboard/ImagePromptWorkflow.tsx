@@ -2377,6 +2377,11 @@ export function ImagePromptWorkflow({
       img.src = url;
     });
 
+  const openReLoginModal = () => {
+    if (typeof window === "undefined") return;
+    window.dispatchEvent(new CustomEvent("evglab-open-auth-modal", { detail: { mode: "signin" } }));
+  };
+
   const fetchKieTaskStatus = async (taskId: string) => {
     const timeoutController = new AbortController();
     const timeoutId = globalThis.setTimeout(() => timeoutController.abort(), KIE_STATUS_TIMEOUT_MS);
@@ -2388,13 +2393,16 @@ export function ImagePromptWorkflow({
         state?: string;
         imageUrl?: string | null;
         error?: string;
+        code?: string;
       };
 
       if (!statusRes.ok) {
+        const authRequired = statusRes.status === 401 || statusData.code === "auth_required";
         const transient = statusRes.status === 429 || statusRes.status >= 500;
         return {
           ok: false as const,
           transient,
+          authRequired,
           error: statusData.error || "Kie Statusabfrage fehlgeschlagen.",
           retryAfterMs: parseRetryAfterMs(statusRes.headers.get("Retry-After")),
         };
@@ -2409,6 +2417,7 @@ export function ImagePromptWorkflow({
       return {
         ok: false as const,
         transient: true,
+        authRequired: false,
         error:
           error instanceof Error && error.name === "AbortError"
             ? "Statusabfrage dauert länger als erwartet. Neuer Versuch läuft."
@@ -2456,6 +2465,11 @@ export function ImagePromptWorkflow({
 
       const status = await fetchKieTaskStatus(taskSession.taskId);
       if (!status.ok) {
+        if (status.authRequired) {
+          persistPendingKieTask(null);
+          openReLoginModal();
+          throw new Error("Session abgelaufen, bitte neu anmelden.");
+        }
         if (status.transient && transientRetryCount < KIE_TRANSIENT_RETRY_LIMIT) {
           transientRetryCount += 1;
           const retryWait = status.retryAfterMs ?? Math.min(1400 * 2 ** transientRetryCount, 6000);
@@ -2620,9 +2634,14 @@ export function ImagePromptWorkflow({
             freeTrial?: boolean;
           };
           error?: string;
+          code?: string;
           raw?: Record<string, unknown>;
         };
         if (!createRes.ok || !createData.taskId) {
+          if (createRes.status === 401 || createData.code === "auth_required") {
+            openReLoginModal();
+            throw new Error("Session abgelaufen, bitte neu anmelden.");
+          }
           const rawMsg =
             (createData.raw?.msg as string | undefined) ||
             (createData.raw?.error as string | undefined);
