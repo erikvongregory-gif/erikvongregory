@@ -115,7 +115,7 @@ function Hero() {
         );
         return;
       }
-      window.setTimeout(() => {
+      globalThis.setTimeout(() => {
         void loadHeroCtaState();
       }, 700);
     };

@@ -1,11 +1,11 @@
 import Link from "next/link";
 import { redirect } from "next/navigation";
 import type { Metadata } from "next";
-import dynamic from "next/dynamic";
+import nextDynamic from "next/dynamic";
 import { createClient } from "@/lib/supabase/server";
 import { isSupabaseConfigured } from "@/lib/supabase/env";
 
-const DashboardWithSidebar = dynamic(
+const DashboardWithSidebar = nextDynamic(
   () => import("@/components/ui/dashboard-with-collapsible-sidebar").then((mod) => mod.Example),
   {
     loading: () => (

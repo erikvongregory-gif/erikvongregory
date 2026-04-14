@@ -53,8 +53,8 @@ export function MobileLayout() {
       };
     }
 
-    const timeoutId = window.setTimeout(() => setShowSection4Shader(true), 900);
-    return () => window.clearTimeout(timeoutId);
+    const timeoutId = globalThis.setTimeout(() => setShowSection4Shader(true), 900);
+    return () => globalThis.clearTimeout(timeoutId);
   }, []);
 
   const renderSection4Icon = (icon: string) => {
