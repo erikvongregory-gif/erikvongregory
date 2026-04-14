@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useLoading } from "@/context/LoadingContext";
 import { Hero } from "@/components/ui/animated-hero";
 import { ScrollReveal } from "./ScrollReveal";
@@ -38,6 +38,24 @@ const SECTION4_ITEMS = [
 export function MobileLayout() {
   const { heroReady } = useLoading();
   const [openSolutionIndex, setOpenSolutionIndex] = useState<number>(0);
+  const [showSection4Shader, setShowSection4Shader] = useState(false);
+
+  useEffect(() => {
+    if (typeof window === "undefined") return;
+    if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
+
+    if ("requestIdleCallback" in window) {
+      const idleId = (window as Window & { requestIdleCallback: (cb: IdleRequestCallback) => number }).requestIdleCallback(
+        () => setShowSection4Shader(true),
+      );
+      return () => {
+        (window as Window & { cancelIdleCallback?: (id: number) => void }).cancelIdleCallback?.(idleId);
+      };
+    }
+
+    const timeoutId = window.setTimeout(() => setShowSection4Shader(true), 900);
+    return () => window.clearTimeout(timeoutId);
+  }, []);
 
   const renderSection4Icon = (icon: string) => {
     if (icon === "camera") {
@@ -97,16 +115,18 @@ export function MobileLayout() {
         {/* Section 4 */}
         <section id="section-4" className="insurance-card-theme relative z-30 px-4 py-16">
           <div className="section4-loop-stack-root section4-mobile-ring-unclipped relative isolate z-0 mx-auto max-w-2xl">
-            <div
-              className="section4-loop-shader-backdrop pointer-events-none absolute left-1/2 top-12 h-[560px] w-[132%] -translate-x-1/2 -z-10 overflow-visible sm:top-14 sm:h-[620px]"
-              aria-hidden
-            >
-              <ShaderCanvas
-                mode="contained"
-                shape="ring"
-                backgroundRgb={CONTAINED_SHADER_BG.mobileDark}
-              />
-            </div>
+            {showSection4Shader ? (
+              <div
+                className="section4-loop-shader-backdrop pointer-events-none absolute left-1/2 top-12 h-[560px] w-[132%] -translate-x-1/2 -z-10 overflow-visible sm:top-14 sm:h-[620px]"
+                aria-hidden
+              >
+                <ShaderCanvas
+                  mode="contained"
+                  shape="ring"
+                  backgroundRgb={CONTAINED_SHADER_BG.mobileDark}
+                />
+              </div>
+            ) : null}
             <div className="section4-loop-content-stack relative z-20 transform-gpu">
           <ScrollReveal>
           <div className="mb-6 inline-flex w-full justify-center">

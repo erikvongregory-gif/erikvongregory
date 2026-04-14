@@ -210,12 +210,16 @@ export function LiquidMetalButton({
             {viewMode === "text" && (
               <span
                 style={{
+                  display: "inline-flex",
+                  alignItems: "center",
+                  justifyContent: "center",
                   fontSize: size === "large" ? "15px" : "14px",
+                  lineHeight: 1,
                   color: "#ffffff",
                   fontWeight: 400,
                   textShadow: "0px 1px 2px rgba(0, 0, 0, 0.5)",
                   transition: "all 0.8s cubic-bezier(0.34, 1.56, 0.64, 1)",
-                  transform: "scale(1)",
+                  transform: size === "large" ? "translateY(1px) scale(1)" : "scale(1)",
                   whiteSpace: "nowrap",
                 }}
               >

@@ -206,7 +206,7 @@ export function ScrollHeader() {
         >
           Kontakt
         </a>
-        <div className="pointer-events-auto min-w-0 shrink">
+        <div className="pointer-events-auto min-w-0 shrink rounded-lg border border-black/10 bg-white/88 px-2.5 py-1 shadow-[0_6px_18px_-10px_rgba(24,24,27,0.3)] backdrop-blur-sm">
           {headerLogo}
         </div>
 

@@ -26,10 +26,11 @@ type HeaderLoginProps = {
 };
 
 export function HeaderLogin({ variant, className }: HeaderLoginProps) {
-  const [mode, setMode] = useState<"signin">("signin");
+  const [mode, setMode] = useState<"signin" | "code">("signin");
   const [open, setOpen] = useState(false);
   const [isAuthenticated, setIsAuthenticated] = useState(false);
   const [isAdmin, setIsAdmin] = useState(false);
+  const [twoFARequired, setTwoFARequired] = useState(false);
   const [authError, setAuthError] = useState<string | null>(null);
   const [authNotice, setAuthNotice] = useState<string | null>(null);
   const lockedScrollYRef = useRef(0);
@@ -52,13 +53,15 @@ export function HeaderLogin({ variant, className }: HeaderLoginProps) {
           setIsAdmin(false);
           return;
         }
-        const payload = (await res.json()) as { authenticated?: boolean; admin?: boolean };
+        const payload = (await res.json()) as { authenticated?: boolean; admin?: boolean; admin2faRequired?: boolean };
         setIsAuthenticated(Boolean(payload.authenticated));
         setIsAdmin(Boolean(payload.admin));
+        setTwoFARequired(Boolean(payload.admin2faRequired));
       } catch {
         if (!isActive) return;
         setIsAuthenticated(false);
         setIsAdmin(false);
+        setTwoFARequired(false);
       }
     };
 
@@ -101,6 +104,7 @@ export function HeaderLogin({ variant, className }: HeaderLoginProps) {
               ? String(session.user.user_metadata.role).toLowerCase()
               : "";
           setIsAdmin(role === "admin");
+          void syncFromServer();
         }).data.subscription
       : null;
 
@@ -135,11 +139,14 @@ export function HeaderLogin({ variant, className }: HeaderLoginProps) {
       setAuthNotice(nextNotice);
     });
 
-    if (isAuthenticated) return;
-    if (authAction !== "signin" && authAction !== "signup") return;
+    const needs2FAFlow =
+      nextNotice === "admin_2fa_required" || nextNotice === "admin_2fa_resent";
+
+    if (!needs2FAFlow && isAuthenticated) return;
+    if (!needs2FAFlow && authAction !== "signin" && authAction !== "signup") return;
 
     queueMicrotask(() => {
-      setMode("signin");
+      setMode(needs2FAFlow ? "code" : "signin");
       setOpen(true);
     });
     url.searchParams.delete("auth");
@@ -149,15 +156,21 @@ export function HeaderLogin({ variant, className }: HeaderLoginProps) {
   useEffect(() => {
     if (typeof window === "undefined") return;
     const onOpenAuth = () => {
-      if (isAuthenticated) return;
-      setMode("signin");
+      if (isAuthenticated && !twoFARequired) return;
+      setMode(twoFARequired ? "code" : "signin");
       setOpen(true);
     };
     window.addEventListener("evglab-open-auth-modal", onOpenAuth as EventListener);
     return () => {
       window.removeEventListener("evglab-open-auth-modal", onOpenAuth as EventListener);
     };
-  }, [isAuthenticated]);
+  }, [isAuthenticated, twoFARequired]);
+
+  useEffect(() => {
+    if (!twoFARequired) return;
+    setMode("code");
+    setOpen(true);
+  }, [twoFARequired]);
 
   useEffect(() => {
     if (!open) return undefined;
@@ -232,42 +245,82 @@ export function HeaderLogin({ variant, className }: HeaderLoginProps) {
         </div>
         <DialogHeader>
           <DialogTitle className="sm:text-center">
-            Willkommen zurück
+            {mode === "code" ? "Sicherheitscode eingeben" : "Willkommen zurück"}
           </DialogTitle>
           <DialogDescription className="sm:text-center">
-            Melde dich mit deinen Zugangsdaten in deinem Konto an.
+            {mode === "code"
+              ? "Bitte gib den 6-stelligen Code aus deiner E-Mail ein."
+              : "Melde dich mit deinen Zugangsdaten in deinem Konto an."}
           </DialogDescription>
         </DialogHeader>
       </div>
 
-      <form action="/auth/signin" method="post" className="space-y-5">
-        <input type="hidden" name="next" value="/dashboard" />
-        <div className="space-y-4">
-          <div className="space-y-2">
-            <Label htmlFor={`header-login-email-${idSuffix}`}>Email</Label>
-            <Input
-              id={`header-login-email-${idSuffix}`}
-              name="email"
-              placeholder="hi@yourcompany.com"
-              type="email"
-              required
-            />
+      {mode === "signin" ? (
+        <form action="/auth/signin" method="post" className="space-y-5">
+          <input type="hidden" name="next" value="/dashboard" />
+          <div className="space-y-4">
+            <div className="space-y-2">
+              <Label htmlFor={`header-login-email-${idSuffix}`}>Email</Label>
+              <Input
+                id={`header-login-email-${idSuffix}`}
+                name="email"
+                placeholder="hi@yourcompany.com"
+                type="email"
+                required
+              />
+            </div>
+            <div className="space-y-2">
+              <Label htmlFor={`header-login-password-${idSuffix}`}>Passwort</Label>
+              <Input
+                id={`header-login-password-${idSuffix}`}
+                name="password"
+                placeholder="Passwort eingeben"
+                type="password"
+                required
+              />
+            </div>
           </div>
-          <div className="space-y-2">
-            <Label htmlFor={`header-login-password-${idSuffix}`}>Passwort</Label>
-            <Input
-              id={`header-login-password-${idSuffix}`}
-              name="password"
-              placeholder="Passwort eingeben"
-              type="password"
-              required
-            />
-          </div>
+          <Button type="submit" className="w-full">
+            Anmelden
+          </Button>
+        </form>
+      ) : (
+        <div className="space-y-3">
+          <form action="/auth/admin-2fa/verify" method="post" className="space-y-3">
+            <div className="space-y-2">
+              <Label htmlFor={`header-login-code-${idSuffix}`}>E-Mail-Code</Label>
+              <Input
+                id={`header-login-code-${idSuffix}`}
+                name="code"
+                inputMode="numeric"
+                autoComplete="one-time-code"
+                placeholder="123456"
+                required
+              />
+            </div>
+            <Button type="submit" className="w-full">
+              Dashboard freigeben
+            </Button>
+          </form>
+          <form action="/auth/admin-2fa/verify" method="post">
+            <input type="hidden" name="action" value="resend" />
+            <Button type="submit" variant="outline" className="w-full">
+              Neuen Code senden
+            </Button>
+          </form>
+          <Button
+            type="button"
+            variant="ghost"
+            className="w-full"
+            onClick={() => {
+              setMode("signin");
+              setTwoFARequired(false);
+            }}
+          >
+            Mit anderem Konto anmelden
+          </Button>
         </div>
-        <Button type="submit" className="w-full">
-          Anmelden
-        </Button>
-      </form>
+      )}
 
       {authError ? (
         <p className="rounded-md border border-red-200 bg-red-50 px-3 py-2 text-sm text-red-700">
@@ -295,6 +348,10 @@ export function HeaderLogin({ variant, className }: HeaderLoginProps) {
               ? "Admin-2FA ist nicht vollständig konfiguriert (RESEND_API_KEY / ADMIN_2FA_FROM_EMAIL fehlt)."
             : authError === "admin_2fa_session_expired"
               ? "Admin-2FA-Session ist abgelaufen. Bitte neu anmelden."
+            : authError === "admin_2fa_invalid"
+              ? "Code ist ungültig oder abgelaufen. Bitte erneut versuchen."
+            : authError === "email_failed"
+              ? "Code konnte nicht erneut gesendet werden."
               : authError === "google"
                 ? "Google-Anmeldung fehlgeschlagen. Bitte erneut versuchen."
               : authError === "auth"
@@ -310,24 +367,36 @@ export function HeaderLogin({ variant, className }: HeaderLoginProps) {
         <p className="rounded-md border border-emerald-200 bg-emerald-50 px-3 py-2 text-sm text-emerald-900">
           Einladung angenommen. Bitte melde dich jetzt mit deinem neuen Passwort an.
         </p>
+      ) : authNotice === "admin_2fa_required" ? (
+        <p className="rounded-md border border-emerald-200 bg-emerald-50 px-3 py-2 text-sm text-emerald-900">
+          Code wurde gesendet. Bitte eingeben, um den Admin-Bereich zu öffnen.
+        </p>
+      ) : authNotice === "admin_2fa_resent" ? (
+        <p className="rounded-md border border-emerald-200 bg-emerald-50 px-3 py-2 text-sm text-emerald-900">
+          Neuer Admin-Code wurde gesendet.
+        </p>
       ) : null}
-      <div className="flex items-center gap-3 before:h-px before:flex-1 before:bg-border after:h-px after:flex-1 after:bg-border">
-        <span className="text-xs text-muted-foreground">Oder</span>
-      </div>
+      {mode === "signin" ? (
+        <>
+          <div className="flex items-center gap-3 before:h-px before:flex-1 before:bg-border after:h-px after:flex-1 after:bg-border">
+            <span className="text-xs text-muted-foreground">Oder</span>
+          </div>
 
-      <button
-        type="button"
-        disabled
-        aria-disabled="true"
-        className="inline-flex h-9 w-full cursor-not-allowed items-center justify-center gap-2 rounded-lg border border-input bg-background px-4 py-2 text-xs font-medium text-foreground/60 opacity-70 shadow-sm shadow-black/5 transition-colors sm:text-sm"
-      >
-        <FcGoogle className="size-4" />
-        Login mit Google (deaktiviert)
-      </button>
+          <button
+            type="button"
+            disabled
+            aria-disabled="true"
+            className="inline-flex h-9 w-full cursor-not-allowed items-center justify-center gap-2 rounded-lg border border-input bg-background px-4 py-2 text-xs font-medium text-foreground/60 opacity-70 shadow-sm shadow-black/5 transition-colors sm:text-sm"
+          >
+            <FcGoogle className="size-4" />
+            Login mit Google (deaktiviert)
+          </button>
 
-      <p className="text-center text-sm text-muted-foreground">
-        Registrierung ist nur per Einladung möglich.
-      </p>
+          <p className="text-center text-sm text-muted-foreground">
+            Registrierung ist nur per Einladung möglich.
+          </p>
+        </>
+      ) : null}
     </DialogContent>
   );
 
@@ -340,7 +409,7 @@ export function HeaderLogin({ variant, className }: HeaderLoginProps) {
             className,
           )}
         >
-          {isAuthenticated ? (
+          {isAuthenticated && !twoFARequired ? (
             <>
               <Button
                 asChild
@@ -378,10 +447,10 @@ export function HeaderLogin({ variant, className }: HeaderLoginProps) {
                 size="sm"
                 variant="ghost"
                 className="h-9 rounded-full border-0 bg-transparent px-2 text-zinc-900 shadow-none hover:bg-transparent hover:text-zinc-700"
-                onClick={() => setMode("signin")}
-                aria-label="Anmelden"
+                onClick={() => setMode(twoFARequired ? "code" : "signin")}
+                aria-label={twoFARequired ? "Sicherheitscode eingeben" : "Anmelden"}
               >
-                <span className="text-sm font-medium">LogIn</span>
+                <span className="text-sm font-medium">{twoFARequired ? "2FA Code" : "LogIn"}</span>
                 <LogIn className="h-4 w-4" aria-hidden />
               </Button>
             </DialogTrigger>
@@ -400,7 +469,7 @@ export function HeaderLogin({ variant, className }: HeaderLoginProps) {
         Brauerei-Bereich
       </p>
       <Dialog open={open} onOpenChange={setOpen}>
-        {isAuthenticated ? (
+        {isAuthenticated && !twoFARequired ? (
           <div className="flex w-full flex-col gap-2">
             <Button
               asChild
@@ -442,11 +511,11 @@ export function HeaderLogin({ variant, className }: HeaderLoginProps) {
               variant="outline"
               className="h-10 w-full rounded-full border-zinc-300 bg-white px-4 text-zinc-900 shadow-sm hover:bg-zinc-100"
               onClick={() => {
-                setMode("signin");
+                setMode(twoFARequired ? "code" : "signin");
               }}
               role="menuitem"
             >
-              Anmelden
+              {twoFARequired ? "2FA Code eingeben" : "Anmelden"}
             </Button>
           </DialogTrigger>
         )}

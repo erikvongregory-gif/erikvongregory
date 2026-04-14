@@ -88,6 +88,14 @@ export function verifyPending2FACode(token: string | null | undefined, input: { 
   return { ok: true as const, payload };
 }
 
+export function hasValidPending2FAForUser(token: string | null | undefined, userId: string) {
+  const payload = decodeSigned<PendingPayload>(token);
+  if (!payload) return false;
+  if (payload.userId !== userId) return false;
+  if (Date.now() > payload.expiresAt) return false;
+  return true;
+}
+
 export function buildVerified2FAToken(input: { userId: string; ttlSeconds?: number }) {
   const ttl = Math.max(input.ttlSeconds ?? 43_200, 300);
   const payload: VerifiedPayload = {

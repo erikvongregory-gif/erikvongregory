@@ -102,7 +102,25 @@ function Hero() {
       }
     };
 
-    void loadHeroCtaState();
+    const scheduleCtaStateLoad = () => {
+      if (typeof window === "undefined") {
+        void loadHeroCtaState();
+        return;
+      }
+      if ("requestIdleCallback" in window) {
+        (window as Window & { requestIdleCallback: (cb: IdleRequestCallback) => number }).requestIdleCallback(
+          () => {
+            void loadHeroCtaState();
+          },
+        );
+        return;
+      }
+      window.setTimeout(() => {
+        void loadHeroCtaState();
+      }, 700);
+    };
+
+    scheduleCtaStateLoad();
 
     const {
       data: { subscription },
@@ -163,29 +181,30 @@ function Hero() {
           const img = KI_BEISPIELE[imgIndex];
           return (
             <FloatingElement key={`hero-float-${i}-${img.src}`} depth={slot.depth} className={slot.className}>
-              {heroReady ? (
-                <BlurFade delay={slot.delay} duration={0.45} blur="8px">
-                  <motion.img
-                    src={img.src}
-                    alt=""
-                    className={`cursor-default rounded-xl object-cover shadow-2xl duration-200 blur-[2px] sm:blur-[3px] md:blur-[4px] ${slot.imgClass}`}
-                  />
-                </BlurFade>
-              ) : null}
+              <BlurFade delay={slot.delay} duration={0.45} blur="8px">
+                <motion.img
+                  src={img.src}
+                  alt=""
+                  className={`cursor-default rounded-xl object-cover shadow-2xl duration-200 blur-[2px] sm:blur-[3px] md:blur-[4px] ${slot.imgClass}`}
+                />
+              </BlurFade>
             </FloatingElement>
           );
         })}
       </Floating>
       <div className="container mx-auto">
         <div className="relative z-10 flex flex-col items-center justify-center gap-8 py-20 max-md:gap-6 max-md:pb-12 max-md:pt-28 sm:max-md:pb-16 sm:max-md:pt-32 lg:py-40">
-          {heroReady ? (
-            <>
-              <BlurFade delay={0.04} duration={0.45} className="hidden md:block">
+          <div
+            className={`w-full transition-opacity duration-500 ease-out ${
+              heroReady ? "opacity-100" : "opacity-0"
+            }`}
+          >
+              <BlurFade delay={0.04} duration={0.45} className="hidden md:flex md:justify-center">
                 <Button variant="secondary" size="sm" className="gap-4">
                   Fokus: KI-Content für Brauereien <MoveRight className="w-4 h-4" />
                 </Button>
               </BlurFade>
-              <BlurFade delay={0.04} duration={0.45} className="md:hidden">
+              <BlurFade delay={0.04} duration={0.45} className="mb-3 flex justify-center md:hidden">
                 <Button variant="secondary" size="sm" className="gap-2 text-xs">
                   Fokus: KI-Content für Brauereien <MoveRight className="h-3.5 w-3.5" />
                 </Button>
@@ -241,7 +260,7 @@ function Hero() {
                 </div>
               </BlurFade>
 
-              <BlurFade delay={0.2} duration={0.5} className="flex w-full flex-col items-center gap-3 md:hidden">
+              <BlurFade delay={0.2} duration={0.5} className="mt-2 flex w-full flex-col items-center gap-3 md:hidden">
                 <div className="flex justify-center">
                   <Button
                     onClick={onPrimaryCtaClick}
@@ -250,7 +269,7 @@ function Hero() {
                     {primaryCtaLabel}
                   </Button>
                 </div>
-                <div className="flex w-[min(92vw,22rem)] justify-center">
+                <div className="flex w-[min(92vw,22rem)] items-center justify-center">
                   <LiquidMetalButton
                     label="Beispiele ansehen"
                     size="large"
@@ -263,8 +282,7 @@ function Hero() {
                   />
                 </div>
               </BlurFade>
-            </>
-          ) : null}
+          </div>
         </div>
       </div>
     </div>

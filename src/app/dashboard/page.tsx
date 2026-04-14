@@ -1,9 +1,21 @@
 import Link from "next/link";
 import { redirect } from "next/navigation";
 import type { Metadata } from "next";
+import dynamic from "next/dynamic";
 import { createClient } from "@/lib/supabase/server";
 import { isSupabaseConfigured } from "@/lib/supabase/env";
-import { Example as DashboardWithSidebar } from "@/components/ui/dashboard-with-collapsible-sidebar";
+
+const DashboardWithSidebar = dynamic(
+  () => import("@/components/ui/dashboard-with-collapsible-sidebar").then((mod) => mod.Example),
+  {
+    loading: () => (
+      <main className="relative z-10 mx-auto max-w-6xl px-4 py-16">
+        <div className="h-8 w-48 animate-pulse rounded bg-zinc-200" />
+        <div className="mt-6 h-48 w-full animate-pulse rounded-2xl bg-zinc-100" />
+      </main>
+    ),
+  },
+);
 
 export const dynamic = "force-dynamic";
 export const metadata: Metadata = {

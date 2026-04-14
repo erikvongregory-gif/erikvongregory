@@ -12,11 +12,12 @@ import { createRouteHandlerClient } from "@/lib/supabase/server";
 
 export async function POST(request: NextRequest) {
   const { origin } = new URL(request.url);
+  const secureCookies = process.env.NODE_ENV === "production";
   const formData = await request.formData();
   const action = String(formData.get("action") ?? "verify");
   const code = String(formData.get("code") ?? "").trim();
 
-  const response = NextResponse.redirect(`${origin}/dashboard/2fa-email`, 303);
+  const response = NextResponse.redirect(`${origin}/?auth=signin&notice=admin_2fa_required`, 303);
   const supabase = createRouteHandlerClient(request, response);
   const {
     data: { user },
@@ -39,7 +40,7 @@ export async function POST(request: NextRequest) {
     try {
       await sendAdmin2FACodeEmail({ to: user.email, code: newCode });
     } catch {
-      return NextResponse.redirect(`${origin}/dashboard/2fa-email?error=email_failed`, 303);
+      return NextResponse.redirect(`${origin}/?auth=signin&notice=admin_2fa_required&error=email_failed`, 303);
     }
     const nextPending = buildPending2FAToken({
       userId: user.id,
@@ -50,15 +51,15 @@ export async function POST(request: NextRequest) {
     response.cookies.set(getPendingCookieName(), nextPending, {
       httpOnly: true,
       sameSite: "lax",
-      secure: true,
+      secure: secureCookies,
       path: "/",
       maxAge: 60 * 10,
     });
-    return NextResponse.redirect(`${origin}/dashboard/2fa-email?notice=resent`, 303);
+    return NextResponse.redirect(`${origin}/?auth=signin&notice=admin_2fa_resent`, 303);
   }
 
   if (!code) {
-    return NextResponse.redirect(`${origin}/dashboard/2fa-email?error=missing_code`, 303);
+    return NextResponse.redirect(`${origin}/?auth=signin&notice=admin_2fa_required&error=missing_code`, 303);
   }
 
   const result = verifyPending2FACode(pendingToken, {
@@ -66,7 +67,7 @@ export async function POST(request: NextRequest) {
     code,
   });
   if (!result.ok) {
-    return NextResponse.redirect(`${origin}/dashboard/2fa-email?error=invalid_code`, 303);
+    return NextResponse.redirect(`${origin}/?auth=signin&notice=admin_2fa_required&error=admin_2fa_invalid`, 303);
   }
 
   const verifiedToken = buildVerified2FAToken({
@@ -77,14 +78,14 @@ export async function POST(request: NextRequest) {
   done.cookies.set(getVerifiedCookieName(), verifiedToken, {
     httpOnly: true,
     sameSite: "lax",
-    secure: true,
+    secure: secureCookies,
     path: "/",
     maxAge: 60 * 60 * 12,
   });
   done.cookies.set(getPendingCookieName(), "", {
     httpOnly: true,
     sameSite: "lax",
-    secure: true,
+    secure: secureCookies,
     path: "/",
     maxAge: 0,
   });

@@ -73,7 +73,7 @@ export function DesktopSection4() {
   return (
     <section
       id="section-4"
-      className="insurance-card-theme relative z-20 flex w-full min-h-screen items-center justify-center overflow-x-hidden py-12 sm:py-16 md:py-24"
+      className="insurance-card-theme relative z-20 flex w-full min-h-screen items-center justify-center overflow-x-hidden bg-transparent py-12 sm:py-16 md:py-24"
     >
       {/*
         WebGL wie früher. 3D nur auf .flip-card-inner (siehe globals), damit Chromium den Canvas nicht über die Karten legt.

@@ -1,5 +1,4 @@
 import type { Metadata } from "next";
-import Script from "next/script";
 import { Inter, Playfair_Display } from "next/font/google";
 import { Analytics } from "@vercel/analytics/react";
 import { SpeedInsights } from "@vercel/speed-insights/next";
@@ -91,20 +90,6 @@ export default function RootLayout({
       <head>
         <link rel="preload" href="/hero-portrait.svg" as="image" />
       </head>
-      <Script
-        id="scroll-to-top-on-load"
-        strategy="afterInteractive"
-        dangerouslySetInnerHTML={{
-          __html: `if('scrollRestoration'in history)history.scrollRestoration='manual';window.scrollTo(0,0);`,
-        }}
-      />
-      <Script
-        id="chunk-load-error-handler"
-        strategy="afterInteractive"
-        dangerouslySetInnerHTML={{
-          __html: `(function(){function isChunkError(e){var m=e&&(e.message||e.reason&&e.reason.message||'');return /Loading chunk|ChunkLoadError|Failed to load chunk|Loading CSS chunk/i.test(m)||(m&&m.indexOf('_next/static')!==-1);}function tryReload(){if(!sessionStorage.getItem('chunkReload')){sessionStorage.setItem('chunkReload','1');location.reload();}}window.addEventListener('error',function(ev){if(isChunkError(ev)){ev.preventDefault();tryReload();}},true);window.addEventListener('unhandledrejection',function(ev){if(isChunkError(ev.reason)){ev.preventDefault();tryReload();}});setTimeout(function(){sessionStorage.removeItem('chunkReload');},3000);})();`,
-        }}
-      />
       <body className="bg-[#0a0f14] text-neutral-900 antialiased">
         <JsonLd />
         <FaviconReminder />

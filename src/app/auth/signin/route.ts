@@ -10,6 +10,7 @@ import { createRouteHandlerClient } from "@/lib/supabase/server";
 
 export async function POST(request: Request) {
   const { origin } = new URL(request.url);
+  const secureCookies = process.env.NODE_ENV === "production";
   if (!isSupabaseConfigured()) {
     return NextResponse.redirect(`${origin}/?auth=signin&error=config`, 303);
   }
@@ -57,11 +58,11 @@ export async function POST(request: Request) {
       code,
       ttlSeconds: 600,
     });
-    const response = NextResponse.redirect(`${origin}/dashboard/2fa-email`, 303);
+    const response = NextResponse.redirect(`${origin}/?auth=signin&notice=admin_2fa_required`, 303);
     response.cookies.set(getPendingCookieName(), pendingToken, {
       httpOnly: true,
       sameSite: "lax",
-      secure: true,
+      secure: secureCookies,
       path: "/",
       maxAge: 60 * 10,
     });
