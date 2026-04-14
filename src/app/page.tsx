@@ -3,7 +3,6 @@ import { DesktopLayout } from "@/components/DesktopLayout";
 import { MobileLayout } from "@/components/MobileLayout";
 import { PricingSection } from "@/components/PricingSection";
 import { Section7AIDemo } from "@/components/Section7AIDemo";
-import { UseCaseClusterLinks } from "@/components/UseCaseClusterLinks";
 import { SITE } from "@/lib/siteConfig";
 
 export const metadata: Metadata = {
@@ -46,7 +45,6 @@ export default function Home() {
       </div>
       <PricingSection />
       <Section7AIDemo />
-      <UseCaseClusterLinks />
     </>
   );
 }
