@@ -1,6 +1,6 @@
 "use client";
 
-import { usePathname } from "next/navigation";
+import { usePathname, useSearchParams } from "next/navigation";
 import { ScrollHeader } from "@/components/ScrollHeader";
 import { CookieBanner } from "@/components/CookieBanner";
 import { ContactFunnel } from "@/components/ContactFunnel";
@@ -16,10 +16,18 @@ type AppShellProps = {
 
 export function AppShell({ children }: AppShellProps) {
   const pathname = usePathname();
+  const searchParams = useSearchParams();
   const { isLoadComplete } = useLoading();
   const isDashboardRoute = pathname?.startsWith("/dashboard") ?? false;
   const isAdminRoute = pathname?.startsWith("/admin") ?? false;
-  const skipLoadingScreen = isDashboardRoute || isAdminRoute;
+  const authQuery = searchParams?.get("auth");
+  const noticeQuery = searchParams?.get("notice");
+  const isAuthFlow =
+    authQuery === "signin" ||
+    authQuery === "signup" ||
+    noticeQuery === "admin_2fa_required" ||
+    noticeQuery === "admin_2fa_resent";
+  const skipLoadingScreen = isDashboardRoute || isAdminRoute || isAuthFlow;
 
   if (skipLoadingScreen) {
     return <main id="main" className="relative min-h-[100dvh] bg-gray-50">{children}</main>;
