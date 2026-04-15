@@ -243,17 +243,21 @@ type ExampleProps = {
 };
 
 export const Example = ({ userEmail, userName, isAdmin = false }: ExampleProps) => {
-  const [isDark, setIsDark] = useState(() => {
-    if (typeof window === "undefined") return false;
-    const saved = window.localStorage.getItem("evglab-dashboard-theme");
-    return saved === "dark" || saved === "light"
-      ? saved === "dark"
-      : window.matchMedia("(prefers-color-scheme: dark)").matches;
-  });
+  const [isDark, setIsDark] = useState(false);
   const [selectedTab, setSelectedTab] = useState<DashboardTab>("Dashboard");
 
   const applyTheme = useCallback((nextDark: boolean) => {
     setIsDark(nextDark);
+  }, []);
+
+  useEffect(() => {
+    const saved = window.localStorage.getItem("evglab-dashboard-theme");
+    const nextDark =
+      saved === "dark" || saved === "light"
+        ? saved === "dark"
+        : window.matchMedia("(prefers-color-scheme: dark)").matches;
+    // Defer update one tick to keep hydration output stable.
+    window.setTimeout(() => setIsDark(nextDark), 0);
   }, []);
 
   useEffect(() => {

@@ -82,6 +82,23 @@ function getPreferredModel(): string {
   return "claude-3-5-sonnet-latest";
 }
 
+function classifyAnthropicError(message: string) {
+  const lower = message.toLowerCase();
+  if (/credit balance|billing|insufficient|payment/.test(lower)) {
+    return { code: "CLAUDE_BILLING", error: "Anthropic-Guthaben ist zu niedrig.", status: 402 };
+  }
+  if (/api key|authentication|unauthorized|forbidden|permission/.test(lower)) {
+    return { code: "CLAUDE_AUTH", error: "Anthropic-Authentifizierung fehlgeschlagen.", status: 401 };
+  }
+  if (/rate limit|too many requests|429/.test(lower)) {
+    return { code: "CLAUDE_RATE_LIMIT", error: "Anthropic-Rate-Limit erreicht. Bitte kurz warten.", status: 429 };
+  }
+  if (/model|not found/.test(lower)) {
+    return { code: "CLAUDE_MODEL", error: "Anthropic-Modellzugriff nicht verfügbar.", status: 502 };
+  }
+  return { code: "CLAUDE_UNKNOWN", error: "Claude-Anfrage fehlgeschlagen.", status: 500 };
+}
+
 function buildClaudeInput(body: PromptRequestBody): string {
   const strictGlassRule = getStrictGlassRule(body.biertyp ?? "");
   const containerRule =
@@ -209,7 +226,15 @@ export async function POST(req: Request) {
     }
 
     if (!response) {
-      throw lastError ?? new Error("Claude-Model konnte nicht geladen werden.");
+      const msg = lastError instanceof Error ? lastError.message : "Claude-Model konnte nicht geladen werden.";
+      const classified = classifyAnthropicError(msg);
+      return NextResponse.json(
+        {
+          error: classified.error,
+          code: classified.code,
+        },
+        { status: classified.status },
+      );
     }
 
     const textBlock = response.content.find((item) => item.type === "text");
@@ -224,12 +249,13 @@ export async function POST(req: Request) {
   } catch (error) {
     console.error("Claude API error");
     const message = error instanceof Error ? error.message : "";
-    if (/api key/i.test(message) || /authentication/i.test(message) || /unauthorized/i.test(message)) {
-      return NextResponse.json({ error: "Anthropic-Authentifizierung fehlgeschlagen. Prüfe ANTHROPIC_API_KEY." }, { status: 500 });
-    }
-    if (/model/i.test(message) || /not found/i.test(message)) {
-      return NextResponse.json({ error: "Anthropic-Modell nicht verfügbar. Prüfe ANTHROPIC_MODEL in den Umgebungsvariablen." }, { status: 500 });
-    }
-    return NextResponse.json({ error: "Claude-Anfrage fehlgeschlagen." }, { status: 500 });
+    const classified = classifyAnthropicError(message);
+    return NextResponse.json(
+      {
+        error: classified.error,
+        code: classified.code,
+      },
+      { status: classified.status },
+    );
   }
 }

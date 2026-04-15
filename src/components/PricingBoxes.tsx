@@ -460,6 +460,8 @@ export function PricingBoxes() {
   const sectionRef = useRef<HTMLElement>(null);
   const [inView, setInView] = useState(false);
   const [selectedPath, setSelectedPath] = useState<OfferPath | null>(null);
+  const sharedGlassInfoBoxClass =
+    "evg-clean-hover rounded-xl border border-black/10 bg-gradient-to-br from-black/5 to-black/0 text-left shadow-[0_10px_22px_-18px_rgba(24,24,27,0.28)] backdrop-blur-[14px] hover:border-[#e07a40]/35 hover:shadow-[0_16px_34px_-20px_rgba(198,90,32,0.24)]";
 
   useEffect(() => {
     const el = sectionRef.current;
@@ -524,7 +526,8 @@ export function PricingBoxes() {
                 type="button"
                 onClick={() => setSelectedPath((prev) => (prev === "service" ? null : "service"))}
                 className={cn(
-                  "evg-clean-hover rounded-xl border border-black/10 bg-gradient-to-br from-black/5 to-black/0 p-4 text-left backdrop-blur-[14px] hover:border-[#e07a40]/35 hover:shadow-[0_16px_34px_-20px_rgba(198,90,32,0.24)]",
+                  sharedGlassInfoBoxClass,
+                  "p-4",
                   selectedPath === "service" && "border-[#e07a40]/45 ring-1 ring-[#e07a40]/40",
                 )}
               >
@@ -539,7 +542,8 @@ export function PricingBoxes() {
                 type="button"
                 onClick={() => setSelectedPath((prev) => (prev === "dashboard" ? null : "dashboard"))}
                 className={cn(
-                  "evg-clean-hover rounded-xl border border-black/10 bg-gradient-to-br from-black/5 to-black/0 p-4 text-left backdrop-blur-[14px] hover:border-[#e07a40]/35 hover:shadow-[0_16px_34px_-20px_rgba(198,90,32,0.24)]",
+                  sharedGlassInfoBoxClass,
+                  "p-4",
                   selectedPath === "dashboard" && "border-[#e07a40]/45 ring-1 ring-[#e07a40]/40",
                 )}
               >
@@ -560,46 +564,48 @@ export function PricingBoxes() {
 
           <div
             className={cn(
-              "overflow-hidden transition-all duration-300 ease-out",
+              "overflow-hidden will-change-[max-height,opacity,transform] transition-[max-height,opacity,transform] duration-500 ease-out motion-reduce:transition-none",
               selectedPath === "service"
-                ? "max-h-[2600px] opacity-100"
-                : "pointer-events-none max-h-0 opacity-0",
+                ? "max-h-[2600px] translate-y-0 scale-100 opacity-100"
+                : "pointer-events-none max-h-0 -translate-y-1 scale-[0.99] opacity-0",
             )}
             aria-hidden={selectedPath !== "service"}
           >
-              <div className="mb-8 flex flex-col items-center gap-4 text-center">
-                <span className="pricing-section-badge section7-badge section7-badge-pulse inline-flex items-center gap-2 rounded-full border border-[rgba(224,122,64,0.35)] bg-[rgba(224,122,64,0.15)] px-4 py-1.5 text-sm font-medium text-[#c65a20] pricing-slide-in">
-                  <span aria-hidden>✦</span>
-                  Aktuelle Angebote
-                </span>
-                <h3 className="pricing-slide-in pricing-slide-in-delay-1 text-2xl font-bold text-zinc-800 sm:text-3xl md:text-zinc-900">
-                  Pakete & Preise
-                </h3>
-              </div>
+              <div className="evg-clean-hover mb-8 rounded-2xl border border-black/10 bg-gradient-to-br from-black/5 to-black/0 p-4 shadow-[0_14px_30px_-20px_rgba(24,24,27,0.26)] backdrop-blur-[14px] hover:border-[#e07a40]/35 hover:shadow-[0_16px_34px_-20px_rgba(198,90,32,0.24)] md:mb-9 md:p-5">
+                <div className="mb-6 flex flex-col items-center gap-4 text-center">
+                  <span className="pricing-section-badge section7-badge section7-badge-pulse inline-flex items-center gap-2 rounded-full border border-[rgba(224,122,64,0.35)] bg-[rgba(224,122,64,0.15)] px-4 py-1.5 text-sm font-medium text-[#c65a20] pricing-slide-in">
+                    <span aria-hidden>✦</span>
+                    Aktuelle Angebote
+                  </span>
+                  <h3 className="pricing-slide-in pricing-slide-in-delay-1 text-2xl font-bold text-zinc-800 sm:text-3xl md:text-zinc-900">
+                    Pakete & Preise
+                  </h3>
+                </div>
 
-              <div className="mb-6 grid gap-2 md:mb-7 md:grid-cols-3 md:gap-3">
-                {PRICING_DESKTOP_ORDER.map((pkgIndex) => {
-                  const pkg = PRICING_PACKAGES[pkgIndex]!;
-                  return (
-                    <article
-                      key={`fit-${pkg.name}`}
-                      className={cn(
-                        "rounded-lg border border-black/10 bg-gradient-to-br from-black/5 to-black/0 p-2.5 text-left shadow-[0_10px_22px_-18px_rgba(24,24,27,0.28)] backdrop-blur-[14px] md:rounded-xl",
-                        "md:p-3",
-                        "evg-clean-hover hover:border-[#e07a40]/35 hover:shadow-[0_16px_34px_-20px_rgba(198,90,32,0.24)]",
-                      )}
-                    >
-                      <p className="text-[11px] font-semibold uppercase tracking-[0.08em] text-zinc-800">{pkg.name}</p>
-                      <p className="mt-1 text-xs font-medium leading-snug text-zinc-800">
-                        Für wen: {pkg.fit}
-                      </p>
-                      <p className="mt-0.5 text-xs leading-snug text-zinc-600">
-                        Ergebnis: {pkg.outcome}
-                      </p>
-                      <p className="mt-1 text-[11px] font-medium text-[#c65a20]">{pkg.startIn}</p>
-                    </article>
-                  );
-                })}
+                <div className="grid gap-2 md:grid-cols-3 md:justify-items-center md:gap-3">
+                  {PRICING_DESKTOP_ORDER.map((pkgIndex) => {
+                    const pkg = PRICING_PACKAGES[pkgIndex]!;
+                    return (
+                      <article
+                        key={`fit-${pkg.name}`}
+                        className={cn(
+                          sharedGlassInfoBoxClass,
+                          "rounded-lg p-2.5 md:w-[21rem] md:max-w-none md:rounded-xl",
+                          "md:p-3",
+                        )}
+                      >
+                        <p className="text-[11px] font-semibold uppercase tracking-[0.08em] text-zinc-800">{pkg.name}</p>
+                        <p className="mt-1 text-xs font-medium leading-snug text-zinc-800">
+                          Für wen: {pkg.fit}
+                        </p>
+                        <p className="mt-0.5 text-xs leading-snug text-zinc-600">
+                          Ergebnis: {pkg.outcome}
+                        </p>
+                        <p className="mt-1 text-[11px] font-medium text-[#c65a20]">{pkg.startIn}</p>
+                      </article>
+                    );
+                  })}
+                </div>
               </div>
 
               <div className="md:hidden">
@@ -626,7 +632,7 @@ export function PricingBoxes() {
                     <PricingCard
                       key={pkg.name}
                       {...toPricingCardProps(pkg)}
-                      className={`pricing-card-slide-${position} h-full md:scale-100`}
+                      className={`pricing-card-slide-${position} h-full md:h-[42rem] md:w-[21rem] md:scale-100`}
                     />
                   );
                 })}
@@ -635,10 +641,10 @@ export function PricingBoxes() {
 
           <div
             className={cn(
-              "transition-all duration-300 ease-out",
+              "will-change-[max-height,opacity,transform] transition-[max-height,opacity,transform] duration-500 ease-out motion-reduce:transition-none",
               selectedPath === "dashboard"
-                ? "max-h-[2200px] overflow-visible opacity-100"
-                : "pointer-events-none max-h-0 overflow-hidden opacity-0",
+                ? "max-h-[2200px] translate-y-0 scale-100 overflow-visible opacity-100"
+                : "pointer-events-none max-h-0 -translate-y-1 scale-[0.99] overflow-hidden opacity-0",
             )}
             aria-hidden={selectedPath !== "dashboard"}
           >
@@ -678,7 +684,7 @@ export function PricingBoxes() {
                   <PricingCard
                     key={pkg.name}
                     {...toPricingCardProps(pkg)}
-                    className={`pricing-card-slide-sub-${index} h-full md:scale-100`}
+                    className={`pricing-card-slide-sub-${index} h-full md:h-[42rem] md:w-[21rem] md:scale-100`}
                   />
                   );
                 })}
@@ -688,10 +694,10 @@ export function PricingBoxes() {
 
           <div
             className={cn(
-              "overflow-hidden transition-all duration-300 ease-out",
+              "overflow-hidden will-change-[max-height,opacity,transform] transition-[max-height,opacity,transform] duration-500 ease-out motion-reduce:transition-none",
               selectedPath === "service"
-                ? "max-h-[1700px] opacity-100"
-                : "pointer-events-none max-h-0 opacity-0",
+                ? "max-h-[1700px] translate-y-0 scale-100 opacity-100"
+                : "pointer-events-none max-h-0 -translate-y-1 scale-[0.99] opacity-0",
             )}
             aria-hidden={selectedPath !== "service"}
           >
@@ -733,7 +739,7 @@ export function PricingBoxes() {
                     <PricingCard
                       key={addon.name}
                       {...toAddonPricingCardProps(addon, addonIndex)}
-                      className={`pricing-card-slide-addon-${index} evg-clean-hover`}
+                      className={`pricing-card-slide-addon-${index} evg-clean-hover h-full md:h-[22rem] md:w-[21rem] md:max-w-none`}
                     />
                   );
                 })}
