@@ -103,7 +103,7 @@ export function BrewerySubscriptionPlans({
   return (
     <section className="dashboard-pricing-loop-stack-root relative isolate z-0 mt-8 rounded-xl border border-gray-200 bg-white p-6 shadow-sm dark:border-gray-800 dark:bg-gray-900 md:overflow-hidden md:p-8">
       <div
-        className="dashboard-pricing-loop-shader-backdrop pointer-events-none absolute left-1/2 top-8 z-0 hidden h-[700px] w-[160%] -translate-x-1/2 overflow-visible md:block"
+        className="dashboard-pricing-loop-shader-backdrop pointer-events-none absolute left-1/2 top-8 z-0 block h-[700px] w-[160%] -translate-x-1/2 overflow-visible md:hidden"
         aria-hidden
       >
         <ShaderCanvas

@@ -461,7 +461,7 @@ export function PricingBoxes() {
   const [inView, setInView] = useState(false);
   const [selectedPath, setSelectedPath] = useState<OfferPath | null>(null);
   const sharedGlassInfoBoxClass =
-    "evg-clean-hover rounded-xl border border-black/10 bg-gradient-to-br from-black/5 to-black/0 text-left shadow-[0_10px_22px_-18px_rgba(24,24,27,0.28)] backdrop-blur-[14px] hover:border-[#e07a40]/35 hover:shadow-[0_16px_34px_-20px_rgba(198,90,32,0.24)]";
+    "evg-clean-hover rounded-xl border border-black/12 bg-gradient-to-br from-black/5 to-black/0 text-left shadow-[0_10px_22px_-18px_rgba(24,24,27,0.28)] backdrop-blur-[14px] ring-1 ring-black/[0.04] transition-[border-color,box-shadow,ring-color] duration-200 hover:border-[#c65a20]/55 hover:ring-[#c65a20]/25 hover:shadow-[0_16px_34px_-20px_rgba(198,90,32,0.24)]";
 
   useEffect(() => {
     const el = sectionRef.current;
@@ -500,17 +500,7 @@ export function PricingBoxes() {
   return (
     <section ref={sectionRef} className={`mt-10 ${inView ? "pricing-in-view" : ""}`}>
       <div className="pricing-loop-stack-root relative isolate z-0 rounded-3xl max-md:rounded-none max-md:overflow-visible md:overflow-hidden">
-        <div
-          className="pricing-loop-shader-backdrop pointer-events-none absolute left-1/2 top-10 z-0 hidden h-[760px] w-[160%] -translate-x-1/2 overflow-visible md:block"
-          aria-hidden
-        >
-          <ShaderCanvas
-            mode="contained"
-            shape="ring"
-            backgroundRgb={CONTAINED_SHADER_BG.desktopLight}
-          />
-        </div>
-        <div className="pricing-loop-content-stack relative z-20 transform-gpu px-1 py-4 sm:px-2 md:py-8">
+        <div className="pricing-loop-content-stack relative z-20 px-1 py-4 sm:px-2 md:py-8">
           <div className="evg-clean-hover mb-8 rounded-2xl border border-black/10 bg-gradient-to-br from-black/5 to-black/0 p-4 shadow-[0_14px_30px_-20px_rgba(24,24,27,0.26)] backdrop-blur-[14px] hover:border-[#e07a40]/35 hover:shadow-[0_16px_34px_-20px_rgba(198,90,32,0.24)] max-md:border-transparent max-md:bg-transparent max-md:shadow-none max-md:backdrop-blur-0 md:mb-10 md:p-5">
             <div className="mb-4 flex flex-col items-center gap-2 text-center">
               <span className="inline-flex items-center gap-2 rounded-full border border-[rgba(224,122,64,0.35)] bg-[rgba(224,122,64,0.14)] px-4 py-1.5 text-sm font-medium text-[#c65a20]">
@@ -563,14 +553,27 @@ export function PricingBoxes() {
           </div>
 
           <div
-            className={cn(
-              "overflow-hidden will-change-[max-height,opacity,transform] transition-[max-height,opacity,transform] duration-500 ease-out motion-reduce:transition-none",
-              selectedPath === "service"
-                ? "max-h-[2600px] translate-y-0 scale-100 opacity-100"
-                : "pointer-events-none max-h-0 -translate-y-1 scale-[0.99] opacity-0",
-            )}
+            className="relative isolate"
             aria-hidden={selectedPath !== "service"}
           >
+            <div
+              className="pricing-loop-shader-backdrop pointer-events-none absolute left-1/2 top-10 z-0 hidden h-[620px] w-[160%] -translate-x-1/2 overflow-hidden opacity-40 md:block"
+              aria-hidden
+            >
+              <ShaderCanvas
+                mode="contained"
+                shape="ring"
+                backgroundRgb={CONTAINED_SHADER_BG.desktopLight}
+              />
+            </div>
+            <div
+              className={cn(
+                "relative isolate z-[1] transition-[max-height,opacity,transform] duration-500 ease-in-out motion-reduce:transition-none",
+                selectedPath === "service"
+                  ? "max-h-[2600px] translate-y-0 opacity-100 overflow-visible"
+                  : "pointer-events-none max-h-0 -translate-y-1 opacity-0 overflow-hidden",
+              )}
+            >
               <div className="evg-clean-hover mb-8 rounded-2xl border border-black/10 bg-gradient-to-br from-black/5 to-black/0 p-4 shadow-[0_14px_30px_-20px_rgba(24,24,27,0.26)] backdrop-blur-[14px] hover:border-[#e07a40]/35 hover:shadow-[0_16px_34px_-20px_rgba(198,90,32,0.24)] md:mb-9 md:p-5">
                 <div className="mb-6 flex flex-col items-center gap-4 text-center">
                   <span className="pricing-section-badge section7-badge section7-badge-pulse inline-flex items-center gap-2 rounded-full border border-[rgba(224,122,64,0.35)] bg-[rgba(224,122,64,0.15)] px-4 py-1.5 text-sm font-medium text-[#c65a20] pricing-slide-in">
@@ -590,7 +593,7 @@ export function PricingBoxes() {
                         key={`fit-${pkg.name}`}
                         className={cn(
                           sharedGlassInfoBoxClass,
-                          "rounded-lg p-2.5 md:w-[21rem] md:max-w-none md:rounded-xl",
+                          "relative z-[2] rounded-lg p-2.5 md:w-[21rem] md:max-w-none md:rounded-xl",
                           "md:p-3",
                         )}
                       >
@@ -618,7 +621,7 @@ export function PricingBoxes() {
                     return (
                       <PricingCard
                         {...toPricingCardProps(pkg)}
-                        className={`pricing-card-slide-${index} w-full max-w-sm`}
+                        className={`pricing-card-slide-${index} relative z-[2] w-full max-w-sm`}
                       />
                     );
                   }}
@@ -632,32 +635,62 @@ export function PricingBoxes() {
                     <PricingCard
                       key={pkg.name}
                       {...toPricingCardProps(pkg)}
-                      className={`pricing-card-slide-${position} h-full md:h-[42rem] md:w-[21rem] md:scale-100`}
+                      className={`pricing-card-slide-${position} relative z-[2] h-full md:h-[42rem] md:w-[21rem] md:scale-100`}
                     />
                   );
                 })}
               </div>
+            </div>
           </div>
 
           <div
-            className={cn(
-              "will-change-[max-height,opacity,transform] transition-[max-height,opacity,transform] duration-500 ease-out motion-reduce:transition-none",
-              selectedPath === "dashboard"
-                ? "max-h-[2200px] translate-y-0 scale-100 overflow-visible opacity-100"
-                : "pointer-events-none max-h-0 -translate-y-1 scale-[0.99] overflow-hidden opacity-0",
-            )}
+            className="relative isolate"
             aria-hidden={selectedPath !== "dashboard"}
           >
-            <div className="relative mt-10 overflow-hidden rounded-3xl pt-2">
+            <div
+              className={cn(
+                "relative isolate z-[1] transition-[max-height,opacity,transform] duration-500 ease-in-out motion-reduce:transition-none",
+                selectedPath === "dashboard"
+                  ? "max-h-[2200px] translate-y-0 opacity-100 overflow-visible"
+                  : "pointer-events-none max-h-0 -translate-y-1 opacity-0 overflow-hidden",
+              )}
+            >
+            <div className="relative isolate z-[1] mt-10 rounded-3xl pt-2">
+              <div className="evg-clean-hover mb-8 rounded-2xl border border-black/10 bg-gradient-to-br from-black/5 to-black/0 p-4 shadow-[0_14px_30px_-20px_rgba(24,24,27,0.26)] backdrop-blur-[14px] hover:border-[#e07a40]/35 hover:shadow-[0_16px_34px_-20px_rgba(198,90,32,0.24)] md:mb-9 md:p-5">
+                <div className="mb-6 flex flex-col items-center gap-4 text-center">
+                  <span className="pricing-section-badge section7-badge section7-badge-pulse inline-flex items-center gap-2 rounded-full border border-[rgba(224,122,64,0.35)] bg-[rgba(224,122,64,0.15)] px-4 py-1.5 text-sm font-medium text-[#c65a20] pricing-slide-in">
+                    <span aria-hidden>✦</span>
+                    Neue Abo-Pläne
+                  </span>
+                  <h3 className="pricing-slide-in pricing-slide-in-delay-1 text-2xl font-bold text-zinc-800 sm:text-3xl md:text-zinc-900">
+                    Dashboard Abos
+                  </h3>
+                </div>
 
-              <div className="mb-8 flex flex-col items-center gap-3 text-center">
-                <span className="section7-badge section7-badge-pulse inline-flex items-center gap-2 rounded-full border border-[rgba(224,122,64,0.35)] bg-[rgba(224,122,64,0.15)] px-4 py-1.5 text-sm font-medium text-[#c65a20]">
-                  <span aria-hidden>✦</span>
-                  Neue Abo-Pläne
-                </span>
-                <h3 className="text-2xl font-bold text-zinc-800 sm:text-3xl md:text-zinc-900">
-                  Dashboard Abos
-                </h3>
+                <div className="grid gap-2 md:grid-cols-3 md:justify-items-center md:gap-3">
+                  {DASHBOARD_DESKTOP_ORDER.map((pkgIndex) => {
+                    const pkg = DASHBOARD_SUBSCRIPTION_PACKAGES[pkgIndex]!;
+                    return (
+                      <article
+                        key={`fit-dashboard-${pkg.name}`}
+                        className={cn(
+                          sharedGlassInfoBoxClass,
+                          "relative z-[2] rounded-lg p-2.5 md:w-[21rem] md:max-w-none md:rounded-xl",
+                          "md:p-3",
+                        )}
+                      >
+                        <p className="text-[11px] font-semibold uppercase tracking-[0.08em] text-zinc-800">{pkg.name}</p>
+                        <p className="mt-1 text-xs font-medium leading-snug text-zinc-800">
+                          Für wen: {pkg.fit}
+                        </p>
+                        <p className="mt-0.5 text-xs leading-snug text-zinc-600">
+                          Ergebnis: {pkg.outcome}
+                        </p>
+                        <p className="mt-1 text-[11px] font-medium text-[#c65a20]">{pkg.startIn}</p>
+                      </article>
+                    );
+                  })}
+                </div>
               </div>
 
               <div className="md:hidden">
@@ -670,7 +703,7 @@ export function PricingBoxes() {
                     return (
                       <PricingCard
                         {...toPricingCardProps(pkg)}
-                        className={`pricing-card-slide-sub-${index} w-full max-w-sm`}
+                        className={`pricing-card-slide-sub-${index} relative z-[2] w-full max-w-sm`}
                       />
                     );
                   }}
@@ -684,20 +717,21 @@ export function PricingBoxes() {
                   <PricingCard
                     key={pkg.name}
                     {...toPricingCardProps(pkg)}
-                    className={`pricing-card-slide-sub-${index} h-full md:h-[42rem] md:w-[21rem] md:scale-100`}
+                    className={`pricing-card-slide-sub-${index} relative z-[2] h-full md:h-[42rem] md:w-[21rem] md:scale-100`}
                   />
                   );
                 })}
               </div>
             </div>
+            </div>
           </div>
 
           <div
             className={cn(
-              "overflow-hidden will-change-[max-height,opacity,transform] transition-[max-height,opacity,transform] duration-500 ease-out motion-reduce:transition-none",
+              "will-change-[max-height,opacity,transform] transition-[max-height,opacity,transform] duration-500 ease-out motion-reduce:transition-none",
               selectedPath === "service"
-                ? "max-h-[1700px] translate-y-0 scale-100 opacity-100"
-                : "pointer-events-none max-h-0 -translate-y-1 scale-[0.99] opacity-0",
+                ? "max-h-[1700px] translate-y-0 scale-100 overflow-visible opacity-100"
+                : "pointer-events-none max-h-0 -translate-y-1 scale-[0.99] overflow-hidden opacity-0",
             )}
             aria-hidden={selectedPath !== "service"}
           >
@@ -725,7 +759,7 @@ export function PricingBoxes() {
                     return (
                       <PricingCard
                         {...toAddonPricingCardProps(addon, index)}
-                        className={`pricing-card-slide-addon-${index} evg-clean-hover w-full max-w-[300px]`}
+                        className={`pricing-card-slide-addon-${index} evg-clean-hover relative z-[2] w-full max-w-[300px]`}
                       />
                     );
                   }}
@@ -739,7 +773,7 @@ export function PricingBoxes() {
                     <PricingCard
                       key={addon.name}
                       {...toAddonPricingCardProps(addon, addonIndex)}
-                      className={`pricing-card-slide-addon-${index} evg-clean-hover h-full md:h-[22rem] md:w-[21rem] md:max-w-none`}
+                      className={`pricing-card-slide-addon-${index} evg-clean-hover relative z-[2] h-full md:h-[22rem] md:w-[21rem] md:max-w-none`}
                     />
                   );
                 })}

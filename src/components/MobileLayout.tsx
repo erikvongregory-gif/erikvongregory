@@ -37,7 +37,7 @@ const SECTION4_ITEMS = [
 
 export function MobileLayout() {
   const { heroReady } = useLoading();
-  const [openSolutionIndex, setOpenSolutionIndex] = useState<number>(0);
+  const [openSolutionIndex, setOpenSolutionIndex] = useState<number>(-1);
   const [showSection4Shader, setShowSection4Shader] = useState(false);
 
   useEffect(() => {
@@ -146,43 +146,41 @@ export function MobileLayout() {
           </h2>
           <div className="mx-auto max-w-2xl space-y-3">
             {SECTION4_ITEMS.map((item, i) => (
-              <ScrollReveal key={item.title} delay={i * 90}>
-                <div className="section4-mobile-card group rounded-2xl px-4 py-3 transition-all duration-300">
-                  <button
-                    type="button"
-                    onClick={() => setOpenSolutionIndex((prev) => (prev === i ? -1 : i))}
-                    aria-expanded={openSolutionIndex === i}
-                    className="flex w-full items-center gap-4 rounded-xl px-1 py-1 text-left focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-orange-400/70 focus-visible:ring-offset-2 focus-visible:ring-offset-transparent"
+              <div key={item.title} className="section4-mobile-card group rounded-2xl px-4 py-3 transition-all duration-300">
+                <button
+                  type="button"
+                  onClick={() => setOpenSolutionIndex((prev) => (prev === i ? -1 : i))}
+                  aria-expanded={openSolutionIndex === i}
+                  className="flex w-full items-center gap-4 rounded-xl px-1 py-1 text-left focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-orange-400/70 focus-visible:ring-offset-2 focus-visible:ring-offset-transparent"
+                >
+                  <span
+                    className={`section4-icon-wrap flex h-11 w-11 shrink-0 items-center justify-center rounded-xl text-zinc-600 transition-colors section4-icon-${item.icon}`}
+                    aria-hidden
                   >
-                    <span
-                      className={`section4-icon-wrap flex h-11 w-11 shrink-0 items-center justify-center rounded-xl text-zinc-600 transition-colors section4-icon-${item.icon}`}
-                      aria-hidden
-                    >
-                      {renderSection4Icon(item.icon)}
-                    </span>
-                    <div className="min-w-0 flex-1">
-                      <h3 className="text-base font-semibold leading-tight text-zinc-900">{item.title}</h3>
-                    </div>
-                    <span
-                      className={`text-[#c65a20] transition-transform duration-300 ${openSolutionIndex === i ? "rotate-180" : ""}`}
-                      aria-hidden
-                    >
-                      <svg className="h-5 w-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                        <path d="m6 9 6 6 6-6" />
-                      </svg>
-                    </span>
-                  </button>
-                  <div
-                    className={`grid transition-all duration-300 ease-out ${openSolutionIndex === i ? "grid-rows-[1fr] pt-2" : "grid-rows-[0fr] pt-0"}`}
+                    {renderSection4Icon(item.icon)}
+                  </span>
+                  <div className="min-w-0 flex-1">
+                    <h3 className="text-base font-semibold leading-tight text-zinc-900">{item.title}</h3>
+                  </div>
+                  <span
+                    className={`text-[#c65a20] transition-transform duration-300 ${openSolutionIndex === i ? "rotate-180" : ""}`}
+                    aria-hidden
                   >
-                    <div className="overflow-hidden">
-                      <p className="pl-[3.6rem] pr-1 text-sm leading-relaxed text-zinc-600">
-                        {item.text}
-                      </p>
-                    </div>
+                    <svg className="h-5 w-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                      <path d="m6 9 6 6 6-6" />
+                    </svg>
+                  </span>
+                </button>
+                <div
+                  className={`grid transition-all duration-300 ease-out ${openSolutionIndex === i ? "grid-rows-[1fr] pt-2" : "grid-rows-[0fr] pt-0"}`}
+                >
+                  <div className="overflow-hidden">
+                    <p className="pl-[3.6rem] pr-1 text-sm leading-relaxed text-zinc-600">
+                      {item.text}
+                    </p>
                   </div>
                 </div>
-              </ScrollReveal>
+              </div>
             ))}
           </div>
           </ScrollReveal>

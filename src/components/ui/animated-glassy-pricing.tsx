@@ -326,14 +326,14 @@ export const PricingCard = ({
 }: PricingCardProps) => {
   /* Hover: nur minimaler Lift (translateY), kein Zoom – kurz, ease-out, dezenter Schatten. */
   const cardClasses = cn(
-    "relative z-0 flex min-w-0 flex-1 flex-col rounded-[var(--ui-radius-lg)] border border-black/10 bg-gradient-to-br from-black/5 to-black/0 shadow-[var(--ui-shadow-soft)] backdrop-blur-[14px]",
+    "relative z-[2] flex min-w-0 flex-1 flex-col rounded-[var(--ui-radius-lg)] border border-black/10 bg-white/80 shadow-[var(--ui-shadow-soft)] backdrop-blur-[14px] backdrop-blur-[0.5px]",
     "dark:border-white/10 dark:from-white/10 dark:to-white/5 dark:backdrop-brightness-[0.91]",
-    "evg-clean-hover transform-gpu will-change-transform transition-[transform,box-shadow,border-color] ease-[var(--ui-motion-ease)]",
+    "evg-clean-hover transform-gpu transition-[transform,box-shadow,border-color] ease-[var(--ui-motion-ease)]",
     compact
       ? "w-full max-w-[280px] px-5 py-6 sm:max-w-[300px]"
       : "max-w-xs px-7 py-8",
     isPopular
-      ? "relative max-md:scale-100 md:scale-105 shadow-[var(--ui-shadow-accent)] ring-1 ring-[#e07a40]/30 dark:from-white/20 dark:to-white/10 dark:border-[#c65a20]/45 hover:z-10 hover:border-[#e07a40]/35 hover:shadow-[var(--ui-shadow-accent-hover)] dark:hover:border-white/20 motion-reduce:transition-none motion-reduce:hover:translate-y-0"
+      ? "relative z-[2] max-md:scale-100 md:translate-y-[-4px] shadow-[var(--ui-shadow-accent)] ring-1 ring-[#e07a40]/30 dark:from-white/20 dark:to-white/10 dark:border-[#c65a20]/45 hover:z-10 hover:border-[#e07a40]/35 hover:shadow-[var(--ui-shadow-accent-hover)] dark:hover:border-white/20 motion-reduce:transition-none motion-reduce:hover:translate-y-0"
       : "hover:z-10 hover:border-[#e07a40]/35 hover:shadow-[0_16px_34px_-20px_rgba(198,90,32,0.24)] dark:hover:border-white/20 motion-reduce:transition-none motion-reduce:hover:translate-y-0",
     className,
   );
