@@ -572,9 +572,9 @@ export function HeaderLogin({ variant, className }: HeaderLoginProps) {
 
   return (
     <div
-      className={cn("flex flex-col gap-2 border-t border-zinc-100 bg-zinc-50/50 px-4 py-3", className)}
+      className={cn("flex flex-col gap-2 border-t border-white/10 bg-transparent px-4 py-3", className)}
     >
-      <p className="text-[11px] font-semibold uppercase tracking-[0.12em] text-neutral-500">
+      <p className="text-[11px] font-semibold uppercase tracking-[0.12em] text-zinc-400">
         Brauerei-Bereich
       </p>
       <Dialog open={open} onOpenChange={setOpen}>
@@ -584,7 +584,7 @@ export function HeaderLogin({ variant, className }: HeaderLoginProps) {
               asChild
               size="sm"
               variant="outline"
-              className="h-10 w-full rounded-full border border-black/10 bg-gradient-to-br from-black/5 to-black/0 px-4 text-zinc-900 shadow-[0_10px_22px_-18px_rgba(24,24,27,0.28)] backdrop-blur-[14px] transition duration-300 hover:-translate-y-0.5 hover:border-[#e07a40]/35 hover:shadow-[0_16px_34px_-20px_rgba(198,90,32,0.24)]"
+              className="h-10 w-full rounded-full border border-white/10 bg-white/5 px-4 text-white shadow-none transition hover:bg-white/10"
               role="menuitem"
             >
               <Link href="/dashboard">Zum Dashboard</Link>
@@ -594,7 +594,7 @@ export function HeaderLogin({ variant, className }: HeaderLoginProps) {
                 asChild
                 size="sm"
                 variant="outline"
-                className="h-10 w-full rounded-full border border-black/10 bg-gradient-to-br from-black/5 to-black/0 px-4 text-zinc-900 shadow-[0_10px_22px_-18px_rgba(24,24,27,0.28)] backdrop-blur-[14px] transition duration-300 hover:-translate-y-0.5 hover:border-[#e07a40]/35 hover:shadow-[0_16px_34px_-20px_rgba(198,90,32,0.24)]"
+                className="h-10 w-full rounded-full border border-white/10 bg-white/5 px-4 text-white shadow-none transition hover:bg-white/10"
                 role="menuitem"
               >
                 <Link href="/dashboard">Admin Center</Link>
@@ -605,7 +605,7 @@ export function HeaderLogin({ variant, className }: HeaderLoginProps) {
                 type="submit"
                 size="sm"
                 variant="outline"
-                className="h-10 w-full rounded-full border border-black/10 bg-gradient-to-br from-black/5 to-black/0 px-4 text-zinc-900 shadow-[0_10px_22px_-18px_rgba(24,24,27,0.28)] backdrop-blur-[14px] transition duration-300 hover:-translate-y-0.5 hover:border-[#e07a40]/35 hover:shadow-[0_16px_34px_-20px_rgba(198,90,32,0.24)]"
+                className="h-10 w-full rounded-full border border-white/10 bg-white/5 px-4 text-white shadow-none transition hover:bg-white/10"
                 role="menuitem"
               >
                 Abmelden
@@ -618,7 +618,7 @@ export function HeaderLogin({ variant, className }: HeaderLoginProps) {
               type="button"
               size="sm"
               variant="outline"
-              className="h-10 w-full rounded-full border-zinc-300 bg-white px-4 text-zinc-900 shadow-sm hover:bg-zinc-100"
+              className="h-10 w-full rounded-full border-white/10 bg-white/5 px-4 text-white shadow-none hover:bg-white/10"
               onClick={() => {
                 setMode(twoFARequired ? "code" : "signin");
               }}

@@ -262,7 +262,7 @@ export function ScrollHeader() {
 
           {dropdownOpen ? (
             <div
-              className="absolute right-0 top-full z-[110] mt-1.5 min-w-[12.5rem] overflow-hidden rounded-lg border border-zinc-200 bg-white py-1 shadow-lg"
+              className="absolute right-0 top-full z-[110] mt-2 min-w-[14.5rem] overflow-hidden rounded-2xl border border-white/10 bg-[#12151b] py-2 text-white shadow-[0_24px_40px_-24px_rgba(0,0,0,0.9)]"
               role="menu"
             >
               {GLOW_NAV_ITEMS.map(({ href, label }) => {
@@ -276,9 +276,9 @@ export function ScrollHeader() {
                       e.preventDefault();
                       handleNavClick(href);
                     }}
-                    className="block px-4 py-2.5 text-[15px] text-neutral-800 focus-visible:bg-zinc-50 focus-visible:outline-none"
+                    className="block rounded-lg px-4 py-2.5 text-[15px] text-zinc-200 transition hover:bg-white/10 focus-visible:bg-white/10 focus-visible:outline-none"
                     style={
-                      isActive ? { color: "#c65a20", fontWeight: 600 } : undefined
+                      isActive ? { color: "#c8ff26", fontWeight: 600 } : undefined
                     }
                   >
                     {label}
@@ -287,6 +287,7 @@ export function ScrollHeader() {
               })}
               <HeaderLogin
                 variant="mobile"
+                className="mt-2 border-t border-white/10 bg-transparent px-3 pb-2 pt-3"
               />
             </div>
           ) : null}

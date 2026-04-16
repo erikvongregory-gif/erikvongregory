@@ -59,7 +59,7 @@ interface TextareaProps extends React.TextareaHTMLAttributes<HTMLTextAreaElement
 const Textarea = React.forwardRef<HTMLTextAreaElement, TextareaProps>(({ className, ...props }, ref) => (
   <textarea
     className={cn(
-      "min-h-[56px] w-full resize-none rounded-md border-none bg-transparent px-3 py-2.5 text-base leading-5 text-gray-100 placeholder:text-gray-400 sm:min-h-[44px] focus-visible:outline-none focus-visible:ring-0 disabled:cursor-not-allowed disabled:opacity-50",
+      "min-h-[64px] w-full resize-none rounded-md border-none bg-transparent px-3 py-3 text-base leading-6 text-gray-100 placeholder:text-gray-400 sm:min-h-[44px] sm:py-2.5 sm:leading-5 focus-visible:outline-none focus-visible:ring-0 disabled:cursor-not-allowed disabled:opacity-50",
       className,
     )}
     ref={ref}

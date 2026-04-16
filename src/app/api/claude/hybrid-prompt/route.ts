@@ -37,6 +37,39 @@ function parseJsonObject(text: string): Record<string, unknown> | null {
   }
 }
 
+const ANTI_GENERIC_MASTER_BLOCK = [
+  "Anti-generic master directives (must be reflected in final prompt):",
+  "- Force a distinct brand world: include concrete brand-coded visual anchors (packaging details, color accents, serving context, and mood signatures).",
+  "- Avoid stock-photo look: no generic crowd-only scenes, no vague backgrounds, no overused ad clichés.",
+  "- Lock subject continuity: keep the same person identity and wardrobe logic across perspective variants.",
+  "- Require scene specificity: add at least 3 concrete environmental micro-details (surface textures, weather/light traces, venue cues, props).",
+  "- Require camera authorship: explicit lens range, camera height/angle, framing intent, and depth-of-field behavior.",
+  "- Require tactile realism: skin, fabric, glass, foam, condensation, and ground textures should read physically plausible at close inspection.",
+  "- Keep constraints tight and commercial-grade while avoiding repetitive buzzword stuffing.",
+].join("\n");
+
+function buildLocalFallbackPrompt(initialInput: string, history: Array<{ question: string; answer: string }>): string {
+  const followUps = history
+    .map((item) => `- ${item.question}: ${item.answer}`)
+    .join("\n");
+
+  return [
+    "Create a photorealistic commercial beer campaign image.",
+    `Core request: ${initialInput}.`,
+    followUps ? `Collected follow-up details:\n${followUps}` : "",
+    "Mandatory constraints:",
+    "- Hyper-realistic adult humans with natural anatomy and skin texture.",
+    "- Preserve subject identity consistency (face, hair, body proportions, wardrobe details).",
+    "- Physically plausible environment and water behavior; avoid generic stock-photo backgrounds.",
+    "- If pouring is shown: liquid continuity must be physically consistent (bottle volume vs glass fill).",
+    "- Premium ad photography: high dynamic range, realistic micro-textures, cinematic color grading.",
+    "- Camera/lens, composition, and lighting should be explicit and production-ready.",
+    "- Anti-generic lock: avoid stock look by using specific environmental cues, brand-coded styling, and authored camera direction.",
+  ]
+    .filter(Boolean)
+    .join("\n");
+}
+
 export async function POST(req: Request) {
   try {
     const rateError = await enforceRateLimitPersistent(req, {
@@ -59,17 +92,24 @@ export async function POST(req: Request) {
       return NextResponse.json({ error: "Nicht angemeldet." }, { status: 401 });
     }
 
-    const apiKey = process.env.ANTHROPIC_API_KEY;
-    if (!apiKey) {
-      return NextResponse.json({ error: "ANTHROPIC_API_KEY fehlt." }, { status: 500 });
-    }
-
     const parsed = requestSchema.safeParse(await req.json());
     if (!parsed.success) {
       return NextResponse.json({ error: "Ungültige Anfrage." }, { status: 400 });
     }
 
     const { initialInput, history, questionCount } = parsed.data;
+    const apiKey = process.env.ANTHROPIC_API_KEY;
+    if (!apiKey) {
+      return NextResponse.json(
+        {
+          status: "complete",
+          prompt: buildLocalFallbackPrompt(initialInput, history),
+          warning: "Claude ist nicht konfiguriert (ANTHROPIC_API_KEY fehlt). Lokaler Fallback wurde verwendet.",
+        },
+        { status: 200 },
+      );
+    }
+
     const anthropic = new Anthropic({ apiKey });
     const requiredFields = [
       "bildtyp",
@@ -96,7 +136,8 @@ export async function POST(req: Request) {
         "Final prompt must be in English and production-ready for image generation. " +
         "When status=complete, the prompt must be highly detailed (at least 180 words) and include: " +
         "scene setup, product and glass constraints, subject styling, camera/lens, lighting, composition, texture realism, color palette, and quality constraints. " +
-        "Avoid short generic prompts.",
+        "Avoid short generic prompts.\n\n" +
+        ANTI_GENERIC_MASTER_BLOCK,
       messages: [
         {
           role: "user",
@@ -123,6 +164,7 @@ export async function POST(req: Request) {
             "- Always include a human realism directive in the final prompt: hyper-realistic adult humans, natural anatomy/proportions, and explicit anti-artifact constraints for faces/hands/skin.",
             "- Always include an environment realism directive for outdoor scenes: physically plausible water behavior, layered background depth, and anti-generic/no-stock-like scenery constraints.",
             "- Always include liquid continuity constraints for pouring scenes: bottle volume and glass fill must be physically consistent (no near-full bottle when glass is nearly full).",
+            "- Always enforce the anti-generic master directives: distinctive brand anchors, specific scene details, and authored camera intent.",
           ].join("\n"),
         },
       ],

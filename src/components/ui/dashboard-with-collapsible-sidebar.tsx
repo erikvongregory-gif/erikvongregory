@@ -1069,6 +1069,12 @@ const ExampleContent = ({ userEmail, userName, selectedTab, setSelectedTab, isAd
     }
   };
 
+  const getMediaAssetUrl = (item: MediaLibraryItem): string => {
+    // Keep already-proxied URLs unchanged; proxy direct provider URLs through our API.
+    if (item.imageUrl.startsWith("/api/kie/download?")) return item.imageUrl;
+    return `/api/kie/download?url=${encodeURIComponent(item.imageUrl)}&format=${item.outputFormat}&taskId=${encodeURIComponent(item.id)}`;
+  };
+
   const downloadGeneratedPreview = async (url: string, index: number) => {
     try {
       const response = await fetch(url);
@@ -1727,7 +1733,7 @@ const ExampleContent = ({ userEmail, userName, selectedTab, setSelectedTab, isAd
               </div>
             </div>
           ) : null}
-          <div data-onboarding="content-workflow" className="relative mx-auto flex min-h-[calc(100vh-5.5rem)] max-w-5xl flex-col items-center justify-center px-6 pb-36 pt-8 text-center sm:px-10">
+          <div data-onboarding="content-workflow" className="relative mx-auto flex min-h-[calc(100dvh-4.75rem)] max-w-5xl flex-col items-center justify-start px-4 pb-32 pt-2 text-center sm:min-h-[calc(100vh-5.5rem)] sm:justify-center sm:px-10 sm:pb-36 sm:pt-8">
               {contentGeneratedPreviewUrls.length > 0 ? (
                 <div data-onboarding="content-result" className="mb-6 w-full max-w-5xl rounded-2xl border border-white/15 bg-black/20 p-3 shadow-[0_18px_44px_-28px_rgba(0,0,0,0.85)]">
                   <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
@@ -2053,11 +2059,11 @@ const ExampleContent = ({ userEmail, userName, selectedTab, setSelectedTab, isAd
                             ...prev,
                             [item.id]: `${img.naturalWidth}x${img.naturalHeight}`,
                           }));
-                        img.src = item.imageUrl;
+                        img.src = getMediaAssetUrl(item);
                       }}
                       className="group relative overflow-hidden rounded-xl border border-white/10 bg-[#121827] shadow-sm transition hover:scale-[1.01]"
                     >
-                      <img src={item.imageUrl} alt="Mediathek Bild" className="h-48 w-full object-cover" />
+                      <img src={getMediaAssetUrl(item)} alt="Mediathek Bild" className="h-48 w-full object-cover" />
                     </button>
                   ))}
                 </div>
@@ -2075,7 +2081,7 @@ const ExampleContent = ({ userEmail, userName, selectedTab, setSelectedTab, isAd
                   Schließen
                 </button>
                 <div className="flex-1 rounded-2xl border border-white/15 bg-black/20 p-4">
-                  <img src={selectedMediaItem.imageUrl} alt="Asset Vorschau" className="mx-auto max-h-[84vh] w-auto rounded-xl object-contain" />
+                  <img src={getMediaAssetUrl(selectedMediaItem)} alt="Asset Vorschau" className="mx-auto max-h-[84vh] w-auto rounded-xl object-contain" />
                 </div>
                 <aside className="w-[320px] rounded-2xl border border-white/10 bg-[#12151b] p-4 text-white">
                   <div className="mb-4 flex items-center justify-between">
@@ -2427,7 +2433,7 @@ const ExampleContent = ({ userEmail, userName, selectedTab, setSelectedTab, isAd
   return (
     <div
       className={cn(
-        "relative flex-1 overflow-auto p-4 sm:p-6",
+        "relative flex-1 overflow-auto px-3 pb-[calc(5.75rem+env(safe-area-inset-bottom))] pt-3 sm:p-6",
         isCreationTab ? "bg-[#070b13]" : "bg-gray-50 dark:bg-gray-950",
       )}
     >
@@ -2508,7 +2514,7 @@ const ExampleContent = ({ userEmail, userName, selectedTab, setSelectedTab, isAd
       ) : null}
       <div
         className={cn(
-          "-mx-4 mb-4 px-4 py-3 sm:-mx-6 sm:mb-6 sm:px-6 sticky top-0 z-40 flex w-full items-center justify-between gap-3",
+          "mb-4 sticky top-0 z-40 flex w-full items-center justify-between gap-3 rounded-2xl px-3 pb-3 pt-[max(0.65rem,env(safe-area-inset-top))] backdrop-blur sm:-mx-6 sm:mb-6 sm:rounded-none sm:px-6 sm:py-3",
           isCreationTab
             ? "bg-[#070b13]/95"
             : "border-b border-gray-200/80 bg-gray-50/95 dark:border-gray-800/80 dark:bg-gray-950/90",
@@ -2722,6 +2728,23 @@ const ExampleContent = ({ userEmail, userName, selectedTab, setSelectedTab, isAd
               <button
                 key={`mobile-${title}`}
                 type="button"
+                data-onboarding-nav={
+                  title === "Dashboard"
+                    ? "dashboard"
+                    : title === "Prompt-Erstellung"
+                      ? "prompt"
+                      : title === "Inhalte erstellen"
+                        ? "content"
+                        : title === "Mediathek"
+                          ? "library"
+                          : title === "Abo & Tokens"
+                            ? "billing"
+                            : title === "Team"
+                              ? "team"
+                              : title === "Einstellungen" || title === "Admin Center"
+                                ? "settings"
+                                : "support"
+                }
                 onClick={() => {
                   setSelectedTab(title);
                   setTopNavMenuOpen(false);
@@ -2750,6 +2773,9 @@ const ExampleContent = ({ userEmail, userName, selectedTab, setSelectedTab, isAd
       <div
         className={cn(
           "mb-6 flex flex-col gap-4 sm:mb-8 sm:flex-row sm:items-start sm:justify-between",
+          selectedTab !== "Inhalte erstellen" && selectedTab !== "Prompt-Erstellung" && selectedTab !== "Abo & Tokens"
+            ? ""
+            : "justify-end",
         )}
       >
         {selectedTab !== "Inhalte erstellen" && selectedTab !== "Prompt-Erstellung" && selectedTab !== "Abo & Tokens" ? (
@@ -2767,7 +2793,7 @@ const ExampleContent = ({ userEmail, userName, selectedTab, setSelectedTab, isAd
         ) : null}
         <div className="relative" ref={profileMenuRef}>
           {profileMenuOpen ? (
-            <div className="absolute right-0 top-1 z-50 w-64 overflow-hidden rounded-2xl border border-white/10 bg-[#12151b] text-white shadow-[0_24px_40px_-24px_rgba(0,0,0,0.9)]">
+            <div className="fixed right-3 top-[calc(env(safe-area-inset-top)+3.75rem)] z-[130] w-[min(84vw,20rem)] overflow-hidden rounded-2xl border border-white/10 bg-[#12151b] text-white shadow-[0_24px_40px_-24px_rgba(0,0,0,0.9)] sm:absolute sm:right-0 sm:top-1 sm:w-64">
                 <div className="border-b border-white/5 px-4 py-3">
                   <p className="truncate text-sm font-semibold text-white">{displayName}</p>
                   <p className="text-xs text-zinc-400">Free Plan</p>
@@ -2921,6 +2947,81 @@ const ExampleContent = ({ userEmail, userName, selectedTab, setSelectedTab, isAd
         </div>
       </div>
       {selectedTab !== "Prompt-Erstellung" ? renderTabPanel() : null}
+      <nav
+        className="fixed inset-x-3 bottom-[max(0.6rem,env(safe-area-inset-bottom))] z-[95] rounded-2xl border border-white/10 bg-[#10141d]/95 p-2 shadow-[0_20px_44px_-24px_rgba(0,0,0,0.9)] backdrop-blur md:hidden"
+        aria-label="Mobile Dashboard Navigation"
+      >
+        <div className="grid grid-cols-4 items-end gap-1">
+          <button
+            type="button"
+            onClick={() => {
+              setSelectedTab("Dashboard");
+              setTopNavMenuOpen(false);
+              setProfileMenuOpen(false);
+            }}
+            className={cn(
+              "inline-flex min-h-12 flex-col items-center justify-center gap-1 rounded-xl px-2 text-[11px] font-medium transition",
+              selectedTab === "Dashboard" ? "bg-white/10 text-white" : "text-zinc-400 hover:text-zinc-200",
+            )}
+          >
+            <Home className="h-4 w-4" />
+            Dashboard
+          </button>
+          <button
+            type="button"
+            onClick={() => {
+              setSelectedTab("Prompt-Erstellung");
+              setTopNavMenuOpen(false);
+              setProfileMenuOpen(false);
+            }}
+            className="inline-flex min-h-12 flex-col items-center justify-center gap-1 rounded-xl px-2 text-[11px] font-medium text-zinc-300 transition hover:text-zinc-100"
+          >
+            <Wand2 className="h-4 w-4" />
+            Generieren
+          </button>
+          <button
+            type="button"
+            onClick={() => {
+              setSelectedTab("Mediathek");
+              setTopNavMenuOpen(false);
+              setProfileMenuOpen(false);
+            }}
+            className={cn(
+              "inline-flex min-h-12 flex-col items-center justify-center gap-1 rounded-xl px-2 text-[11px] font-medium transition",
+              selectedTab === "Mediathek" ? "bg-white/10 text-white" : "text-zinc-400 hover:text-zinc-200",
+            )}
+          >
+            <Image className="h-4 w-4" />
+            Mediathek
+          </button>
+          <button
+            type="button"
+            onClick={() => {
+              setProfileMenuOpen((prev) => !prev);
+              setTopNavMenuOpen(false);
+            }}
+            className={cn(
+              "inline-flex min-h-12 flex-col items-center justify-center gap-1 rounded-xl px-2 text-[11px] font-medium transition",
+              profileMenuOpen ? "bg-white/10 text-white" : "text-zinc-400 hover:text-zinc-200",
+            )}
+          >
+            <User className="h-4 w-4" />
+            Profil
+          </button>
+        </div>
+        <button
+          type="button"
+          onClick={() => {
+            setSelectedTab("Inhalte erstellen");
+            setTopNavMenuOpen(false);
+            setProfileMenuOpen(false);
+          }}
+          className="pointer-events-auto absolute left-1/2 top-0 inline-flex h-14 w-14 -translate-x-1/2 -translate-y-1/2 items-center justify-center rounded-2xl bg-[#c8ff26] text-black shadow-[0_12px_30px_-16px_rgba(200,255,38,0.9)] transition hover:scale-[1.03]"
+          aria-label="Direkt zu Inhalte erstellen"
+        >
+          <Sparkles className="h-5 w-5" />
+        </button>
+      </nav>
     </div>
   );
 };

@@ -25,6 +25,17 @@ function clamp(value: number, min: number, max: number) {
   return Math.min(Math.max(value, min), max);
 }
 
+function getVisibleTarget(selector: string): Element | null {
+  const matches = Array.from(document.querySelectorAll(selector));
+  for (const el of matches) {
+    const htmlEl = el as HTMLElement;
+    if (htmlEl.offsetParent !== null || htmlEl.getClientRects().length > 0) {
+      return el;
+    }
+  }
+  return null;
+}
+
 export function OnboardingDialog({ open, onClose, steps, onStepChange }: OnboardingDialogProps) {
   const [activeIndex, setActiveIndex] = React.useState(0);
   const [targetRect, setTargetRect] = React.useState<DOMRect | null>(null);
@@ -61,13 +72,13 @@ export function OnboardingDialog({ open, onClose, steps, onStepChange }: Onboard
     let frame = 0;
     let timeout = 0;
     const updateRect = () => {
-      const el = document.querySelector(step.targetSelector);
+      const el = getVisibleTarget(step.targetSelector);
       if (!el) {
         setTargetRect(null);
         return;
       }
       if (window.innerWidth < MOBILE_BREAKPOINT) {
-        el.scrollIntoView({ block: "center", behavior: "smooth" });
+        el.scrollIntoView({ block: "nearest", behavior: "smooth" });
       }
       setTargetRect(el.getBoundingClientRect());
     };
@@ -189,10 +200,12 @@ export function OnboardingDialog({ open, onClose, steps, onStepChange }: Onboard
             style={
               isMobile
                 ? {
+                    left: "12px",
+                    right: "12px",
+                    width: "auto",
                     bottom: "max(10px, env(safe-area-inset-bottom))",
                     top: "auto",
-                    width: "min(86vw, 320px)",
-                    maxHeight: "34dvh",
+                    maxHeight: "44dvh",
                   }
                 : undefined
             }
