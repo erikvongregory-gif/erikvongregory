@@ -671,6 +671,7 @@ const ExampleContent = ({ userEmail, userName, selectedTab, setSelectedTab, isAd
   const [contentResolution, setContentResolution] = useState<"1K" | "2K" | "4K">("1K");
   const bellMenuRef = useRef<HTMLDivElement | null>(null);
   const profileMenuRef = useRef<HTMLDivElement | null>(null);
+  const profileButtonRef = useRef<HTMLButtonElement | null>(null);
   const sessionExpiredHandledRef = useRef(false);
   const displayName = breweryName || profileName || "deine Brauerei";
   const tabTitle = selectedTab;
@@ -842,6 +843,9 @@ const ExampleContent = ({ userEmail, userName, selectedTab, setSelectedTab, isAd
     if (!profileMenuOpen && !bellMenuOpen) return;
     const onPointerDown = (event: MouseEvent) => {
       const target = event.target as Node | null;
+      if (profileButtonRef.current && target && profileButtonRef.current.contains(target)) {
+        return;
+      }
       if (bellMenuRef.current && target && !bellMenuRef.current.contains(target)) {
         setBellMenuOpen(false);
       }
@@ -2697,6 +2701,7 @@ const ExampleContent = ({ userEmail, userName, selectedTab, setSelectedTab, isAd
             ) : null}
           </div>
           <button
+            ref={profileButtonRef}
             type="button"
             onClick={() => setProfileMenuOpen((prev) => !prev)}
             className="relative inline-flex h-10 w-10 items-center justify-center rounded-full p-[2px] leading-none transition hover:scale-[1.02]"
