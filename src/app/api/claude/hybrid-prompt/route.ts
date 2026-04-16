@@ -136,7 +136,7 @@ export async function POST(req: Request) {
         "Final prompt must be in English and production-ready for image generation. " +
         "When status=complete, the prompt must be highly detailed (at least 180 words) and include: " +
         "scene setup, product and glass constraints, subject styling, camera/lens, lighting, composition, texture realism, color palette, and quality constraints. " +
-        "Avoid short generic prompts.\n\n" +
+        "Avoid short generic prompts. Keep constraints concise and integrated; avoid long repetitive MANDATORY lock blocks.\n\n" +
         ANTI_GENERIC_MASTER_BLOCK,
       messages: [
         {
@@ -165,6 +165,7 @@ export async function POST(req: Request) {
             "- Always include an environment realism directive for outdoor scenes: physically plausible water behavior, layered background depth, and anti-generic/no-stock-like scenery constraints.",
             "- Always include liquid continuity constraints for pouring scenes: bottle volume and glass fill must be physically consistent (no near-full bottle when glass is nearly full).",
             "- Always enforce the anti-generic master directives: distinctive brand anchors, specific scene details, and authored camera intent.",
+            "- If user requests headline/text in the visual, instruct clean negative space and post-production text overlay instead of in-image typography rendering.",
           ].join("\n"),
         },
       ],

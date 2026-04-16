@@ -1364,26 +1364,79 @@ const ExampleContent = ({ userEmail, userName, selectedTab, setSelectedTab, isAd
     async (prompt: string, files?: File[]) => {
       const finalPrompt = prompt.trim();
       if (!finalPrompt) return;
-      const peopleRealismLock = [
-        "Human realism lock (MANDATORY): render all people as hyper-realistic adult humans with natural anatomy and true-to-life proportions.",
-        "Faces must be photorealistic: realistic skin texture and pores, natural eyes/eyelids, accurate teeth, believable lips and ears.",
-        "No AI artifacts: no wax/plastic skin, no distorted fingers, no asymmetric eyes, no warped mouth, no duplicate limbs, no uncanny expressions.",
-        "Lighting and skin interaction must be physically plausible with natural shadows, subtle micro-contrast and true optical depth.",
-      ].join(" ");
-      const environmentRealismLock = [
-        "Environment realism lock (MANDATORY): avoid generic stock-like water and background.",
-        "Water must look physically correct with natural wave patterns, depth gradient, local reflections, micro-ripples around the body, and realistic refraction around submerged skin.",
-        "Background must include concrete environmental detail layers (foreground water texture, midground shoreline cues, distant mountain structure) with natural atmospheric perspective.",
-        "No flat or overly smooth water surfaces, no artificial blur blobs, no synthetic CGI-style landscape textures.",
-        "Keep scene-specific cues grounded: weather-consistent light direction, plausible haze, and coherent color temperature across subject, water, and background.",
-      ].join(" ");
-      const liquidContinuityLock = [
-        "Liquid continuity lock (MANDATORY): bottle fill level and poured volume must be physically consistent with glass fill level.",
-        "If the glass is near full, the bottle must visibly show significant volume loss; never show a near-full bottle while the glass is already almost full.",
-        "Respect realistic pouring sequence: plausible stream thickness, foam build-up timing, carbonation, and liquid level progression.",
-        "Do not violate conservation logic between source bottle and target glass.",
-      ].join(" ");
-      const finalPromptWithRealismLock = `${peopleRealismLock}\n\n${environmentRealismLock}\n\n${liquidContinuityLock}\n\n${finalPrompt}`;
+      const normalizedPrompt = finalPrompt.toLowerCase();
+      const hasReferenceImages = Boolean(files?.length);
+      const mentionsWater = /(water|river|lake|ocean|sea|beach|shore|stream|coast)/i.test(normalizedPrompt);
+      const mentionsBottleAndGlass = /(bottle|flasche)/i.test(normalizedPrompt) && /(glass|glas)/i.test(normalizedPrompt);
+      const mentionsPouring = /(pour|pouring|einschenk|einschenken|stream|foam\s*head)/i.test(normalizedPrompt);
+      const requestsBrandFidelity =
+        /(label|etikett|logo|branding|brand|paulaner|hefeweizen|alkoholfrei|text on bottle|bottle text)/i.test(normalizedPrompt);
+      const requestsInImageText =
+        /(overlay text|headline|slogan|typography|text overlay|caption)/i.test(normalizedPrompt) ||
+        /['"][A-Z0-9\s!&'.-]{8,}['"]/.test(finalPrompt);
+
+      const realismGuardrails = [
+        "Render all people as hyper-realistic adults with true anatomy and natural proportions.",
+        "Skin realism is mandatory: visible pores, subtle blemishes, micro skin texture, natural under-eye detail, realistic lips and ears, no beauty-filter look.",
+        "Hands and faces must be artifact-free: no extra fingers, no fused fingers, no asymmetry glitches, no warped teeth or uncanny expressions.",
+        "Use physically plausible photography: coherent light direction, contact shadows, realistic reflections, natural dynamic range, no CGI/plastic rendering.",
+        "Keep the scene specific and non-generic with concrete environmental details and believable material textures.",
+      ];
+
+      if (mentionsWater) {
+        realismGuardrails.push(
+          "Water realism lock: physically correct ripples/reflections/refraction and depth layering; avoid flat, overly smooth, or synthetic water.",
+        );
+      }
+
+      if (mentionsBottleAndGlass && mentionsPouring) {
+        realismGuardrails.push(
+          "Liquid continuity lock: bottle level, poured volume, foam growth, and glass fill must be physically consistent throughout the scene.",
+        );
+      }
+
+      if (hasReferenceImages || requestsBrandFidelity) {
+        realismGuardrails.push(
+          "Reference brand lock: if a reference bottle/label is provided, reproduce its brand identity 1:1 (logo, typography, colors, crest placement, label geometry) without redesign.",
+        );
+        realismGuardrails.push(
+          "Label text must be crisp and legible where visible. No gibberish text, no mirrored letters, no warped or melted typography, no fake substitute branding.",
+        );
+      }
+
+      if (requestsInImageText) {
+        realismGuardrails.push(
+          "Do not render typography directly inside the image. Reserve clean negative space for post-production text overlay instead.",
+        );
+      }
+
+      const negativeConstraints: string[] = [
+        "no waxy/plastic skin",
+        "no uncanny facial proportions",
+        "no extra fingers, fused fingers, malformed hands, or duplicate limbs",
+        "no distorted teeth, warped lips, or asymmetrical eye glitches",
+        "no CGI/3D-render look",
+      ];
+      if (hasReferenceImages || requestsBrandFidelity) {
+        negativeConstraints.push(
+          "no gibberish label text",
+          "no mirrored text",
+          "no melted or stretched typography",
+          "no fake substitute branding",
+        );
+      }
+      if (mentionsWater) {
+        negativeConstraints.push("no flat artificial water texture", "no synthetic smooth water surface");
+      }
+
+      const finalPromptWithRealismLock = [
+        finalPrompt,
+        "",
+        "Generation constraints:",
+        ...realismGuardrails.map((line) => `- ${line}`),
+        "",
+        `Negative prompt: ${negativeConstraints.join(", ")}.`,
+      ].join("\n");
 
       setContentIsGenerating(true);
       setContentGenerationProgress(6);
@@ -1423,6 +1476,7 @@ const ExampleContent = ({ userEmail, userName, selectedTab, setSelectedTab, isAd
               resolution: contentResolution,
               outputFormat: "png",
               referenceImageUrls,
+              strictLabelMode: hasReferenceImages || requestsBrandFidelity,
             }),
           });
 
@@ -1732,7 +1786,7 @@ const ExampleContent = ({ userEmail, userName, selectedTab, setSelectedTab, isAd
                   />
                 </div>
                 <p className="mt-2 text-xs text-zinc-300">
-                  Das kann je nach Queue und Auflösung etwas dauern. Bitte kurz warten.
+                  Das kann je nach Auslastung und Auflösung etwas dauern. Bitte kurz warten.
                 </p>
               </div>
             </div>

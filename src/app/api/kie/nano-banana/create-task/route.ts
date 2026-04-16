@@ -185,6 +185,27 @@ export async function POST(req: Request) {
     }
 
     const uploadedReferenceUrls = await uploadReferenceImagesToKie(apiKey, body.referenceImageUrls);
+    const strictLabelPromptPrefix = body.strictLabelMode
+      ? [
+          "Brand/label fidelity lock (MANDATORY):",
+          "- When a reference image is provided, preserve the exact original brand identity and label layout 1:1.",
+          "- Keep logo mark, typography, color blocks, crest placement, and bottle label geometry authentic and undistorted.",
+          "- Any visible label text must be sharp and readable; no gibberish, mirrored, stretched, or melted lettering.",
+          "- Do not invent substitute branding or alter the original product identity.",
+        ].join("\n")
+      : "";
+    const negativePromptBlock = [
+      "Negative prompt constraints (MANDATORY):",
+      "- no waxy/plastic skin, no uncanny facial geometry",
+      "- no extra/fused fingers, malformed hands, duplicate limbs",
+      "- no distorted teeth/lips/eyes, no asymmetrical face glitches",
+      "- no CGI/3D-render look",
+      "- no gibberish or mirrored label text, no stretched/melted typography",
+      "- no fake substitute branding",
+    ].join("\n");
+    const promptWithLabelLock = strictLabelPromptPrefix
+      ? `${strictLabelPromptPrefix}\n\n${body.prompt.trim()}\n\n${negativePromptBlock}`
+      : `${body.prompt.trim()}\n\n${negativePromptBlock}`;
 
     const upstream = await fetch(`${baseUrl}/api/v1/jobs/createTask`, {
       method: "POST",
@@ -195,7 +216,7 @@ export async function POST(req: Request) {
       body: JSON.stringify({
         model: KIE_MODEL,
         input: {
-          prompt: body.prompt.trim(),
+          prompt: promptWithLabelLock,
           aspect_ratio: body.aspectRatio || "1:1",
           resolution: isFreeTrialRequest ? "1K" : body.resolution || "1K",
           output_format: isFreeTrialRequest ? "jpg" : body.outputFormat || "png",
