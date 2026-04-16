@@ -2514,10 +2514,10 @@ const ExampleContent = ({ userEmail, userName, selectedTab, setSelectedTab, isAd
       ) : null}
       <div
         className={cn(
-          "mb-4 sticky top-0 z-40 flex w-full items-center justify-between gap-3 rounded-2xl px-3 pb-3 pt-[max(0.65rem,env(safe-area-inset-top))] backdrop-blur sm:-mx-6 sm:mb-6 sm:rounded-none sm:px-6 sm:py-3",
+          "mb-4 sticky top-0 z-40 flex w-full items-center justify-between gap-3 rounded-2xl px-3 pb-3 pt-[max(0.65rem,env(safe-area-inset-top))] sm:-mx-6 sm:mb-6 sm:rounded-none sm:px-6 sm:py-3",
           isCreationTab
-            ? "bg-[#070b13]/95"
-            : "border-b border-gray-200/80 bg-gray-50/95 dark:border-gray-800/80 dark:bg-gray-950/90",
+            ? "bg-transparent"
+            : "border-b border-gray-200/80 bg-gray-50/95 backdrop-blur dark:border-gray-800/80 dark:bg-gray-950/90",
         )}
       >
         <div className="flex min-w-0 items-center gap-2 whitespace-nowrap">
