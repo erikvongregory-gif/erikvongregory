@@ -60,7 +60,7 @@ type BildtypOption =
   | "Makro/Detail";
 type StudioStyleOption = "Clean Catalog" | "Premium Hero" | "Macro Commercial";
 
-type PromptBrief = {
+export type PromptBrief = {
   bildtyp: BildtypOption | "";
   studioStyle: StudioStyleOption | "";
   studioProps: string;
@@ -128,6 +128,8 @@ type ImagePromptWorkflowProps = {
   }) => void;
   onFreeTrialConsumed?: () => void;
   onRequireSubscription?: () => void;
+  externalBriefSeed?: Partial<PromptBrief> | null;
+  externalSeedKey?: string;
 };
 
 type PreflightStatus = "green" | "yellow" | "red";
@@ -1699,6 +1701,8 @@ export function ImagePromptWorkflow({
   onBillingStateUpdate,
   onFreeTrialConsumed,
   onRequireSubscription,
+  externalBriefSeed = null,
+  externalSeedKey,
 }: ImagePromptWorkflowProps) {
   const [promptMode, setPromptMode] = useState<"assistant" | "manual">("assistant");
   const [brief, setBrief] = useState<PromptBrief>(initialBrief);
@@ -1734,6 +1738,7 @@ export function ImagePromptWorkflow({
     invalidTotal: number;
   } | null>(null);
   const pollingRunRef = useRef(0);
+  const appliedExternalSeedRef = useRef<string | null>(null);
   const requiresSubscription = !hasActiveSubscription && !hasFreeTrialAvailable;
 
   const resetPromptAssistant = () => {
@@ -1790,6 +1795,22 @@ export function ImagePromptWorkflow({
       return { ...prev, [key]: value };
     });
   };
+
+  useEffect(() => {
+    if (!externalBriefSeed || !externalSeedKey) return;
+    if (appliedExternalSeedRef.current === externalSeedKey) return;
+    appliedExternalSeedRef.current = externalSeedKey;
+    setPromptMode("assistant");
+    setStepIndex(0);
+    setBrief((prev) => {
+      const merged = {
+        ...prev,
+        ...externalBriefSeed,
+        flaschenTyp: normalizeFlaschenTyp((externalBriefSeed.flaschenTyp ?? prev.flaschenTyp) as FlaschenTyp | ""),
+      };
+      return applySceneAutoFixes(merged).brief;
+    });
+  }, [externalBriefSeed, externalSeedKey]);
 
   const selectedStudioProps = useMemo(
     () => brief.studioProps.split(" | ").map((s) => s.trim()).filter(Boolean),

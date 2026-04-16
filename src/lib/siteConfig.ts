@@ -4,7 +4,7 @@
  */
 export const SITE = {
   name: "EvGlab",
-  baseUrl: "https://www.erikvongregory.com",
+  baseUrl: "https://evglab.com",
   defaultTitle: "Das KI-Content-System für Brauereien | EvGlab",
   defaultDescription:
     "EvGlab ist das KI-Content-System für Brauereien: planbare Produktbilder, Kampagnen und Social-Content für mehr Sichtbarkeit, Wiedererkennung und Anfragen.",

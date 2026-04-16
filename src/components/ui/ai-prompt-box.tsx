@@ -5,12 +5,15 @@ import * as TooltipPrimitive from "@radix-ui/react-tooltip";
 import * as DialogPrimitive from "@radix-ui/react-dialog";
 import {
   ArrowUp,
+  Check,
+  ChevronDown,
+  Gem,
   Paperclip,
+  RectangleHorizontal,
   Square,
   X,
-  Globe,
 } from "lucide-react";
-import { motion, AnimatePresence } from "framer-motion";
+import { motion } from "framer-motion";
 
 const cn = (...classes: (string | undefined | null | false)[]) => classes.filter(Boolean).join(" ");
 
@@ -56,7 +59,7 @@ interface TextareaProps extends React.TextareaHTMLAttributes<HTMLTextAreaElement
 const Textarea = React.forwardRef<HTMLTextAreaElement, TextareaProps>(({ className, ...props }, ref) => (
   <textarea
     className={cn(
-      "min-h-[44px] w-full resize-none rounded-md border-none bg-transparent px-3 py-2.5 text-base text-gray-100 placeholder:text-gray-400 focus-visible:outline-none focus-visible:ring-0 disabled:cursor-not-allowed disabled:opacity-50",
+      "min-h-[56px] w-full resize-none rounded-md border-none bg-transparent px-3 py-2.5 text-base leading-5 text-gray-100 placeholder:text-gray-400 sm:min-h-[44px] focus-visible:outline-none focus-visible:ring-0 disabled:cursor-not-allowed disabled:opacity-50",
       className,
     )}
     ref={ref}
@@ -383,6 +386,17 @@ interface PromptInputBoxProps {
   value?: string;
   onValueChange?: (value: string) => void;
   clearOnSend?: boolean;
+  enableTypingPlaceholder?: boolean;
+  typingPhrases?: string[];
+  modelLabel?: string;
+  modelBadgeText?: string;
+  showAspectRatioBadge?: boolean;
+  showResolutionBadge?: boolean;
+  showImageUpload?: boolean;
+  aspectRatio?: "1:1" | "3:4" | "4:5" | "16:9" | "9:16";
+  onAspectRatioChange?: (value: "1:1" | "3:4" | "4:5" | "16:9" | "9:16") => void;
+  resolution?: "1K" | "2K" | "4K";
+  onResolutionChange?: (value: "1K" | "2K" | "4K") => void;
 }
 
 export const PromptInputBox = React.forwardRef<HTMLDivElement, PromptInputBoxProps>((props, ref) => {
@@ -395,6 +409,21 @@ export const PromptInputBox = React.forwardRef<HTMLDivElement, PromptInputBoxPro
     value,
     onValueChange,
     clearOnSend = true,
+    enableTypingPlaceholder = false,
+    typingPhrases = [
+      "Erstelle mir einen Prompt für ein Weizenbier im Biergarten bei golden hour.",
+      "Baue einen hochwertigen Produkt-Prompt für ein Pils in Studio-Optik.",
+      "Schreibe einen Prompt für ein sommerliches Kampagnenmotiv mit Flasche und Glas.",
+    ],
+    modelLabel = "Nano Banana Pro",
+    modelBadgeText = "G",
+    showAspectRatioBadge = true,
+    showResolutionBadge = true,
+    showImageUpload = true,
+    aspectRatio,
+    onAspectRatioChange,
+    resolution,
+    onResolutionChange,
   } = props;
 
   const [internalInput, setInternalInput] = React.useState("");
@@ -406,17 +435,24 @@ export const PromptInputBox = React.forwardRef<HTMLDivElement, PromptInputBoxPro
   const [files, setFiles] = React.useState<File[]>([]);
   const [filePreviews, setFilePreviews] = React.useState<{ [key: string]: string }>({});
   const [selectedImage, setSelectedImage] = React.useState<string | null>(null);
-  const [showSearch, setShowSearch] = React.useState(false);
+  const [selectedAspectRatio, setSelectedAspectRatio] = React.useState<"1:1" | "3:4" | "4:5" | "16:9" | "9:16">("3:4");
+  const [selectedResolution, setSelectedResolution] = React.useState<"1K" | "2K" | "4K">("1K");
+  const [aspectMenuOpen, setAspectMenuOpen] = React.useState(false);
+  const [resolutionMenuOpen, setResolutionMenuOpen] = React.useState(false);
+  const [typingPhraseIndex, setTypingPhraseIndex] = React.useState(0);
+  const [typingCharIndex, setTypingCharIndex] = React.useState(0);
+  const [typingForward, setTypingForward] = React.useState(true);
   const uploadInputRef = React.useRef<HTMLInputElement>(null);
   const promptBoxRef = React.useRef<HTMLDivElement>(null);
-
-  const handleToggleChange = () => {
-    setShowSearch((prev) => !prev);
-  };
+  const aspectMenuRef = React.useRef<HTMLDivElement>(null);
+  const resolutionMenuRef = React.useRef<HTMLDivElement>(null);
+  const currentAspectRatio = aspectRatio ?? selectedAspectRatio;
+  const currentResolution = resolution ?? selectedResolution;
 
   const isImageFile = (file: File) => file.type.startsWith("image/");
 
   const processFile = (file: File) => {
+    if (!showImageUpload) return;
     if (!isImageFile(file)) {
       console.log("Only image files are allowed");
       return;
@@ -443,13 +479,14 @@ export const PromptInputBox = React.forwardRef<HTMLDivElement, PromptInputBoxPro
 
   const handleDrop = React.useCallback(
     (e: React.DragEvent) => {
+      if (!showImageUpload) return;
       e.preventDefault();
       e.stopPropagation();
       const droppedFiles = Array.from(e.dataTransfer.files);
       const imageFiles = droppedFiles.filter((file) => isImageFile(file));
       if (imageFiles.length > 0) processFile(imageFiles[0]);
     },
-    [processFile],
+    [processFile, showImageUpload],
   );
 
   const handleRemoveFile = (index: number) => {
@@ -461,6 +498,7 @@ export const PromptInputBox = React.forwardRef<HTMLDivElement, PromptInputBoxPro
   const openImageModal = (imageUrl: string) => setSelectedImage(imageUrl);
 
   const handlePaste = React.useCallback((e: ClipboardEvent) => {
+    if (!showImageUpload) return;
     const items = e.clipboardData?.items;
     if (!items) return;
     for (let i = 0; i < items.length; i += 1) {
@@ -473,21 +511,64 @@ export const PromptInputBox = React.forwardRef<HTMLDivElement, PromptInputBoxPro
         }
       }
     }
-  }, [processFile]);
+  }, [processFile, showImageUpload]);
 
   React.useEffect(() => {
     document.addEventListener("paste", handlePaste);
     return () => document.removeEventListener("paste", handlePaste);
   }, [handlePaste]);
 
+  React.useEffect(() => {
+    const handleClickOutside = (event: MouseEvent) => {
+      if (aspectMenuRef.current && !aspectMenuRef.current.contains(event.target as Node)) {
+        setAspectMenuOpen(false);
+      }
+      if (!resolutionMenuRef.current) return;
+      if (!resolutionMenuRef.current.contains(event.target as Node)) {
+        setResolutionMenuOpen(false);
+      }
+    };
+
+    document.addEventListener("mousedown", handleClickOutside);
+    return () => document.removeEventListener("mousedown", handleClickOutside);
+  }, []);
+
+  React.useEffect(() => {
+    if (!enableTypingPlaceholder || typingPhrases.length === 0) return;
+    if (input.trim().length > 0) return;
+
+    const currentPhrase = typingPhrases[typingPhraseIndex % typingPhrases.length] ?? "";
+    const reachedEnd = typingCharIndex >= currentPhrase.length;
+    const reachedStart = typingCharIndex <= 0;
+    const pauseMs = reachedEnd ? 1300 : reachedStart && !typingForward ? 500 : 0;
+    const timeoutMs = pauseMs || (typingForward ? 32 : 18);
+
+    const timer = window.setTimeout(() => {
+      if (typingForward) {
+        if (typingCharIndex < currentPhrase.length) {
+          setTypingCharIndex((prev) => prev + 1);
+        } else {
+          setTypingForward(false);
+        }
+      } else if (typingCharIndex > 0) {
+        setTypingCharIndex((prev) => prev - 1);
+      } else {
+        setTypingForward(true);
+        setTypingPhraseIndex((prev) => (prev + 1) % typingPhrases.length);
+      }
+    }, timeoutMs);
+
+    return () => window.clearTimeout(timer);
+  }, [enableTypingPlaceholder, input, typingCharIndex, typingForward, typingPhraseIndex, typingPhrases]);
+
+  const animatedPlaceholder = enableTypingPlaceholder && typingPhrases.length > 0
+    ? `${typingPhrases[typingPhraseIndex % typingPhrases.length]?.slice(0, typingCharIndex) ?? ""}${input.trim().length === 0 ? "▌" : ""}`
+    : placeholder;
+
   const handleSubmit = () => {
     if (disabled) return;
     if (input.trim() || files.length > 0) {
-      let messagePrefix = "";
-      if (showSearch) messagePrefix = "[Search: ";
-
-      const formattedInput = messagePrefix ? `${messagePrefix}${input}]` : input;
-      onSend(formattedInput, files);
+      onSend(input, files);
       if (clearOnSend) setInput("");
       setFiles([]);
       setFilePreviews({});
@@ -542,77 +623,130 @@ export const PromptInputBox = React.forwardRef<HTMLDivElement, PromptInputBoxPro
 
         <div className="transition-all duration-300 opacity-100">
           <PromptInputTextarea
-            placeholder={
-              showSearch
-                ? "Search the web..."
-                : placeholder
-            }
-            className="text-base"
+            placeholder={animatedPlaceholder}
+            className="text-sm sm:text-base"
           />
         </div>
 
-        <PromptInputActions className="flex items-center justify-between gap-2 p-0 pt-2">
-          <div className="flex items-center gap-1 transition-opacity duration-300 visible opacity-100">
-            <PromptInputAction tooltip="Upload image">
-              <button
-                onClick={() => uploadInputRef.current?.click()}
-                className="flex h-8 w-8 cursor-pointer items-center justify-center rounded-full text-[#9CA3AF] transition-colors hover:bg-gray-600/30 hover:text-[#D1D5DB]"
-                disabled={disabled || isLoading}
-              >
-                <Paperclip className="h-5 w-5 transition-colors" />
-                <input
-                  ref={uploadInputRef}
-                  type="file"
-                  className="hidden"
-                  onChange={(e) => {
-                    if (e.target.files && e.target.files.length > 0) processFile(e.target.files[0]);
-                    if (e.target) e.target.value = "";
-                  }}
-                  accept="image/*"
-                />
-              </button>
-            </PromptInputAction>
-
-            <div className="flex items-center">
-              <button
-                type="button"
-                onClick={handleToggleChange}
-                disabled={disabled || isLoading}
-                className={cn(
-                  "flex h-8 items-center gap-1 rounded-full border px-2 py-1 transition-all",
-                  showSearch
-                    ? "border-[#1EAEDB] bg-[#1EAEDB]/15 text-[#1EAEDB]"
-                    : "border-transparent bg-transparent text-[#9CA3AF] hover:text-[#D1D5DB]",
-                )}
-              >
-                <div className="flex h-5 w-5 flex-shrink-0 items-center justify-center">
-                  <motion.div
-                    animate={{ rotate: showSearch ? 360 : 0, scale: showSearch ? 1.1 : 1 }}
-                    whileHover={{
-                      rotate: showSearch ? 360 : 15,
-                      scale: 1.1,
-                      transition: { type: "spring", stiffness: 300, damping: 10 },
+        <PromptInputActions className="flex items-end justify-between gap-2 p-0 pt-2">
+          <div className="flex min-w-0 flex-wrap items-center gap-1.5 transition-opacity duration-300 visible opacity-100">
+            <span className="inline-flex h-8 max-w-[9.5rem] items-center gap-1.5 rounded-xl border border-white/10 bg-[#232936] px-2 text-xs font-semibold text-zinc-100 sm:h-9 sm:max-w-none sm:gap-2 sm:px-3 sm:text-sm whitespace-nowrap">
+              <span className="inline-flex h-5 w-5 items-center justify-center rounded-full bg-[#1b2314] text-[#c8ff26]">{modelBadgeText}</span>
+              <span className="truncate">{modelLabel}</span>
+            </span>
+            {showAspectRatioBadge ? (
+              <div ref={aspectMenuRef} className="relative">
+                <button
+                  type="button"
+                  onClick={() => setAspectMenuOpen((prev) => !prev)}
+                  className="inline-flex h-8 items-center gap-1 rounded-xl border border-white/10 bg-[#232936] pl-2.5 pr-7 text-xs font-medium text-zinc-100 sm:h-9 sm:gap-1.5 sm:pl-3 sm:pr-8 sm:text-sm"
+                  aria-haspopup="menu"
+                  aria-expanded={aspectMenuOpen}
+                >
+                  <RectangleHorizontal className="h-3.5 w-3.5 text-zinc-300 sm:h-4 sm:w-4" />
+                  {currentAspectRatio}
+                  <ChevronDown className="pointer-events-none absolute right-2 h-3.5 w-3.5 text-zinc-300 sm:h-4 sm:w-4" />
+                </button>
+                {aspectMenuOpen ? (
+                  <div className="absolute bottom-[calc(100%+0.6rem)] left-0 z-50 w-[240px] rounded-xl border border-white/10 bg-[#14181f] p-3 shadow-[0_20px_50px_-25px_rgba(0,0,0,0.85)]">
+                    <p className="mb-2 text-sm text-zinc-400">Format auswählen</p>
+                    <div className="space-y-1">
+                      {(["1:1", "3:4", "4:5", "16:9", "9:16"] as const).map((ratio) => {
+                        const isActive = currentAspectRatio === ratio;
+                        return (
+                          <button
+                            key={ratio}
+                            type="button"
+                            onClick={() => {
+                              if (!aspectRatio) setSelectedAspectRatio(ratio);
+                              onAspectRatioChange?.(ratio);
+                              setAspectMenuOpen(false);
+                            }}
+                            className={cn(
+                              "flex w-full items-center justify-between rounded-lg px-3 py-2 text-left text-base font-medium transition",
+                              isActive ? "bg-white/10 text-zinc-100" : "text-zinc-200 hover:bg-white/5",
+                            )}
+                          >
+                            <span>{ratio}</span>
+                            {isActive ? <Check className="h-4 w-4 text-zinc-300" /> : null}
+                          </button>
+                        );
+                      })}
+                    </div>
+                  </div>
+                ) : null}
+              </div>
+            ) : null}
+            {showResolutionBadge ? (
+              <div ref={resolutionMenuRef} className="relative">
+                <button
+                  type="button"
+                  onClick={() => setResolutionMenuOpen((prev) => !prev)}
+                  className="inline-flex h-8 items-center gap-1 rounded-xl border border-white/10 bg-[#232936] pl-2.5 pr-7 text-xs font-medium text-zinc-100 sm:h-9 sm:gap-1.5 sm:pl-3 sm:pr-8 sm:text-sm"
+                  aria-haspopup="menu"
+                  aria-expanded={resolutionMenuOpen}
+                >
+                  <Gem className="h-3.5 w-3.5 text-zinc-300 sm:h-4 sm:w-4" />
+                  {currentResolution}
+                  <ChevronDown className="pointer-events-none absolute right-2 h-3.5 w-3.5 text-zinc-300 sm:h-4 sm:w-4" />
+                </button>
+                {resolutionMenuOpen ? (
+                  <div className="absolute bottom-[calc(100%+0.6rem)] left-0 z-50 w-[300px] rounded-xl border border-white/10 bg-[#14181f] p-3 shadow-[0_20px_50px_-25px_rgba(0,0,0,0.85)]">
+                    <p className="mb-2 text-sm text-zinc-400">Qualität auswählen</p>
+                    <div className="space-y-1">
+                      {(["1K", "2K", "4K"] as const).map((quality) => {
+                        return (
+                          <button
+                            key={quality}
+                            type="button"
+                            onClick={() => {
+                              if (!resolution) setSelectedResolution(quality);
+                              onResolutionChange?.(quality);
+                              setResolutionMenuOpen(false);
+                            }}
+                            className={cn(
+                              "flex w-full items-center justify-between rounded-lg px-3 py-2 text-left text-[22px] font-medium transition",
+                              currentResolution === quality ? "bg-white/10 text-zinc-100" : "text-zinc-200 hover:bg-white/5",
+                            )}
+                          >
+                            <span className="inline-flex items-center gap-2">
+                              {quality}
+                              {quality === "4K" ? (
+                                <span className="rounded-sm bg-[#c8ff26]/15 px-1.5 py-0.5 text-[11px] font-semibold uppercase tracking-wide text-[#c8ff26]">
+                                  Premium
+                                </span>
+                              ) : null}
+                            </span>
+                            {currentResolution === quality ? <Check className="h-4 w-4 text-zinc-300" /> : null}
+                          </button>
+                        );
+                      })}
+                    </div>
+                  </div>
+                ) : null}
+              </div>
+            ) : null}
+            {showImageUpload ? (
+              <PromptInputAction tooltip="Upload image">
+                <button
+                  onClick={() => uploadInputRef.current?.click()}
+                  className="flex h-8 w-8 cursor-pointer items-center justify-center rounded-full text-[#9CA3AF] transition-colors hover:bg-gray-600/30 hover:text-[#D1D5DB]"
+                  disabled={disabled || isLoading}
+                >
+                  <Paperclip className="h-5 w-5 transition-colors" />
+                  <input
+                    ref={uploadInputRef}
+                    type="file"
+                    className="hidden"
+                    onChange={(e) => {
+                      if (e.target.files && e.target.files.length > 0) processFile(e.target.files[0]);
+                      if (e.target) e.target.value = "";
                     }}
-                    transition={{ type: "spring", stiffness: 260, damping: 25 }}
-                  >
-                    <Globe className={cn("h-4 w-4", showSearch ? "text-[#1EAEDB]" : "text-inherit")} />
-                  </motion.div>
-                </div>
-                <AnimatePresence>
-                  {showSearch && (
-                    <motion.span
-                      initial={{ width: 0, opacity: 0 }}
-                      animate={{ width: "auto", opacity: 1 }}
-                      exit={{ width: 0, opacity: 0 }}
-                      transition={{ duration: 0.2 }}
-                      className="flex-shrink-0 overflow-hidden whitespace-nowrap text-xs text-[#1EAEDB]"
-                    >
-                      Search
-                    </motion.span>
-                  )}
-                </AnimatePresence>
-              </button>
-            </div>
+                    accept="image/*"
+                  />
+                </button>
+              </PromptInputAction>
+            ) : null}
           </div>
 
           <PromptInputAction

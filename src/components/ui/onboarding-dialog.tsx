@@ -160,15 +160,15 @@ export function OnboardingDialog({ open, onClose, steps, onStepChange }: Onboard
             aria-label="Onboarding überspringen"
           />
           <div
-            className={`pointer-events-none absolute inset-0 ${isMobile ? "bg-black/35" : "bg-black/55 backdrop-blur-[3px]"}`}
+            className={`pointer-events-none absolute inset-0 ${isMobile ? "bg-[#04060d]/55" : "bg-[#04060d]/70 backdrop-blur-[3px]"}`}
             style={overlayClipPath ? { clipPath: overlayClipPath } : undefined}
           />
           {rect ? (
             <motion.div
-              className={`pointer-events-none fixed rounded-xl border-2 border-[#f2a36f] ${
+              className={`pointer-events-none fixed rounded-xl border-2 border-[#c8ff26] ${
                 isMobile
-                  ? "shadow-[0_0_0_1px_rgba(255,255,255,0.35),0_0_0_10px_rgba(242,163,111,0.18)]"
-                  : "shadow-[0_0_0_1px_rgba(255,255,255,0.5),0_0_0_9999px_rgba(0,0,0,0)]"
+                  ? "shadow-[0_0_0_1px_rgba(200,255,38,0.45),0_0_0_12px_rgba(200,255,38,0.12)]"
+                  : "shadow-[0_0_0_1px_rgba(200,255,38,0.55),0_0_0_9999px_rgba(0,0,0,0)]"
               }`}
               animate={{
                 left: rect.left,
@@ -181,7 +181,7 @@ export function OnboardingDialog({ open, onClose, steps, onStepChange }: Onboard
           ) : null}
 
           <motion.div
-            className="fixed w-[min(92vw,360px)] rounded-xl border border-gray-200 bg-white p-4 shadow-2xl dark:border-gray-700 dark:bg-gray-900 max-md:left-3 max-md:right-3 max-md:w-auto max-md:rounded-2xl max-md:p-3 max-md:pb-3.5 max-md:overflow-y-auto"
+            className="fixed w-[min(92vw,360px)] rounded-xl border border-white/15 bg-[#131926]/95 p-4 text-zinc-100 shadow-2xl max-md:left-3 max-md:right-3 max-md:w-auto max-md:rounded-2xl max-md:p-3 max-md:pb-3.5 max-md:overflow-y-auto"
             animate={{ left: isMobile ? undefined : tooltipLeft, top: tooltipTop, opacity: 1 }}
             initial={{ opacity: 0, y: 8 }}
             exit={{ opacity: 0, y: 8 }}
@@ -198,13 +198,13 @@ export function OnboardingDialog({ open, onClose, steps, onStepChange }: Onboard
             }
           >
             <div className="mb-3 flex items-center justify-between gap-3">
-              <p className="text-xs font-medium uppercase tracking-wide text-[#c65a20]">
+              <p className="text-xs font-medium uppercase tracking-wide text-[#c8ff26]">
                 Onboarding {activeIndex + 1}/{steps.length}
               </p>
               <button
                 type="button"
                 onClick={handleSkip}
-                className="rounded-md px-2 py-1 text-xs text-gray-500 transition hover:bg-gray-100 hover:text-gray-800 dark:text-gray-400 dark:hover:bg-gray-800 dark:hover:text-gray-200"
+                className="rounded-md px-2 py-1 text-xs text-zinc-400 transition hover:bg-white/10 hover:text-white"
               >
                 Überspringen
               </button>
@@ -218,10 +218,10 @@ export function OnboardingDialog({ open, onClose, steps, onStepChange }: Onboard
                 exit={{ opacity: 0, x: contentDirection * -14 }}
                 transition={{ duration: 0.2, ease: "easeOut" }}
               >
-                <h2 className="text-base font-semibold text-gray-900 dark:text-gray-100 max-md:text-[0.95rem]">
+                <h2 className="text-base font-semibold text-white max-md:text-[0.95rem]">
                   {currentStep.title}
                 </h2>
-                <p className="mt-2 text-sm text-gray-700 dark:text-gray-300 max-md:text-[0.82rem] max-md:leading-snug">
+                <p className="mt-2 text-sm text-zinc-300 max-md:text-[0.82rem] max-md:leading-snug">
                   {currentStep.description}
                 </p>
               </motion.div>
@@ -233,7 +233,7 @@ export function OnboardingDialog({ open, onClose, steps, onStepChange }: Onboard
                   <button
                     type="button"
                     onClick={handlePrevious}
-                    className="rounded-md px-3 py-1.5 text-sm font-medium text-gray-600 transition-colors hover:bg-gray-100 hover:text-gray-900 dark:text-gray-300 dark:hover:bg-gray-800 dark:hover:text-gray-100"
+                    className="rounded-md px-3 py-1.5 text-sm font-medium text-zinc-300 transition-colors hover:bg-white/10 hover:text-white"
                   >
                     Zurück
                   </button>
@@ -243,7 +243,7 @@ export function OnboardingDialog({ open, onClose, steps, onStepChange }: Onboard
                 <button
                   type="button"
                   onClick={handleNext}
-                  className="rounded-md bg-[#c65a20] px-4 py-1.5 text-sm font-medium text-white transition-colors hover:bg-[#b14f1c]"
+                  className="rounded-md bg-[#c8ff26] px-4 py-1.5 text-sm font-semibold text-black transition-colors hover:bg-[#b8ef22]"
                 >
                   {isLastSlide ? "Fertig" : "Weiter"}
                 </button>

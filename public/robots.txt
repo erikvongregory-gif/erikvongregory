@@ -1,6 +1,6 @@
-# https://www.erikvongregory.com/robots.txt
+# https://evglab.com/robots.txt
 User-agent: *
 Allow: /
 
 # Sitemap (wird beim Build aktualisiert)
-Sitemap: https://www.erikvongregory.com/sitemap.xml
+Sitemap: https://evglab.com/sitemap.xml

@@ -2,9 +2,7 @@
 
 import { Beer, Crown, Rocket } from "lucide-react";
 import {
-  CONTAINED_SHADER_BG,
   PricingCard,
-  ShaderCanvas,
   type PricingCardProps,
 } from "@/components/ui/animated-glassy-pricing";
 import { SUBSCRIPTION_PLAN_TOKENS, type SubscriptionPlanKey } from "@/lib/billing/tokenState";
@@ -18,7 +16,7 @@ const DASHBOARD_PLAN_CARD_CLASS =
   "dark:[&_h2]:!text-white dark:[&_p]:!text-gray-200 dark:[&_span]:!text-gray-200 dark:[&_ul]:!text-gray-100";
 
 const DASHBOARD_POPULAR_PLAN_CARD_CLASS =
-  `${DASHBOARD_PLAN_CARD_CLASS} !ring-1 !ring-blue-300 dark:!ring-blue-700`;
+  `${DASHBOARD_PLAN_CARD_CLASS} !ring-1 !ring-white/20`;
 
 const BREWERY_SUBSCRIPTION_PLANS: PricingCardProps[] = [
   {
@@ -47,10 +45,8 @@ const BREWERY_SUBSCRIPTION_PLANS: PricingCardProps[] = [
     currencyPrefix: "",
     priceSubtext: "pro Monat zzgl. MwSt.",
     buttonText: "Plan wählen",
-    isPopular: true,
-    popularLabel: "Beliebteste Wahl",
     buttonVariant: "primary",
-    className: DASHBOARD_POPULAR_PLAN_CARD_CLASS,
+    className: DASHBOARD_PLAN_CARD_CLASS,
     features: [
       "3.000 Tokens / Monat",
       "ca. 150-300 Bilder",
@@ -67,8 +63,10 @@ const BREWERY_SUBSCRIPTION_PLANS: PricingCardProps[] = [
     currencyPrefix: "",
     priceSubtext: "pro Monat zzgl. MwSt.",
     buttonText: "Plan wählen",
+    isPopular: true,
+    popularLabel: "Beliebteste Wahl",
     buttonVariant: "primary",
-    className: DASHBOARD_PLAN_CARD_CLASS,
+    className: DASHBOARD_POPULAR_PLAN_CARD_CLASS,
     features: [
       "7.500 Tokens / Monat",
       "ca. 375-750 Bilder",
@@ -102,19 +100,9 @@ export function BrewerySubscriptionPlans({
 
   return (
     <section className="dashboard-pricing-loop-stack-root relative isolate z-0 mt-8 rounded-xl border border-gray-200 bg-white p-6 shadow-sm dark:border-gray-800 dark:bg-gray-900 md:overflow-hidden md:p-8">
-      <div
-        className="dashboard-pricing-loop-shader-backdrop pointer-events-none absolute left-1/2 top-8 z-0 block h-[700px] w-[160%] -translate-x-1/2 overflow-visible md:hidden"
-        aria-hidden
-      >
-        <ShaderCanvas
-          mode="contained"
-          shape="ring"
-          backgroundRgb={CONTAINED_SHADER_BG.desktopLight}
-        />
-      </div>
       <div className="dashboard-pricing-loop-content-stack relative z-20">
       <div className="mb-7 flex flex-col items-center gap-3 text-center">
-        <span className="inline-flex items-center gap-2 rounded-full border border-blue-200 bg-blue-50 px-4 py-1.5 text-sm font-medium text-blue-700 dark:border-blue-800 dark:bg-blue-900/30 dark:text-blue-300">
+        <span className="inline-flex items-center gap-2 rounded-full border border-white/15 bg-[#1e232b] px-4 py-1.5 text-sm font-medium text-zinc-200">
           <span aria-hidden>✦</span>
           Abo-Modul
         </span>
