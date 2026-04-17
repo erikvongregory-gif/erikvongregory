@@ -114,7 +114,7 @@ export async function POST(req: Request) {
     });
 
     return NextResponse.json({ ok: true, synced: true, plan });
-  } catch (error) {
+  } catch {
     return NextResponse.json({ error: "Billing-Sync fehlgeschlagen." }, { status: 500 });
   }
 }

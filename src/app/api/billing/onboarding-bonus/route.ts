@@ -36,6 +36,7 @@ export async function POST(req: Request) {
   }
 
   const alreadyClaimed = Boolean(user.user_metadata?.onboarding_bonus_claimed_at);
+  let bonusGranted = false;
   if (!alreadyClaimed && !hasActiveBilling(row)) {
     const admin = createAdminClient();
     const nextMonthlyTokens = Math.max(row.monthly_tokens, ONBOARDING_BONUS_TOKENS);
@@ -52,11 +53,16 @@ export async function POST(req: Request) {
       return NextResponse.json({ error: "Bonus konnte nicht gespeichert werden." }, { status: 500 });
     }
 
-    await supabase.auth.updateUser({
+    const { error: metadataError } = await supabase.auth.updateUser({
       data: {
         onboarding_bonus_claimed_at: new Date().toISOString(),
       },
     });
+    if (metadataError) {
+      return NextResponse.json({ error: "Bonus konnte nicht final gespeichert werden." }, { status: 500 });
+    }
+
+    bonusGranted = true;
 
     row = await getBillingRow(user.id);
     if (!row) {
@@ -71,7 +77,8 @@ export async function POST(req: Request) {
       usedTokens: row.used_tokens,
       remainingTokens: Math.max(row.monthly_tokens - row.used_tokens, 0),
       status: row.subscription_status,
-      bonusGranted: alreadyClaimed ? false : true,
+      bonusGranted,
+      bonusAlreadyClaimed: alreadyClaimed || hasActiveBilling(row),
     },
   });
 }

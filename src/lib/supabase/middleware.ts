@@ -21,6 +21,7 @@ export async function updateSession(request: NextRequest) {
           supabaseResponse.cookies.set(name, value, options);
         });
         Object.entries(headers).forEach(([k, v]) => {
+          if (k.toLowerCase() === "set-cookie") return;
           supabaseResponse.headers.set(k, v);
         });
       },

@@ -19,7 +19,7 @@ export async function createClient() {
       getAll() {
         return cookieStore.getAll();
       },
-      setAll(cookiesToSet, _headers) {
+      setAll(cookiesToSet) {
         try {
           cookiesToSet.forEach(({ name, value, options }) =>
             cookieStore.set(name, value, options),
@@ -58,6 +58,7 @@ export function createRouteHandlerClient(request: Request, response: NextRespons
           response.cookies.set(name, value, options);
         });
         Object.entries(headers).forEach(([k, v]) => {
+          if (k.toLowerCase() === "set-cookie") return;
           response.headers.set(k, String(v));
         });
       },

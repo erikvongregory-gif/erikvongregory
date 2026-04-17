@@ -49,6 +49,7 @@ export async function GET() {
   }
 
   const freeTrialImageUsed = Boolean(user.user_metadata?.free_trial_image_used_at);
+  const onboardingBonusClaimed = Boolean(user.user_metadata?.onboarding_bonus_claimed_at);
 
   await ensureBillingRow(user.id);
   let row = await getBillingRow(user.id);
@@ -112,6 +113,7 @@ export async function GET() {
         remainingTokens: Math.max(row.monthly_tokens - row.used_tokens, 0),
         status: row.subscription_status,
         freeTrialImageUsed,
+        onboardingBonusClaimed,
       }
     : {
         plan: null,
@@ -120,6 +122,7 @@ export async function GET() {
         remainingTokens: 0,
         status: "none",
         freeTrialImageUsed,
+        onboardingBonusClaimed,
       };
   return NextResponse.json(
     { state },

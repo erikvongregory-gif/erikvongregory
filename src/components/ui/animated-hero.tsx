@@ -219,7 +219,7 @@ function Hero() {
                       <motion.span
                         key={index}
                         className="absolute font-semibold max-md:px-1 max-md:text-[2rem] sm:max-md:text-[2.25rem] md:px-0 md:text-[1.12em]"
-                        initial={{ opacity: 0, y: "-100" }}
+                        initial={{ opacity: 0, y: -100 }}
                         transition={{ type: "spring", stiffness: 50 }}
                         animate={
                           titleNumber === index

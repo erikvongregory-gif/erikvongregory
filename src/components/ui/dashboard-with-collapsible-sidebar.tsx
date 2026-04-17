@@ -618,6 +618,7 @@ const ExampleContent = ({ userEmail, userName, selectedTab, setSelectedTab, isAd
   const [monthlyTokens, setMonthlyTokens] = useState(0);
   const [usedTokens, setUsedTokens] = useState(0);
   const [billingStatus, setBillingStatus] = useState<string>("none");
+  const [onboardingBonusClaimed, setOnboardingBonusClaimed] = useState<boolean | null>(null);
   const [freeTrialImageUsed, setFreeTrialImageUsed] = useState(false);
   const [isCheckoutLoading, setIsCheckoutLoading] = useState(false);
   const [loadingPlan, setLoadingPlan] = useState<SubscriptionPlanKey | null>(null);
@@ -937,6 +938,7 @@ const ExampleContent = ({ userEmail, userName, selectedTab, setSelectedTab, isAd
             remainingTokens?: number;
             status?: string;
             freeTrialImageUsed?: boolean;
+            onboardingBonusClaimed?: boolean;
           };
         };
         if (!ignore && data.state) {
@@ -945,6 +947,7 @@ const ExampleContent = ({ userEmail, userName, selectedTab, setSelectedTab, isAd
           setUsedTokens(data.state.usedTokens);
           setBillingStatus(data.state.status ?? "none");
           setFreeTrialImageUsed(Boolean(data.state.freeTrialImageUsed));
+          setOnboardingBonusClaimed(Boolean(data.state.onboardingBonusClaimed));
           if (typeof window !== "undefined") {
             window.dispatchEvent(new CustomEvent("evglab-billing-updated"));
           }
@@ -1019,7 +1022,7 @@ const ExampleContent = ({ userEmail, userName, selectedTab, setSelectedTab, isAd
     setShowOnboarding(false);
     setSelectedTab("Dashboard");
     const hasActivePlan = Boolean(activeSubscription) && billingStatus !== "none" && billingStatus !== "canceled";
-    if (!hasActivePlan) {
+    if (!hasActivePlan && onboardingBonusClaimed === false) {
       setShowCreditsOffer(true);
     }
     if (typeof window === "undefined") return;
@@ -1228,6 +1231,8 @@ const ExampleContent = ({ userEmail, userName, selectedTab, setSelectedTab, isAd
             monthlyTokens: number;
             usedTokens: number;
             status?: string;
+            bonusGranted?: boolean;
+            bonusAlreadyClaimed?: boolean;
           };
         };
         if (data.state) {
@@ -1235,6 +1240,7 @@ const ExampleContent = ({ userEmail, userName, selectedTab, setSelectedTab, isAd
           setMonthlyTokens(data.state.monthlyTokens);
           setUsedTokens(data.state.usedTokens);
           setBillingStatus(data.state.status ?? "active");
+          setOnboardingBonusClaimed(Boolean(data.state.bonusAlreadyClaimed || data.state.bonusGranted));
           if (typeof window !== "undefined") {
             window.dispatchEvent(new CustomEvent("evglab-billing-updated"));
           }
@@ -1401,6 +1407,12 @@ const ExampleContent = ({ userEmail, userName, selectedTab, setSelectedTab, isAd
         );
         realismGuardrails.push(
           "Label text must be crisp and legible where visible. No gibberish text, no mirrored letters, no warped or melted typography, no fake substitute branding.",
+        );
+        realismGuardrails.push(
+          "Bottle readability lock: keep at least one hero bottle fully in focus with tack-sharp label detail, no motion blur on the label area, and clear edge contrast around logo and text.",
+        );
+        realismGuardrails.push(
+          "Composition priority: if depth of field is shallow, prioritize sharp focus on the branded bottle/label over background elements.",
         );
       }
 
@@ -1818,27 +1830,31 @@ const ExampleContent = ({ userEmail, userName, selectedTab, setSelectedTab, isAd
                   </div>
                 </div>
               ) : null}
-              <div className="mb-5 flex -space-x-3">
-                {["/ki-beispiel-hafen.webp", "/ki-beispiel-strand.webp", "/ki-beispiel-biergarten.webp"].map((src, i) => (
-                  <div
-                    key={src}
-                    className={`h-20 w-20 overflow-hidden rounded-xl border border-white/20 shadow-[0_12px_28px_-18px_rgba(70,120,255,0.9)] sm:h-24 sm:w-24 ${
-                      i === 1 ? "translate-y-1 rotate-0" : i === 0 ? "-rotate-12" : "rotate-12"
-                    }`}
-                  >
-                    <img src={src} alt="" className="h-full w-full object-cover" />
+              {contentGeneratedPreviewUrls.length === 0 ? (
+                <>
+                  <div className="mb-5 flex -space-x-3">
+                    {["/ki-beispiel-hafen.webp", "/ki-beispiel-strand.webp", "/ki-beispiel-biergarten.webp"].map((src, i) => (
+                      <div
+                        key={src}
+                        className={`h-20 w-20 overflow-hidden rounded-xl border border-white/20 shadow-[0_12px_28px_-18px_rgba(70,120,255,0.9)] sm:h-24 sm:w-24 ${
+                          i === 1 ? "translate-y-1 rotate-0" : i === 0 ? "-rotate-12" : "rotate-12"
+                        }`}
+                      >
+                        <img src={src} alt="" className="h-full w-full object-cover" />
+                      </div>
+                    ))}
                   </div>
-                ))}
-              </div>
-              <h2 className="text-3xl font-extrabold uppercase tracking-tight text-white sm:text-4xl">
-                Inhalte erstellen mit
-                <span className="mt-1 block normal-case text-[#c8ff26]" style={{ fontFamily: "var(--font-playfair)" }}>
-                  deinem KI-Studio.
-                </span>
-              </h2>
-              <p className="mt-3 max-w-xl text-sm text-zinc-300 sm:text-base">
-                Beschreibe Szene, Stimmung und Stil - wir generieren daraus starke Motive für deine Brauerei.
-              </p>
+                  <h2 className="text-3xl font-extrabold uppercase tracking-tight text-white sm:text-4xl">
+                    Inhalte erstellen mit
+                    <span className="mt-1 block normal-case text-[#c8ff26]" style={{ fontFamily: "var(--font-playfair)" }}>
+                      deinem KI-Studio.
+                    </span>
+                  </h2>
+                  <p className="mt-3 max-w-xl text-sm text-zinc-300 sm:text-base">
+                    Beschreibe Szene, Stimmung und Stil - wir generieren daraus starke Motive für deine Brauerei.
+                  </p>
+                </>
+              ) : null}
             </div>
           <div data-onboarding="content-brief" className="absolute right-4 bottom-6 left-4 z-10 mx-auto w-auto max-w-5xl sm:right-6 sm:left-6">
             <PromptInputBox

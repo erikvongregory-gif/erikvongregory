@@ -155,6 +155,7 @@ export function HeaderLogin({ variant, className }: HeaderLoginProps) {
         if (!res.ok) {
           setIsAuthenticated(false);
           setIsAdmin(false);
+          setTwoFARequired(false);
           return;
         }
         const payload = (await res.json()) as { authenticated?: boolean; admin?: boolean; admin2faRequired?: boolean };

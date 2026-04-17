@@ -42,7 +42,7 @@ async function handleSignOut(request: Request) {
   return clearAdmin2FACookies(response);
 }
 
-export async function GET(request: Request) {
+export async function GET() {
   return NextResponse.json({ error: "Methode nicht erlaubt." }, { status: 405 });
 }
 

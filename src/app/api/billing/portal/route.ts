@@ -47,7 +47,7 @@ export async function POST(req: Request) {
     });
 
     return NextResponse.json({ url: session.url });
-  } catch (error) {
+  } catch {
     return NextResponse.json({ error: "Portal konnte nicht geöffnet werden." }, { status: 500 });
   }
 }

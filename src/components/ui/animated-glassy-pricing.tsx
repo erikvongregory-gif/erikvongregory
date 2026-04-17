@@ -353,7 +353,14 @@ export const PricingCard = ({
           {popularLabel}
         </div>
       )}
-      <div className={cn("min-w-0", "mb-2", compact && "mb-1.5")}>
+      <div
+        className={cn(
+          "min-w-0 mb-2 flex flex-col",
+          compact
+            ? "mb-1.5 min-h-[8.25rem] sm:min-h-[8.75rem]"
+            : "min-h-[10.5rem] sm:min-h-[11.5rem]",
+        )}
+      >
         <div
           className={cn(
             "flex min-w-0 w-full gap-3",
@@ -403,7 +410,7 @@ export const PricingCard = ({
       </div>
       <div
         className={cn(
-          "flex min-w-0 flex-wrap items-baseline gap-x-1.5 gap-y-1",
+          "flex min-w-0 flex-col items-start gap-0.5",
           compact ? "my-4" : "my-6",
         )}
       >

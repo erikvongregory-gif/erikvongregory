@@ -192,6 +192,9 @@ export async function POST(req: Request) {
           "- Keep logo mark, typography, color blocks, crest placement, and bottle label geometry authentic and undistorted.",
           "- Any visible label text must be sharp and readable; no gibberish, mirrored, stretched, or melted lettering.",
           "- Do not invent substitute branding or alter the original product identity.",
+          "- Keep at least one bottle as a hero product in sharp focus with tack-sharp label readability.",
+          "- Avoid blur specifically on the label/logo area (no motion blur, no depth-of-field blur on primary brand text).",
+          "- If depth-of-field is used, keep branded bottle text plane inside the focal plane.",
         ].join("\n")
       : "";
     const negativePromptBlock = [

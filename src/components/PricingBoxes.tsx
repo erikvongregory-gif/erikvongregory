@@ -237,6 +237,22 @@ function scrollToContactPaket(paketName: string) {
 }
 
 async function startSubscriptionCheckout(plan: SubscriptionPlanKey) {
+  const authRes = await fetch("/api/auth/status", {
+    method: "GET",
+    cache: "no-store",
+    credentials: "include",
+  });
+  const authData = (await authRes.json().catch(() => ({}))) as { authenticated?: boolean };
+  if (!authData.authenticated) {
+    trackEvent("auth_required_for_checkout", { plan, source: "pricing_home" });
+    window.dispatchEvent(
+      new CustomEvent("evglab-open-auth-modal", {
+        detail: { mode: "signin" },
+      }),
+    );
+    return;
+  }
+
   const res = await fetch("/api/billing/checkout", {
     method: "POST",
     headers: { "Content-Type": "application/json" },
@@ -267,13 +283,14 @@ function toPricingCardProps(pkg: PricingPackageDef): PricingCardProps {
   const isDashboardPlan = Boolean(pkg.checkoutPlanKey);
   const isDashboardPro = pkg.checkoutPlanKey === "pro";
   const highlighted = !!pkg.highlight;
+  const basePriceSubtext = pkg.priceSubtext ?? (pkg.oldPrice ? "einmalig" : "pro Monat");
   return {
     planName: pkg.name,
     planIcon: pkg.planIcon,
     description: pkg.oldPrice ? `${pkg.description} (statt ${pkg.oldPrice})` : pkg.description,
     price: pkg.price,
     currencyPrefix: "",
-    priceSubtext: pkg.priceSubtext ?? (pkg.oldPrice ? "einmalig" : "pro Monat"),
+    priceSubtext: `${basePriceSubtext} · +19% MwSt.`,
     features: pkg.delivery ? [...pkg.features, `Lieferzeit: ${pkg.delivery}`] : [...pkg.features],
     buttonText: pkg.cta.replace(/👉\s*/, "").trim(),
     isPopular: highlighted,
@@ -460,8 +477,17 @@ export function PricingBoxes() {
   const sectionRef = useRef<HTMLElement>(null);
   const [inView, setInView] = useState(false);
   const [selectedPath, setSelectedPath] = useState<OfferPath | null>(null);
+  const [isDesktop, setIsDesktop] = useState<boolean | null>(null);
   const sharedGlassInfoBoxClass =
     "evg-clean-hover rounded-xl border border-black/12 bg-gradient-to-br from-black/5 to-black/0 text-left shadow-[0_10px_22px_-18px_rgba(24,24,27,0.28)] backdrop-blur-[14px] ring-1 ring-black/[0.04] transition-[border-color,box-shadow,ring-color] duration-200 hover:border-[#c65a20]/55 hover:ring-[#c65a20]/25 hover:shadow-[0_16px_34px_-20px_rgba(198,90,32,0.24)]";
+
+  useEffect(() => {
+    const media = window.matchMedia("(min-width: 768px)");
+    const apply = () => setIsDesktop(media.matches);
+    apply();
+    media.addEventListener("change", apply);
+    return () => media.removeEventListener("change", apply);
+  }, []);
 
   useEffect(() => {
     const el = sectionRef.current;
@@ -611,35 +637,39 @@ export function PricingBoxes() {
                 </div>
               </div>
 
-              <div className="md:hidden">
-                <MobilePricingSnapCarousel
-                  ariaLabel="Pakete durchblättern"
-                  dotsNavLabel="Paket wählen"
-                  slideKeys={PRICING_PACKAGES.map((p) => p.name)}
-                  renderSlide={(index) => {
-                    const pkg = PRICING_PACKAGES[index]!;
+              {isDesktop === null || isDesktop === false ? (
+                <div className="md:hidden">
+                  <MobilePricingSnapCarousel
+                    ariaLabel="Pakete durchblättern"
+                    dotsNavLabel="Paket wählen"
+                    slideKeys={PRICING_PACKAGES.map((p) => p.name)}
+                    renderSlide={(index) => {
+                      const pkg = PRICING_PACKAGES[index]!;
+                      return (
+                        <PricingCard
+                          {...toPricingCardProps(pkg)}
+                          className={`pricing-card-slide-${index} relative z-[2] w-full max-w-sm`}
+                        />
+                      );
+                    }}
+                  />
+                </div>
+              ) : null}
+
+              {isDesktop === null || isDesktop === true ? (
+                <div className="hidden flex-col items-center justify-center gap-8 py-6 md:flex md:flex-row md:items-stretch md:gap-6">
+                  {PRICING_DESKTOP_ORDER.map((pkgIndex, position) => {
+                    const pkg = PRICING_PACKAGES[pkgIndex];
                     return (
                       <PricingCard
+                        key={pkg.name}
                         {...toPricingCardProps(pkg)}
-                        className={`pricing-card-slide-${index} relative z-[2] w-full max-w-sm`}
+                        className={`pricing-card-slide-${position} relative z-[2] h-full md:h-[42rem] md:w-[21rem] md:scale-100`}
                       />
                     );
-                  }}
-                />
-              </div>
-
-              <div className="hidden flex-col items-center justify-center gap-8 py-6 md:flex md:flex-row md:items-stretch md:gap-6">
-                {PRICING_DESKTOP_ORDER.map((pkgIndex, position) => {
-                  const pkg = PRICING_PACKAGES[pkgIndex];
-                  return (
-                    <PricingCard
-                      key={pkg.name}
-                      {...toPricingCardProps(pkg)}
-                      className={`pricing-card-slide-${position} relative z-[2] h-full md:h-[42rem] md:w-[21rem] md:scale-100`}
-                    />
-                  );
-                })}
-              </div>
+                  })}
+                </div>
+              ) : null}
             </div>
           </div>
 
@@ -693,35 +723,39 @@ export function PricingBoxes() {
                 </div>
               </div>
 
-              <div className="md:hidden">
-                <MobilePricingSnapCarousel
-                  ariaLabel="Dashboard-Abos durchblättern"
-                  dotsNavLabel="Abo wählen"
-                  slideKeys={DASHBOARD_SUBSCRIPTION_PACKAGES.map((p) => p.name)}
-                  renderSlide={(index) => {
-                    const pkg = DASHBOARD_SUBSCRIPTION_PACKAGES[index]!;
+              {isDesktop === null || isDesktop === false ? (
+                <div className="md:hidden">
+                  <MobilePricingSnapCarousel
+                    ariaLabel="Dashboard-Abos durchblättern"
+                    dotsNavLabel="Abo wählen"
+                    slideKeys={DASHBOARD_SUBSCRIPTION_PACKAGES.map((p) => p.name)}
+                    renderSlide={(index) => {
+                      const pkg = DASHBOARD_SUBSCRIPTION_PACKAGES[index]!;
+                      return (
+                        <PricingCard
+                          {...toPricingCardProps(pkg)}
+                          className={`pricing-card-slide-sub-${index} relative z-[2] w-full max-w-sm`}
+                        />
+                      );
+                    }}
+                  />
+                </div>
+              ) : null}
+
+              {isDesktop === null || isDesktop === true ? (
+                <div className="hidden flex-col items-center justify-center gap-8 py-2 md:flex md:flex-row md:items-stretch md:gap-6">
+                  {DASHBOARD_DESKTOP_ORDER.map((pkgIndex, index) => {
+                    const pkg = DASHBOARD_SUBSCRIPTION_PACKAGES[pkgIndex]!;
                     return (
                       <PricingCard
+                        key={pkg.name}
                         {...toPricingCardProps(pkg)}
-                        className={`pricing-card-slide-sub-${index} relative z-[2] w-full max-w-sm`}
+                        className={`pricing-card-slide-sub-${index} relative z-[2] h-full md:h-[42rem] md:w-[21rem] md:scale-100`}
                       />
                     );
-                  }}
-                />
-              </div>
-
-              <div className="hidden flex-col items-center justify-center gap-8 py-2 md:flex md:flex-row md:items-stretch md:gap-6">
-                {DASHBOARD_DESKTOP_ORDER.map((pkgIndex, index) => {
-                  const pkg = DASHBOARD_SUBSCRIPTION_PACKAGES[pkgIndex]!;
-                  return (
-                  <PricingCard
-                    key={pkg.name}
-                    {...toPricingCardProps(pkg)}
-                    className={`pricing-card-slide-sub-${index} relative z-[2] h-full md:h-[42rem] md:w-[21rem] md:scale-100`}
-                  />
-                  );
-                })}
-              </div>
+                  })}
+                </div>
+              ) : null}
             </div>
             </div>
           </div>
@@ -749,35 +783,39 @@ export function PricingBoxes() {
                 </p>
               </div>
 
-              <div className="md:hidden">
-                <MobilePricingSnapCarousel
-                  ariaLabel="Add-ons durchblättern"
-                  dotsNavLabel="Add-on wählen"
-                  slideKeys={ADDONS.map((a) => a.name)}
-                  renderSlide={(index) => {
-                    const addon = ADDONS[index]!;
+              {isDesktop === null || isDesktop === false ? (
+                <div className="md:hidden">
+                  <MobilePricingSnapCarousel
+                    ariaLabel="Add-ons durchblättern"
+                    dotsNavLabel="Add-on wählen"
+                    slideKeys={ADDONS.map((a) => a.name)}
+                    renderSlide={(index) => {
+                      const addon = ADDONS[index]!;
+                      return (
+                        <PricingCard
+                          {...toAddonPricingCardProps(addon, index)}
+                          className={`pricing-card-slide-addon-${index} evg-clean-hover relative z-[2] w-full max-w-[300px]`}
+                        />
+                      );
+                    }}
+                  />
+                </div>
+              ) : null}
+
+              {isDesktop === null || isDesktop === true ? (
+                <div className="hidden flex-col items-center justify-center gap-5 py-2 md:flex md:flex-row md:flex-wrap md:gap-5">
+                  {ADDONS_DESKTOP_ORDER.map((addonIndex, index) => {
+                    const addon = ADDONS[addonIndex]!;
                     return (
                       <PricingCard
-                        {...toAddonPricingCardProps(addon, index)}
-                        className={`pricing-card-slide-addon-${index} evg-clean-hover relative z-[2] w-full max-w-[300px]`}
+                        key={addon.name}
+                        {...toAddonPricingCardProps(addon, addonIndex)}
+                        className={`pricing-card-slide-addon-${index} evg-clean-hover relative z-[2] h-full md:h-[22rem] md:w-[21rem] md:max-w-none`}
                       />
                     );
-                  }}
-                />
-              </div>
-
-              <div className="hidden flex-col items-center justify-center gap-5 py-2 md:flex md:flex-row md:flex-wrap md:gap-5">
-                {ADDONS_DESKTOP_ORDER.map((addonIndex, index) => {
-                  const addon = ADDONS[addonIndex]!;
-                  return (
-                    <PricingCard
-                      key={addon.name}
-                      {...toAddonPricingCardProps(addon, addonIndex)}
-                      className={`pricing-card-slide-addon-${index} evg-clean-hover relative z-[2] h-full md:h-[22rem] md:w-[21rem] md:max-w-none`}
-                    />
-                  );
-                })}
-              </div>
+                  })}
+                </div>
+              ) : null}
             </div>
           </div>
 
