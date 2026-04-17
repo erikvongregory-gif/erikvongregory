@@ -2935,9 +2935,17 @@ const ExampleContent = ({ userEmail, userName, selectedTab, setSelectedTab, isAd
                   <div className="my-1 border-t border-white/10" />
                   <button
                     type="button"
-                    onClick={() => {
+                    onClick={async () => {
                       setProfileMenuOpen(false);
-                      window.location.href = "/auth/signout";
+                      try {
+                        const res = await fetch("/auth/signout", {
+                          method: "POST",
+                          credentials: "include",
+                        });
+                        window.location.href = res.redirected && res.url ? res.url : "/";
+                      } catch {
+                        window.location.href = "/";
+                      }
                     }}
                     className="flex w-full items-center gap-2 rounded-lg px-2 py-2 text-left text-sm font-semibold text-white transition hover:bg-white/10"
                   >
