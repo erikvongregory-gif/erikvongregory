@@ -11,6 +11,11 @@ const settingsSchema = z.object({
   profilePhone: z.string().max(60),
   emailNotifications: z.boolean(),
   weeklySummary: z.boolean(),
+  brandTone: z.string().max(300),
+  brandColors: z.string().max(300),
+  brandDos: z.string().max(600),
+  brandDonts: z.string().max(600),
+  brandReferenceImageUrls: z.array(z.string().url().max(1200)).max(10),
 });
 
 export async function GET() {
@@ -43,6 +48,13 @@ export async function GET() {
       emailNotifications:
         typeof settings?.emailNotifications === "boolean" ? settings.emailNotifications : true,
       weeklySummary: typeof settings?.weeklySummary === "boolean" ? settings.weeklySummary : true,
+      brandTone: typeof settings?.brandTone === "string" ? settings.brandTone : "",
+      brandColors: typeof settings?.brandColors === "string" ? settings.brandColors : "",
+      brandDos: typeof settings?.brandDos === "string" ? settings.brandDos : "",
+      brandDonts: typeof settings?.brandDonts === "string" ? settings.brandDonts : "",
+      brandReferenceImageUrls: Array.isArray(settings?.brandReferenceImageUrls)
+        ? settings.brandReferenceImageUrls.filter((item): item is string => typeof item === "string").slice(0, 10)
+        : [],
     },
   });
 }

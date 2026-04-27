@@ -44,6 +44,12 @@ export default function sitemap(): MetadataRoute.Sitemap {
       priority: 0.85,
     },
     {
+      url: `${base}/loesungen`,
+      lastModified: new Date(),
+      changeFrequency: "weekly" as const,
+      priority: 0.9,
+    },
+    {
       url: `${base}/loesungen/biergarten-event-marketing`,
       lastModified: new Date(),
       changeFrequency: "weekly" as const,

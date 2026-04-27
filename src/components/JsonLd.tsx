@@ -113,6 +113,19 @@ export function JsonLd() {
     },
   };
 
+  const siteNavigation = {
+    "@context": "https://schema.org",
+    "@type": "ItemList",
+    itemListElement: [
+      { "@type": "SiteNavigationElement", position: 1, name: "Startseite", url: SITE.baseUrl },
+      { "@type": "SiteNavigationElement", position: 2, name: "Lösungen", url: `${SITE.baseUrl}/loesungen` },
+      { "@type": "SiteNavigationElement", position: 3, name: "Saisonkampagnen", url: `${SITE.baseUrl}/loesungen/saisonkampagne-brauerei` },
+      { "@type": "SiteNavigationElement", position: 4, name: "Biergarten und Event Marketing", url: `${SITE.baseUrl}/loesungen/biergarten-event-marketing` },
+      { "@type": "SiteNavigationElement", position: 5, name: "Händler und Gastro Promotion", url: `${SITE.baseUrl}/loesungen/haendler-gastro-promotion` },
+      { "@type": "SiteNavigationElement", position: 6, name: "Kontakt", url: `${SITE.baseUrl}/#contact` },
+    ],
+  };
+
   const safeJson = (obj: object) =>
     JSON.stringify(obj).replace(/</g, "\\u003c").replace(/\u2028/g, "\\u2028").replace(/\u2029/g, "\\u2029");
 
@@ -133,6 +146,10 @@ export function JsonLd() {
       <script
         type="application/ld+json"
         dangerouslySetInnerHTML={{ __html: safeJson(service) }}
+      />
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: safeJson(siteNavigation) }}
       />
     </>
   );

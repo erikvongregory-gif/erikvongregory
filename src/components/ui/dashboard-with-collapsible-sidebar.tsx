@@ -339,6 +339,12 @@ const Sidebar = ({
     };
   }, []);
 
+  useEffect(() => {
+    if (!settingsLoaded) return;
+    if (brandProfileComplete) return;
+    setSelectedTab("Einstellungen");
+  }, [brandProfileComplete, settingsLoaded, setSelectedTab]);
+
   const hasActiveBilling = Boolean(activeSubscription) && billingStatus !== "none" && billingStatus !== "canceled";
   const currentPlanLabel = hasActiveBilling && activeSubscription ? PLAN_LABELS[activeSubscription] : "Kein aktives Abo";
 
@@ -628,6 +634,12 @@ const ExampleContent = ({ userEmail, userName, selectedTab, setSelectedTab, isAd
   const [profilePhone, setProfilePhone] = useState("");
   const [emailNotifications, setEmailNotifications] = useState(true);
   const [weeklySummary, setWeeklySummary] = useState(true);
+  const [brandTone, setBrandTone] = useState("");
+  const [brandColors, setBrandColors] = useState("");
+  const [brandDos, setBrandDos] = useState("");
+  const [brandDonts, setBrandDonts] = useState("");
+  const [brandReferenceImageUrls, setBrandReferenceImageUrls] = useState("");
+  const [settingsLoaded, setSettingsLoaded] = useState(false);
   const [savingProfile, setSavingProfile] = useState(false);
   const [profileSaveMessage, setProfileSaveMessage] = useState("");
   const [dashboardSummary, setDashboardSummary] = useState<DashboardSummary | null>(null);
@@ -675,6 +687,16 @@ const ExampleContent = ({ userEmail, userName, selectedTab, setSelectedTab, isAd
   const profileButtonRef = useRef<HTMLButtonElement | null>(null);
   const sessionExpiredHandledRef = useRef(false);
   const displayName = breweryName || profileName || "deine Brauerei";
+  const brandProfileComplete =
+    Boolean(breweryName.trim()) &&
+    Boolean(brandTone.trim()) &&
+    Boolean(brandColors.trim()) &&
+    Boolean(brandDos.trim()) &&
+    Boolean(brandDonts.trim()) &&
+    brandReferenceImageUrls
+      .split(/\r?\n|,/)
+      .map((item) => item.trim())
+      .filter(Boolean).length >= 1;
   const tabTitle = selectedTab;
   const isCreationTab = selectedTab === "Inhalte erstellen" || selectedTab === "Prompt-Erstellung";
   const topTabs: Array<{ title: DashboardTab; Icon: LucideIcon; notifs?: number }> = [
@@ -805,6 +827,11 @@ const ExampleContent = ({ userEmail, userName, selectedTab, setSelectedTab, isAd
               profilePhone?: string;
               emailNotifications?: boolean;
               weeklySummary?: boolean;
+              brandTone?: string;
+              brandColors?: string;
+              brandDos?: string;
+              brandDonts?: string;
+              brandReferenceImageUrls?: string[];
             };
           };
           const settings = settingsData.settings;
@@ -814,8 +841,16 @@ const ExampleContent = ({ userEmail, userName, selectedTab, setSelectedTab, isAd
             if (typeof settings.profilePhone === "string") setProfilePhone(settings.profilePhone);
             if (typeof settings.emailNotifications === "boolean") setEmailNotifications(settings.emailNotifications);
             if (typeof settings.weeklySummary === "boolean") setWeeklySummary(settings.weeklySummary);
+            if (typeof settings.brandTone === "string") setBrandTone(settings.brandTone);
+            if (typeof settings.brandColors === "string") setBrandColors(settings.brandColors);
+            if (typeof settings.brandDos === "string") setBrandDos(settings.brandDos);
+            if (typeof settings.brandDonts === "string") setBrandDonts(settings.brandDonts);
+            if (Array.isArray(settings.brandReferenceImageUrls)) {
+              setBrandReferenceImageUrls(settings.brandReferenceImageUrls.join("\n"));
+            }
           }
         }
+        if (!ignore) setSettingsLoaded(true);
         if (!ignore && summaryRes.ok) {
           const summaryData = (await summaryRes.json()) as {
             summary?: DashboardSummary;
@@ -831,6 +866,7 @@ const ExampleContent = ({ userEmail, userName, selectedTab, setSelectedTab, isAd
       } catch {
         if (!ignore) {
           setGlobalErrorMessage("Einige Dashboard-Daten konnten nicht geladen werden.");
+          setSettingsLoaded(true);
         }
       }
     };
@@ -1328,7 +1364,22 @@ const ExampleContent = ({ userEmail, userName, selectedTab, setSelectedTab, isAd
     setSavingProfile(true);
     setProfileSaveMessage("");
     try {
-      const payload = { profileName, breweryName, profilePhone, emailNotifications, weeklySummary };
+      const payload = {
+        profileName,
+        breweryName,
+        profilePhone,
+        emailNotifications,
+        weeklySummary,
+        brandTone,
+        brandColors,
+        brandDos,
+        brandDonts,
+        brandReferenceImageUrls: brandReferenceImageUrls
+          .split(/\r?\n|,/)
+          .map((item) => item.trim())
+          .filter(Boolean)
+          .slice(0, 10),
+      };
       const res = await fetch("/api/dashboard/settings", {
         method: "PUT",
         headers: { "Content-Type": "application/json" },
@@ -1368,6 +1419,12 @@ const ExampleContent = ({ userEmail, userName, selectedTab, setSelectedTab, isAd
 
   const generateContentWithKie = useCallback(
     async (prompt: string, files?: File[]) => {
+      if (!brandProfileComplete) {
+        setContentGenerationError(
+          "Bitte zuerst in Einstellungen dein Markenprofil vervollständigen (Tonalität, Farben, Do/Don'ts und mindestens eine Referenzbild-URL).",
+        );
+        return;
+      }
       const finalPrompt = prompt.trim();
       if (!finalPrompt) return;
       const normalizedPrompt = finalPrompt.toLowerCase();
@@ -1578,7 +1635,7 @@ const ExampleContent = ({ userEmail, userName, selectedTab, setSelectedTab, isAd
         setContentGenerationProgress(0);
       }
     },
-    [contentAspectRatio, contentResolution, contentUsePerspectiveSet, contentVariantCount, refreshSummary],
+    [brandProfileComplete, contentAspectRatio, contentResolution, contentUsePerspectiveSet, contentVariantCount, refreshSummary],
   );
 
   const inviteTeamMember = async () => {
@@ -1857,6 +1914,11 @@ const ExampleContent = ({ userEmail, userName, selectedTab, setSelectedTab, isAd
               ) : null}
             </div>
           <div data-onboarding="content-brief" className="absolute right-4 bottom-6 left-4 z-10 mx-auto w-auto max-w-5xl sm:right-6 sm:left-6">
+            {!brandProfileComplete ? (
+              <p className="mb-2 rounded-lg border border-amber-400/35 bg-amber-500/10 px-3 py-2 text-xs text-amber-100">
+                Bitte zuerst in <strong>Einstellungen</strong> dein Markenprofil vervollständigen (Tonalität, Farben, Do/Don'ts und mindestens eine Referenzbild-URL).
+              </p>
+            ) : null}
             <PromptInputBox
               value={contentDraftPrompt}
               onValueChange={setContentDraftPrompt}
@@ -1867,6 +1929,7 @@ const ExampleContent = ({ userEmail, userName, selectedTab, setSelectedTab, isAd
               placeholder="Füge den Prompt ein, den wir zusammen erstellt haben, damit du das beste Ergebnis bekommst."
               className="border-white/10 bg-[#131926]/80"
               isLoading={contentIsGenerating}
+              disabled={!brandProfileComplete}
               clearOnSend={false}
               onSend={(message, files) => {
                 void generateContentWithKie(message, files);
@@ -2247,6 +2310,12 @@ const ExampleContent = ({ userEmail, userName, selectedTab, setSelectedTab, isAd
         <section data-onboarding="team-overview" className="rounded-2xl border border-gray-200 bg-white p-6 shadow-sm dark:border-gray-800 dark:bg-gray-900">
           <div className="mb-6">
             <h2 className="text-xl font-semibold text-gray-900 dark:text-gray-100">Profil-Einstellungen</h2>
+            <p className="mt-1 text-sm text-gray-600 dark:text-gray-300">
+              Markenprofil-Status:{" "}
+              <span className={brandProfileComplete ? "font-semibold text-emerald-600 dark:text-emerald-400" : "font-semibold text-amber-600 dark:text-amber-400"}>
+                {brandProfileComplete ? "vollständig" : "unvollständig"}
+              </span>
+            </p>
           </div>
           <div className="grid grid-cols-1 gap-5 md:grid-cols-2">
             <label className="space-y-1 text-sm">
@@ -2304,6 +2373,56 @@ const ExampleContent = ({ userEmail, userName, selectedTab, setSelectedTab, isAd
                 className="h-4 w-4 accent-[#c65a20]"
               />
             </label>
+          </div>
+          <div className="mt-6 rounded-xl border border-gray-200 bg-gray-50 p-4 dark:border-gray-700 dark:bg-gray-950">
+            <h3 className="mb-3 text-sm font-semibold text-gray-900 dark:text-gray-100">Markenprofil für KI-Generierung</h3>
+            <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
+              <label className="space-y-1 text-sm md:col-span-2">
+                <span className="text-gray-700 dark:text-gray-300">Tonalität</span>
+                <input
+                  value={brandTone}
+                  onChange={(e) => setBrandTone(e.target.value)}
+                  className="h-10 w-full rounded-md border border-gray-300 bg-white px-3 text-gray-900 focus:border-[#c65a20] focus:outline-none dark:border-gray-700 dark:bg-gray-950 dark:text-gray-100"
+                  placeholder="z. B. ehrlich, handwerklich, premium, regional"
+                />
+              </label>
+              <label className="space-y-1 text-sm md:col-span-2">
+                <span className="text-gray-700 dark:text-gray-300">Farben / Stil-Cues</span>
+                <input
+                  value={brandColors}
+                  onChange={(e) => setBrandColors(e.target.value)}
+                  className="h-10 w-full rounded-md border border-gray-300 bg-white px-3 text-gray-900 focus:border-[#c65a20] focus:outline-none dark:border-gray-700 dark:bg-gray-950 dark:text-gray-100"
+                  placeholder="z. B. dunkles Grün, Kupfer, matte Etiketten, rustikale Holztextur"
+                />
+              </label>
+              <label className="space-y-1 text-sm">
+                <span className="text-gray-700 dark:text-gray-300">Do's</span>
+                <textarea
+                  value={brandDos}
+                  onChange={(e) => setBrandDos(e.target.value)}
+                  className="min-h-[96px] w-full rounded-md border border-gray-300 bg-white px-3 py-2 text-gray-900 focus:border-[#c65a20] focus:outline-none dark:border-gray-700 dark:bg-gray-950 dark:text-gray-100"
+                  placeholder="z. B. natürliche Lichtstimmung, echter Schaum, klar lesbares Etikett"
+                />
+              </label>
+              <label className="space-y-1 text-sm">
+                <span className="text-gray-700 dark:text-gray-300">Don'ts</span>
+                <textarea
+                  value={brandDonts}
+                  onChange={(e) => setBrandDonts(e.target.value)}
+                  className="min-h-[96px] w-full rounded-md border border-gray-300 bg-white px-3 py-2 text-gray-900 focus:border-[#c65a20] focus:outline-none dark:border-gray-700 dark:bg-gray-950 dark:text-gray-100"
+                  placeholder="z. B. Cartoon-Look, Neonfarben, unleserliche Labels, Plastikhaut"
+                />
+              </label>
+              <label className="space-y-1 text-sm md:col-span-2">
+                <span className="text-gray-700 dark:text-gray-300">Referenzbild-URLs (1 pro Zeile)</span>
+                <textarea
+                  value={brandReferenceImageUrls}
+                  onChange={(e) => setBrandReferenceImageUrls(e.target.value)}
+                  className="min-h-[110px] w-full rounded-md border border-gray-300 bg-white px-3 py-2 text-gray-900 focus:border-[#c65a20] focus:outline-none dark:border-gray-700 dark:bg-gray-950 dark:text-gray-100"
+                  placeholder="https://.../brand-reference-1.jpg"
+                />
+              </label>
+            </div>
           </div>
           <div className="mt-5 flex items-center gap-3">
             <button
@@ -2871,11 +2990,11 @@ const ExampleContent = ({ userEmail, userName, selectedTab, setSelectedTab, isAd
             <div className="fixed right-3 top-[calc(env(safe-area-inset-top)+3.75rem)] z-[130] w-[min(84vw,20rem)] overflow-hidden rounded-2xl border border-white/10 bg-[#12151b] text-white shadow-[0_24px_40px_-24px_rgba(0,0,0,0.9)] sm:absolute sm:right-0 sm:top-1 sm:w-64">
                 <div className="border-b border-white/5 px-4 py-3">
                   <p className="truncate text-sm font-semibold text-white">{displayName}</p>
-                  <p className="text-xs text-zinc-400">Free Plan</p>
+                  <p className="text-xs text-zinc-400">Kostenloser Plan</p>
                 </div>
                 <div className="border-b border-white/5 px-4 py-3">
                   <div className="mb-2 flex items-center justify-between text-sm font-semibold text-white">
-                    <span>{remainingTokens.toLocaleString("de-DE")} credits available</span>
+                    <span>{remainingTokens.toLocaleString("de-DE")} Credits verfugbar</span>
                     <ChevronDown className="-rotate-90 h-3.5 w-3.5 text-zinc-500" />
                   </div>
                   <div className="h-2 rounded-full bg-white/10">
@@ -2893,9 +3012,9 @@ const ExampleContent = ({ userEmail, userName, selectedTab, setSelectedTab, isAd
                   >
                     <span className="inline-flex items-center gap-2 text-sm font-semibold text-white">
                       <Crown className="h-4 w-4 text-[#c8ff26]" />
-                      Go Premium
+                      Premium aktivieren
                     </span>
-                    <span className="rounded-full bg-[#c8ff26] px-2 py-1 text-xs font-semibold text-black">Upgrade</span>
+                    <span className="rounded-full bg-[#c8ff26] px-2 py-1 text-xs font-semibold text-black">Upgraden</span>
                   </button>
                 </div>
                 <div className="px-2 pb-2">
@@ -2908,7 +3027,7 @@ const ExampleContent = ({ userEmail, userName, selectedTab, setSelectedTab, isAd
                     className="flex w-full items-center gap-2 rounded-lg px-2 py-2 text-left text-sm font-medium text-zinc-100 transition hover:bg-white/10"
                   >
                     <User className="h-4 w-4 text-zinc-300" />
-                    View profile
+                    Profil ansehen
                   </button>
                   <button
                     type="button"
@@ -2919,7 +3038,7 @@ const ExampleContent = ({ userEmail, userName, selectedTab, setSelectedTab, isAd
                     className="flex w-full items-center gap-2 rounded-lg px-2 py-2 text-left text-sm font-medium text-zinc-100 transition hover:bg-white/10"
                   >
                     <Settings className="h-4 w-4 text-zinc-300" />
-                    Manage account
+                    Konto verwalten
                   </button>
                   <button
                     type="button"
@@ -2950,7 +3069,7 @@ const ExampleContent = ({ userEmail, userName, selectedTab, setSelectedTab, isAd
                     className="flex w-full items-center gap-2 rounded-lg px-2 py-2 text-left text-sm font-semibold text-white transition hover:bg-white/10"
                   >
                     <LogOut className="h-4 w-4 text-zinc-300" />
-                    Sign out
+                    Abmelden
                   </button>
                 </div>
             </div>

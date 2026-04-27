@@ -25,6 +25,11 @@ export type DashboardSettings = {
   profilePhone: string;
   emailNotifications: boolean;
   weeklySummary: boolean;
+  brandTone: string;
+  brandColors: string;
+  brandDos: string;
+  brandDonts: string;
+  brandReferenceImageUrls: string[];
 };
 
 export type DashboardMetadata = {

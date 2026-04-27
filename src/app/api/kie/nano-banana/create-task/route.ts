@@ -6,6 +6,11 @@ import { consumeTokens, ensureBillingRow, getBillingRow } from "@/lib/billing/st
 import { enforceRateLimit, enforceSameOrigin } from "@/lib/security/requestGuards";
 import { createAdminClient } from "@/lib/supabase/admin";
 import { withPendingTask } from "@/lib/kie/taskBillingMetadata";
+import {
+  buildBrandProfilePromptContext,
+  getBrandProfileFromMetadata,
+  isBrandProfileComplete,
+} from "@/lib/dashboard/brandProfile";
 
 type CreateTaskBody = {
   prompt: string;
@@ -122,6 +127,7 @@ export async function POST(req: Request) {
     let userId: string | null = null;
     let freeTrialUsed = false;
     let currentUserMetadata: Record<string, unknown> = {};
+    let bodyBrandProfileContext = "";
     if (isSupabaseConfigured()) {
       const supabase = await createClient();
       const {
@@ -133,6 +139,18 @@ export async function POST(req: Request) {
       userId = user.id;
       currentUserMetadata = (user.user_metadata as Record<string, unknown> | null) ?? {};
       freeTrialUsed = Boolean(user.user_metadata?.free_trial_image_used_at);
+      const brandProfile = getBrandProfileFromMetadata(user.user_metadata);
+      if (!isBrandProfileComplete(brandProfile)) {
+        return NextResponse.json(
+          {
+            error:
+              "Bitte zuerst dein Markenprofil in den Einstellungen vollständig ausfüllen (Tonalität, Farben, Do/Don'ts und mindestens 1 Referenzbild-URL).",
+            code: "brand_profile_incomplete",
+          },
+          { status: 400 },
+        );
+      }
+      bodyBrandProfileContext = buildBrandProfilePromptContext(brandProfile);
     }
 
     const apiKey = process.env.KIE_API_KEY;
@@ -209,6 +227,13 @@ export async function POST(req: Request) {
     const promptWithLabelLock = strictLabelPromptPrefix
       ? `${strictLabelPromptPrefix}\n\n${body.prompt.trim()}\n\n${negativePromptBlock}`
       : `${body.prompt.trim()}\n\n${negativePromptBlock}`;
+    const promptWithBrandContext = [
+      promptWithLabelLock,
+      "",
+      bodyBrandProfileContext,
+    ]
+      .filter(Boolean)
+      .join("\n");
 
     const upstream = await fetch(`${baseUrl}/api/v1/jobs/createTask`, {
       method: "POST",
@@ -219,7 +244,7 @@ export async function POST(req: Request) {
       body: JSON.stringify({
         model: KIE_MODEL,
         input: {
-          prompt: promptWithLabelLock,
+          prompt: promptWithBrandContext,
           aspect_ratio: body.aspectRatio || "1:1",
           resolution: isFreeTrialRequest ? "1K" : body.resolution || "1K",
           output_format: isFreeTrialRequest ? "jpg" : body.outputFormat || "png",

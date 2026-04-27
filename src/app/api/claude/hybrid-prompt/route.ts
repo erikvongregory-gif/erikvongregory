@@ -5,6 +5,11 @@ import { DEFAULT_BREWERY_IMAGE_SKILL_SYSTEM_PROMPT } from "@/lib/prompts/brewery
 import { enforceRateLimitPersistent, enforceSameOrigin } from "@/lib/security/requestGuards";
 import { createClient } from "@/lib/supabase/server";
 import { isSupabaseConfigured } from "@/lib/supabase/env";
+import {
+  buildBrandProfilePromptContext,
+  getBrandProfileFromMetadata,
+  isBrandProfileComplete,
+} from "@/lib/dashboard/brandProfile";
 
 const requestSchema = z.object({
   initialInput: z.string().trim().min(1).max(2000),
@@ -91,6 +96,18 @@ export async function POST(req: Request) {
     if (!user) {
       return NextResponse.json({ error: "Nicht angemeldet." }, { status: 401 });
     }
+    const brandProfile = getBrandProfileFromMetadata(user.user_metadata);
+    if (!isBrandProfileComplete(brandProfile)) {
+      return NextResponse.json(
+        {
+          error:
+            "Bitte zuerst dein Markenprofil in den Einstellungen vollständig ausfüllen (Tonalität, Farben, Do/Don'ts und mindestens 1 Referenzbild-URL).",
+          code: "brand_profile_incomplete",
+        },
+        { status: 400 },
+      );
+    }
+    const brandProfileContext = buildBrandProfilePromptContext(brandProfile);
 
     const parsed = requestSchema.safeParse(await req.json());
     if (!parsed.success) {
@@ -166,6 +183,9 @@ export async function POST(req: Request) {
             "- Always include liquid continuity constraints for pouring scenes: bottle volume and glass fill must be physically consistent (no near-full bottle when glass is nearly full).",
             "- Always enforce the anti-generic master directives: distinctive brand anchors, specific scene details, and authored camera intent.",
             "- If user requests headline/text in the visual, instruct clean negative space and post-production text overlay instead of in-image typography rendering.",
+            "",
+            "Brand profile context (MUST apply to all outputs):",
+            brandProfileContext,
           ].join("\n"),
         },
       ],

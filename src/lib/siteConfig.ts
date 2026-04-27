@@ -25,7 +25,7 @@ export const SITE = {
     "EvGlab",
   ],
   locale: "de_DE",
-  ogImage: "/og-image.png", // 1200×630 für WhatsApp, LinkedIn, Twitter etc.
+  ogImage: "/og/evglab-og.jpg", // 1200×630 für WhatsApp, LinkedIn, Twitter etc.
 
   /** Google Search Console – Code von search.google.com/search-console eintragen, z.B. "abc123xyz" */
   googleSiteVerification: "",

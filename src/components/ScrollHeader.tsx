@@ -116,7 +116,9 @@ export function ScrollHeader() {
   }, []);
 
   useEffect(() => {
-    const sectionIds = GLOW_NAV_ITEMS.map((item) => item.href.replace(/^#/, ""));
+    const sectionIds = GLOW_NAV_ITEMS
+      .filter((item) => item.href.startsWith("#"))
+      .map((item) => item.href.replace(/^#/, ""));
 
     const getEl = (id: string): HTMLElement | null => {
       const isDesktopView = window.matchMedia("(min-width: 768px)").matches;

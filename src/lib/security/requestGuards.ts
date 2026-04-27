@@ -67,19 +67,25 @@ export async function enforceRateLimitPersistent(
 
   const key = buildRateLimitKey(rule, identifier);
   try {
+    // Avoid blocking auth/API flows if Upstash is slow/unreachable.
+    const controller = new AbortController();
+    const timeout = globalThis.setTimeout(() => controller.abort(), 1500);
     const response = await fetch(`${upstashUrl}/pipeline`, {
-      method: "POST",
-      headers: {
-        Authorization: `Bearer ${upstashToken}`,
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify([
-        ["INCR", key],
-        ["PEXPIRE", key, String(rule.windowMs), "NX"],
-        ["PTTL", key],
-      ]),
-      cache: "no-store",
-    });
+        method: "POST",
+        headers: {
+          Authorization: `Bearer ${upstashToken}`,
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify([
+          ["INCR", key],
+          ["PEXPIRE", key, String(rule.windowMs), "NX"],
+          ["PTTL", key],
+        ]),
+        cache: "no-store",
+        signal: controller.signal,
+      }).finally(() => {
+        globalThis.clearTimeout(timeout);
+      });
     if (!response.ok) {
       return enforceRateLimit(req, { ...rule, keyPrefix: `${rule.keyPrefix}:fallback` });
     }

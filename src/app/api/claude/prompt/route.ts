@@ -5,6 +5,11 @@ import { DEFAULT_BREWERY_IMAGE_SKILL_SYSTEM_PROMPT } from "@/lib/prompts/brewery
 import { enforceRateLimitPersistent, enforceSameOrigin } from "@/lib/security/requestGuards";
 import { createClient } from "@/lib/supabase/server";
 import { isSupabaseConfigured } from "@/lib/supabase/env";
+import {
+  buildBrandProfilePromptContext,
+  getBrandProfileFromMetadata,
+  isBrandProfileComplete,
+} from "@/lib/dashboard/brandProfile";
 
 type PromptRequestBody = {
   bildtyp?: string;
@@ -99,7 +104,7 @@ function classifyAnthropicError(message: string) {
   return { code: "CLAUDE_UNKNOWN", error: "Claude-Anfrage fehlgeschlagen.", status: 500 };
 }
 
-function buildClaudeInput(body: PromptRequestBody): string {
+function buildClaudeInput(body: PromptRequestBody, brandProfileContext: string): string {
   const strictGlassRule = getStrictGlassRule(body.biertyp ?? "");
   const containerRule =
     body.behaelter === "Nur Flasche"
@@ -143,6 +148,9 @@ function buildClaudeInput(body: PromptRequestBody): string {
 
   return [
     "Erstelle einen hochwertigen ENGLISCHEN Image-Generation Prompt für eine Brauerei auf Basis dieses Briefings.",
+    "",
+    brandProfileContext,
+    "",
     "Nutze die folgenden Briefing-Daten:",
     JSON.stringify(body, null, 2),
     "",
@@ -182,6 +190,18 @@ export async function POST(req: Request) {
     if (!user) {
       return NextResponse.json({ error: "Nicht angemeldet." }, { status: 401 });
     }
+    const brandProfile = getBrandProfileFromMetadata(user.user_metadata);
+    if (!isBrandProfileComplete(brandProfile)) {
+      return NextResponse.json(
+        {
+          error:
+            "Bitte zuerst dein Markenprofil in den Einstellungen vollständig ausfüllen (Tonalität, Farben, Do/Don'ts und mindestens 1 Referenzbild-URL).",
+          code: "brand_profile_incomplete",
+        },
+        { status: 400 },
+      );
+    }
+    const brandProfileContext = buildBrandProfilePromptContext(brandProfile);
 
     const apiKey = process.env.ANTHROPIC_API_KEY;
     if (!apiKey) {
@@ -215,7 +235,7 @@ export async function POST(req: Request) {
           messages: [
             {
               role: "user",
-              content: buildClaudeInput(body),
+              content: buildClaudeInput(body, brandProfileContext),
             },
           ],
         });
