@@ -113,29 +113,6 @@ export function JsonLd() {
     },
   };
 
-  const faq = {
-    "@context": "https://schema.org",
-    "@type": "FAQPage",
-    mainEntity: [
-      {
-        "@type": "Question",
-        name: `Was bietet ${SITE.name} für Brauereien?`,
-        acceptedAnswer: {
-          "@type": "Answer",
-          text: "KI-gestützte Content-Systeme, automatisiertes Marketing, KI-Produktfotos, Bildkampagnen und moderne Websites für Brauereien, Gastronomen und Getränkehersteller.",
-        },
-      },
-      {
-        "@type": "Question",
-        name: "Wie können Brauereien KI für Marketing nutzen?",
-        acceptedAnswer: {
-          "@type": "Answer",
-          text: "Mit KI-Produktfotos, Bildkampagnen, automatisiertem Social Media Marketing und Content für Instagram und Ads – ohne teure Agentur.",
-        },
-      },
-    ],
-  };
-
   const safeJson = (obj: object) =>
     JSON.stringify(obj).replace(/</g, "\\u003c").replace(/\u2028/g, "\\u2028").replace(/\u2029/g, "\\u2029");
 
@@ -156,10 +133,6 @@ export function JsonLd() {
       <script
         type="application/ld+json"
         dangerouslySetInnerHTML={{ __html: safeJson(service) }}
-      />
-      <script
-        type="application/ld+json"
-        dangerouslySetInnerHTML={{ __html: safeJson(faq) }}
       />
     </>
   );
