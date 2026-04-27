@@ -212,7 +212,7 @@ function Hero() {
 
               <BlurFade delay={0.12} duration={0.48} className="flex flex-col gap-4 max-md:mx-auto max-md:w-[min(92vw,22rem)]">
                 <h1 className="max-w-2xl text-center text-5xl font-regular tracking-tighter max-md:mx-auto max-md:w-full max-md:max-w-[18.5rem] max-md:text-[2rem] max-md:leading-[1.12] md:text-7xl">
-                  <span className="text-spektr-cyan-50">KI-Content-System für Brauereien</span>
+                  <span className="text-spektr-cyan-50">KI-Marketing für Brauereien</span>
                   <span className="relative flex w-full justify-center overflow-hidden text-center max-md:mt-2 max-md:min-h-[2.6rem] sm:max-md:min-h-[3rem] md:min-h-0 md:pb-4 md:pt-1">
                     &nbsp;
                     {titles.map((title, index) => (

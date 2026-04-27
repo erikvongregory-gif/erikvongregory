@@ -47,16 +47,23 @@ export function JsonLd() {
     url: SITE.baseUrl,
     publisher: { "@id": businessId },
     inLanguage: "de-DE",
-    potentialAction: {
-      "@type": "ContactAction",
-      target: { "@type": "EntryPoint", url: `${SITE.baseUrl}/#contact` },
-      contactPoint: {
-        "@type": "ContactPoint",
-        email: LEGAL.email,
-        contactType: "customer service",
-        availableLanguage: "German",
+    potentialAction: [
+      {
+        "@type": "ContactAction",
+        target: { "@type": "EntryPoint", url: `${SITE.baseUrl}/#contact` },
+        contactPoint: {
+          "@type": "ContactPoint",
+          email: LEGAL.email,
+          contactType: "customer service",
+          availableLanguage: "German",
+        },
       },
-    },
+      {
+        "@type": "SearchAction",
+        target: `${SITE.baseUrl}/?q={search_term_string}`,
+        "query-input": "required name=search_term_string",
+      },
+    ],
   };
 
   const service = {

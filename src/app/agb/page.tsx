@@ -9,6 +9,19 @@ export const metadata: Metadata = {
     "AGB von EvGlab – Erik Freiherr von Gregory: KI-Marketing, Web und Content für Brauereien und die Getränkewirtschaft.",
   alternates: { canonical: `${SITE.baseUrl}/agb` },
   robots: { index: true, follow: true },
+  openGraph: {
+    title: "AGB | EvGlab",
+    description: "Allgemeine Geschäftsbedingungen von EvGlab für Leistungen und SaaS-Angebote.",
+    url: `${SITE.baseUrl}/agb`,
+    type: "article",
+    images: SITE.ogImage ? [{ url: SITE.ogImage, width: 1200, height: 630, alt: "AGB EvGlab" }] : undefined,
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: "AGB | EvGlab",
+    description: "Vertragsbedingungen für EvGlab-Leistungen und Abonnements.",
+    images: SITE.ogImage ? [SITE.ogImage] : undefined,
+  },
 };
 
 const linkAccent =

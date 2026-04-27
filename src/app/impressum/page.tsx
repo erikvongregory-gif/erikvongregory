@@ -9,6 +9,19 @@ export const metadata: Metadata = {
     "Impressum und rechtliche Angaben – EvGlab, KI für Brauereien & Gastronomie. Fuchstal.",
   alternates: { canonical: `${SITE.baseUrl}/impressum` },
   robots: { index: true, follow: true },
+  openGraph: {
+    title: "Impressum | EvGlab",
+    description: "Impressum und rechtliche Angaben von EvGlab.",
+    url: `${SITE.baseUrl}/impressum`,
+    type: "article",
+    images: SITE.ogImage ? [{ url: SITE.ogImage, width: 1200, height: 630, alt: "Impressum EvGlab" }] : undefined,
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: "Impressum | EvGlab",
+    description: "Rechtliche Angaben und Kontakt von EvGlab.",
+    images: SITE.ogImage ? [SITE.ogImage] : undefined,
+  },
 };
 
 const linkAccent =

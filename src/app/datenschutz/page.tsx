@@ -9,6 +9,19 @@ export const metadata: Metadata = {
     "Datenschutzerklärung – EvGlab, KI für Brauereien & Gastronomie. Informationen zur Verarbeitung personenbezogener Daten und Cookies.",
   alternates: { canonical: `${SITE.baseUrl}/datenschutz` },
   robots: { index: true, follow: true },
+  openGraph: {
+    title: "Datenschutzerklärung | EvGlab",
+    description: "Informationen zur Verarbeitung personenbezogener Daten bei EvGlab.",
+    url: `${SITE.baseUrl}/datenschutz`,
+    type: "article",
+    images: SITE.ogImage ? [{ url: SITE.ogImage, width: 1200, height: 630, alt: "Datenschutz EvGlab" }] : undefined,
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: "Datenschutzerklärung | EvGlab",
+    description: "Datenschutzinformationen und Betroffenenrechte bei EvGlab.",
+    images: SITE.ogImage ? [SITE.ogImage] : undefined,
+  },
 };
 
 const linkAccent =

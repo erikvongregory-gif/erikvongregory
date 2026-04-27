@@ -14,31 +14,31 @@ const FAQ_ITEMS = [
     id: "item-1",
     question: "Wie schnell sehe ich erste Ergebnisse?",
     answer:
-      "Nach dem Briefing starten wir meist innerhalb von 48 Stunden. Erste verwertbare Assets kommen in der Regel in den ersten 3 bis 7 Tagen.",
+      "Erste fertige Bilder und Posts innerhalb von 3–5 Tagen nach Bestellung. Im Dashboard-Abo sofort nach dem Login.",
   },
   {
     id: "item-2",
     question: "Ist das Risiko gering, wenn ich starte?",
     answer:
-      "Ja. Du startest mit einem klaren Paket, festen Deliverables und transparenten Zeitfenstern - ohne lange Vertragsbindung.",
+      "Ja. Pakete sind einmalig ohne Abo-Bindung. Das Dashboard-Abo ist monatlich kündbar. Kein Vertrag, kein Kleingedrucktes.",
   },
   {
     id: "item-3",
     question: "Wie viel Aufwand habe ich intern wirklich?",
     answer:
-      "Der Prozess ist bewusst schlank: kurzes Briefing, schnelle Feedback-Schleifen, dann erhältst du einsatzbereiten Content für deine Kanäle.",
+      "Bei Paketen fast null — du schickst Logo und Briefing, wir liefern. Im Dashboard ca. 5–15 Minuten pro Post.",
   },
   {
     id: "item-4",
     question: "Kann ich später hoch- oder runterwechseln?",
     answer:
-      "Ja, bei den Dashboard-Abos kannst du flexibel wechseln. So passt du den Umfang an Saison, Aktionen und Teamgröße an.",
+      "Ja, jederzeit zum Monatsende. Kein Aufpreis, kein Prozess.",
   },
   {
     id: "item-5",
     question: "Sind die Inhalte wirklich in meinem Markenstil?",
     answer:
-      "Genau darauf ist der Prozess aufgebaut: deine Marke wird zuerst definiert, danach entstehen Assets konsistent in deinem Look statt generischer KI-Optik.",
+      "Ja. Du hinterlegst einmal dein Markenprofil (Logo, Tonalität, Farbschema) — alle Bilder und Texte werden konsistent in deinem Stil ausgespielt.",
   },
 ] as const;
 

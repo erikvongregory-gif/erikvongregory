@@ -74,7 +74,7 @@ export function AppShell({ children }: AppShellProps) {
             <div>
               <p className="font-bold text-zinc-900">{SITE.name}</p>
               <p className="mt-1 text-sm font-medium text-[#b45309]">
-                KI für Brauereien & Gastronomie
+                KI-Marketing für Brauereien: Werbebilder, Social Media & Bewertungen
               </p>
               <p className="mt-4 text-sm leading-relaxed text-zinc-600">
                 Bündig. Direkt. Fokussiert auf Automatisierung von Marketing, Content und Verkauf.
