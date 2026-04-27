@@ -339,12 +339,6 @@ const Sidebar = ({
     };
   }, []);
 
-  useEffect(() => {
-    if (!settingsLoaded) return;
-    if (brandProfileComplete) return;
-    setSelectedTab("Einstellungen");
-  }, [brandProfileComplete, settingsLoaded, setSelectedTab]);
-
   const hasActiveBilling = Boolean(activeSubscription) && billingStatus !== "none" && billingStatus !== "canceled";
   const currentPlanLabel = hasActiveBilling && activeSubscription ? PLAN_LABELS[activeSubscription] : "Kein aktives Abo";
 
@@ -875,6 +869,12 @@ const ExampleContent = ({ userEmail, userName, selectedTab, setSelectedTab, isAd
       ignore = true;
     };
   }, []);
+
+  useEffect(() => {
+    if (!settingsLoaded) return;
+    if (brandProfileComplete) return;
+    setSelectedTab("Einstellungen");
+  }, [brandProfileComplete, settingsLoaded, setSelectedTab]);
 
   useEffect(() => {
     if (!profileMenuOpen && !bellMenuOpen) return;

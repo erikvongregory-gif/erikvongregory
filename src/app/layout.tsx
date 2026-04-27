@@ -71,8 +71,9 @@ export const metadata: Metadata = {
   },
   category: "Business",
   icons: {
-    icon: [{ url: "/icon.svg", type: "image/svg+xml" }],
-    shortcut: ["/icon.svg"],
+    icon: [{ url: "/icon.svg?v=20260427", type: "image/svg+xml" }],
+    shortcut: ["/icon.svg?v=20260427"],
+    apple: [{ url: "/icon.png?v=20260427", sizes: "180x180", type: "image/png" }],
   },
   manifest: "/manifest.json",
   ...(SITE.googleSiteVerification?.trim() && {

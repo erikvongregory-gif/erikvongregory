@@ -2,8 +2,8 @@
 
 import { useEffect } from "react";
 
-const NORMAL_ICON = "/icon.svg";
-const REMINDER_ICON = "/icon-reminder.svg";
+const NORMAL_ICON = "/icon.svg?v=20260427";
+const REMINDER_ICON = "/icon-reminder.svg?v=20260427";
 const REMINDER_TITLE = "EvGlab wartet auf dich";
 
 function setFavicons(href: string) {
