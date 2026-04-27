@@ -1,17 +1,19 @@
 import { NextResponse } from "next/server";
 import { isInviteOnlyEnabled, isSupabaseConfigured } from "@/lib/supabase/env";
 import { createRouteHandlerClient } from "@/lib/supabase/server";
+import { createNoStoreRedirect, normalizeNextPath } from "@/lib/security/authResponses";
+import { getOrCreateRequestId } from "@/lib/security/authObservability";
 
 export async function GET(request: Request) {
+  const requestId = getOrCreateRequestId(request);
   const { origin, searchParams } = new URL(request.url);
-  const next = searchParams.get("next") ?? "/dashboard";
-  const safeNext = next.startsWith("/") ? next : "/dashboard";
+  const safeNext = normalizeNextPath(searchParams.get("next"));
 
   if (!isSupabaseConfigured()) {
-    return NextResponse.redirect(`${origin}/?auth=signin&error=config`, 303);
+    return createNoStoreRedirect(`${origin}/?auth=signin&error=config`, requestId);
   }
   if (isInviteOnlyEnabled()) {
-    return NextResponse.redirect(`${origin}/?auth=signin&error=invite_only`, 303);
+    return createNoStoreRedirect(`${origin}/?auth=signin&error=invite_only`, requestId);
   }
 
   const cookieCarrier = NextResponse.next();
@@ -28,11 +30,10 @@ export async function GET(request: Request) {
   });
 
   if (error || !data.url) {
-    return NextResponse.redirect(`${origin}/?auth=signin&error=google`, 303);
+    return createNoStoreRedirect(`${origin}/?auth=signin&error=google`, requestId);
   }
 
-  const redirect = NextResponse.redirect(data.url, 303);
-  redirect.headers.set("Cache-Control", "no-store, max-age=0");
+  const redirect = createNoStoreRedirect(data.url, requestId);
   for (const line of cookieCarrier.headers.getSetCookie()) {
     redirect.headers.append("Set-Cookie", line);
   }

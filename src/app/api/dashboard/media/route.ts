@@ -2,7 +2,7 @@ import { NextResponse } from "next/server";
 import { z } from "zod";
 import { createClient } from "@/lib/supabase/server";
 import { isSupabaseConfigured } from "@/lib/supabase/env";
-import { enforceRateLimit, enforceSameOrigin } from "@/lib/security/requestGuards";
+import { enforceRateLimitPersistent, enforceSameOrigin } from "@/lib/security/requestGuards";
 import {
   type DashboardMediaItem,
   getDashboardMetadata,
@@ -38,7 +38,11 @@ export async function GET() {
 }
 
 export async function POST(req: Request) {
-  const rateError = enforceRateLimit(req, { keyPrefix: "dashboard-media-post", limit: 40, windowMs: 60_000 });
+  const rateError = await enforceRateLimitPersistent(req, {
+    keyPrefix: "dashboard-media-post",
+    limit: 40,
+    windowMs: 60_000,
+  });
   if (rateError) return rateError;
   const originError = enforceSameOrigin(req);
   if (originError) return originError;
@@ -72,7 +76,11 @@ export async function POST(req: Request) {
 }
 
 export async function DELETE(req: Request) {
-  const rateError = enforceRateLimit(req, { keyPrefix: "dashboard-media-delete", limit: 40, windowMs: 60_000 });
+  const rateError = await enforceRateLimitPersistent(req, {
+    keyPrefix: "dashboard-media-delete",
+    limit: 40,
+    windowMs: 60_000,
+  });
   if (rateError) return rateError;
   const originError = enforceSameOrigin(req);
   if (originError) return originError;

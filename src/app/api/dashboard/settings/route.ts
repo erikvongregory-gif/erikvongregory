@@ -2,7 +2,7 @@ import { NextResponse } from "next/server";
 import { z } from "zod";
 import { createClient } from "@/lib/supabase/server";
 import { isSupabaseConfigured } from "@/lib/supabase/env";
-import { enforceRateLimit, enforceSameOrigin } from "@/lib/security/requestGuards";
+import { enforceRateLimitPersistent, enforceSameOrigin } from "@/lib/security/requestGuards";
 import { getDashboardMetadata, mergeDashboardMetadata } from "@/lib/dashboard/metadata";
 
 const settingsSchema = z.object({
@@ -60,7 +60,11 @@ export async function GET() {
 }
 
 export async function PUT(req: Request) {
-  const rateError = enforceRateLimit(req, { keyPrefix: "dashboard-settings", limit: 25, windowMs: 60_000 });
+  const rateError = await enforceRateLimitPersistent(req, {
+    keyPrefix: "dashboard-settings",
+    limit: 25,
+    windowMs: 60_000,
+  });
   if (rateError) return rateError;
   const originError = enforceSameOrigin(req);
   if (originError) return originError;

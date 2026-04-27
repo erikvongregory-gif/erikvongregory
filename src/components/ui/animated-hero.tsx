@@ -143,7 +143,7 @@ function Hero() {
   }, []);
 
   const primaryCtaLabel = useMemo(() => {
-    if (!isAuthenticated) return "1 Bild kostenlos generieren";
+    if (!isAuthenticated) return "3 Bilder kostenlos generieren";
     if (hasActiveSubscription) return "Zum Dashboard";
     if (freeTrialImageUsed) return "Zu Abo & Tokens";
     return "Jetzt kostenloses Bild erstellen";

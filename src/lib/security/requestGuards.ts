@@ -53,14 +53,32 @@ export function enforceRateLimit(req: Request, rule: RateLimitRule): NextRespons
 
 type PersistentRateLimitOptions = {
   identifier?: string;
+  identifierParts?: Array<string | null | undefined>;
 };
+
+const RATE_LIMIT_TIMEOUT_MS = 1_500;
+
+function compactIdentifierPart(value: string): string {
+  return value.trim().toLowerCase().replace(/[^a-z0-9._:@-]/g, "").slice(0, 120);
+}
+
+export function buildCompositeIdentifier(
+  req: Request,
+  identifierParts: Array<string | null | undefined> = [],
+): string {
+  const parts = [getClientIdentifier(req), ...identifierParts]
+    .map((part) => (part ? compactIdentifierPart(part) : ""))
+    .filter(Boolean);
+  return parts.join("|").slice(0, 300) || getClientIdentifier(req);
+}
 
 export async function enforceRateLimitPersistent(
   req: Request,
   rule: RateLimitRule,
   options: PersistentRateLimitOptions = {},
 ): Promise<NextResponse | null> {
-  const identifier = options.identifier || getClientIdentifier(req);
+  const identifier =
+    options.identifier || buildCompositeIdentifier(req, options.identifierParts ?? []);
   if (!upstashUrl || !upstashToken) {
     return enforceRateLimit(req, { ...rule, keyPrefix: `${rule.keyPrefix}:fallback` });
   }
@@ -69,7 +87,7 @@ export async function enforceRateLimitPersistent(
   try {
     // Avoid blocking auth/API flows if Upstash is slow/unreachable.
     const controller = new AbortController();
-    const timeout = globalThis.setTimeout(() => controller.abort(), 1500);
+    const timeout = globalThis.setTimeout(() => controller.abort(), RATE_LIMIT_TIMEOUT_MS);
     const response = await fetch(`${upstashUrl}/pipeline`, {
         method: "POST",
         headers: {

@@ -7,50 +7,67 @@ import {
 } from "@/lib/admin/emailTwoFactor";
 import { isSupabaseConfigured } from "@/lib/supabase/env";
 import { createRouteHandlerClient } from "@/lib/supabase/server";
-import { enforceRateLimitPersistent, enforceSameOrigin } from "@/lib/security/requestGuards";
+import { logAuthEvent, getOrCreateRequestId } from "@/lib/security/authObservability";
+import {
+  createNoStoreRedirect,
+  normalizeNextPath,
+  secureCookieOptions,
+} from "@/lib/security/authResponses";
+import { buildCompositeIdentifier, enforceRateLimitPersistent, enforceSameOrigin } from "@/lib/security/requestGuards";
 
 export async function POST(request: Request) {
-  const { origin, hostname } = new URL(request.url);
+  const startedAt = Date.now();
+  const requestId = getOrCreateRequestId(request);
+  const { origin } = new URL(request.url);
   const originError = enforceSameOrigin(request);
   if (originError) return originError;
-  const rateError = await enforceRateLimitPersistent(request, {
-    keyPrefix: "auth-signin",
-    limit: 8,
-    windowMs: 60_000,
-  });
-  if (rateError) return rateError;
-  const secureCookies = process.env.NODE_ENV === "production";
-  const cookieDomain =
-    secureCookies && (hostname === "evglab.com" || hostname.endsWith(".evglab.com"))
-      ? "evglab.com"
-      : undefined;
+  const cookieOptions = secureCookieOptions(request);
   if (!isSupabaseConfigured()) {
-    return NextResponse.redirect(`${origin}/?auth=signin&error=config`, 303);
+    return createNoStoreRedirect(`${origin}/?auth=signin&error=config`, requestId);
   }
 
   const formData = await request.formData();
   const email = String(formData.get("email") ?? "").trim();
   const password = String(formData.get("password") ?? "");
-  const next = String(formData.get("next") ?? "/dashboard");
+  const next = normalizeNextPath(String(formData.get("next") ?? "/dashboard"));
+  const identifier = buildCompositeIdentifier(request, [email]);
+  const rateError = await enforceRateLimitPersistent(
+    request,
+    {
+      keyPrefix: "auth-signin",
+      limit: 8,
+      windowMs: 60_000,
+    },
+    { identifier },
+  );
+  if (rateError) return rateError;
 
   if (!email || !password) {
-    return NextResponse.redirect(`${origin}/?auth=signin&error=missing`, 303);
+    return createNoStoreRedirect(`${origin}/?auth=signin&error=missing`, requestId);
   }
 
-  const safeNext = next.startsWith("/") ? next : "/dashboard";
-  const redirectResponse = NextResponse.redirect(`${origin}${safeNext}`, 303);
-  redirectResponse.headers.set("Cache-Control", "no-store, max-age=0");
+  const redirectResponse = createNoStoreRedirect(`${origin}${next}`, requestId);
   const withAuthCookies = (response: NextResponse) => {
     for (const cookie of redirectResponse.cookies.getAll()) {
       response.cookies.set(cookie.name, cookie.value, cookie);
     }
+    response.headers.set("x-request-id", requestId);
     return response;
   };
 
   const supabase = createRouteHandlerClient(request, redirectResponse);
   const { error } = await supabase.auth.signInWithPassword({ email, password });
   if (error) {
-    return NextResponse.redirect(`${origin}/?auth=signin&error=auth`, 303);
+    logAuthEvent({
+      event: "signin_failed",
+      level: "warn",
+      requestId,
+      email,
+      status: 303,
+      durationMs: Date.now() - startedAt,
+      meta: { reason: "auth" },
+    });
+    return createNoStoreRedirect(`${origin}/?auth=signin&error=auth`, requestId);
   }
 
   const {
@@ -69,7 +86,7 @@ export async function POST(request: Request) {
       const errorCode = message.includes("RESEND_API_KEY") || message.includes("ADMIN_2FA_FROM_EMAIL")
         ? "admin_2fa_email_config"
         : "admin_2fa_email_failed";
-      return NextResponse.redirect(`${origin}/?auth=signin&error=${errorCode}`, 303);
+      return createNoStoreRedirect(`${origin}/?auth=signin&error=${errorCode}`, requestId);
     }
     const pendingToken = buildPending2FAToken({
       userId: user.id,
@@ -77,18 +94,33 @@ export async function POST(request: Request) {
       code,
       ttlSeconds: 600,
     });
-    const response = NextResponse.redirect(`${origin}/?auth=signin&notice=admin_2fa_required`, 303);
+    const response = createNoStoreRedirect(
+      `${origin}/?auth=signin&notice=admin_2fa_required`,
+      requestId,
+    );
     response.cookies.set(getPendingCookieName(), pendingToken, {
       httpOnly: true,
-      sameSite: "lax",
-      secure: secureCookies,
-      ...(cookieDomain ? { domain: cookieDomain } : {}),
-      path: "/",
+      ...cookieOptions,
       maxAge: 60 * 10,
     });
-    response.headers.set("Cache-Control", "no-store, max-age=0");
+    logAuthEvent({
+      event: "signin_admin_2fa_required",
+      requestId,
+      userId: user.id,
+      email: user.email,
+      status: 303,
+      durationMs: Date.now() - startedAt,
+    });
     return withAuthCookies(response);
   }
 
+  logAuthEvent({
+    event: "signin_success",
+    requestId,
+    userId: user?.id,
+    email: user?.email,
+    status: 303,
+    durationMs: Date.now() - startedAt,
+  });
   return withAuthCookies(redirectResponse);
 }

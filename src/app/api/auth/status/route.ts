@@ -1,4 +1,3 @@
-import { NextResponse } from "next/server";
 import { cookies } from "next/headers";
 import { createClient } from "@/lib/supabase/server";
 import {
@@ -8,10 +7,13 @@ import {
   isVerified2FAForUser,
 } from "@/lib/admin/emailTwoFactor";
 import { isSupabaseConfigured } from "@/lib/supabase/env";
+import { getOrCreateRequestId } from "@/lib/security/authObservability";
+import { withRequestIdJson } from "@/lib/security/authResponses";
 
-export async function GET() {
+export async function GET(request: Request) {
+  const requestId = getOrCreateRequestId(request);
   if (!isSupabaseConfigured()) {
-    return NextResponse.json({ authenticated: false, admin: false }, { status: 200 });
+    return withRequestIdJson({ authenticated: false, admin: false }, requestId, { status: 200 });
   }
 
   const supabase = await createClient();
@@ -20,7 +22,11 @@ export async function GET() {
   } = await supabase.auth.getUser();
 
   if (!user) {
-    return NextResponse.json({ authenticated: false, admin: false, admin2faRequired: false }, { status: 200 });
+    return withRequestIdJson(
+      { authenticated: false, admin: false, admin2faRequired: false },
+      requestId,
+      { status: 200 },
+    );
   }
 
   const role =
@@ -40,9 +46,12 @@ export async function GET() {
     admin2faRequired = hasPending && !isVerified;
   }
 
-  return NextResponse.json({
-    authenticated: true,
-    admin: isAdmin,
-    admin2faRequired,
-  });
+  return withRequestIdJson(
+    {
+      authenticated: true,
+      admin: isAdmin,
+      admin2faRequired,
+    },
+    requestId,
+  );
 }

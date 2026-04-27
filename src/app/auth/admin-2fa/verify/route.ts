@@ -9,17 +9,17 @@ import {
   verifyPending2FACode,
 } from "@/lib/admin/emailTwoFactor";
 import { enforceRateLimitPersistent, enforceSameOrigin } from "@/lib/security/requestGuards";
+import { createNoStoreRedirect, secureCookieOptions } from "@/lib/security/authResponses";
+import { getOrCreateRequestId, logAuthEvent } from "@/lib/security/authObservability";
 import { createRouteHandlerClient } from "@/lib/supabase/server";
 
 export async function POST(request: NextRequest) {
-  const { origin, hostname } = new URL(request.url);
+  const startedAt = Date.now();
+  const requestId = getOrCreateRequestId(request);
+  const { origin } = new URL(request.url);
   const originError = enforceSameOrigin(request);
   if (originError) return originError;
-  const secureCookies = process.env.NODE_ENV === "production";
-  const cookieDomain =
-    secureCookies && (hostname === "evglab.com" || hostname.endsWith(".evglab.com"))
-      ? "evglab.com"
-      : undefined;
+  const cookieOptions = secureCookieOptions(request);
   const formData = await request.formData();
   const action = String(formData.get("action") ?? "verify");
   const code = String(formData.get("code") ?? "").trim();
@@ -40,7 +40,7 @@ export async function POST(request: NextRequest) {
       ? String(user.user_metadata.role).toLowerCase()
       : "";
   if (!user || role !== "admin" || !user.email) {
-    return NextResponse.redirect(`${origin}/?auth=signin&error=auth`, 303);
+    return createNoStoreRedirect(`${origin}/?auth=signin&error=auth`, requestId);
   }
   const baseIdentifier = `admin2fa:${user.id}`;
   const baseRateError = await enforceRateLimitPersistent(request, {
@@ -52,7 +52,7 @@ export async function POST(request: NextRequest) {
 
   const pendingToken = request.cookies.get(getPendingCookieName())?.value ?? null;
   if (!pendingToken) {
-    return NextResponse.redirect(`${origin}/?auth=signin&error=admin_2fa_session_expired`, 303);
+    return createNoStoreRedirect(`${origin}/?auth=signin&error=admin_2fa_session_expired`, requestId);
   }
 
   if (action === "resend") {
@@ -66,7 +66,10 @@ export async function POST(request: NextRequest) {
     try {
       await sendAdmin2FACodeEmail({ to: user.email, code: newCode });
     } catch {
-      return NextResponse.redirect(`${origin}/?auth=signin&notice=admin_2fa_required&error=email_failed`, 303);
+      return createNoStoreRedirect(
+        `${origin}/?auth=signin&notice=admin_2fa_required&error=email_failed`,
+        requestId,
+      );
     }
     const nextPending = buildPending2FAToken({
       userId: user.id,
@@ -74,20 +77,31 @@ export async function POST(request: NextRequest) {
       code: newCode,
       ttlSeconds: 600,
     });
-    const resendResponse = NextResponse.redirect(`${origin}/?auth=signin&notice=admin_2fa_resent`, 303);
+    const resendResponse = createNoStoreRedirect(
+      `${origin}/?auth=signin&notice=admin_2fa_resent`,
+      requestId,
+    );
     resendResponse.cookies.set(getPendingCookieName(), nextPending, {
       httpOnly: true,
-      sameSite: "lax",
-      secure: secureCookies,
-      ...(cookieDomain ? { domain: cookieDomain } : {}),
-      path: "/",
+      ...cookieOptions,
       maxAge: 60 * 10,
+    });
+    logAuthEvent({
+      event: "admin_2fa_code_resent",
+      requestId,
+      userId: user.id,
+      email: user.email,
+      status: 303,
+      durationMs: Date.now() - startedAt,
     });
     return withAuthCookies(resendResponse);
   }
 
   if (!code) {
-    return NextResponse.redirect(`${origin}/?auth=signin&notice=admin_2fa_required&error=missing_code`, 303);
+    return createNoStoreRedirect(
+      `${origin}/?auth=signin&notice=admin_2fa_required&error=missing_code`,
+      requestId,
+    );
   }
   const verifyRateError = await enforceRateLimitPersistent(
     request,
@@ -101,29 +115,43 @@ export async function POST(request: NextRequest) {
     code,
   });
   if (!result.ok) {
-    return NextResponse.redirect(`${origin}/?auth=signin&notice=admin_2fa_required&error=admin_2fa_invalid`, 303);
+    logAuthEvent({
+      event: "admin_2fa_verify_failed",
+      level: "warn",
+      requestId,
+      userId: user.id,
+      email: user.email,
+      status: 303,
+      durationMs: Date.now() - startedAt,
+    });
+    return createNoStoreRedirect(
+      `${origin}/?auth=signin&notice=admin_2fa_required&error=admin_2fa_invalid`,
+      requestId,
+    );
   }
 
   const verifiedToken = buildVerified2FAToken({
     userId: user.id,
     ttlSeconds: 60 * 60 * 12,
   });
-  const done = NextResponse.redirect(`${origin}/dashboard`, 303);
+  const done = createNoStoreRedirect(`${origin}/dashboard`, requestId);
   done.cookies.set(getVerifiedCookieName(), verifiedToken, {
     httpOnly: true,
-    sameSite: "lax",
-    secure: secureCookies,
-    ...(cookieDomain ? { domain: cookieDomain } : {}),
-    path: "/",
+    ...cookieOptions,
     maxAge: 60 * 60 * 12,
   });
   done.cookies.set(getPendingCookieName(), "", {
     httpOnly: true,
-    sameSite: "lax",
-    secure: secureCookies,
-    ...(cookieDomain ? { domain: cookieDomain } : {}),
-    path: "/",
+    ...cookieOptions,
     maxAge: 0,
+  });
+  logAuthEvent({
+    event: "admin_2fa_verified",
+    requestId,
+    userId: user.id,
+    email: user.email,
+    status: 303,
+    durationMs: Date.now() - startedAt,
   });
   return withAuthCookies(done);
 }

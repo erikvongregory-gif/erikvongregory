@@ -1,21 +1,17 @@
-import { NextResponse } from "next/server";
 import { createAdminClient } from "@/lib/supabase/admin";
 import { isInviteOnlyEnabled, isSupabaseConfigured } from "@/lib/supabase/env";
 import { consumeInviteByToken } from "@/lib/invite/server";
-import { enforceRateLimitPersistent, enforceSameOrigin } from "@/lib/security/requestGuards";
+import { createNoStoreRedirect, normalizeNextPath } from "@/lib/security/authResponses";
+import { buildCompositeIdentifier, enforceRateLimitPersistent, enforceSameOrigin } from "@/lib/security/requestGuards";
+import { getOrCreateRequestId } from "@/lib/security/authObservability";
 
 export async function POST(request: Request) {
+  const requestId = getOrCreateRequestId(request);
   const { origin } = new URL(request.url);
   const originError = enforceSameOrigin(request);
   if (originError) return originError;
-  const rateError = await enforceRateLimitPersistent(request, {
-    keyPrefix: "auth-signup",
-    limit: 6,
-    windowMs: 60_000,
-  });
-  if (rateError) return rateError;
   if (!isSupabaseConfigured()) {
-    return NextResponse.redirect(`${origin}/?auth=signup&error=config`, 303);
+    return createNoStoreRedirect(`${origin}/?auth=signup&error=config`, requestId);
   }
 
   const formData = await request.formData();
@@ -23,15 +19,25 @@ export async function POST(request: Request) {
   const password = String(formData.get("password") ?? "");
   const breweryName = String(formData.get("brewery") ?? "").trim();
   const inviteToken = String(formData.get("inviteToken") ?? "").trim();
-  const next = String(formData.get("next") ?? "/dashboard");
-  const safeNext = next.startsWith("/") ? next : "/dashboard";
+  const next = normalizeNextPath(String(formData.get("next") ?? "/dashboard"));
+  const identifier = buildCompositeIdentifier(request, [email, inviteToken || null]);
+  const rateLimitError = await enforceRateLimitPersistent(
+    request,
+    {
+      keyPrefix: "auth-signup",
+      limit: 6,
+      windowMs: 60_000,
+    },
+    { identifier },
+  );
+  if (rateLimitError) return rateLimitError;
 
   if (!email || !password) {
-    return NextResponse.redirect(`${origin}/?auth=signup&error=missing`, 303);
+    return createNoStoreRedirect(`${origin}/?auth=signup&error=missing`, requestId);
   }
 
   if (isInviteOnlyEnabled() && !inviteToken) {
-    return NextResponse.redirect(`${origin}/?auth=signup&error=invite_required`, 303);
+    return createNoStoreRedirect(`${origin}/?auth=signup&error=invite_required`, requestId);
   }
 
   if (isInviteOnlyEnabled()) {
@@ -45,7 +51,7 @@ export async function POST(request: Request) {
             : consumed.status === "email_mismatch"
               ? "invite_email_mismatch"
               : "invite_invalid";
-      return NextResponse.redirect(`${origin}/?auth=signup&error=${reason}`, 303);
+      return createNoStoreRedirect(`${origin}/?auth=signup&error=${reason}`, requestId);
     }
   }
 
@@ -61,12 +67,12 @@ export async function POST(request: Request) {
   });
 
   if (error || !data.user) {
-    return NextResponse.redirect(`${origin}/?auth=signup&error=auth`, 303);
+    return createNoStoreRedirect(`${origin}/?auth=signup&error=auth`, requestId);
   }
 
   if (isInviteOnlyEnabled()) {
-    return NextResponse.redirect(`${origin}/?auth=signin&notice=invite_ready`, 303);
+    return createNoStoreRedirect(`${origin}/?auth=signin&notice=invite_ready`, requestId);
   }
 
-  return NextResponse.redirect(`${origin}${safeNext}`, 303);
+  return createNoStoreRedirect(`${origin}${next}`, requestId);
 }

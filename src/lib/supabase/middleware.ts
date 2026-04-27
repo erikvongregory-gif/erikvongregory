@@ -1,9 +1,12 @@
 import { createServerClient } from "@supabase/ssr";
 import { NextResponse, type NextRequest } from "next/server";
 import { getSupabaseAnonKey, getSupabaseUrl, isInviteOnlyEnabled } from "@/lib/supabase/env";
+import { getOrCreateRequestId } from "@/lib/security/authObservability";
 
 export async function updateSession(request: NextRequest) {
+  const requestId = getOrCreateRequestId(request);
   const supabaseResponse = NextResponse.next({ request });
+  supabaseResponse.headers.set("x-request-id", requestId);
 
   const url = getSupabaseUrl();
   const key = getSupabaseAnonKey();
@@ -28,22 +31,40 @@ export async function updateSession(request: NextRequest) {
     },
   });
 
-  const {
-    data: { user },
-  } = await supabase.auth.getUser();
+  let user: Awaited<ReturnType<typeof supabase.auth.getUser>>["data"]["user"] = null;
+  try {
+    const authResult = await Promise.race([
+      supabase.auth.getUser(),
+      new Promise<never>((_, reject) => {
+        setTimeout(() => reject(new Error("middleware_auth_timeout")), 4_000);
+      }),
+    ]);
+    user = authResult.data.user;
+  } catch {
+    return supabaseResponse;
+  }
 
   const pathname = request.nextUrl.pathname;
 
   if (user && (pathname === "/anmelden" || pathname === "/registrieren")) {
-    return NextResponse.redirect(new URL("/dashboard", request.url));
+    const redirect = NextResponse.redirect(new URL("/dashboard", request.url));
+    redirect.headers.set("x-request-id", requestId);
+    redirect.headers.set("Cache-Control", "no-store, max-age=0");
+    return redirect;
   }
 
   if (!user && pathname.startsWith("/dashboard")) {
-    return NextResponse.redirect(new URL("/?auth=signin", request.url));
+    const redirect = NextResponse.redirect(new URL("/?auth=signin", request.url));
+    redirect.headers.set("x-request-id", requestId);
+    redirect.headers.set("Cache-Control", "no-store, max-age=0");
+    return redirect;
   }
 
   if (isInviteOnlyEnabled() && pathname === "/registrieren") {
-    return NextResponse.redirect(new URL("/?auth=signin&error=invite_required", request.url));
+    const redirect = NextResponse.redirect(new URL("/?auth=signin&error=invite_required", request.url));
+    redirect.headers.set("x-request-id", requestId);
+    redirect.headers.set("Cache-Control", "no-store, max-age=0");
+    return redirect;
   }
 
   return supabaseResponse;
