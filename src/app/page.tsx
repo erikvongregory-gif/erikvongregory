@@ -7,6 +7,16 @@ export const metadata: Metadata = {
   title: "KI-Marketing für Brauereien: Bilder, Posts & Bewertungen | EvGlab",
   description:
     "KI-generierte Werbebilder, Social-Media-Posts und Google-Bewertungen für Brauereien — selbst im Dashboard oder fertig geliefert. Ab 79 €/Monat. Jetzt testen.",
+  keywords: [
+    "KI Marketing für Brauereien",
+    "KI Marketing Agentur",
+    "KI Content für Brauereien",
+    "Brauerei Marketing",
+    "Social Media Marketing Brauerei",
+    "KI Produktfotos Bier",
+    "KI Bilder für Brauerei Werbung",
+    "Marketing Automatisierung Brauerei",
+  ],
   alternates: { canonical: "https://evglab.com" },
   openGraph: {
     title: "KI-Marketing für Brauereien | EvGlab",
@@ -98,6 +108,37 @@ export default function Home() {
     ],
   };
 
+  const siteNavigationJsonLd = {
+    "@context": "https://schema.org",
+    "@type": "ItemList",
+    itemListElement: [
+      {
+        "@type": "SiteNavigationElement",
+        position: 1,
+        name: "Warum",
+        url: "https://www.evglab.com/#warum",
+      },
+      {
+        "@type": "SiteNavigationElement",
+        position: 2,
+        name: "Lösungen",
+        url: "https://www.evglab.com/#loesungen",
+      },
+      {
+        "@type": "SiteNavigationElement",
+        position: 3,
+        name: "Pakete",
+        url: "https://www.evglab.com/#pakete",
+      },
+      {
+        "@type": "SiteNavigationElement",
+        position: 4,
+        name: "Beispiele",
+        url: "https://www.evglab.com/#beispiele",
+      },
+    ],
+  };
+
   return (
     <>
       <script
@@ -107,6 +148,10 @@ export default function Home() {
       <script
         type="application/ld+json"
         dangerouslySetInnerHTML={{ __html: JSON.stringify(faqJsonLd) }}
+      />
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(siteNavigationJsonLd) }}
       />
       <ResponsiveHomeLayout />
       <PricingSection />

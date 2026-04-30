@@ -103,6 +103,7 @@ export function MobileLayout() {
           </div>
         </div>
         {/* Section 2 – Karten wie Desktop */}
+        <div id="warum" className="scroll-mt-24" aria-hidden />
         <section
           id="section-2"
           className="insurance-card-theme relative z-30 px-4 pt-10 pb-16 sm:pt-14 md:pt-24"
@@ -113,6 +114,7 @@ export function MobileLayout() {
         </section>
 
         {/* Section 4 */}
+        <div id="loesungen" className="scroll-mt-24" aria-hidden />
         <section id="section-4" className="insurance-card-theme relative z-30 px-4 py-16">
           <div className="section4-loop-stack-root section4-mobile-ring-unclipped relative isolate z-0 mx-auto max-w-2xl">
             {showSection4Shader ? (

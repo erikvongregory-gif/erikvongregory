@@ -118,10 +118,10 @@ export function JsonLd() {
     "@type": "ItemList",
     itemListElement: [
       { "@type": "SiteNavigationElement", position: 1, name: "Startseite", url: SITE.baseUrl },
-      { "@type": "SiteNavigationElement", position: 2, name: "Lösungen", url: `${SITE.baseUrl}/loesungen` },
-      { "@type": "SiteNavigationElement", position: 3, name: "Saisonkampagnen", url: `${SITE.baseUrl}/loesungen/saisonkampagne-brauerei` },
-      { "@type": "SiteNavigationElement", position: 4, name: "Biergarten und Event Marketing", url: `${SITE.baseUrl}/loesungen/biergarten-event-marketing` },
-      { "@type": "SiteNavigationElement", position: 5, name: "Händler und Gastro Promotion", url: `${SITE.baseUrl}/loesungen/haendler-gastro-promotion` },
+      { "@type": "SiteNavigationElement", position: 2, name: "Warum", url: `${SITE.baseUrl}/#warum` },
+      { "@type": "SiteNavigationElement", position: 3, name: "Lösungen", url: `${SITE.baseUrl}/#loesungen` },
+      { "@type": "SiteNavigationElement", position: 4, name: "Pakete", url: `${SITE.baseUrl}/#pakete` },
+      { "@type": "SiteNavigationElement", position: 5, name: "Beispiele", url: `${SITE.baseUrl}/#beispiele` },
       { "@type": "SiteNavigationElement", position: 6, name: "Kontakt", url: `${SITE.baseUrl}/#contact` },
     ],
   };

@@ -2,7 +2,7 @@ import Link from "next/link";
 
 const PAGES = [
   {
-    href: "/loesungen/saisonkampagne-brauerei",
+    href: "/loesungen",
     title: "Saisonkampagnen für Brauereien",
     summary:
       "Von Frühlingsbier bis Winteraktion: Kampagnenmotive, Angebotsvisuals und Social-Posts in einem klaren Ablauf.",
@@ -15,7 +15,7 @@ const PAGES = [
     impact: "Schneller live gehen, ohne Qualitätsverlust bei jeder Saison.",
   },
   {
-    href: "/loesungen/biergarten-event-marketing",
+    href: "/loesungen",
     title: "Biergarten- & Event-Marketing",
     summary:
       "Content für Ausschanktage, Verkostungen und Eventwochen: planbar vorbereitet statt kurz vor knapp.",
@@ -28,7 +28,7 @@ const PAGES = [
     impact: "Mehr Sichtbarkeit rund ums Event und weniger Last-Minute-Stress.",
   },
   {
-    href: "/loesungen/haendler-gastro-promotion",
+    href: "/loesungen",
     title: "Händler- & Gastro-Promotion",
     summary:
       "Co-Branding-Visuals für Getränkemärkte, Gastro und Handelspartner - mit konsistenter Markenführung.",
@@ -96,7 +96,7 @@ export function UseCaseClusterLinks() {
                 href={page.href}
                 className="mt-3 inline-flex text-sm font-medium text-[#c65a20] transition hover:text-[#d46830] hover:underline"
               >
-                Szenario ansehen
+                Im Überblick ansehen
               </Link>
             </article>
           ))}

@@ -18,9 +18,11 @@ export function DesktopLayout() {
       </div>
       {/* Sections: volle Breite, Inhalte zentriert */}
       <div className="flex w-full flex-col">
+        <div id="warum" className="scroll-mt-24" aria-hidden />
         <DesktopFadeInView className="section2-slide-trigger">
           <DesktopSection2 />
         </DesktopFadeInView>
+        <div id="loesungen" className="scroll-mt-24" aria-hidden />
         <DesktopFadeInView delay={150} className="section4-cards-trigger">
           <DesktopSection4 />
         </DesktopFadeInView>

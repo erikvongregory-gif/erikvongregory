@@ -17,7 +17,7 @@ const GLOW_NAV_ITEMS: GlowMenuItem[] = [
   {
     icon: HelpCircle,
     label: "Warum",
-    href: "#section-2",
+    href: "#warum",
     gradient:
       "radial-gradient(circle, rgba(198,90,32,0.2) 0%, rgba(212,104,48,0.09) 50%, rgba(198,90,32,0) 100%)",
     iconColor: "text-[#c65a20]",
@@ -26,7 +26,7 @@ const GLOW_NAV_ITEMS: GlowMenuItem[] = [
   {
     icon: Layers,
     label: "Lösungen",
-    href: "#section-4",
+    href: "#loesungen",
     gradient:
       "radial-gradient(circle, rgba(59,130,246,0.18) 0%, rgba(37,99,235,0.07) 50%, rgba(29,78,216,0) 100%)",
     iconColor: "text-blue-600",
@@ -35,7 +35,7 @@ const GLOW_NAV_ITEMS: GlowMenuItem[] = [
   {
     icon: Package,
     label: "Pakete",
-    href: "#pakete-preise",
+    href: "#pakete",
     gradient:
       "radial-gradient(circle, rgba(224,122,64,0.24) 0%, rgba(198,90,32,0.14) 50%, rgba(184,77,21,0) 100%)",
     iconColor: "text-[#c65a20]",
@@ -44,7 +44,7 @@ const GLOW_NAV_ITEMS: GlowMenuItem[] = [
   {
     icon: Sparkles,
     label: "Beispiele",
-    href: "#section-7",
+    href: "#beispiele",
     gradient:
       "radial-gradient(circle, rgba(168,85,247,0.18) 0%, rgba(147,51,234,0.07) 50%, rgba(126,34,206,0) 100%)",
     iconColor: "text-violet-600",

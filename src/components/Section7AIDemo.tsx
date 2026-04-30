@@ -14,11 +14,13 @@ export function Section7AIDemo() {
   };
 
   return (
-    <section
-      id="section-7"
-      className="relative z-[70] border-t-0 px-4 py-16 sm:py-20 md:border-t md:border-neutral-300/40 md:py-24"
-    >
-      <div className="section7-inner mx-auto max-w-6xl">
+    <>
+      <div id="beispiele" className="scroll-mt-24" aria-hidden />
+      <section
+        id="section-7"
+        className="relative z-[70] border-t-0 px-4 py-16 sm:py-20 md:border-t md:border-neutral-300/40 md:py-24"
+      >
+        <div className="section7-inner mx-auto max-w-6xl">
         <div className="mb-6 text-center md:mb-8">
           <span className="section7-badge section7-badge-pulse inline-flex items-center gap-2 rounded-full border border-[rgba(224,122,64,0.35)] bg-[rgba(224,122,64,0.15)] px-4 py-1.5 text-sm font-medium text-[#c65a20]">
             <span aria-hidden>✦</span>
@@ -68,7 +70,8 @@ export function Section7AIDemo() {
             </span>
           </button>
         </div>
-      </div>
-    </section>
+        </div>
+      </section>
+    </>
   );
 }
