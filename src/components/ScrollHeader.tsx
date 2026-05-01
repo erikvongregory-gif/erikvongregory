@@ -2,18 +2,24 @@
 
 import { useEffect, useRef, useState } from "react";
 import Link from "next/link";
-import dynamic from "next/dynamic";
 import { usePathname } from "next/navigation";
-import { HelpCircle, Layers, Mail, Package, Sparkles } from "lucide-react";
+import { HelpCircle, Home, Layers, Mail, Package, Sparkles } from "lucide-react";
 import { MenuBar, type GlowMenuItem } from "@/components/ui/glow-menu";
 import { scrollToSection } from "@/lib/scrollToSection";
 import { cn } from "@/lib/utils";
-
-const HeaderLogin = dynamic(() => import("@/components/HeaderLogin").then((m) => m.HeaderLogin), {
-  ssr: false,
-});
+import { APP_LOGIN_URL } from "@/lib/appLoginUrl";
+import { useLoading } from "@/context/LoadingContext";
 
 const GLOW_NAV_ITEMS: GlowMenuItem[] = [
+  {
+    icon: Home,
+    label: "Start",
+    href: "#start",
+    gradient:
+      "radial-gradient(circle, rgba(20,83,45,0.16) 0%, rgba(34,197,94,0.07) 50%, rgba(34,197,94,0) 100%)",
+    iconColor: "text-emerald-700",
+    iconHoverClass: "group-hover:text-emerald-700",
+  },
   {
     icon: HelpCircle,
     label: "Warum",
@@ -61,8 +67,19 @@ const GLOW_NAV_ITEMS: GlowMenuItem[] = [
   },
 ];
 
+/** Nav-Anchor (ohne #) → DOM-ID für den Scroll-Spy. Leere Hash-Sentinel (`#warum` etc.) haben oft 0px Höhe → IO feuert kaum; echte Sections nutzen. */
+const SECTION_SPY_ELEMENT_ID: Record<string, string> = {
+  start: "start",
+  warum: "section-2",
+  loesungen: "section-4",
+  pakete: "pakete-preise",
+  beispiele: "section-7",
+  contact: "contact",
+};
+
 export function ScrollHeader() {
   const pathname = usePathname();
+  const { isLoadComplete } = useLoading();
   const [dropdownOpen, setDropdownOpen] = useState(false);
   const [mobileAuthDialogOpen, setMobileAuthDialogOpen] = useState(false);
   const [activeSection, setActiveSection] = useState<string>("");
@@ -116,9 +133,7 @@ export function ScrollHeader() {
   }, []);
 
   useEffect(() => {
-    const sectionIds = GLOW_NAV_ITEMS
-      .filter((item) => item.href.startsWith("#"))
-      .map((item) => item.href.replace(/^#/, ""));
+    const navIds = GLOW_NAV_ITEMS.filter((item) => item.href.startsWith("#")).map((item) => item.href.replace(/^#/, ""));
 
     const getEl = (id: string): HTMLElement | null => {
       const isDesktopView = window.matchMedia("(min-width: 768px)").matches;
@@ -126,37 +141,71 @@ export function ScrollHeader() {
       return (wrapper?.querySelector(`#${CSS.escape(id)}`) ?? document.getElementById(id)) as HTMLElement | null;
     };
 
-    const visible = new Set<string>();
+    const visibleNavIds = new Set<string>();
     const pick = () => {
       let active = "";
-      for (const id of sectionIds) {
-        if (visible.has(id)) active = `#${id}`;
+      for (const navId of navIds) {
+        if (visibleNavIds.has(navId)) active = `#${navId}`;
       }
       setActiveSection(active);
     };
 
-    const obs = new IntersectionObserver(
-      (entries) => {
-        entries.forEach((e) => {
-          if (e.isIntersecting) visible.add(e.target.id);
-          else visible.delete(e.target.id);
-        });
-        pick();
-      },
-      { rootMargin: "0px 0px -45% 0px", threshold: 0 },
-    );
+    let obs: IntersectionObserver | null = null;
 
-    sectionIds.forEach((id) => {
-      const el = getEl(id);
-      if (el) obs.observe(el);
-    });
+    const attach = () => {
+      if (obs) {
+        obs.disconnect();
+        obs = null;
+      }
+      visibleNavIds.clear();
 
-    return () => obs.disconnect();
-  }, []);
+      const observedElToNavId = new Map<HTMLElement, string>();
+      for (const navId of navIds) {
+        const domId = SECTION_SPY_ELEMENT_ID[navId] ?? navId;
+        const el = getEl(domId);
+        if (el) observedElToNavId.set(el, navId);
+      }
+
+      obs = new IntersectionObserver(
+        (entries) => {
+          entries.forEach((e) => {
+            const navId = observedElToNavId.get(e.target as HTMLElement);
+            if (!navId) return;
+            if (e.isIntersecting) visibleNavIds.add(navId);
+            else visibleNavIds.delete(navId);
+          });
+          pick();
+        },
+        { rootMargin: "0px 0px -45% 0px", threshold: 0 },
+      );
+
+      for (const el of observedElToNavId.keys()) obs.observe(el);
+      pick();
+    };
+
+    attach();
+
+    const mq = window.matchMedia("(min-width: 768px)");
+    const onViewportLayoutChange = () => attach();
+    mq.addEventListener("change", onViewportLayoutChange);
+
+    return () => {
+      mq.removeEventListener("change", onViewportLayoutChange);
+      if (obs) {
+        obs.disconnect();
+        obs = null;
+      }
+    };
+  }, [pathname, isLoadComplete]);
 
   const handleNavClick = (hash: string) => {
     if (hash === "#contact") {
       contactLinkRef.current?.click();
+      setDropdownOpen(false);
+      return;
+    }
+    if (hash === "#start" && pathname != null && pathname !== "/") {
+      window.location.assign("/#start");
       setDropdownOpen(false);
       return;
     }
@@ -287,10 +336,14 @@ export function ScrollHeader() {
                   </a>
                 );
               })}
-              <HeaderLogin
-                variant="mobile"
-                className="mt-2 border-t border-white/10 bg-transparent px-3 pb-2 pt-3"
-              />
+              <div className="mt-2 border-t border-white/10 bg-transparent px-3 pb-2 pt-3">
+                <a
+                  href={APP_LOGIN_URL}
+                  className="inline-flex h-10 w-full items-center justify-center rounded-full border border-white/10 bg-white/5 px-4 text-sm font-medium text-white shadow-none transition hover:bg-white/10"
+                >
+                  Anmelden
+                </a>
+              </div>
             </div>
           ) : null}
         </div>
@@ -323,7 +376,12 @@ export function ScrollHeader() {
               </div>
             </div>
             <div className="min-w-0 justify-self-end">
-              <HeaderLogin variant="desktop" className="!border-0 !pl-0" />
+              <a
+                href={APP_LOGIN_URL}
+                className="inline-flex h-9 items-center justify-center rounded-full border-0 bg-transparent px-2 text-sm font-medium text-zinc-900 shadow-none transition hover:bg-transparent hover:text-zinc-700"
+              >
+                LogIn
+              </a>
             </div>
           </div>
         </div>

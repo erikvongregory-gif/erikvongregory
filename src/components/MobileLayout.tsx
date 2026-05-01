@@ -96,6 +96,7 @@ export function MobileLayout() {
       <div className="relative z-10 flex flex-col">
         {/* Hero: exakt wie Desktop */}
         <div
+          id="start"
           className={`section1-wrapper relative mx-auto w-full max-w-screen-2xl ${heroReady ? "section1-ready" : ""}`}
         >
           <div className="min-w-0">

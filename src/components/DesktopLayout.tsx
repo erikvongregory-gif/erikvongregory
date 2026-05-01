@@ -12,6 +12,7 @@ export function DesktopLayout() {
   return (
     <main id="main" className="desktop-light-theme relative min-h-[100dvh] overflow-x-hidden pt-14 sm:pt-16">
       <div
+        id="start"
         className={`section1-wrapper relative mx-auto w-full max-w-screen-2xl ${heroReady ? "section1-ready" : ""}`}
       >
         <Hero />
@@ -23,7 +24,7 @@ export function DesktopLayout() {
           <DesktopSection2 />
         </DesktopFadeInView>
         <div id="loesungen" className="scroll-mt-24" aria-hidden />
-        <DesktopFadeInView delay={150} className="section4-cards-trigger">
+        <DesktopFadeInView delay={150} className="section4-cards-trigger" resetOnExit>
           <DesktopSection4 />
         </DesktopFadeInView>
       </div>

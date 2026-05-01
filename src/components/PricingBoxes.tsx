@@ -28,6 +28,7 @@ import {
 } from "@/components/ui/animated-glassy-pricing";
 import FAQsComponent from "@/components/ui/faqs-component";
 import type { SubscriptionPlanKey } from "@/lib/billing/tokenState";
+import { buildAppLoginUrl } from "@/lib/appLoginUrl";
 
 type PricingPackageDef = {
   planIcon: LucideIcon;
@@ -236,47 +237,6 @@ function scrollToContactPaket(paketName: string) {
   document.body.removeChild(a);
 }
 
-async function startSubscriptionCheckout(plan: SubscriptionPlanKey) {
-  const authRes = await fetch("/api/auth/status", {
-    method: "GET",
-    cache: "no-store",
-    credentials: "include",
-  });
-  const authData = (await authRes.json().catch(() => ({}))) as { authenticated?: boolean };
-  if (!authData.authenticated) {
-    trackEvent("auth_required_for_checkout", { plan, source: "pricing_home" });
-    window.dispatchEvent(
-      new CustomEvent("evglab-open-auth-modal", {
-        detail: { mode: "signin" },
-      }),
-    );
-    return;
-  }
-
-  const res = await fetch("/api/billing/checkout", {
-    method: "POST",
-    headers: { "Content-Type": "application/json" },
-    body: JSON.stringify({ plan }),
-  });
-
-  if (res.status === 401) {
-    trackEvent("auth_required_for_checkout", { plan });
-    window.dispatchEvent(
-      new CustomEvent("evglab-open-auth-modal", {
-        detail: { mode: "signin" },
-      }),
-    );
-    return;
-  }
-
-  const data = (await res.json()) as { url?: string; error?: string };
-  if (!res.ok || !data.url) {
-    throw new Error(data.error ?? "Checkout konnte nicht gestartet werden.");
-  }
-  trackEvent("checkout_started", { plan });
-  window.location.href = data.url;
-}
-
 function toPricingCardProps(pkg: PricingPackageDef): PricingCardProps {
   const isStarter = pkg.name === "Starter Paket";
   const isGrowth = pkg.name === "Wachstumspaket";
@@ -307,7 +267,11 @@ function toPricingCardProps(pkg: PricingPackageDef): PricingCardProps {
     onCtaClick: () => {
       trackEvent("plan_selected", { planName: pkg.name, checkoutPlanKey: pkg.checkoutPlanKey ?? null });
       if (pkg.checkoutPlanKey) {
-        void startSubscriptionCheckout(pkg.checkoutPlanKey);
+        trackEvent("pricing_redirect_app_login", {
+          plan: pkg.checkoutPlanKey,
+          source: "pricing_dashboard_abo",
+        });
+        window.location.assign(buildAppLoginUrl({ plan: pkg.checkoutPlanKey }));
         return;
       }
       scrollToContactPaket(pkg.name);

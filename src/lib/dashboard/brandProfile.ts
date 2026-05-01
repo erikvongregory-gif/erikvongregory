@@ -1,6 +1,9 @@
 import { getDashboardMetadata } from "@/lib/dashboard/metadata";
 
 export type BrandProfile = {
+  brandProfileMode: "undecided" | "guided" | "skip";
+  brandInstagramUrl: string;
+  brandLockLevel: "strict" | "balanced" | "loose";
   breweryName: string;
   brandTone: string;
   brandColors: string;
@@ -21,10 +24,23 @@ function asStringArray(value: unknown): string[] {
     .slice(0, 10);
 }
 
+function asBrandProfileMode(value: unknown): BrandProfile["brandProfileMode"] {
+  if (value === "guided" || value === "skip" || value === "undecided") return value;
+  return "undecided";
+}
+
+function asBrandLockLevel(value: unknown): BrandProfile["brandLockLevel"] {
+  if (value === "strict" || value === "balanced" || value === "loose") return value;
+  return "strict";
+}
+
 export function getBrandProfileFromMetadata(userMetadata: unknown): BrandProfile {
   const dashboard = getDashboardMetadata(userMetadata);
   const settings = dashboard.settings as Record<string, unknown> | undefined;
   return {
+    brandProfileMode: asBrandProfileMode(settings?.brandProfileMode),
+    brandInstagramUrl: asString(settings?.brandInstagramUrl),
+    brandLockLevel: asBrandLockLevel(settings?.brandLockLevel),
     breweryName: asString(settings?.breweryName),
     brandTone: asString(settings?.brandTone),
     brandColors: asString(settings?.brandColors),
@@ -35,25 +51,29 @@ export function getBrandProfileFromMetadata(userMetadata: unknown): BrandProfile
 }
 
 export function isBrandProfileComplete(profile: BrandProfile): boolean {
+  if (profile.brandProfileMode === "skip") return true;
   return Boolean(
     profile.breweryName &&
       profile.brandTone &&
       profile.brandColors &&
       profile.brandDos &&
-      profile.brandDonts &&
-      profile.brandReferenceImageUrls.length >= 1,
+      profile.brandDonts,
   );
 }
 
 export function buildBrandProfilePromptContext(profile: BrandProfile): string {
   return [
     "Brand profile lock (MANDATORY):",
+    `- Brand lock level: ${profile.brandLockLevel.toUpperCase()}`,
     `- Brand/Brewery: ${profile.breweryName}`,
+    profile.brandInstagramUrl ? `- Brand Instagram: ${profile.brandInstagramUrl}` : "",
     `- Brand tone: ${profile.brandTone}`,
     `- Brand colors/style cues: ${profile.brandColors}`,
     `- Must include style rules: ${profile.brandDos}`,
     `- Must avoid style rules: ${profile.brandDonts}`,
     `- Reference image URLs available: ${profile.brandReferenceImageUrls.join(", ")}`,
     "- Keep all generated outputs aligned with this brand profile unless the user explicitly overrides it.",
-  ].join("\n");
+  ]
+    .filter(Boolean)
+    .join("\n");
 }

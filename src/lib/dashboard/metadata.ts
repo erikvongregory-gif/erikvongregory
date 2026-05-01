@@ -25,6 +25,9 @@ export type DashboardSettings = {
   profilePhone: string;
   emailNotifications: boolean;
   weeklySummary: boolean;
+  brandProfileMode: "undecided" | "guided" | "skip";
+  brandInstagramUrl: string;
+  brandLockLevel: "strict" | "balanced" | "loose";
   brandTone: string;
   brandColors: string;
   brandDos: string;

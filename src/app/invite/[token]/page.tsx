@@ -1,5 +1,6 @@
 import Link from "next/link";
 import type { Metadata } from "next";
+import { APP_LOGIN_URL } from "@/lib/appLoginUrl";
 import { evaluateInvite, getInviteByToken } from "@/lib/invite/server";
 import { isInviteOnlyEnabled } from "@/lib/supabase/env";
 
@@ -94,9 +95,9 @@ export default async function InviteTokenPage({ params }: InvitePageProps) {
 
         <p className="mt-4 text-sm text-zinc-600">
           Du hast schon ein Konto?{" "}
-          <Link href="/?auth=signin" className="font-medium text-[#c65a20] hover:underline">
+          <a href={APP_LOGIN_URL} className="font-medium text-[#c65a20] hover:underline">
             Jetzt anmelden
-          </Link>
+          </a>
         </p>
       </section>
     </main>

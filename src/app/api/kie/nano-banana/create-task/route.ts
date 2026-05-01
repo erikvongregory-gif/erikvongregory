@@ -11,6 +11,7 @@ import {
   getBrandProfileFromMetadata,
   isBrandProfileComplete,
 } from "@/lib/dashboard/brandProfile";
+import { mapAspectRatioForGptImage2, normalizeResolutionForGptImage2 } from "@/lib/kie/gptImage2TaskInput";
 
 type CreateTaskBody = {
   prompt: string;
@@ -20,7 +21,9 @@ type CreateTaskBody = {
   referenceImageUrls?: string[];
   strictLabelMode?: boolean;
 };
-const KIE_MODEL = "nano-banana-pro" as const;
+
+const KIE_MODEL_TEXT_TO_IMAGE = (process.env.KIE_IMAGE_MODEL?.trim() || "gpt-image-2-text-to-image") as string;
+const KIE_MODEL_IMAGE_TO_IMAGE = (process.env.KIE_IMAGE_TO_IMAGE_MODEL?.trim() || "gpt-image-2-image-to-image") as string;
 
 const createTaskSchema = z.object({
   prompt: z.string().trim().min(1).max(12000),
@@ -51,12 +54,7 @@ function extractTaskId(input: unknown): string | null {
 function extractUploadedFileUrl(input: unknown): string | null {
   if (!input || typeof input !== "object") return null;
   const record = input as Record<string, unknown>;
-  const directCandidates = [
-    record.fileUrl,
-    record.url,
-    record.downloadUrl,
-    record.path,
-  ];
+  const directCandidates = [record.fileUrl, record.url, record.downloadUrl, record.path];
   for (const candidate of directCandidates) {
     if (typeof candidate === "string" && /^https?:\/\//i.test(candidate)) {
       return candidate;
@@ -103,9 +101,7 @@ async function uploadReferenceImagesToKie(apiKey: string, referenceImageUrls?: s
     const fileUrl = extractUploadedFileUrl(uploadData);
     if (!fileUrl) {
       const topLevelKeys = Object.keys(uploadData).join(", ");
-      throw new Error(
-        `Kie Upload liefert keine verwendbare Datei-URL (keys: ${topLevelKeys || "none"}).`,
-      );
+      throw new Error(`Kie Upload liefert keine verwendbare Datei-URL (keys: ${topLevelKeys || "none"}).`);
     }
     uploadedUrls.push(fileUrl);
   }
@@ -189,9 +185,13 @@ export async function POST(req: Request) {
       );
     }
 
-    const hasReferenceImage = Boolean(body.referenceImageUrls?.length);
-    const baseCost = body.resolution === "4K" ? 35 : body.resolution === "2K" ? 20 : 10;
-    const tokenCost = baseCost + (hasReferenceImage ? 5 : 0) + (body.strictLabelMode ? 10 : 0);
+    const hasReferenceImages = Boolean(body.referenceImageUrls?.length);
+    const kieModel = hasReferenceImages ? KIE_MODEL_IMAGE_TO_IMAGE : KIE_MODEL_TEXT_TO_IMAGE;
+
+    const mappedAspect = mapAspectRatioForGptImage2(body.aspectRatio);
+    const effectiveResolution = normalizeResolutionForGptImage2(body.resolution, mappedAspect);
+    const baseCost = effectiveResolution === "4K" ? 35 : effectiveResolution === "2K" ? 20 : 10;
+    const tokenCost = baseCost + (hasReferenceImages ? 5 : 0) + (body.strictLabelMode ? 10 : 0);
     if (!isFreeTrialRequest) {
       const remainingTokens = Math.max((currentState?.monthly_tokens ?? 0) - (currentState?.used_tokens ?? 0), 0);
       if (remainingTokens < tokenCost) {
@@ -202,11 +202,10 @@ export async function POST(req: Request) {
       }
     }
 
-    const uploadedReferenceUrls = await uploadReferenceImagesToKie(apiKey, body.referenceImageUrls);
     const strictLabelPromptPrefix = body.strictLabelMode
       ? [
           "Brand/label fidelity lock (MANDATORY):",
-          "- When a reference image is provided, preserve the exact original brand identity and label layout 1:1.",
+          "- Preserve the exact original brand identity and label layout 1:1 for any branded bottles or packaging shown.",
           "- Keep logo mark, typography, color blocks, crest placement, and bottle label geometry authentic and undistorted.",
           "- Any visible label text must be sharp and readable; no gibberish, mirrored, stretched, or melted lettering.",
           "- Do not invent substitute branding or alter the original product identity.",
@@ -235,6 +234,31 @@ export async function POST(req: Request) {
       .filter(Boolean)
       .join("\n");
 
+    const uploadedReferenceUrls = hasReferenceImages
+      ? await uploadReferenceImagesToKie(apiKey, body.referenceImageUrls)
+      : undefined;
+    if (hasReferenceImages && (!uploadedReferenceUrls || uploadedReferenceUrls.length === 0)) {
+      return NextResponse.json({ error: "Referenzbilder konnten nicht zu Kie hochgeladen werden." }, { status: 502 });
+    }
+
+    const resolutionForKie = isFreeTrialRequest ? "1K" : effectiveResolution;
+    const nsfwFalse = { nsfw_checker: false as const };
+
+    const kieInput = hasReferenceImages
+      ? {
+          prompt: promptWithBrandContext,
+          input_urls: uploadedReferenceUrls,
+          aspect_ratio: mappedAspect,
+          resolution: resolutionForKie,
+          ...nsfwFalse,
+        }
+      : {
+          prompt: promptWithBrandContext,
+          aspect_ratio: mappedAspect,
+          resolution: resolutionForKie,
+          ...nsfwFalse,
+        };
+
     const upstream = await fetch(`${baseUrl}/api/v1/jobs/createTask`, {
       method: "POST",
       headers: {
@@ -242,16 +266,8 @@ export async function POST(req: Request) {
         "Content-Type": "application/json",
       },
       body: JSON.stringify({
-        model: KIE_MODEL,
-        input: {
-          prompt: promptWithBrandContext,
-          aspect_ratio: body.aspectRatio || "1:1",
-          resolution: isFreeTrialRequest ? "1K" : body.resolution || "1K",
-          output_format: isFreeTrialRequest ? "jpg" : body.outputFormat || "png",
-          ...(uploadedReferenceUrls?.length
-            ? { image_input: uploadedReferenceUrls }
-            : {}),
-        },
+        model: kieModel,
+        input: kieInput,
       }),
     });
 
@@ -298,7 +314,7 @@ export async function POST(req: Request) {
       }
       return NextResponse.json({
         taskId,
-        usedModel: KIE_MODEL,
+        usedModel: kieModel,
         billing: {
           freeTrial: true,
           consumed: 0,
@@ -326,7 +342,7 @@ export async function POST(req: Request) {
     }
     const response = NextResponse.json({
       taskId,
-      usedModel: KIE_MODEL,
+      usedModel: kieModel,
       billing: {
         plan: consumeResult.state.plan,
         monthlyTokens: consumeResult.state.monthly_tokens,
@@ -336,7 +352,7 @@ export async function POST(req: Request) {
       },
     });
     return response;
-  } catch (error) {
+  } catch {
     return NextResponse.json({ error: "Kie createTask fehlgeschlagen." }, { status: 500 });
   }
 }

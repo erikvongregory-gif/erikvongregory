@@ -1005,6 +1005,10 @@ body[data-legal-page="true"] {
     opacity: 1;
     transform: none;
   }
+  .section4-cards-trigger:not(.desktop-fade-in-view--visible) .section4-flip-cards-grid .section4-flip-card-slide {
+    opacity: 1;
+    transform: none;
+  }
 }
 
 /* Hero Section 1 – Pill-Icons Animation */
