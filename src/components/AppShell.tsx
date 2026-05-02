@@ -156,6 +156,19 @@ export function AppShell({ children }: AppShellProps) {
               >
                 Cookie-Einstellungen
               </button>
+              <p className="mt-4 text-sm font-semibold text-zinc-800">Mehr lesen</p>
+              <a
+                href="/ratgeber/marketing-inhalte-mit-ki"
+                className="mt-1 block text-sm text-[#b45309] transition-colors hover:text-[#c65a20] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-orange-400 focus-visible:ring-offset-2 focus-visible:ring-offset-transparent rounded"
+              >
+                Ratgeber: Marketing mit KI
+              </a>
+              <a
+                href="/vergleich/premium-vs-dashboard-abo-brauerei"
+                className="mt-1 block text-sm text-[#b45309] transition-colors hover:text-[#c65a20] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-orange-400 focus-visible:ring-offset-2 focus-visible:ring-offset-transparent rounded"
+              >
+                Premium vs. Dashboard-Abo
+              </a>
             </div>
           </div>
           <p className="mt-8 flex flex-wrap items-center justify-center gap-x-2 gap-y-1 text-center text-sm text-zinc-500 sm:mt-12">

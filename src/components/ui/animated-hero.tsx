@@ -184,7 +184,7 @@ function Hero() {
               <BlurFade delay={slot.delay} duration={0.45} blur="8px">
                 <motion.img
                   src={img.src}
-                  alt=""
+                  alt={img.alt}
                   className={`cursor-default rounded-xl object-cover shadow-2xl duration-200 blur-[2px] sm:blur-[3px] md:blur-[4px] ${slot.imgClass}`}
                 />
               </BlurFade>
@@ -211,7 +211,10 @@ function Hero() {
               </BlurFade>
 
               <BlurFade delay={0.12} duration={0.48} className="flex flex-col gap-4 max-md:mx-auto max-md:w-[min(92vw,22rem)]">
-                <h1 className="max-w-2xl text-center text-5xl font-regular tracking-tighter max-md:mx-auto max-md:w-full max-md:max-w-[18.5rem] max-md:text-[2rem] max-md:leading-[1.12] md:text-7xl">
+                <div
+                  className="max-w-2xl text-center text-5xl font-regular tracking-tighter max-md:mx-auto max-md:w-full max-md:max-w-[18.5rem] max-md:text-[2rem] max-md:leading-[1.12] md:text-7xl"
+                  aria-hidden
+                >
                   <span className="text-spektr-cyan-50">KI-Marketing für Brauereien</span>
                   <span className="relative flex w-full justify-center overflow-hidden text-center max-md:mt-2 max-md:min-h-[2.6rem] sm:max-md:min-h-[3rem] md:min-h-0 md:pb-4 md:pt-1">
                     &nbsp;
@@ -231,7 +234,7 @@ function Hero() {
                       </motion.span>
                     ))}
                   </span>
-                </h1>
+                </div>
 
                 <p className="max-w-2xl text-center text-lg leading-relaxed tracking-tight text-muted-foreground max-md:mx-auto max-md:w-full max-md:max-w-[21rem] max-md:px-2 max-md:text-[1rem] max-md:leading-[1.42] sm:max-md:text-lg md:text-xl">
                   <span className="max-md:text-zinc-700">Weniger Aufwand, bessere Ergebnisse:</span>{" "}

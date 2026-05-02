@@ -1,6 +1,92 @@
-# https://evglab.com/robots.txt
+# https://www.evglab.com/robots.txt — bei Vercel wird i. d. R. /robots aus app/robots.ts generiert;
+# diese Datei dient als Fallback und für lokale Tools.
+
 User-agent: *
 Allow: /
+Disallow: /api/
+Disallow: /_next/
+Disallow: /dashboard
+Disallow: /admin
+Disallow: /invite/
+Disallow: /anmelden
+Disallow: /registrieren
+Disallow: /auth/
 
-# Sitemap (wird beim Build aktualisiert)
+User-agent: GPTBot
+Allow: /
+Disallow: /api/
+Disallow: /_next/
+Disallow: /dashboard
+Disallow: /admin
+Disallow: /invite/
+Disallow: /anmelden
+Disallow: /registrieren
+Disallow: /auth/
+
+User-agent: ChatGPT-User
+Allow: /
+Disallow: /api/
+Disallow: /_next/
+Disallow: /dashboard
+Disallow: /admin
+Disallow: /invite/
+Disallow: /anmelden
+Disallow: /registrieren
+Disallow: /auth/
+
+User-agent: Google-Extended
+Allow: /
+Disallow: /api/
+Disallow: /_next/
+Disallow: /dashboard
+Disallow: /admin
+Disallow: /invite/
+Disallow: /anmelden
+Disallow: /registrieren
+Disallow: /auth/
+
+User-agent: PerplexityBot
+Allow: /
+Disallow: /api/
+Disallow: /_next/
+Disallow: /dashboard
+Disallow: /admin
+Disallow: /invite/
+Disallow: /anmelden
+Disallow: /registrieren
+Disallow: /auth/
+
+User-agent: ClaudeBot
+Allow: /
+Disallow: /api/
+Disallow: /_next/
+Disallow: /dashboard
+Disallow: /admin
+Disallow: /invite/
+Disallow: /anmelden
+Disallow: /registrieren
+Disallow: /auth/
+
+User-agent: Claude-Web
+Allow: /
+Disallow: /api/
+Disallow: /_next/
+Disallow: /dashboard
+Disallow: /admin
+Disallow: /invite/
+Disallow: /anmelden
+Disallow: /registrieren
+Disallow: /auth/
+
+User-agent: anthropic-ai
+Allow: /
+Disallow: /api/
+Disallow: /_next/
+Disallow: /dashboard
+Disallow: /admin
+Disallow: /invite/
+Disallow: /anmelden
+Disallow: /registrieren
+Disallow: /auth/
+
 Sitemap: https://evglab.com/sitemap.xml

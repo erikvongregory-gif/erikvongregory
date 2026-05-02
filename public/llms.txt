@@ -1,0 +1,24 @@
+# EvGlab
+
+> EvGlab ist ein KI-Marketing-Angebot für **Brauereien und Getränkemarken** in **Deutschland, Österreich und der Schweiz (DACH)**. Schwerpunkt: **KI-generierte Werbebilder**, **Social-Media-Texte und -motive** sowie **Unterstützung beim Umgang mit Google-Bewertungen**. Es gibt zwei Wege: **Premium-Einmallieferung** (Pakete) und ein **monatliches Dashboard-Abo** mit Token-basierter Bildproduktion.
+
+## Öffentliche Einstiegsseiten
+
+- https://www.evglab.com/ — Startseite, Pakete, Abo-Pläne, FAQ, Kontakt
+- https://www.evglab.com/loesungen — Branchen-Lösungen (Saisonkampagne, Gastro-Promotion, Biergarten-Event)
+- https://www.evglab.com/ratgeber/marketing-inhalte-mit-ki — Anleitung: Marketing-Inhalte mit KI planen und umsetzen
+- https://www.evglab.com/vergleich/premium-vs-dashboard-abo-brauerei — Premium-Service vs. Self-Service-Dashboard
+
+## Rechtliches
+
+- https://www.evglab.com/impressum
+- https://www.evglab.com/datenschutz
+- https://www.evglab.com/agb
+
+## Dashboard-Login (App, nicht indexiert)
+
+- https://app.evglab.com/anmelden — Anmeldung für bestehende Kunden
+
+## Kontakt
+
+- E-Mail: kontakt@evglab.com

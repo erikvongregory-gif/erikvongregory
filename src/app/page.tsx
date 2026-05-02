@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import { AeoContentSection } from "@/components/AeoContentSection";
 import { ResponsiveHomeLayout } from "@/components/ResponsiveHomeLayout";
 import { PricingSection } from "@/components/PricingSection";
 import { Section7AIDemo } from "@/components/Section7AIDemo";
@@ -52,6 +53,13 @@ export default function Home() {
     description:
       "KI-Marketing für Brauereien: Werbebilder, Social-Media-Posts und Google-Bewertungsmanagement.",
     areaServed: ["DE", "AT", "CH"],
+    knowsAbout: [
+      "KI Marketing für Brauereien",
+      "Social Media Marketing Brauerei",
+      "Google Bewertungen Brauerei",
+      "Produktfotos Bier und Getränke",
+      "DACH Brauereimarketing",
+    ],
     priceRange: "€€",
     contactPoint: {
       "@type": "ContactPoint",
@@ -136,11 +144,27 @@ export default function Home() {
         name: "Beispiele",
         url: "https://www.evglab.com/#beispiele",
       },
+      {
+        "@type": "SiteNavigationElement",
+        position: 5,
+        name: "Ratgeber KI-Marketing",
+        url: "https://www.evglab.com/ratgeber/marketing-inhalte-mit-ki",
+      },
+      {
+        "@type": "SiteNavigationElement",
+        position: 6,
+        name: "Premium vs. Dashboard-Abo",
+        url: "https://www.evglab.com/vergleich/premium-vs-dashboard-abo-brauerei",
+      },
     ],
   };
 
   return (
     <>
+      <h1 className="sr-only">
+        KI-Marketing für Brauereien in Deutschland, Österreich und der Schweiz — Werbebilder, Social Media und
+        Bewertungen mit EvGlab
+      </h1>
       <script
         type="application/ld+json"
         dangerouslySetInnerHTML={{ __html: JSON.stringify(organizationJsonLd) }}
@@ -156,6 +180,7 @@ export default function Home() {
       <ResponsiveHomeLayout />
       <PricingSection />
       <Section7AIDemo />
+      <AeoContentSection />
     </>
   );
 }
