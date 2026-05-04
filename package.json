@@ -4,7 +4,7 @@
   "private": true,
   "scripts": {
     "dev": "node --max-http-header-size=65536 ./node_modules/next/dist/bin/next dev --webpack",
-    "build": "next build",
+    "build": "node scripts/clear-next-build-lock.mjs && next build",
     "start": "node --max-http-header-size=65536 ./node_modules/next/dist/bin/next start",
     "lint": "eslint",
     "ebook:pdf": "node scripts/generate-ebook-pdf.mjs",
