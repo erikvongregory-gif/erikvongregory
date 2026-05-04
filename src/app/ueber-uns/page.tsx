@@ -1,8 +1,8 @@
 import type { Metadata } from "next";
 import Image from "next/image";
 import Link from "next/link";
-import { MessageCircle } from "lucide-react";
 import { HopfenHugoDemoAsk } from "@/components/HopfenHugoDemoAsk";
+import { HopfenHugoIcon } from "@/components/HopfenHugoIcon";
 import { ScrollReveal } from "@/components/ScrollReveal";
 import { HintergrundPortraitEntrance } from "./HintergrundPortraitEntrance";
 import { UeberUnsMountScroll } from "./UeberUnsMountScroll";
@@ -226,12 +226,7 @@ export default function UeberUnsPage() {
           <div className="grid gap-12 lg:grid-cols-[minmax(0,1fr)_minmax(0,22rem)] lg:items-start lg:gap-14 xl:grid-cols-[minmax(0,1fr)_minmax(0,26rem)]">
             <div className="flex flex-col items-center gap-8 text-center lg:flex-row lg:items-start lg:gap-10 lg:text-left">
               <div className="flex shrink-0 justify-center lg:justify-start">
-                <div
-                  className="flex h-[5.25rem] w-[5.25rem] items-center justify-center rounded-2xl border border-lime-900/10 bg-[#d9ff6a]/35 shadow-[0_12px_28px_-18px_rgba(63,98,18,0.35)] ring-1 ring-lime-400/25"
-                  aria-hidden
-                >
-                  <MessageCircle className="h-9 w-9 text-lime-950/85" strokeWidth={1.75} />
-                </div>
+                <HopfenHugoIcon className="h-[5.25rem] w-[5.25rem] drop-shadow-[0_8px_20px_rgba(15,23,42,0.12)]" />
               </div>
               <div className="min-w-0">
                 <p className={kicker}>

@@ -1,8 +1,10 @@
 "use client";
 
 import { useCallback, useEffect, useId, useRef, useState } from "react";
-import { Loader2, MessageCircle, Send, X } from "lucide-react";
+import { Send, X } from "lucide-react";
 
+import { HopfenHugoAvatar } from "@/components/HopfenHugoAvatar";
+import { HopfenHugoIcon } from "@/components/HopfenHugoIcon";
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
 
@@ -141,12 +143,7 @@ export function HopfenHugoDemoAsk({ className }: { className?: string }) {
       <div className={cn(shellClass, className)}>
         <div className="flex flex-col overflow-hidden rounded-2xl border border-zinc-200/90 bg-white/95 p-6 shadow-[0_16px_40px_-28px_rgba(15,23,42,0.14)] ring-1 ring-zinc-950/[0.04] backdrop-blur-sm sm:p-7">
           <div className="flex items-start gap-4">
-            <div
-              className="flex h-12 w-12 shrink-0 items-center justify-center rounded-xl border border-lime-900/15 bg-[#d9ff6a]/50 shadow-sm"
-              aria-hidden
-            >
-              <MessageCircle className="h-6 w-6 text-lime-950/85" strokeWidth={1.75} />
-            </div>
+            <HopfenHugoIcon className="h-12 w-12 shrink-0 drop-shadow-[0_6px_14px_rgba(15,23,42,0.1)]" />
             <div className="min-w-0 flex-1">
               <h3 className="font-display text-lg font-semibold tracking-tight text-zinc-900">Demo-Chat</h3>
               <p className="mt-2 text-pretty text-sm leading-relaxed text-zinc-600">
@@ -161,7 +158,7 @@ export function HopfenHugoDemoAsk({ className }: { className?: string }) {
             className="mt-6 h-11 w-full rounded-xl border-lime-900/20 bg-[#ecfccb] text-base font-semibold text-lime-950 shadow-sm hover:bg-[#d9f99d]"
             onClick={() => setOpen(true)}
           >
-            <MessageCircle className="mr-2 h-4 w-4" aria-hidden />
+            <HopfenHugoIcon className="mr-2 h-4 w-4" />
             Chat mit Hopfen Hugo öffnen
           </Button>
         </div>
@@ -182,14 +179,15 @@ export function HopfenHugoDemoAsk({ className }: { className?: string }) {
       <div className="shrink-0 border-b border-zinc-200/80 bg-gradient-to-r from-zinc-50/95 to-white px-3 py-3 sm:px-4">
         <div className="flex items-center gap-2">
           <div className="flex min-w-0 flex-1 items-center gap-3">
-            <div
-              className="flex h-11 w-11 shrink-0 items-center justify-center rounded-xl border border-lime-900/15 bg-[#d9ff6a]/50 shadow-sm"
-              aria-hidden
-            >
-              <span className="text-lg" aria-hidden>
-                🍺
-              </span>
-            </div>
+            {loading ? (
+              <HopfenHugoAvatar
+                thinking
+                size={44}
+                className="drop-shadow-[0_4px_12px_rgba(15,23,42,0.1)]"
+              />
+            ) : (
+              <HopfenHugoIcon className="h-11 w-11 shrink-0 drop-shadow-[0_4px_12px_rgba(15,23,42,0.1)]" />
+            )}
             <div className="min-w-0">
               <h3 id={titleId} className="truncate font-semibold tracking-tight text-zinc-900">
                 Hopfen Hugo
@@ -264,8 +262,8 @@ export function HopfenHugoDemoAsk({ className }: { className?: string }) {
 
           {loading ? (
             <div className="flex justify-start">
-              <div className="flex items-center gap-2 rounded-2xl rounded-tl-md border border-zinc-200/90 bg-white px-3.5 py-2.5 text-sm text-zinc-500 shadow-sm">
-                <Loader2 className="h-4 w-4 shrink-0 animate-spin text-[#c65a20]" aria-hidden />
+              <div className="flex items-center gap-2.5 rounded-2xl rounded-tl-md border border-zinc-200/90 bg-white px-3.5 py-2.5 text-sm text-zinc-500 shadow-sm">
+                <HopfenHugoAvatar thinking size={36} className="shrink-0" />
                 <span>Denkt kurz nach …</span>
               </div>
             </div>
