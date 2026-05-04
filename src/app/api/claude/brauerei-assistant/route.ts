@@ -9,14 +9,29 @@ const requestSchema = z.object({
   assistantPersona: z.string().trim().max(80).optional(),
 });
 
+const HOPFEN_HUGO_SYSTEM = [
+  "Du bist Hopfen Hugo, der Chat-Assistent im EvGlab-Dashboard.",
+  "Du beantwortest ausschliesslich Themen rund um KI-Bildgenerierung und die zugehoerigen Schritte im Dashboard: Bild-Prompts, Motive, Szenen, Licht, Kamera/Stil, Marken-Look, Brand-Lock, Varianten, Aufloesung/Format, Mediathek fuer generierte Bilder, Token-Verbrauch und Bedienung der Bild-Tools.",
+  "Du gibst keine Rezepte, kein Brauwissen, keine Gaer-/Sudhaus-Anleitungen, kein allgemeines Bierwissen und keine Themen ausserhalb von Bild-Workflows in EvGlab.",
+  "Wenn die Nutzerfrage nicht klar zu KI-Bildern oder diesen Dashboard-Schritten gehoert: lehne in einem kurzen Satz ab und biete maximal ein konkretes Bild-Thema an (z. B. naechstes Werbemotiv, Prompt-Formulierung).",
+  "Keine Meta-Tipps wie \"frag konkret\" oder \"beende mit Danke\" — keine Life-Coach- oder ChatGPT-Allgemeinplaetze.",
+  "Antworte auf Deutsch, kurz und praktisch, ohne Markdown-Listen wenn es ohne geht.",
+].join(" ");
+
 function fallbackAnswer(question: string): string {
-  if (/marke|brand|stil|look/i.test(question)) {
-    return "Fokussiere dich auf 3 Dinge: Brand-Lock auf Strict setzen, Referenzbeispiele sauber halten und die Bildbeschreibung konkret mit Umgebung, Licht und Produktdetails formulieren.";
+  const q = question.toLowerCase();
+  if (
+    /rezept|brauen|maisch|wuerze|würze|gaer|gär|hefe|sudhaus|weiss|weiß|weizen|hopfeneinkauf|wasserprofile/i.test(q)
+  ) {
+    return "Dazu kann ich nicht helfen: Ich unterstuetze nur KI-Bildgenerierung in EvGlab — etwa Prompt, Szene, Licht oder Markenlook fuer euer naechstes Werbemotiv. Was moechtet ihr als Naechstes visuell umsetzen?";
   }
-  if (/token|abo|billing/i.test(question)) {
-    return "Unter Abo & Tokens siehst du Verbrauch und Restbudget. Bei knappen Credits zuerst Varianten reduzieren und nur noetige Aufloesung waehlen.";
+  if (/marke|brand|stil|look|prompt|bild|motiv|foto|render|kampagne/i.test(q)) {
+    return "Fuer starke Bilder: Brand-Lock sinnvoll setzen, Referenzen knapp halten und den Prompt mit Szene, Licht, Produktpose und Format (z. B. 4:5 fuer Feed) schreiben — dann Varianten erzeugen und die beste behalten.";
   }
-  return "Ich helfe dir gern weiter. Beschreibe kurz dein Ziel (z. B. Kampagne, Stil, Plattform), dann gebe ich dir direkt den naechsten besten Schritt.";
+  if (/token|abo|billing|budget|credit/i.test(q)) {
+    return "Unter Abo & Tokens siehst du Verbrauch und Restbudget fuer Bilder. Bei knappen Credits: weniger Varianten, passende Aufloesung waehlen und Prompts schlank halten.";
+  }
+  return "Ich helfe nur bei KI-Bildern in EvGlab: Prompt, Szene, Stil, Markenkonsistenz, Mediathek und Tokens fuer Bilder. Schreibt kurz, welches Motiv ihr braucht (Produkt, Umgebung, Format), dann schlage ich die naechsten Schritte vor.";
 }
 
 function getPreferredModel(): string {
@@ -51,16 +66,20 @@ export async function POST(req: Request) {
     const response = await anthropic.messages.create({
       model: getPreferredModel(),
       max_tokens: 350,
-      temperature: 0.4,
-      system:
-        "Du bist Hopfen-Hugo, ein hilfreicher Brauerei-Dashboard-Assistent. " +
-        "Antworte auf Deutsch, kurz, praktisch und freundlich. " +
-        "Gib konkrete naechste Schritte fuer Content-Erstellung, Markenkonsistenz und Dashboard-Nutzung. " +
-        "Keine langen Essays, keine Markdown-Listen wenn nicht noetig.",
+      temperature: 0.35,
+      system: HOPFEN_HUGO_SYSTEM,
       messages: [
         {
           role: "user",
-          content: `Aktiver Dashboard-Tab: ${currentTab ?? "unbekannt"}\nAktive Persona: ${assistantPersona ?? "hopfen-hugo"}\nFrage: ${question}`,
+          content: [
+            `Aktiver Dashboard-Tab: ${currentTab ?? "unbekannt"}`,
+            `Persona: ${assistantPersona ?? "hopfen-hugo"}`,
+            "",
+            "Nutzerfrage:",
+            question,
+            "",
+            "Antworte nur im Rahmen von KI-Bildgenerierung und EvGlab-Bild-Workflows (siehe System).",
+          ].join("\n"),
         },
       ],
     });

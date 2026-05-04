@@ -67,7 +67,13 @@ export default function RatgeberMarketingKiPage() {
           <span className="mx-2" aria-hidden>
             /
           </span>
-          <span className="text-zinc-800">Ratgeber</span>
+          <Link href="/ratgeber" className="text-[#b45309] hover:underline">
+            Ratgeber
+          </Link>
+          <span className="mx-2" aria-hidden>
+            /
+          </span>
+          <span className="text-zinc-800">Artikel</span>
         </nav>
         <h1 className="text-3xl font-bold tracking-tight sm:text-4xl">Marketing-Inhalte mit KI: So gehst du als Brauerei vor</h1>
         <p className="mt-4 text-lg text-zinc-600">

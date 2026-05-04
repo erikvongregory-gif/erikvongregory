@@ -9,9 +9,12 @@ const eslintConfig = defineConfig([
   globalIgnores([
     // Default ignores of eslint-config-next:
     ".next/**",
+    "**/.next/**",
     "out/**",
     "build/**",
     "next-env.d.ts",
+    // Cursor/Claude worktrees mit eigenem .next — nicht linten
+    ".claude/**",
   ]),
 ]);
 

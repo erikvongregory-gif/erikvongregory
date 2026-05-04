@@ -3,6 +3,7 @@ import { Inter, Playfair_Display } from "next/font/google";
 import { Analytics } from "@vercel/analytics/react";
 import { SpeedInsights } from "@vercel/speed-insights/next";
 import { AppShell } from "@/components/AppShell";
+import { SiteSmoothScroll } from "@/components/site-smooth-scroll";
 import { LoadingProvider } from "@/context/LoadingContext";
 import { JsonLd } from "@/components/JsonLd";
 import { FaviconReminder } from "@/components/FaviconReminder";
@@ -92,6 +93,7 @@ export default function RootLayout({
         <link rel="preload" href="/hero-portrait.svg" as="image" />
       </head>
       <body className="bg-[#0a0f14] text-neutral-900 antialiased">
+        <SiteSmoothScroll />
         <JsonLd />
         <FaviconReminder />
         <LoadingProvider>

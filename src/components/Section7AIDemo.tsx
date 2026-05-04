@@ -1,7 +1,9 @@
 "use client";
 
-import { KI_CAROUSEL } from "@/lib/kiBeispiele";
+import { KI_BEISPIEL_VIDEO_16X9, KI_BEISPIEL_VIDEOS_9X16, KI_CAROUSEL } from "@/lib/kiBeispiele";
+import { cn } from "@/lib/utils";
 import { HeroSection } from "@/components/ui/feature-carousel";
+import { LiquidMetalButton } from "@/components/ui/liquid-metal-button";
 
 export function Section7AIDemo() {
   const openSignup = () => {
@@ -18,7 +20,7 @@ export function Section7AIDemo() {
       <div id="beispiele" className="scroll-mt-24" aria-hidden />
       <section
         id="section-7"
-        className="relative z-[70] border-t-0 px-4 py-16 sm:py-20 md:border-t md:border-neutral-300/40 md:py-24"
+        className="relative z-20 border-t-0 px-4 pb-10 pt-16 sm:pb-12 sm:pt-20 md:border-t md:border-neutral-300/40 md:pb-14 md:pt-24"
       >
         <div className="section7-inner mx-auto max-w-6xl">
         <div className="mb-6 text-center md:mb-8">
@@ -49,26 +51,103 @@ export function Section7AIDemo() {
           />
         </div>
 
-        <p className="section7-footer mt-10 text-center text-base font-medium sm:mt-12 sm:text-lg">
+        <div
+          id="beispiele-videos"
+          className="mt-16 scroll-mt-24 border-t border-neutral-200/70 pt-14 sm:mt-20 sm:pt-16 md:mt-20 md:pt-16"
+        >
+          <div className="mb-8 text-center md:mb-10">
+            <span className="section7-badge inline-flex items-center gap-2 rounded-full border border-[rgba(224,122,64,0.35)] bg-[rgba(224,122,64,0.12)] px-4 py-1.5 text-sm font-medium text-[#c65a20]">
+              <span aria-hidden>▶</span>
+              Video-Formate
+            </span>
+            <h3 className="section7-headline mt-4 text-2xl font-semibold tracking-tight text-zinc-900 sm:text-3xl">
+              Auch in Bewegung —{" "}
+              <span className="font-light italic font-austera-green-fade">Reels &amp; Querformat</span>
+            </h3>
+            <p className="section7-desc mx-auto mt-3 max-w-2xl text-pretty text-sm leading-relaxed text-zinc-600 sm:text-base">
+              Zwei echte <strong className="font-medium text-zinc-800">9:16</strong>-Clips nebeneinander — darunter ein{" "}
+              <strong className="font-medium text-zinc-800">16:9</strong>-Beispiel für Web und YouTube.
+            </p>
+          </div>
+
+          <div className="mx-auto flex min-h-0 max-w-5xl flex-col gap-8 lg:gap-10">
+            <div className="grid min-h-0 grid-cols-1 gap-10 sm:grid-cols-2 sm:gap-8 md:gap-10">
+              {KI_BEISPIEL_VIDEOS_9X16.map((v) => (
+                <figure key={v.src} className="flex min-h-0 min-w-0 flex-col items-center gap-3 sm:items-stretch">
+                  <div
+                    className={cn(
+                      "relative aspect-[9/16] w-full overflow-hidden rounded-2xl border border-neutral-200/80 bg-neutral-950 shadow-[0_20px_50px_-28px_rgba(15,23,42,0.2)] ring-1 ring-black/[0.04]",
+                      "mx-auto max-w-[min(280px,88vw)] sm:mx-0 sm:max-w-full",
+                    )}
+                  >
+                    <video
+                      className="absolute inset-0 h-full w-full object-cover object-center"
+                      controls
+                      playsInline
+                      preload="metadata"
+                      poster={v.poster}
+                      aria-label={v.title}
+                    >
+                      <source src={v.src} type="video/mp4" />
+                      Dein Browser unterstützt das Video-Tag nicht —{" "}
+                      <a href={v.src} className="font-medium text-[#c65a20] underline">
+                        Datei öffnen
+                      </a>
+                      .
+                    </video>
+                  </div>
+                  <figcaption className="text-center sm:text-left">
+                    <p className="text-sm font-semibold text-zinc-900">{v.title}</p>
+                    <p className="mt-1 text-pretty text-xs leading-relaxed text-zinc-600 sm:text-sm">{v.caption}</p>
+                  </figcaption>
+                </figure>
+              ))}
+            </div>
+
+            <figure className="flex min-h-0 min-w-0 w-full flex-col gap-3">
+              <div
+                className={cn(
+                  "relative w-full overflow-hidden rounded-2xl border border-neutral-200/80 bg-black shadow-[0_20px_50px_-28px_rgba(15,23,42,0.2)] ring-1 ring-black/[0.04]",
+                  "pb-[56.25%]",
+                )}
+              >
+                <video
+                  className="absolute inset-0 z-0 h-full w-full object-cover object-center"
+                  controls
+                  playsInline
+                  preload="auto"
+                  poster={KI_BEISPIEL_VIDEO_16X9.poster}
+                  aria-label={KI_BEISPIEL_VIDEO_16X9.title}
+                >
+                  <source src={KI_BEISPIEL_VIDEO_16X9.src} type="video/mp4" />
+                  Dein Browser unterstützt das Video-Tag nicht —{" "}
+                  <a href={KI_BEISPIEL_VIDEO_16X9.src} className="font-medium text-[#c65a20] underline">
+                    Datei öffnen
+                  </a>
+                  .
+                </video>
+              </div>
+              <figcaption className="text-center sm:text-left">
+                <p className="text-sm font-semibold text-zinc-900">{KI_BEISPIEL_VIDEO_16X9.title}</p>
+                <p className="mt-1 text-pretty text-xs leading-relaxed text-zinc-600 sm:text-sm">
+                  {KI_BEISPIEL_VIDEO_16X9.caption}
+                </p>
+              </figcaption>
+            </figure>
+          </div>
+        </div>
+
+        <p className="section7-footer mt-8 text-center text-base font-medium sm:mt-10 sm:text-lg">
           So kann auch deine Brauerei mit professionellen Bildern und Werbematerial überzeugen –
           schnell, günstig und ohne Grafikdesigner.
         </p>
         <div className="mt-5 flex justify-center sm:mt-6">
-          <button
-            type="button"
+          <LiquidMetalButton
+            label="3 Bilder kostenlos generieren"
             onClick={openSignup}
-            className="group relative inline-flex items-center justify-center overflow-hidden rounded-full border border-[#e07a40]/45 bg-[linear-gradient(135deg,#d46830_0%,#c65a20_45%,#b84d15_100%)] px-6 py-3 text-sm font-semibold text-white shadow-[0_16px_34px_-20px_rgba(198,90,32,0.55)] transition duration-300 hover:-translate-y-0.5 hover:shadow-[0_22px_42px_-20px_rgba(198,90,32,0.7)] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#e07a40]/70 focus-visible:ring-offset-2 focus-visible:ring-offset-transparent sm:px-7 sm:text-base"
-          >
-            <span className="pointer-events-none absolute inset-0 bg-[radial-gradient(circle_at_20%_20%,rgba(255,255,255,0.35),transparent_45%)] opacity-70 transition-opacity duration-300 group-hover:opacity-100" />
-            <span className="pointer-events-none absolute inset-0 bg-[radial-gradient(circle_at_80%_120%,rgba(255,210,165,0.35),transparent_52%)]" />
-            <span className="relative inline-flex items-center gap-2">
-              <span aria-hidden>✦</span>
-              3 Bilder kostenlos generieren
-              <span aria-hidden className="transition-transform duration-300 group-hover:translate-x-0.5">
-                →
-              </span>
-            </span>
-          </button>
+            size="large"
+            widthPx={300}
+          />
         </div>
         </div>
       </section>

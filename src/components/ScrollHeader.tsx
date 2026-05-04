@@ -2,8 +2,8 @@
 
 import { useEffect, useRef, useState } from "react";
 import Link from "next/link";
-import { usePathname } from "next/navigation";
-import { HelpCircle, Home, Layers, Mail, Package, Sparkles } from "lucide-react";
+import { usePathname, useRouter } from "next/navigation";
+import { HelpCircle, Home, Info, Layers, Mail, Package, Sparkles } from "lucide-react";
 import { MenuBar, type GlowMenuItem } from "@/components/ui/glow-menu";
 import { scrollToSection } from "@/lib/scrollToSection";
 import { cn } from "@/lib/utils";
@@ -57,6 +57,15 @@ const GLOW_NAV_ITEMS: GlowMenuItem[] = [
     iconHoverClass: "group-hover:text-violet-600",
   },
   {
+    icon: Info,
+    label: "Über uns",
+    href: "/ueber-uns#ueber-intro",
+    gradient:
+      "radial-gradient(circle, rgba(82,82,91,0.2) 0%, rgba(113,113,122,0.09) 50%, rgba(63,63,70,0) 100%)",
+    iconColor: "text-zinc-600",
+    iconHoverClass: "group-hover:text-zinc-800",
+  },
+  {
     icon: Mail,
     label: "Kontakt",
     href: "#contact",
@@ -79,6 +88,7 @@ const SECTION_SPY_ELEMENT_ID: Record<string, string> = {
 
 export function ScrollHeader() {
   const pathname = usePathname();
+  const router = useRouter();
   const { isLoadComplete } = useLoading();
   const [dropdownOpen, setDropdownOpen] = useState(false);
   const [mobileAuthDialogOpen, setMobileAuthDialogOpen] = useState(false);
@@ -198,23 +208,52 @@ export function ScrollHeader() {
     };
   }, [pathname, isLoadComplete]);
 
-  const handleNavClick = (hash: string) => {
-    if (hash === "#contact") {
+  /** Anker, die nur auf der Startseite existieren (#contact separat). */
+  const homeScrollHashes = GLOW_NAV_ITEMS.filter(
+    (item) => item.href.startsWith("#") && item.href !== "#contact",
+  ).map((item) => item.href);
+
+  const handleNavClick = (href: string) => {
+    if (href.startsWith("/ueber-uns")) {
+      const target = href.includes("#") ? href : "/ueber-uns#ueber-intro";
+      if (pathname === "/ueber-uns") {
+        const el = document.getElementById("ueber-intro");
+        if (el) el.scrollIntoView({ behavior: "smooth", block: "start" });
+        else window.scrollTo({ top: 0, behavior: "smooth" });
+        try {
+          window.history.replaceState(null, "", target);
+        } catch {
+          /* noop */
+        }
+      } else {
+        router.push(target);
+      }
+      setDropdownOpen(false);
+      return;
+    }
+    if (href.startsWith("/") && href.length > 1 && !href.startsWith("/#")) {
+      router.push(href);
+      setDropdownOpen(false);
+      return;
+    }
+    if (href === "#contact") {
       contactLinkRef.current?.click();
       setDropdownOpen(false);
       return;
     }
-    if (hash === "#start" && pathname != null && pathname !== "/") {
-      window.location.assign("/#start");
+    if (pathname != null && pathname !== "/" && homeScrollHashes.includes(href)) {
+      window.location.assign(`/${href}`);
       setDropdownOpen(false);
       return;
     }
-    scrollToSection(hash);
+    scrollToSection(href);
     setDropdownOpen(false);
   };
 
   const activeGlowLabel =
-    GLOW_NAV_ITEMS.find((item) => item.href === activeSection)?.label ?? "";
+    pathname === "/ueber-uns"
+      ? "Über uns"
+      : GLOW_NAV_ITEMS.find((item) => item.href === activeSection)?.label ?? "";
 
   const shouldUseHeaderLightTheme = true;
 
@@ -317,7 +356,9 @@ export function ScrollHeader() {
               role="menu"
             >
               {GLOW_NAV_ITEMS.map(({ href, label }) => {
-                const isActive = activeSection === href;
+                const isActive =
+                  (href.startsWith("#") && activeSection === href) ||
+                  (pathname === "/ueber-uns" && href.startsWith("/ueber-uns"));
                 return (
                   <a
                     key={href}

@@ -1,5 +1,4 @@
 import type { Metadata } from "next";
-import { AeoContentSection } from "@/components/AeoContentSection";
 import { ResponsiveHomeLayout } from "@/components/ResponsiveHomeLayout";
 import { PricingSection } from "@/components/PricingSection";
 import { Section7AIDemo } from "@/components/Section7AIDemo";
@@ -147,14 +146,20 @@ export default function Home() {
       {
         "@type": "SiteNavigationElement",
         position: 5,
-        name: "Ratgeber KI-Marketing",
-        url: "https://www.evglab.com/ratgeber/marketing-inhalte-mit-ki",
+        name: "Ratgeber Wissenscheck",
+        url: "https://www.evglab.com/ratgeber",
       },
       {
         "@type": "SiteNavigationElement",
         position: 6,
         name: "Premium vs. Dashboard-Abo",
         url: "https://www.evglab.com/vergleich/premium-vs-dashboard-abo-brauerei",
+      },
+      {
+        "@type": "SiteNavigationElement",
+        position: 7,
+        name: "Über uns",
+        url: "https://www.evglab.com/ueber-uns",
       },
     ],
   };
@@ -180,7 +185,6 @@ export default function Home() {
       <ResponsiveHomeLayout />
       <PricingSection />
       <Section7AIDemo />
-      <AeoContentSection />
     </>
   );
 }

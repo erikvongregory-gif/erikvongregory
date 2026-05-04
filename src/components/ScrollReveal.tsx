@@ -1,6 +1,7 @@
 "use client";
 
 import { useRef, useEffect, useState, type ReactNode } from "react";
+import { useLoading } from "@/context/LoadingContext";
 
 type ScrollRevealProps = {
   children: ReactNode;
@@ -18,6 +19,7 @@ export function ScrollReveal({
 }: ScrollRevealProps) {
   const ref = useRef<HTMLDivElement>(null);
   const [isVisible, setIsVisible] = useState(false);
+  const { isLoadComplete } = useLoading();
 
   useEffect(() => {
     const el = ref.current;
@@ -28,18 +30,21 @@ export function ScrollReveal({
       return;
     }
 
+    /** Ohne Warten feuert der Observer unter dem Splash — Animation läuft unsichtbar und wirkt „kaputt“. */
+    if (!isLoadComplete) return;
+
     const observer = new IntersectionObserver(
       ([entry]) => {
         if (!entry.isIntersecting) return;
         setIsVisible(true);
         observer.disconnect();
       },
-      { threshold: 0.1, rootMargin: "0px 0px -40px 0px" }
+      { threshold: 0, rootMargin: "0px 0px -8% 0px" },
     );
 
     observer.observe(el);
     return () => observer.disconnect();
-  }, []);
+  }, [isLoadComplete]);
 
   const hiddenY = softEntrance ? "translate-y-[26px]" : "translate-y-5";
   const durationClass = softEntrance ? "duration-[850ms] ease-[cubic-bezier(0.16,1,0.3,1)]" : "duration-500 ease-[cubic-bezier(0.22,1,0.36,1)]";

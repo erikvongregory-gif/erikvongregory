@@ -119,9 +119,13 @@ export default function VergleichPremiumDashboardPage() {
               <Link href="/#pakete" className="text-[#b45309] hover:underline">
                 Startseite unter Pakete &amp; Abos
               </Link>
-              . Eine Schritt-für-Schritt-Anleitung für KI-Inhalte steht im{" "}
+              . Zum Einordnen:{" "}
+              <Link href="/ratgeber" className="text-[#b45309] hover:underline">
+                interaktiver Ratgeber-Wissenscheck
+              </Link>
+              ; die Schritt-für-Schritt-Anleitung im{" "}
               <Link href="/ratgeber/marketing-inhalte-mit-ki" className="text-[#b45309] hover:underline">
-                Ratgeber Marketing mit KI
+                Ratgeber-Artikel
               </Link>
               .
             </p>

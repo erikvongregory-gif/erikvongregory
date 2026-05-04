@@ -68,7 +68,7 @@ export function AppShell({ children }: AppShellProps) {
         <ScrollHeader />
       </div>
       {children}
-      <footer id="contact" className="relative z-[70] border-t border-zinc-200/80 bg-transparent py-12 sm:py-16">
+      <footer id="contact" className="relative z-[70] border-t border-zinc-200/80 bg-transparent py-10 sm:py-12">
         <div className="mx-auto max-w-6xl px-4 sm:px-6">
           <div className="grid gap-8 sm:gap-12 md:grid-cols-2 lg:grid-cols-4">
             <div>
@@ -158,16 +158,28 @@ export function AppShell({ children }: AppShellProps) {
               </button>
               <p className="mt-4 text-sm font-semibold text-zinc-800">Mehr lesen</p>
               <a
+                href="/ratgeber"
+                className="mt-1 block text-sm text-[#b45309] transition-colors hover:text-[#c65a20] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-orange-400 focus-visible:ring-offset-2 focus-visible:ring-offset-transparent rounded"
+              >
+                Ratgeber: Wissenscheck (Quiz)
+              </a>
+              <a
                 href="/ratgeber/marketing-inhalte-mit-ki"
                 className="mt-1 block text-sm text-[#b45309] transition-colors hover:text-[#c65a20] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-orange-400 focus-visible:ring-offset-2 focus-visible:ring-offset-transparent rounded"
               >
-                Ratgeber: Marketing mit KI
+                Ratgeber-Artikel: Ablauf mit KI
               </a>
               <a
                 href="/vergleich/premium-vs-dashboard-abo-brauerei"
                 className="mt-1 block text-sm text-[#b45309] transition-colors hover:text-[#c65a20] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-orange-400 focus-visible:ring-offset-2 focus-visible:ring-offset-transparent rounded"
               >
                 Premium vs. Dashboard-Abo
+              </a>
+              <a
+                href="/ueber-uns#ueber-intro"
+                className="mt-1 block text-sm text-[#b45309] transition-colors hover:text-[#c65a20] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-orange-400 focus-visible:ring-offset-2 focus-visible:ring-offset-transparent rounded"
+              >
+                Über uns
               </a>
             </div>
           </div>

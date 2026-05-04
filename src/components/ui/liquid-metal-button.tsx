@@ -10,6 +10,8 @@ interface LiquidMetalButtonProps {
   onClick?: () => void;
   viewMode?: "text" | "icon";
   size?: "default" | "large";
+  /** Feste Breite in px für längere Labels (Standardbreiten sonst aus size/viewMode). */
+  widthPx?: number;
 }
 
 export function LiquidMetalButton({
@@ -17,6 +19,7 @@ export function LiquidMetalButton({
   onClick,
   viewMode = "text",
   size = "default",
+  widthPx,
 }: LiquidMetalButtonProps) {
   const [isHovered, setIsHovered] = useState(false);
   const [isPressed, setIsPressed] = useState(false);
@@ -39,15 +42,19 @@ export function LiquidMetalButton({
       };
     }
 
+    const height = size === "large" ? 50 : 46;
+    const defaultWidth = size === "large" ? 224 : 210;
+    const width = typeof widthPx === "number" && widthPx > 0 ? Math.round(widthPx) : defaultWidth;
+
     return {
-      width: size === "large" ? 224 : 210,
-      height: size === "large" ? 50 : 46,
-      innerWidth: size === "large" ? 220 : 206,
-      innerHeight: size === "large" ? 46 : 42,
-      shaderWidth: size === "large" ? 224 : 210,
-      shaderHeight: size === "large" ? 50 : 46,
+      width,
+      height,
+      innerWidth: width - 4,
+      innerHeight: height - 4,
+      shaderWidth: width,
+      shaderHeight: height,
     };
-  }, [size, viewMode]);
+  }, [size, viewMode, widthPx]);
 
   useEffect(() => {
     const styleId = "shader-canvas-style-exploded";
