@@ -279,20 +279,6 @@ export default function UeberUnsPage() {
             >
               Ratgeber-Quiz
             </Link>
-            ,{" "}
-            <Link
-              href="/ratgeber/marketing-inhalte-mit-ki"
-              className="font-semibold text-[#b45309] underline decoration-[#c65a20]/35 underline-offset-2 transition hover:text-[#9a3412] hover:decoration-[#c65a20]/55"
-            >
-              Artikel zum Ablauf
-            </Link>{" "}
-            oder{" "}
-            <Link
-              href="/vergleich/premium-vs-dashboard-abo-brauerei"
-              className="font-semibold text-[#b45309] underline decoration-[#c65a20]/35 underline-offset-2 transition hover:text-[#9a3412] hover:decoration-[#c65a20]/55"
-            >
-              Premium vs. Abo
-            </Link>
             . Sonst schreib uns — wir melden uns pragmatisch zurück.
           </p>
           <p className="mt-8">

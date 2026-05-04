@@ -44,18 +44,6 @@ export default function sitemap(): MetadataRoute.Sitemap {
       priority: 0.8,
     },
     {
-      url: `${base}/ratgeber/marketing-inhalte-mit-ki`,
-      lastModified: new Date(),
-      changeFrequency: "monthly" as const,
-      priority: 0.75,
-    },
-    {
-      url: `${base}/vergleich/premium-vs-dashboard-abo-brauerei`,
-      lastModified: new Date(),
-      changeFrequency: "monthly" as const,
-      priority: 0.75,
-    },
-    {
       url: `${base}/ueber-uns`,
       lastModified: new Date(),
       changeFrequency: "monthly" as const,

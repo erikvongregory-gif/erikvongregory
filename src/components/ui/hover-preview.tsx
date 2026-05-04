@@ -274,7 +274,7 @@ export function HoverPreview({
             >
               Dashboard mit Token-Abo
             </HoverLink>{" "}
-            — schnell, planbar, mit Markenprofil im Hintergrund. Details zum Ablauf:{" "}
+            — schnell, planbar, mit Markenprofil im Hintergrund. Kurz einordnen:{" "}
             <a
               href="/ratgeber"
               className={cn(
@@ -285,18 +285,6 @@ export function HoverPreview({
               )}
             >
               Ratgeber-Quiz
-            </a>
-            , Entscheidungshilfe:{" "}
-            <a
-              href="/vergleich/premium-vs-dashboard-abo-brauerei"
-              className={cn(
-                "font-medium underline underline-offset-2",
-                light
-                  ? "text-[#b45309] decoration-[#c65a20]/50 hover:text-[#9a3412]"
-                  : "text-[#fbbf24] decoration-[#c65a20]/60 hover:text-amber-200",
-              )}
-            >
-              Premium vs. Abo
             </a>
             .
           </motion.p>

@@ -68,12 +68,12 @@ export const DEFAULT_BREWERY_QUIZ_DATA: QuizSectionQuestion[] = [
   },
   {
     id: 5,
-    question: "Wo findest du die ausführliche Gegenüberstellung Premium vs. Dashboard-Abo?",
+    question: "Wo findest du Pakete, Abo-Pläne und Beispiel-Motive am schnellsten gebündelt?",
     options: [
-      "Unter /vergleich/premium-vs-dashboard-abo-brauerei",
-      "Nur im Impressum",
+      "Auf der Startseite in den Abschnitten Pakete und Beispiele",
+      "Nur im Ratgeber-Quiz",
       "Ausschließlich in der robots.txt",
-      "Gar nicht — es gibt nur eine Option",
+      "Nur über einen direkten Deep-Link von Suchmaschinen",
     ],
     correctAnswer: 0,
   },
@@ -91,7 +91,7 @@ export type QuizSectionProps = {
 };
 
 function calculateScore(answers: (number | null)[], data: QuizSectionQuestion[]) {
-  return answers.reduce((total, answer, index) => {
+  return answers.reduce<number>((total, answer, index) => {
     if (answer === data[index]?.correctAnswer) return total + 1;
     return total;
   }, 0);
@@ -101,8 +101,8 @@ function getScoreMessage(finalScore: number, total: number) {
   const percentage = (finalScore / total) * 100;
   if (percentage >= 80) return "Sehr stark — du hast das Angebot gut im Blick!";
   if (percentage >= 60) return "Gut gemacht — solides Verständnis für den Ablauf.";
-  if (percentage >= 40) return "Solide Basis — im Ratgeber-Artikel kannst du nachlesen.";
-  return "Kein Problem — ein Blick in den Vergleich und den Artikel hilft weiter.";
+  if (percentage >= 40) return "Solide Basis — auf der Startseite siehst du Pakete und Beispiele im Überblick.";
+  return "Kein Problem — die Startseite fasst Angebot und Beispiele zusammen, das Quiz kannst du jederzeit wiederholen.";
 }
 
 export function QuizSection({ questions, embedded = false, className }: QuizSectionProps) {
@@ -381,9 +381,10 @@ export function QuizSection({ questions, embedded = false, className }: QuizSect
               let icon: ReactNode = null;
               if (!current) return null;
               const wrongPick = index === selectedAnswer && selectedAnswer !== current.correctAnswer;
+              const isCorrectOption = index === current.correctAnswer;
 
               if (showFeedback) {
-                if (correct) {
+                if (isCorrectOption) {
                   buttonClass +=
                     " border-green-500 bg-green-100/20 text-green-700 shadow-md dark:bg-green-400/20 dark:text-green-300";
                   icon = <CheckCircle2 className="ml-2 h-5 w-5 shrink-0" aria-hidden />;

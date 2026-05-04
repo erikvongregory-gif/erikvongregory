@@ -65,8 +65,8 @@ export function Section7AIDemo() {
               <span className="font-light italic font-austera-green-fade">Reels &amp; Querformat</span>
             </h3>
             <p className="section7-desc mx-auto mt-3 max-w-2xl text-pretty text-sm leading-relaxed text-zinc-600 sm:text-base">
-              Zwei echte <strong className="font-medium text-zinc-800">9:16</strong>-Clips nebeneinander — darunter ein{" "}
-              <strong className="font-medium text-zinc-800">16:9</strong>-Beispiel für Web und YouTube.
+              Mehrere echte <strong className="font-medium text-zinc-800">9:16</strong>-Clips (Reels, Stories) — darunter
+              ein <strong className="font-medium text-zinc-800">16:9</strong>-Beispiel für Web und YouTube.
             </p>
           </div>
 

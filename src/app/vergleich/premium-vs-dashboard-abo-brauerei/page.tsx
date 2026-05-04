@@ -123,10 +123,6 @@ export default function VergleichPremiumDashboardPage() {
               <Link href="/ratgeber" className="text-[#b45309] hover:underline">
                 interaktiver Ratgeber-Wissenscheck
               </Link>
-              ; die Schritt-für-Schritt-Anleitung im{" "}
-              <Link href="/ratgeber/marketing-inhalte-mit-ki" className="text-[#b45309] hover:underline">
-                Ratgeber-Artikel
-              </Link>
               .
             </p>
           </section>

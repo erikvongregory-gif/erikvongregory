@@ -7,8 +7,6 @@
 - https://www.evglab.com/ — Startseite, Pakete, Abo-Pläne, FAQ, Kontakt
 - https://www.evglab.com/loesungen — Branchen-Lösungen (Saisonkampagne, Gastro-Promotion, Biergarten-Event)
 - https://www.evglab.com/ratgeber — Interaktives Quiz (Wissenscheck) zu EvGlab, Paketen und Dashboard für Brauereien
-- https://www.evglab.com/ratgeber/marketing-inhalte-mit-ki — Anleitung (Artikel): Marketing-Inhalte mit KI planen und umsetzen
-- https://www.evglab.com/vergleich/premium-vs-dashboard-abo-brauerei — Premium-Service vs. Self-Service-Dashboard
 - https://www.evglab.com/ueber-uns — Über EvGlab, Zielgruppe DACH, Kontakt
 
 ## Rechtliches

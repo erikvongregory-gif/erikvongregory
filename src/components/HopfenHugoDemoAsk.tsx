@@ -79,8 +79,9 @@ export function HopfenHugoDemoAsk({ className }: { className?: string }) {
         ]);
         return;
       }
-      if (typeof data.answer === "string" && data.answer.trim()) {
-        setMessages((prev) => [...prev, { id: nextId(), role: "assistant", text: data.answer.trim() }]);
+      const answer = data.answer;
+      if (typeof answer === "string" && answer.trim()) {
+        setMessages((prev) => [...prev, { id: nextId(), role: "assistant", text: answer.trim() }]);
         return;
       }
       setMessages((prev) => [

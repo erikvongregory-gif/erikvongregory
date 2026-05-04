@@ -164,18 +164,6 @@ export function AppShell({ children }: AppShellProps) {
                 Ratgeber: Wissenscheck (Quiz)
               </a>
               <a
-                href="/ratgeber/marketing-inhalte-mit-ki"
-                className="mt-1 block text-sm text-[#b45309] transition-colors hover:text-[#c65a20] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-orange-400 focus-visible:ring-offset-2 focus-visible:ring-offset-transparent rounded"
-              >
-                Ratgeber-Artikel: Ablauf mit KI
-              </a>
-              <a
-                href="/vergleich/premium-vs-dashboard-abo-brauerei"
-                className="mt-1 block text-sm text-[#b45309] transition-colors hover:text-[#c65a20] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-orange-400 focus-visible:ring-offset-2 focus-visible:ring-offset-transparent rounded"
-              >
-                Premium vs. Dashboard-Abo
-              </a>
-              <a
                 href="/ueber-uns#ueber-intro"
                 className="mt-1 block text-sm text-[#b45309] transition-colors hover:text-[#c65a20] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-orange-400 focus-visible:ring-offset-2 focus-visible:ring-offset-transparent rounded"
               >

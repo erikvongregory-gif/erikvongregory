@@ -6,7 +6,7 @@ import { SITE } from "@/lib/siteConfig";
 export const metadata: Metadata = {
   title: "Ratgeber: EvGlab-Wissenscheck für Brauereien | EvGlab",
   description:
-    "Interaktives Quiz zu EvGlab, Premium-Paketen und dem Token-Dashboard — mit Auswertung und Links zum Vergleich und Ratgeber-Artikel.",
+    "Interaktives Quiz zu EvGlab, Premium-Paketen und dem Token-Dashboard — mit direkter Auswertung.",
   alternates: { canonical: `${SITE.baseUrl}/ratgeber` },
   openGraph: {
     title: "Ratgeber: EvGlab-Wissenscheck | EvGlab",
@@ -33,12 +33,7 @@ export default function RatgeberIndexPage() {
         </nav>
         <h1 className="text-3xl font-bold tracking-tight sm:text-4xl">Ratgeber: EvGlab-Wissenscheck</h1>
         <p className="mt-4 text-lg text-zinc-600">
-          Fünf Fragen zu <strong>Angebot, Tokens und Markenprofil</strong> — mit direkter Auswertung. Für den Ablauf
-          mit KI lies anschließend den{" "}
-          <Link href="/ratgeber/marketing-inhalte-mit-ki" className="font-semibold text-[#b45309] hover:underline">
-            Ratgeber-Artikel
-          </Link>
-          .
+          Fünf Fragen zu <strong>Angebot, Tokens und Markenprofil</strong> — mit direkter Auswertung.
         </p>
         <QuizSection embedded className="mt-10" />
       </div>

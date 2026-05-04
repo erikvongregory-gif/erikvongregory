@@ -152,12 +152,6 @@ export default function Home() {
       {
         "@type": "SiteNavigationElement",
         position: 6,
-        name: "Premium vs. Dashboard-Abo",
-        url: "https://www.evglab.com/vergleich/premium-vs-dashboard-abo-brauerei",
-      },
-      {
-        "@type": "SiteNavigationElement",
-        position: 7,
         name: "Über uns",
         url: "https://www.evglab.com/ueber-uns",
       },
