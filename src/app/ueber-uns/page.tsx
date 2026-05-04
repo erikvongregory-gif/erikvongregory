@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import Image from "next/image";
 import Link from "next/link";
 import { MessageCircle } from "lucide-react";
 import { HopfenHugoDemoAsk } from "@/components/HopfenHugoDemoAsk";
@@ -63,30 +64,45 @@ export default function UeberUnsPage() {
       <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(aboutJsonLd) }} />
 
       {/** Kein ScrollReveal um #ueber-intro: sonst startet der Block unsichtbar (opacity-0) und Hash-/Anker-Scroll landet optisch bei „Hintergrund“. */}
-      <header
-        className={cn(
-          sectionShell,
-          "relative max-w-4xl pb-20 pt-28 text-center sm:pb-24 sm:pt-32",
-        )}
-      >
-        <div
-          id="ueber-intro"
-          className="scroll-mt-28 sm:scroll-mt-32"
-        >
+      <header className={cn(sectionShell, "relative pb-20 pt-28 text-center sm:pb-24 sm:pt-32")}>
+        <div id="ueber-intro" className="scroll-mt-28 sm:scroll-mt-32 mx-auto flex max-w-6xl flex-col items-center">
           <p className={kicker}>Geschichte</p>
           <span className="section7-badge section7-badge-pulse mt-5 inline-flex items-center gap-2 rounded-full border border-[rgba(224,122,64,0.35)] bg-[rgba(224,122,64,0.1)] px-4 py-1.5 text-sm font-medium text-[#b45309]">
             <span aria-hidden>✦</span>
             Marke &amp; Team
           </span>
 
-          <h1 className="mx-auto mt-10 max-w-[22ch] font-sans text-4xl font-semibold leading-[1.06] tracking-tight text-zinc-900 sm:text-5xl md:text-[3.35rem] md:leading-[1.05]">
-            Wer wir sind — und{" "}
-            <span className="bg-gradient-to-r from-[#c2410c] via-[#c65a20] to-[#d97706] bg-clip-text text-transparent">
-              wofür EvGlab steht
-            </span>
-          </h1>
+          <div
+            id="ueber-geschichte-hero"
+            className="relative mt-8 w-full max-w-5xl xl:max-w-6xl"
+          >
+            <div className="relative overflow-hidden rounded-[1.75rem] border border-zinc-200/80 bg-zinc-100 shadow-[0_28px_70px_-48px_rgba(15,23,42,0.35)] ring-1 ring-zinc-950/[0.05] sm:rounded-[2rem]">
+              <div className="relative aspect-[16/11] w-full sm:aspect-[21/10] md:aspect-[2/1]">
+                <Image
+                  src="/ueber-uns-geschichte-hero.png"
+                  alt="Arbeitsplatz mit Laptop — EvGlab KI-Marketing"
+                  fill
+                  priority
+                  sizes="(max-width: 1280px) 100vw, 1152px"
+                  className="object-cover object-[center_42%]"
+                />
+                <div
+                  className="pointer-events-none absolute inset-x-0 bottom-0 h-[62%] bg-gradient-to-t from-black/88 via-black/45 to-transparent sm:h-[58%]"
+                  aria-hidden
+                />
+                <div className="absolute inset-x-0 bottom-0 flex flex-col items-center px-4 pb-8 pt-20 text-center sm:pb-10 sm:pt-24 md:pb-12 md:pt-28">
+                  <h1 className="max-w-[18ch] font-sans text-[1.65rem] font-semibold leading-[1.12] tracking-tight text-white drop-shadow-[0_2px_24px_rgba(0,0,0,0.45)] sm:max-w-[20ch] sm:text-4xl md:max-w-[22ch] md:text-[2.65rem] md:leading-[1.06]">
+                    Wer wir sind — und{" "}
+                    <span className="text-[#ff9a3c] drop-shadow-[0_1px_12px_rgba(0,0,0,0.35)]">
+                      wofür EvGlab steht
+                    </span>
+                  </h1>
+                </div>
+              </div>
+            </div>
+          </div>
 
-          <p className="mx-auto mt-8 max-w-2xl text-pretty text-lg leading-[1.65] text-zinc-600 sm:text-xl sm:leading-relaxed">
+          <p className="mx-auto mt-10 max-w-2xl text-pretty text-lg leading-[1.65] text-zinc-600 sm:mt-12 sm:text-xl sm:leading-relaxed">
             KI-Marketing mit Substanz für{" "}
             <strong className="font-medium text-zinc-900">Brauereien und Getränkemarken</strong> in{" "}
             <strong className="font-medium text-zinc-900">Deutschland, Österreich und der Schweiz</strong>. Kein
@@ -94,7 +110,7 @@ export default function UeberUnsPage() {
           </p>
 
           <ul className="mt-11 flex flex-wrap items-center justify-center gap-2.5">
-            {["KI-Werbebilder", "Premium & Abo", "DACH", "Markenlook"].map((label) => (
+            {["KI-Werbebilder", "Video & Clips", "Premium & Abo", "DACH", "Markenlook"].map((label) => (
               <li key={label}>
                 <span className="inline-flex rounded-full border border-zinc-200/90 bg-white/90 px-3.5 py-1.5 text-sm text-zinc-700 shadow-[0_1px_0_rgba(255,255,255,0.9)_inset,0_2px_8px_-4px_rgba(15,23,42,0.08)] ring-1 ring-zinc-950/[0.04] transition hover:border-[#c65a20]/35 hover:ring-[#c65a20]/12">
                   {label}

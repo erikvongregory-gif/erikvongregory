@@ -97,6 +97,38 @@ export function ScrollHeader() {
   const [activeSection, setActiveSection] = useState<string>("");
   const mobileNavRef = useRef<HTMLDivElement>(null);
   const contactLinkRef = useRef<HTMLAnchorElement>(null);
+  /** Nur auf /ueber-uns: Nav liegt optisch über dem Hero-Foto */
+  const [navOverUeberHero, setNavOverUeberHero] = useState(false);
+
+  useEffect(() => {
+    if (pathname !== "/ueber-uns") {
+      setNavOverUeberHero(false);
+      return;
+    }
+    const headerStripPx = 96;
+    const tick = () => {
+      const el = document.getElementById("ueber-geschichte-hero");
+      if (!el) {
+        setNavOverUeberHero(false);
+        return;
+      }
+      const r = el.getBoundingClientRect();
+      setNavOverUeberHero(r.top < headerStripPx && r.bottom > 0);
+    };
+    tick();
+    window.addEventListener("scroll", tick, { passive: true });
+    window.addEventListener("resize", tick);
+    const raf = requestAnimationFrame(() => tick());
+    const t1 = window.setTimeout(tick, 120);
+    const t2 = window.setTimeout(tick, 400);
+    return () => {
+      window.removeEventListener("scroll", tick);
+      window.removeEventListener("resize", tick);
+      cancelAnimationFrame(raf);
+      window.clearTimeout(t1);
+      window.clearTimeout(t2);
+    };
+  }, [pathname]);
 
   useEffect(() => {
     const closeOnWide = () => {
@@ -268,6 +300,8 @@ export function ScrollHeader() {
 
   const shouldUseHeaderLightTheme = true;
 
+  const navOverUeberHeroMedia = pathname === "/ueber-uns" && navOverUeberHero;
+
   if (pathname?.startsWith("/dashboard")) {
     return null;
   }
@@ -277,7 +311,7 @@ export function ScrollHeader() {
 
   const logoSizes = "h-10 w-auto sm:h-11 md:h-[3.25rem]";
 
-  /** Dunkles Wellen-Logo: Desktop-Header + Mobile-Pille (heller Hintergrund) */
+  /** Dunkles Wellen-Logo — bleibt auch über dem Hero dunkel; nur die Nav-Pille wechselt (overMedia). */
   const headerLogo = (
     <div className="flex flex-col items-start gap-px">
       <Link
@@ -410,6 +444,7 @@ export function ScrollHeader() {
                   items={GLOW_NAV_ITEMS}
                   activeItem={activeGlowLabel}
                   headerLight={shouldUseHeaderLightTheme}
+                  overMedia={navOverUeberHeroMedia}
                   onItemClick={(label) => {
                     const item = GLOW_NAV_ITEMS.find((i) => i.label === label);
                     if (item) handleNavClick(item.href);

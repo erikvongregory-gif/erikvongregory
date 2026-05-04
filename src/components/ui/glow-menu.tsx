@@ -26,6 +26,11 @@ interface MenuBarProps extends Omit<HTMLMotionProps<"nav">, "children"> {
   onItemClick?: (label: string) => void;
   /** Desktop-Header hell (z. B. .desktop-light-theme), sonsten dunkel */
   headerLight?: boolean;
+  /**
+   * Nav liegt visuell über einem dunklen Foto (z. B. Über-uns-Hero):
+   * helle Pille + weiße Schrift/Icons, ohne vollen Seitenhintergrund.
+   */
+  overMedia?: boolean;
 }
 
 const itemVariants = {
@@ -80,15 +85,19 @@ export const MenuBar = React.forwardRef<HTMLElement, MenuBarProps>(
       activeItem,
       onItemClick,
       headerLight = false,
+      overMedia = false,
       ...props
     },
     ref,
   ) => {
     const isDarkTheme = !headerLight;
+    const onHeroMedia = Boolean(headerLight && overMedia);
 
-    const shell = headerLight
-      ? "border border-white/35 bg-white/45 shadow-sm shadow-black/10 backdrop-blur-md backdrop-saturate-150 md:border-zinc-300/55 md:bg-white/42 md:backdrop-blur-lg md:backdrop-saturate-150"
-      : "border-white/15 bg-[#0a0f14] shadow-lg shadow-black/40";
+    const shell = onHeroMedia
+      ? "border border-white/35 bg-black/50 shadow-[0_14px_44px_-18px_rgba(0,0,0,0.65)] backdrop-blur-xl backdrop-saturate-150"
+      : headerLight
+        ? "border border-white/35 bg-white/45 shadow-sm shadow-black/10 backdrop-blur-md backdrop-saturate-150 md:border-zinc-300/55 md:bg-white/42 md:backdrop-blur-lg md:backdrop-saturate-150"
+        : "border-white/15 bg-[#0a0f14] shadow-lg shadow-black/40";
 
     const fg = headerLight ? "text-neutral-800" : "text-white";
     const muted = headerLight ? "text-neutral-500" : "text-white/65";
@@ -97,9 +106,16 @@ export const MenuBar = React.forwardRef<HTMLElement, MenuBarProps>(
       ? "group-hover:text-neutral-800"
       : "group-hover:text-white";
 
+    const effectiveFg = onHeroMedia ? "text-white" : fg;
+    const effectiveMuted = onHeroMedia ? "text-white/75" : muted;
+    const effectiveIconMuted = onHeroMedia ? "text-white/80" : iconMuted;
+    const effectiveGroupHoverFg = onHeroMedia ? "group-hover:text-white" : groupHoverFg;
+
     const navGlowBg = isDarkTheme
       ? "radial-gradient(circle at 50% 50%, transparent 0%, rgba(96, 165, 250, 0.28) 32%, rgba(192, 132, 252, 0.28) 58%, rgba(248, 113, 113, 0.22) 88%, transparent 100%)"
-      : "radial-gradient(circle at 50% 50%, transparent 0%, rgba(59, 130, 246, 0.18) 32%, rgba(168, 85, 247, 0.16) 58%, rgba(248, 113, 113, 0.12) 88%, transparent 100%)";
+      : onHeroMedia
+        ? "radial-gradient(circle at 50% 50%, transparent 0%, rgba(255,255,255,0.06) 45%, transparent 70%)"
+        : "radial-gradient(circle at 50% 50%, transparent 0%, rgba(59, 130, 246, 0.18) 32%, rgba(168, 85, 247, 0.16) 58%, rgba(248, 113, 113, 0.12) 88%, transparent 100%)";
 
     return (
       <motion.nav
@@ -131,7 +147,7 @@ export const MenuBar = React.forwardRef<HTMLElement, MenuBarProps>(
                 items.length > 0 &&
                   cn(
                     "border-r sm:pr-3",
-                    headerLight ? "border-black/10" : "border-white/15",
+                    onHeroMedia ? "border-white/15" : headerLight ? "border-black/10" : "border-white/15",
                   ),
               )}
             >
@@ -170,7 +186,7 @@ export const MenuBar = React.forwardRef<HTMLElement, MenuBarProps>(
                     <motion.div
                       className={cn(
                         "relative z-10 flex items-center gap-2 rounded-xl bg-transparent px-3 py-2 transition-colors sm:px-4",
-                        isActive ? fg : cn(muted, groupHoverFg),
+                        isActive ? effectiveFg : cn(effectiveMuted, effectiveGroupHoverFg),
                       )}
                       variants={itemVariants}
                       transition={sharedTransition}
@@ -182,8 +198,11 @@ export const MenuBar = React.forwardRef<HTMLElement, MenuBarProps>(
                       <span
                         className={cn(
                           "transition-colors duration-300",
-                          isActive ? item.iconColor : iconMuted,
-                          !isActive && item.iconHoverClass,
+                          isActive
+                            ? onHeroMedia
+                              ? "text-white"
+                              : item.iconColor
+                            : cn(effectiveIconMuted, !onHeroMedia && item.iconHoverClass),
                         )}
                       >
                         <Icon className="h-5 w-5 shrink-0" />
@@ -195,7 +214,7 @@ export const MenuBar = React.forwardRef<HTMLElement, MenuBarProps>(
                     <motion.div
                       className={cn(
                         "absolute inset-0 z-10 flex items-center gap-2 rounded-xl bg-transparent px-3 py-2 transition-colors sm:px-4",
-                        isActive ? fg : cn(muted, groupHoverFg),
+                        isActive ? effectiveFg : cn(effectiveMuted, effectiveGroupHoverFg),
                       )}
                       variants={backVariants}
                       transition={sharedTransition}
@@ -208,8 +227,11 @@ export const MenuBar = React.forwardRef<HTMLElement, MenuBarProps>(
                       <span
                         className={cn(
                           "transition-colors duration-300",
-                          isActive ? item.iconColor : iconMuted,
-                          !isActive && item.iconHoverClass,
+                          isActive
+                            ? onHeroMedia
+                              ? "text-white"
+                              : item.iconColor
+                            : cn(effectiveIconMuted, !onHeroMedia && item.iconHoverClass),
                         )}
                       >
                         <Icon className="h-5 w-5 shrink-0" />
