@@ -2,6 +2,7 @@
 
 import type { ReactNode } from "react";
 import { motion } from "framer-motion";
+import { BlurText } from "@/components/ui/blur-text-animation";
 import { cn } from "@/lib/utils";
 
 /** Inhalt für die drei Säulen auf „Über uns“ (nummerierte Karten). */
@@ -87,14 +88,14 @@ export function FeatureCard(props: FeatureCardProps) {
             {step}.
           </span>
           <h3 className="mt-5 font-display text-[1.0625rem] font-semibold leading-snug tracking-tight text-zinc-900 sm:text-lg">
-            {title}
+            <BlurText text={title} tone="onLight" />
           </h3>
           <span
             className="mt-3 block h-px w-10 rounded-full bg-gradient-to-r from-[#c65a20]/50 to-transparent opacity-80 transition-all duration-500 group-hover:w-14 group-hover:opacity-100"
             aria-hidden
           />
           <p className="mt-4 text-pretty font-sans text-[0.8125rem] leading-relaxed text-zinc-600 sm:text-[0.9375rem] sm:leading-[1.65]">
-            {description}
+            <BlurText text={description} tone="onLight" />
           </p>
         </div>
       </article>

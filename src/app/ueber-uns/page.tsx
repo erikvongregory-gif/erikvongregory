@@ -4,11 +4,13 @@ import Link from "next/link";
 import { MessageCircle } from "lucide-react";
 import { HopfenHugoDemoAsk } from "@/components/HopfenHugoDemoAsk";
 import { ScrollReveal } from "@/components/ScrollReveal";
+import { HintergrundPortraitEntrance } from "./HintergrundPortraitEntrance";
 import { UeberUnsMountScroll } from "./UeberUnsMountScroll";
 import { GlobePolaroids } from "@/components/ui/cobe-globe-polaroids";
 import { ConnectWithUs } from "@/components/ui/connect-with-us";
 import { FeaturePillars } from "@/components/ui/feature-card";
 import { HoverPreview } from "@/components/ui/hover-preview";
+import { BlurText } from "@/components/ui/blur-text-animation";
 import { UeberUnsLiquidPortrait } from "@/components/UeberUnsLiquidPortrait";
 import { SITE } from "@/lib/siteConfig";
 import { cn } from "@/lib/utils";
@@ -66,17 +68,19 @@ export default function UeberUnsPage() {
       {/** Kein ScrollReveal um #ueber-intro: sonst startet der Block unsichtbar (opacity-0) und Hash-/Anker-Scroll landet optisch bei „Hintergrund“. */}
       <header className={cn(sectionShell, "relative pb-20 pt-28 text-center sm:pb-24 sm:pt-32")}>
         <div id="ueber-intro" className="scroll-mt-28 sm:scroll-mt-32 mx-auto flex max-w-6xl flex-col items-center">
-          <p className={kicker}>Geschichte</p>
+          <p className={kicker}>
+            <BlurText text="Geschichte" tone="onLight" animateWhenInView={false} />
+          </p>
           <span className="section7-badge section7-badge-pulse mt-5 inline-flex items-center gap-2 rounded-full border border-[rgba(224,122,64,0.35)] bg-[rgba(224,122,64,0.1)] px-4 py-1.5 text-sm font-medium text-[#b45309]">
             <span aria-hidden>✦</span>
-            Marke &amp; Team
+            <BlurText text="Marke & Team" tone="onLight" animateWhenInView={false} />
           </span>
 
           <div
             id="ueber-geschichte-hero"
             className="relative mt-8 w-full max-w-5xl xl:max-w-6xl"
           >
-            <div className="relative overflow-hidden rounded-[1.75rem] border border-zinc-200/80 bg-zinc-100 shadow-[0_28px_70px_-48px_rgba(15,23,42,0.35)] ring-1 ring-zinc-950/[0.05] sm:rounded-[2rem]">
+            <div className="ueber-geschichte-hero-card-entrance relative overflow-hidden rounded-[1.75rem] border border-zinc-200/80 bg-zinc-100 shadow-[0_28px_70px_-48px_rgba(15,23,42,0.35)] ring-1 ring-zinc-950/[0.05] sm:rounded-[2rem]">
               <div className="relative aspect-[16/11] w-full sm:aspect-[21/10] md:aspect-[2/1]">
                 <Image
                   src="/ueber-uns-geschichte-hero.png"
@@ -92,10 +96,18 @@ export default function UeberUnsPage() {
                 />
                 <div className="absolute inset-x-0 bottom-0 flex flex-col items-center px-4 pb-8 pt-20 text-center sm:pb-10 sm:pt-24 md:pb-12 md:pt-28">
                   <h1 className="max-w-[18ch] font-sans text-[1.65rem] font-semibold leading-[1.12] tracking-tight text-white drop-shadow-[0_2px_24px_rgba(0,0,0,0.45)] sm:max-w-[20ch] sm:text-4xl md:max-w-[22ch] md:text-[2.65rem] md:leading-[1.06]">
-                    Wer wir sind — und{" "}
-                    <span className="text-[#ff9a3c] drop-shadow-[0_1px_12px_rgba(0,0,0,0.35)]">
-                      wofür EvGlab steht
-                    </span>
+                    <BlurText
+                      tone="onDark"
+                      text="Wer wir sind — und"
+                      animateWhenInView={false}
+                      className="text-inherit"
+                    />{" "}
+                    <BlurText
+                      tone="onDark"
+                      text="wofür EvGlab steht"
+                      wordOffset={5}
+                      className="text-inherit text-[#ff9a3c] drop-shadow-[0_1px_12px_rgba(0,0,0,0.35)]"
+                    />
                   </h1>
                 </div>
               </div>
@@ -103,17 +115,27 @@ export default function UeberUnsPage() {
           </div>
 
           <p className="mx-auto mt-10 max-w-2xl text-pretty text-lg leading-[1.65] text-zinc-600 sm:mt-12 sm:text-xl sm:leading-relaxed">
-            KI-Marketing mit Substanz für{" "}
-            <strong className="font-medium text-zinc-900">Brauereien und Getränkemarken</strong> in{" "}
-            <strong className="font-medium text-zinc-900">Deutschland, Österreich und der Schweiz</strong>. Kein
-            Agentur-Baukasten — sondern klare Lieferobjekte und ein Setup, das zu eurem Tempo passt.
+            <BlurText
+              tone="onLight"
+              animateWhenInView={false}
+              parts={[
+                { text: "KI-Marketing mit Substanz für" },
+                { text: "Brauereien und Getränkemarken", className: "font-medium text-zinc-900" },
+                { text: "in" },
+                { text: "Deutschland, Österreich und der Schweiz.", className: "font-medium text-zinc-900" },
+                {
+                  text: "Kein Agentur-Baukasten — sondern klare Lieferobjekte und ein Setup, das zu eurem Tempo passt.",
+                },
+              ]}
+              className="text-inherit leading-[inherit]"
+            />
           </p>
 
           <ul className="mt-11 flex flex-wrap items-center justify-center gap-2.5">
             {["KI-Werbebilder", "Video & Clips", "Premium & Abo", "DACH", "Markenlook"].map((label) => (
               <li key={label}>
                 <span className="inline-flex rounded-full border border-zinc-200/90 bg-white/90 px-3.5 py-1.5 text-sm text-zinc-700 shadow-[0_1px_0_rgba(255,255,255,0.9)_inset,0_2px_8px_-4px_rgba(15,23,42,0.08)] ring-1 ring-zinc-950/[0.04] transition hover:border-[#c65a20]/35 hover:ring-[#c65a20]/12">
-                  {label}
+                  <BlurText text={label} tone="onLight" animateWhenInView={false} className="text-inherit" />
                 </span>
               </li>
             ))}
@@ -131,35 +153,56 @@ export default function UeberUnsPage() {
         <div className={cn(sectionShell, "mx-auto max-w-6xl")}>
           <div className="grid gap-12 lg:grid-cols-[minmax(0,1fr)_minmax(0,17rem)] lg:items-start lg:gap-14 xl:grid-cols-[minmax(0,1.05fr)_minmax(0,19rem)]">
             <div className="min-w-0 max-w-2xl">
-              <p className={kicker}>Hintergrund</p>
+              <p className={kicker}>
+                <BlurText text="Hintergrund" tone="onLight" />
+              </p>
               <h2
                 id="ueber-story-heading"
                 className="font-display mt-3 text-2xl font-semibold tracking-tight text-zinc-900 sm:text-[1.75rem] sm:leading-snug"
               >
-                Was steckt hinter EvGlab?
+                <BlurText text="Was steckt hinter EvGlab?" tone="onLight" className="text-inherit" />
               </h2>
               <div className="relative mt-10 space-y-7 pl-5 text-pretty text-base leading-[1.7] text-zinc-600 sm:text-lg sm:leading-relaxed before:absolute before:left-0 before:top-1 before:h-[calc(100%-0.25rem)] before:w-px before:bg-gradient-to-b before:from-[#c65a20]/50 before:via-zinc-300/80 before:to-transparent">
                 <p>
-                  Angefangen hat es mit einer einfachen Frage: Wie bekommen Brauereien{" "}
-                  <strong className="font-medium text-zinc-800">schneller gute Werbemotive</strong>, ohne dass jedes Bild
-                  Wochen an interner Kapazität frisst? KI ist dafür das Werkzeug — aber nur, wenn Briefing, Markenprofil
-                  und Freigaben sauber sitzen.
+                  <BlurText
+                    tone="onLight"
+                    parts={[
+                      { text: "Angefangen hat es mit einer einfachen Frage: Wie bekommen Brauereien" },
+                      { text: "schneller gute Werbemotive", className: "font-medium text-zinc-800" },
+                      {
+                        text: ", ohne dass jedes Bild Wochen an interner Kapazität frisst? KI ist dafür das Werkzeug — aber nur, wenn Briefing, Markenprofil und Freigaben sauber sitzen.",
+                      },
+                    ]}
+                    className="text-inherit leading-[inherit]"
+                  />
                 </p>
                 <p>
-                  Heute bündeln wir genau das:{" "}
-                  <strong className="font-medium text-zinc-800">fertige Assets</strong>, nachvollziehbare Pakete und — für
-                  Teams mit laufendem Bedarf — ein Dashboard mit Token-Abo. Immer mit dem Ziel, dass ihr{" "}
-                  <strong className="font-medium text-zinc-800">sichtbar bleibt</strong>, wo Flasche, Gastro und Saison
-                  zählen.
+                  <BlurText
+                    tone="onLight"
+                    parts={[
+                      { text: "Heute bündeln wir genau das:" },
+                      { text: "fertige Assets", className: "font-medium text-zinc-800" },
+                      {
+                        text: ", nachvollziehbare Pakete und — für Teams mit laufendem Bedarf — ein Dashboard mit Token-Abo. Immer mit dem Ziel, dass ihr",
+                      },
+                      { text: "sichtbar bleibt", className: "font-medium text-zinc-800" },
+                      { text: ", wo Flasche, Gastro und Saison zählen." },
+                    ]}
+                    className="text-inherit leading-[inherit]"
+                  />
                 </p>
               </div>
               <p className="mt-9 pl-5 text-sm text-zinc-600 sm:text-base">
-                <span className="font-medium text-zinc-800">Erik Freiherr von Gregory</span>
+                <BlurText
+                  text="Erik Freiherr von Gregory"
+                  tone="onLight"
+                  className="font-medium text-zinc-800"
+                />
               </p>
             </div>
 
             <div className="mx-auto flex w-full max-w-[17.5rem] justify-center lg:mx-0 lg:max-w-none lg:justify-end xl:max-w-[19rem]">
-              <div
+              <HintergrundPortraitEntrance
                 className={cn(
                   "evg-clean-hover relative w-full overflow-hidden rounded-tl-[2.35rem] rounded-tr-[1.65rem] rounded-br-[2.45rem] rounded-bl-[1.55rem] border border-black/10 bg-gradient-to-br from-black/5 to-black/0 p-2 sm:p-2.5",
                   "shadow-[0_14px_30px_-20px_rgba(24,24,27,0.28)] backdrop-blur-[14px] ring-1 ring-black/[0.04]",
@@ -167,7 +210,7 @@ export default function UeberUnsPage() {
                 )}
               >
                 <UeberUnsLiquidPortrait className="relative z-0" />
-              </div>
+              </HintergrundPortraitEntrance>
             </div>
           </div>
         </div>
@@ -191,26 +234,43 @@ export default function UeberUnsPage() {
                 </div>
               </div>
               <div className="min-w-0">
-                <p className={kicker}>Dashboard</p>
+                <p className={kicker}>
+                  <BlurText text="Dashboard" tone="onLight" />
+                </p>
                 <h2
                   id="hopfen-hugo-heading"
                   className="font-display mt-3 text-2xl font-semibold tracking-tight text-zinc-900 sm:text-[1.75rem] sm:leading-snug"
                 >
-                  Hopfen Hugo
+                  <BlurText text="Hopfen Hugo" tone="onLight" className="text-inherit" />
                 </h2>
                 <p className="mx-auto mt-6 max-w-xl text-pretty text-base leading-[1.7] text-zinc-600 sm:text-lg sm:leading-relaxed lg:mx-0">
-                  <strong className="font-medium text-zinc-900">Hopfen Hugo</strong> ist euer Chat-Assistent im
-                  EvGlab-Dashboard — speziell für{" "}
-                  <strong className="font-medium text-zinc-900">KI-Bildgenerierung</strong> und alles, was dazu im
-                  Tool gehört: Prompts, Motive, Stil und Markenlook, Varianten, Formate, Mediathek sowie Token und
-                  Bedienung der Bild-Funktionen.
+                  <BlurText
+                    tone="onLight"
+                    parts={[
+                      { text: "Hopfen Hugo", className: "font-medium text-zinc-900" },
+                      {
+                        text: "ist euer Chat-Assistent im EvGlab-Dashboard — speziell für",
+                      },
+                      { text: "KI-Bildgenerierung", className: "font-medium text-zinc-900" },
+                      {
+                        text: "und alles, was dazu im Tool gehört: Prompts, Motive, Stil und Markenlook, Varianten, Formate, Mediathek sowie Token und Bedienung der Bild-Funktionen.",
+                      },
+                    ]}
+                    className="text-inherit leading-[inherit]"
+                  />
                 </p>
                 <p className="mx-auto mt-5 max-w-xl text-pretty text-base leading-[1.7] text-zinc-600 sm:text-lg sm:leading-relaxed lg:mx-0">
-                  Keine Rezepte, kein Sudhaus-Wissen: Wenn es nichts mit{" "}
-                  <strong className="font-medium text-zinc-900">Werbebildern und Bild-Workflows</strong> zu tun hat,
-                  verweist er euch klar darauf. So bleibt der Fokus auf dem, was EvGlab liefert —{" "}
-                  <strong className="font-medium text-zinc-900">schnell nutzbare Bilder</strong> für Social, Kampagne
-                  und Außenauftritt.
+                  <BlurText
+                    tone="onLight"
+                    parts={[
+                      { text: "Keine Rezepte, kein Sudhaus-Wissen: Wenn es nichts mit" },
+                      { text: "Werbebildern und Bild-Workflows", className: "font-medium text-zinc-900" },
+                      { text: "zu tun hat, verweist er euch klar darauf. So bleibt der Fokus auf dem, was EvGlab liefert —" },
+                      { text: "schnell nutzbare Bilder", className: "font-medium text-zinc-900" },
+                      { text: "für Social, Kampagne und Außenauftritt." },
+                    ]}
+                    className="text-inherit leading-[inherit]"
+                  />
                 </p>
               </div>
             </div>
@@ -235,28 +295,48 @@ export default function UeberUnsPage() {
           aria-labelledby="ueber-marke-heading"
         >
         <div className={cn(sectionShell, "max-w-2xl text-center")}>
-          <p className={kicker}>Marke</p>
+          <p className={kicker}>
+            <BlurText text="Marke" tone="onLight" />
+          </p>
           <h2
             id="ueber-marke-heading"
             className="font-display mt-3 text-2xl font-semibold tracking-tight text-zinc-900 sm:text-[1.75rem]"
           >
-            EvGlab in einem Satz
+            <BlurText text="EvGlab in einem Satz" tone="onLight" className="text-inherit" />
           </h2>
           <p className="mx-auto mt-7 max-w-xl text-pretty text-base leading-[1.65] text-zinc-600 sm:text-lg">
-            Wir übersetzen eure Marke in{" "}
-            <strong className="font-medium text-zinc-900">Bilder, Texte und Videos</strong>, die im Alltag funktionieren
-            — schnell genug für Social, stark genug für Kampagnen und Clips.
+            <BlurText
+              tone="onLight"
+              parts={[
+                { text: "Wir übersetzen eure Marke in" },
+                { text: "Bilder, Texte und Videos", className: "font-medium text-zinc-900" },
+                {
+                  text: ", die im Alltag funktionieren — schnell genug für Social, stark genug für Kampagnen und Clips.",
+                },
+              ]}
+              className="text-inherit leading-[inherit]"
+            />
           </p>
           <p className="mx-auto mt-4 max-w-xl text-pretty text-sm leading-relaxed text-zinc-500 sm:text-base">
-            Was uns wichtig ist: dass ihr euch verstanden fühlt und am Ende Assets habt, die{" "}
-            <strong className="font-medium text-zinc-700">wirklich einsetzbar</strong> sind — ob Motiv, Post oder
-            Werbevideo — nicht nur „nice“ aussehen.
+            <BlurText
+              tone="onLight"
+              parts={[
+                {
+                  text: "Was uns wichtig ist: dass ihr euch verstanden fühlt und am Ende Assets habt, die",
+                },
+                { text: "wirklich einsetzbar", className: "font-medium text-zinc-700" },
+                {
+                  text: "sind — ob Motiv, Post oder Werbevideo — nicht nur „nice“ aussehen.",
+                },
+              ]}
+              className="text-inherit leading-[inherit]"
+            />
           </p>
           <ul className="mt-11 flex flex-wrap items-center justify-center gap-2">
             {["Briefing-first", "DACH-fokussiert", "Lieferobjekte statt Endlos-Schleife", "Tokens planbar"].map((t) => (
               <li key={t}>
                 <span className="inline-flex rounded-full border border-zinc-200/90 bg-white/90 px-3 py-1.5 text-xs font-medium text-zinc-600 shadow-sm ring-1 ring-zinc-950/[0.03] sm:text-sm">
-                  {t}
+                  <BlurText text={t} tone="onLight" className="text-inherit" />
                 </span>
               </li>
             ))}
@@ -268,17 +348,28 @@ export default function UeberUnsPage() {
       <ScrollReveal softEntrance className="w-full">
         <section className={cn(sectionShell, "py-16 sm:py-20")} aria-labelledby="ueber-interaktiv-heading">
         <div className="mx-auto max-w-2xl text-center">
-          <p className={kicker}>Angebot &amp; Region</p>
+          <p className={kicker}>
+            <BlurText text="Angebot & Region" tone="onLight" />
+          </p>
           <h2
             id="ueber-interaktiv-heading"
             className="font-display mt-3 text-2xl font-semibold tracking-tight text-zinc-900 sm:text-[1.75rem]"
           >
-            So erklären wir&apos;s — einmal mit Bild
+            <BlurText text="So erklären wir's — einmal mit Bild" tone="onLight" className="text-inherit" />
           </h2>
           <p className="mt-6 text-pretty text-sm leading-relaxed text-zinc-600 sm:text-base">
-            <strong className="font-medium text-zinc-800">Tipp:</strong> Mit der Maus über die{" "}
-            <strong className="font-medium text-[#b45309]">orangefarbenen Begriffe</strong> im Text fahren — dann
-            erscheint jeweils eine Vorschau. Auf dem Touchscreen stehen die Infos direkt im Fließtext.
+            <BlurText
+              tone="onLight"
+              parts={[
+                { text: "Tipp:", className: "font-medium text-zinc-800" },
+                { text: "Mit der Maus über die" },
+                { text: "orangefarbenen Begriffe", className: "font-medium text-[#b45309]" },
+                {
+                  text: "im Text fahren — dann erscheint jeweils eine Vorschau. Auf dem Touchscreen stehen die Infos direkt im Fließtext.",
+                },
+              ]}
+              className="text-inherit leading-[inherit]"
+            />
           </p>
         </div>
 
@@ -314,24 +405,29 @@ export default function UeberUnsPage() {
         >
         <div className={cn(sectionShell, "max-w-2xl text-center")}>
           <h2 id="ueber-cta-heading" className="font-display text-xl font-semibold tracking-tight text-zinc-900 sm:text-2xl">
-            Genug gelesen?
+            <BlurText text="Genug gelesen?" tone="onLight" className="text-inherit" />
           </h2>
           <p className="mt-5 text-pretty text-base leading-relaxed text-zinc-600">
-            Wenn du tiefer einsteigen willst:{" "}
+            <BlurText text="Wenn du tiefer einsteigen willst:" tone="onLight" className="text-inherit" />{" "}
             <Link
               href="/ratgeber"
               className="font-semibold text-[#b45309] underline decoration-[#c65a20]/35 underline-offset-2 transition hover:text-[#9a3412] hover:decoration-[#c65a20]/55"
             >
-              Ratgeber-Quiz
+              <BlurText text="Ratgeber-Quiz" tone="onLight" className="text-inherit font-semibold underline" />
             </Link>
-            . Sonst schreib uns — wir melden uns pragmatisch zurück.
+            <BlurText
+              text=". Sonst schreib uns — wir melden uns pragmatisch zurück."
+              tone="onLight"
+              wordOffset={6}
+              className="text-inherit"
+            />
           </p>
           <p className="mt-8">
             <a
               href="mailto:kontakt@evglab.com"
               className="inline-flex min-h-[2.75rem] items-center justify-center rounded-full border border-[rgba(224,122,64,0.5)] bg-gradient-to-b from-[rgba(255,245,235,0.95)] to-[rgba(254,231,210,0.75)] px-8 py-2.5 text-sm font-semibold text-[#9a3412] shadow-[var(--ui-shadow-accent)] transition-[transform,box-shadow] duration-200 hover:shadow-[var(--ui-shadow-accent-hover)] active:scale-[0.98]"
             >
-              Jetzt Kontakt aufnehmen
+              <BlurText text="Jetzt Kontakt aufnehmen" tone="onLight" className="text-inherit" />
             </a>
           </p>
         </div>
@@ -341,16 +437,27 @@ export default function UeberUnsPage() {
       <ScrollReveal softEntrance className="w-full">
         <section className="border-t border-zinc-200/80 bg-white/95 py-14 sm:py-16" aria-labelledby="ueber-kontakt-heading">
         <div className={cn(sectionShell, "max-w-3xl text-center")}>
-          <p className={kicker}>Kontakt</p>
+          <p className={kicker}>
+            <BlurText text="Kontakt" tone="onLight" />
+          </p>
           <h2 id="ueber-kontakt-heading" className="font-display mt-3 text-xl font-semibold text-zinc-900 sm:text-2xl">
-            Direkt loslegen
+            <BlurText text="Direkt loslegen" tone="onLight" className="text-inherit" />
           </h2>
           <p className="mt-5 text-pretty text-base leading-relaxed text-zinc-600">
-            Fragen zu Paketen, Abos oder Zeitplan? Schreib uns an{" "}
+            <BlurText
+              text="Fragen zu Paketen, Abos oder Zeitplan? Schreib uns an"
+              tone="onLight"
+              className="text-inherit"
+            />{" "}
             <a href="mailto:kontakt@evglab.com" className="font-semibold text-[#b45309] underline-offset-2 hover:underline">
-              kontakt@evglab.com
+              <BlurText text="kontakt@evglab.com" tone="onLight" className="text-inherit font-semibold" />
             </a>{" "}
-            oder nutze die Kanäle hier:
+            <BlurText
+              text="oder nutze die Kanäle hier:"
+              tone="onLight"
+              wordOffset={10}
+              className="text-inherit"
+            />
           </p>
           <div className="mt-10">
             <ConnectWithUs plain />

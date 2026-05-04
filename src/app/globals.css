@@ -429,6 +429,45 @@ body[data-legal-page="true"] {
   }
 }
 
+/* Über-uns „Geschichte“-Hero: ganze Karte (Bild + Rahmen + Verlauf) — fade + von unten (nur Seiten-Load) */
+@keyframes ueber-geschichte-hero-card-in {
+  from {
+    opacity: 0;
+    transform: translate3d(0, 2.25rem, 0);
+  }
+  to {
+    opacity: 1;
+    transform: translate3d(0, 0, 0);
+  }
+}
+
+.ueber-geschichte-hero-card-entrance {
+  animation: ueber-geschichte-hero-card-in 1.75s cubic-bezier(0.2, 0.75, 0.25, 1) 0.14s both;
+  will-change: transform, opacity;
+}
+
+/* Über-uns „Hintergrund“: Portrait-Karte — fade + von rechts (Startzustand bis Scroll / reduced-motion) */
+@keyframes ueber-hintergrund-portrait-in {
+  from {
+    opacity: 0;
+    transform: translate3d(2.25rem, 0, 0);
+  }
+  to {
+    opacity: 1;
+    transform: translate3d(0, 0, 0);
+  }
+}
+
+.ueber-hintergrund-portrait-entrance {
+  opacity: 0;
+  transform: translate3d(2.25rem, 0, 0);
+}
+
+.ueber-hintergrund-portrait-entrance--active {
+  animation: ueber-hintergrund-portrait-in 1.75s cubic-bezier(0.2, 0.75, 0.25, 1) 0.14s forwards;
+  will-change: transform, opacity;
+}
+
 .hero-slide-in {
   animation: hero-slide-right 0.9s cubic-bezier(0.16, 1, 0.3, 1) both;
 }
@@ -484,6 +523,21 @@ body[data-legal-page="true"] {
 }
 
 @media (prefers-reduced-motion: reduce) {
+  .ueber-geschichte-hero-card-entrance {
+    animation: none;
+    opacity: 1;
+    transform: none;
+    will-change: auto;
+  }
+
+  .ueber-hintergrund-portrait-entrance,
+  .ueber-hintergrund-portrait-entrance--active {
+    animation: none !important;
+    opacity: 1;
+    transform: none;
+    will-change: auto;
+  }
+
   .hero-portrait-float {
     animation: none;
   }
