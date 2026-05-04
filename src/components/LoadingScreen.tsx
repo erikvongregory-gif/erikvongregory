@@ -1,16 +1,33 @@
 "use client";
 
-import { useEffect, useState } from "react";
-import { useLoading } from "@/context/LoadingContext";
+import { useEffect, useLayoutEffect, useState } from "react";
+import { EVGLAB_SPLASH_SEEN_KEY, useLoading } from "@/context/LoadingContext";
 
 const FADE_OUT_MS = 400;
 const DURATION_DESKTOP = 1400;
 const DURATION_MOBILE = 1200;
 
+function isSplashAlreadySeen(): boolean {
+  try {
+    return (
+      localStorage.getItem(EVGLAB_SPLASH_SEEN_KEY) === "1" ||
+      sessionStorage.getItem(EVGLAB_SPLASH_SEEN_KEY) === "1"
+    );
+  } catch {
+    return false;
+  }
+}
+
 export function LoadingScreen() {
   const { setLoadComplete } = useLoading();
   const [phase, setPhase] = useState<"show" | "fade" | "done">("show");
   const [duration, setDuration] = useState(DURATION_DESKTOP);
+
+  useLayoutEffect(() => {
+    if (isSplashAlreadySeen()) {
+      setPhase("done");
+    }
+  }, []);
 
   useEffect(() => {
     const id = setTimeout(() => {
@@ -20,6 +37,7 @@ export function LoadingScreen() {
   }, []);
 
   useEffect(() => {
+    if (isSplashAlreadySeen()) return;
     const fadeStart = Math.max(duration - FADE_OUT_MS, 0);
     const t1 = setTimeout(() => {
       setLoadComplete();

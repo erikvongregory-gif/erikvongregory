@@ -61,14 +61,17 @@ export default function UeberUnsPage() {
       />
       <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(aboutJsonLd) }} />
 
+      {/** Kein ScrollReveal um #ueber-intro: sonst startet der Block unsichtbar (opacity-0) und Hash-/Anker-Scroll landet optisch bei „Hintergrund“. */}
       <header
-        id="ueber-intro"
         className={cn(
           sectionShell,
-          "relative max-w-4xl scroll-mt-28 pb-20 pt-28 text-center sm:scroll-mt-32 sm:pb-24 sm:pt-32",
+          "relative max-w-4xl pb-20 pt-28 text-center sm:pb-24 sm:pt-32",
         )}
       >
-        <ScrollReveal softEntrance className="w-full">
+        <div
+          id="ueber-intro"
+          className="scroll-mt-28 sm:scroll-mt-32"
+        >
           <p className={kicker}>Geschichte</p>
           <span className="section7-badge section7-badge-pulse mt-5 inline-flex items-center gap-2 rounded-full border border-[rgba(224,122,64,0.35)] bg-[rgba(224,122,64,0.1)] px-4 py-1.5 text-sm font-medium text-[#b45309]">
             <span aria-hidden>✦</span>
@@ -98,9 +101,9 @@ export default function UeberUnsPage() {
               </li>
             ))}
           </ul>
+        </div>
 
-          <SectionDivider />
-        </ScrollReveal>
+        <SectionDivider />
       </header>
 
       <ScrollReveal softEntrance className="w-full">

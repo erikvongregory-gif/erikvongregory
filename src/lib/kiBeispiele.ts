@@ -60,5 +60,5 @@ export const KI_BEISPIEL_VIDEO_16X9: KiBeispielVideoLandscape = {
   src: "/videos/ki-werbevideo-brauerei-werbespot-web-youtube-16x9.mp4",
   title: "16:9 – Web, YouTube & Social (Querformat)",
   caption: "Klassisches Breitformat für Website, YouTube und Feed-Posts im Querformat.",
-  poster: "/ki-beispiel-hafen.webp",
+  poster: "/ki-werbevideo-16x9-poster.webp",
 };

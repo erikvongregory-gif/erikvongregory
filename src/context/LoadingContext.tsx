@@ -1,6 +1,13 @@
 "use client";
 
-import { createContext, useCallback, useContext, useEffect, useState } from "react";
+import {
+  createContext,
+  useCallback,
+  useContext,
+  useEffect,
+  useLayoutEffect,
+  useState,
+} from "react";
 import {
   COOKIE_CONSENT_KEY,
   type CookiePrefs,
@@ -19,9 +26,27 @@ type LoadingContextValue = {
 
 const LoadingContext = createContext<LoadingContextValue | null>(null);
 
+/** Einmal pro Browser (localStorage): Intro-Splash nur beim ersten Aufruf der Site, nicht bei interner Navigation oder neuem Tab. */
+export const EVGLAB_SPLASH_SEEN_KEY = "evglab_splash_seen";
+
 export function LoadingProvider({ children }: { children: React.ReactNode }) {
   const [isLoadComplete, setIsLoadComplete] = useState(false);
   const [cookiePreferences, setCookiePreferences] = useState<CookiePrefs | null>(null);
+
+  useLayoutEffect(() => {
+    try {
+      const seenLocal = localStorage.getItem(EVGLAB_SPLASH_SEEN_KEY) === "1";
+      const seenSession = sessionStorage.getItem(EVGLAB_SPLASH_SEEN_KEY) === "1";
+      if (seenSession && !seenLocal) {
+        localStorage.setItem(EVGLAB_SPLASH_SEEN_KEY, "1");
+      }
+      if (seenLocal || seenSession) {
+        setIsLoadComplete(true);
+      }
+    } catch {
+      /* private mode */
+    }
+  }, []);
 
   useEffect(() => {
     if (typeof window === "undefined") return;
@@ -31,7 +56,14 @@ export function LoadingProvider({ children }: { children: React.ReactNode }) {
     else if (raw) localStorage.removeItem(COOKIE_CONSENT_KEY);
   }, []);
 
-  const setLoadComplete = useCallback(() => setIsLoadComplete(true), []);
+  const setLoadComplete = useCallback(() => {
+    setIsLoadComplete(true);
+    try {
+      localStorage.setItem(EVGLAB_SPLASH_SEEN_KEY, "1");
+    } catch {
+      /* private mode */
+    }
+  }, []);
 
   const saveCookieConsent = useCallback((prefs: CookiePrefs) => {
     localStorage.setItem(COOKIE_CONSENT_KEY, serializeCookieConsent(prefs));

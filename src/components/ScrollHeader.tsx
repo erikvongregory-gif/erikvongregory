@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useRef, useState } from "react";
+import Image from "next/image";
 import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
 import { HelpCircle, Home, Info, Layers, Mail, Package, Sparkles } from "lucide-react";
@@ -8,6 +9,7 @@ import { MenuBar, type GlowMenuItem } from "@/components/ui/glow-menu";
 import { scrollToSection } from "@/lib/scrollToSection";
 import { cn } from "@/lib/utils";
 import { APP_LOGIN_URL } from "@/lib/appLoginUrl";
+import { SITE } from "@/lib/siteConfig";
 import { useLoading } from "@/context/LoadingContext";
 
 const GLOW_NAV_ITEMS: GlowMenuItem[] = [
@@ -227,6 +229,14 @@ export function ScrollHeader() {
         }
       } else {
         router.push(target);
+        if (target.includes("#ueber-intro")) {
+          window.setTimeout(() => {
+            document.getElementById("ueber-intro")?.scrollIntoView({
+              behavior: "smooth",
+              block: "start",
+            });
+          }, 120);
+        }
       }
       setDropdownOpen(false);
       return;
@@ -242,7 +252,8 @@ export function ScrollHeader() {
       return;
     }
     if (pathname != null && pathname !== "/" && homeScrollHashes.includes(href)) {
-      window.location.assign(`/${href}`);
+      void router.push(`/${href}`);
+      window.setTimeout(() => scrollToSection(href), 80);
       setDropdownOpen(false);
       return;
     }
@@ -261,49 +272,39 @@ export function ScrollHeader() {
     return null;
   }
 
-  const evglabWordmarkDesktop = (
-    <>
-      EvG<span className="font-light italic font-austera-green-fade">lab</span>
-    </>
-  );
-  const evglabWordmarkMobile = (
-    <>
-      EvG
-      <span
-        className="font-light italic text-[#c65a20]"
-        style={{ background: "none", WebkitTextFillColor: "#c65a20" }}
-      >
-        lab
-      </span>
-    </>
-  );
-
   const logoLinkClassBase =
-    "premium-header-logo rounded text-lg leading-none tracking-tight whitespace-nowrap focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 sm:text-2xl";
+    "premium-header-logo inline-flex items-center rounded focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-offset-2";
 
-  const headerLogoDesktop = (
+  const logoSizes = "h-10 w-auto sm:h-11 md:h-[3.25rem]";
+
+  /** Dunkles Wellen-Logo: Desktop-Header + Mobile-Pille (heller Hintergrund) */
+  const headerLogo = (
     <div className="flex flex-col items-start gap-px">
       <Link
         href="/"
         className={cn(
           logoLinkClassBase,
-          "focus-visible:ring-white/60 focus-visible:ring-offset-transparent",
+          "focus-visible:ring-white/60 focus-visible:ring-offset-transparent md:focus-visible:ring-zinc-900/35",
         )}
       >
-        {evglabWordmarkDesktop}
-      </Link>
-    </div>
-  );
-  const headerLogoMobile = (
-    <div className="flex flex-col items-start gap-px">
-      <Link
-        href="/"
-        className={cn(
-          logoLinkClassBase,
-          "focus-visible:ring-white/60 focus-visible:ring-offset-transparent",
-        )}
-      >
-        {evglabWordmarkMobile}
+        <Image
+          src={SITE.brandLogoPath}
+          alt={SITE.brandLogoAlt}
+          width={400}
+          height={400}
+          priority
+          unoptimized
+          className={cn(logoSizes, "hidden md:block object-contain transition-opacity duration-200")}
+        />
+        <Image
+          src={SITE.brandLogoPath}
+          alt={SITE.brandLogoAlt}
+          width={400}
+          height={400}
+          priority
+          unoptimized
+          className={cn(logoSizes, "md:hidden object-contain transition-opacity duration-200")}
+        />
       </Link>
     </div>
   );
@@ -325,7 +326,7 @@ export function ScrollHeader() {
           Kontakt
         </a>
         <div className="pointer-events-auto min-w-0 shrink rounded-lg border border-black/10 bg-white/88 px-2.5 py-1 shadow-[0_6px_18px_-10px_rgba(24,24,27,0.3)] backdrop-blur-sm">
-          {headerLogoMobile}
+          {headerLogo}
         </div>
 
         <div ref={mobileNavRef} className="pointer-events-auto relative shrink-0">
@@ -400,7 +401,7 @@ export function ScrollHeader() {
         <div className="premium-header-container !max-w-none">
           <div className="grid w-full grid-cols-[1fr_auto_1fr] items-center gap-4">
             <div className="min-w-0 justify-self-start">
-              {headerLogoDesktop}
+              {headerLogo}
             </div>
             <div className="min-w-0">
               <div className="min-w-0 max-w-full overflow-x-auto [-ms-overflow-style:none] [scrollbar-width:none] [&::-webkit-scrollbar]:hidden">

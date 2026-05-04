@@ -70,14 +70,17 @@ export function Section7AIDemo() {
             </p>
           </div>
 
-          <div className="mx-auto flex min-h-0 max-w-5xl flex-col gap-8 lg:gap-10">
-            <div className="grid min-h-0 grid-cols-1 gap-10 sm:grid-cols-2 sm:gap-8 md:gap-10">
+          <div className="mx-auto flex min-h-0 max-w-6xl flex-col gap-8 lg:gap-10">
+            <div className="grid min-h-0 grid-cols-1 gap-10 md:grid-cols-3 md:gap-3 lg:gap-4">
               {KI_BEISPIEL_VIDEOS_9X16.map((v) => (
-                <figure key={v.src} className="flex min-h-0 min-w-0 flex-col items-center gap-3 sm:items-stretch">
+                <figure
+                  key={v.src}
+                  className="flex min-h-0 min-w-0 flex-col items-center gap-3 md:items-stretch"
+                >
                   <div
                     className={cn(
                       "relative aspect-[9/16] w-full overflow-hidden rounded-2xl border border-neutral-200/80 bg-neutral-950 shadow-[0_20px_50px_-28px_rgba(15,23,42,0.2)] ring-1 ring-black/[0.04]",
-                      "mx-auto max-w-[min(280px,88vw)] sm:mx-0 sm:max-w-full",
+                      "mx-auto max-w-[min(280px,88vw)] md:mx-0 md:max-w-none",
                     )}
                   >
                     <video
@@ -96,7 +99,7 @@ export function Section7AIDemo() {
                       .
                     </video>
                   </div>
-                  <figcaption className="text-center sm:text-left">
+                  <figcaption className="text-center md:text-left md:pt-3">
                     <p className="text-sm font-semibold text-zinc-900">{v.title}</p>
                     <p className="mt-1 text-pretty text-xs leading-relaxed text-zinc-600 sm:text-sm">{v.caption}</p>
                   </figcaption>

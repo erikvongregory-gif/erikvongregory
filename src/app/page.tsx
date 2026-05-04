@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { ResponsiveHomeLayout } from "@/components/ResponsiveHomeLayout";
 import { PricingSection } from "@/components/PricingSection";
 import { Section7AIDemo } from "@/components/Section7AIDemo";
+import { SITE } from "@/lib/siteConfig";
 
 export const metadata: Metadata = {
   title: "KI-Marketing für Brauereien: Bilder, Posts & Bewertungen | EvGlab",
@@ -48,7 +49,7 @@ export default function Home() {
     "@type": "ProfessionalService",
     name: "EvGlab",
     url: "https://evglab.com",
-    logo: "https://evglab.com/logo.svg",
+    logo: SITE.brandLogoUrl,
     description:
       "KI-Marketing für Brauereien: Werbebilder, Social-Media-Posts und Google-Bewertungsmanagement.",
     areaServed: ["DE", "AT", "CH"],
