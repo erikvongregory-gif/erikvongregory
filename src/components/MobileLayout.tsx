@@ -4,6 +4,7 @@ import { useEffect, useState } from "react";
 import { useLoading } from "@/context/LoadingContext";
 import { Hero } from "@/components/ui/animated-hero";
 import { ScrollReveal } from "./ScrollReveal";
+import { HowItWorks } from "@/components/ui/how-it-works";
 import { Section2BreweryCards } from "@/components/Section2BreweryCards";
 import { CONTAINED_SHADER_BG, ShaderCanvas } from "@/components/ui/animated-glassy-pricing";
 
@@ -112,6 +113,7 @@ export function MobileLayout() {
           <ScrollReveal>
             <Section2BreweryCards layout="stack" />
           </ScrollReveal>
+          <HowItWorks className="mt-8 border-t border-zinc-200/40 pt-10 sm:mt-10 sm:pt-12" />
         </section>
 
         {/* Section 4 */}
