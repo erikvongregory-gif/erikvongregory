@@ -28,7 +28,7 @@ export function Section2BreweryCards({
             Warum EvGlab
           </span>
           <h3 className="text-2xl font-bold tracking-tight text-zinc-900 sm:text-3xl">
-            Was du mit mir konkret besser machst
+            Was du mit mir konkret besser machst — und wie du es machst
           </h3>
         </div>
 

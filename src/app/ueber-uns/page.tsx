@@ -8,6 +8,7 @@ import { GlobePolaroids } from "@/components/ui/cobe-globe-polaroids";
 import { ConnectWithUs } from "@/components/ui/connect-with-us";
 import { FeaturePillars } from "@/components/ui/feature-card";
 import { HoverPreview } from "@/components/ui/hover-preview";
+import { UeberUnsLiquidPortrait } from "@/components/UeberUnsLiquidPortrait";
 import { SITE } from "@/lib/siteConfig";
 import { cn } from "@/lib/utils";
 
@@ -111,28 +112,47 @@ export default function UeberUnsPage() {
           className="relative border-t border-zinc-200/50 bg-white/50 py-16 sm:py-20"
           aria-labelledby="ueber-story-heading"
         >
-        <div className={cn(sectionShell, "max-w-2xl")}>
-          <p className={kicker}>Hintergrund</p>
-          <h2
-            id="ueber-story-heading"
-            className="font-display mt-3 text-2xl font-semibold tracking-tight text-zinc-900 sm:text-[1.75rem] sm:leading-snug"
-          >
-            Was steckt hinter EvGlab?
-          </h2>
-          <div className="relative mt-10 space-y-7 pl-5 text-pretty text-base leading-[1.7] text-zinc-600 sm:text-lg sm:leading-relaxed before:absolute before:left-0 before:top-1 before:h-[calc(100%-0.25rem)] before:w-px before:bg-gradient-to-b before:from-[#c65a20]/50 before:via-zinc-300/80 before:to-transparent">
-            <p>
-              Angefangen hat es mit einer einfachen Frage: Wie bekommen Brauereien{" "}
-              <strong className="font-medium text-zinc-800">schneller gute Werbemotive</strong>, ohne dass jedes Bild
-              Wochen an interner Kapazität frisst? KI ist dafür das Werkzeug — aber nur, wenn Briefing, Markenprofil
-              und Freigaben sauber sitzen.
-            </p>
-            <p>
-              Heute bündeln wir genau das:{" "}
-              <strong className="font-medium text-zinc-800">fertige Assets</strong>, nachvollziehbare Pakete und — für
-              Teams mit laufendem Bedarf — ein Dashboard mit Token-Abo. Immer mit dem Ziel, dass ihr{" "}
-              <strong className="font-medium text-zinc-800">sichtbar bleibt</strong>, wo Flasche, Gastro und Saison
-              zählen.
-            </p>
+        <div className={cn(sectionShell, "mx-auto max-w-6xl")}>
+          <div className="grid gap-12 lg:grid-cols-[minmax(0,1fr)_minmax(0,17rem)] lg:items-start lg:gap-14 xl:grid-cols-[minmax(0,1.05fr)_minmax(0,19rem)]">
+            <div className="min-w-0 max-w-2xl">
+              <p className={kicker}>Hintergrund</p>
+              <h2
+                id="ueber-story-heading"
+                className="font-display mt-3 text-2xl font-semibold tracking-tight text-zinc-900 sm:text-[1.75rem] sm:leading-snug"
+              >
+                Was steckt hinter EvGlab?
+              </h2>
+              <div className="relative mt-10 space-y-7 pl-5 text-pretty text-base leading-[1.7] text-zinc-600 sm:text-lg sm:leading-relaxed before:absolute before:left-0 before:top-1 before:h-[calc(100%-0.25rem)] before:w-px before:bg-gradient-to-b before:from-[#c65a20]/50 before:via-zinc-300/80 before:to-transparent">
+                <p>
+                  Angefangen hat es mit einer einfachen Frage: Wie bekommen Brauereien{" "}
+                  <strong className="font-medium text-zinc-800">schneller gute Werbemotive</strong>, ohne dass jedes Bild
+                  Wochen an interner Kapazität frisst? KI ist dafür das Werkzeug — aber nur, wenn Briefing, Markenprofil
+                  und Freigaben sauber sitzen.
+                </p>
+                <p>
+                  Heute bündeln wir genau das:{" "}
+                  <strong className="font-medium text-zinc-800">fertige Assets</strong>, nachvollziehbare Pakete und — für
+                  Teams mit laufendem Bedarf — ein Dashboard mit Token-Abo. Immer mit dem Ziel, dass ihr{" "}
+                  <strong className="font-medium text-zinc-800">sichtbar bleibt</strong>, wo Flasche, Gastro und Saison
+                  zählen.
+                </p>
+              </div>
+              <p className="mt-9 pl-5 text-sm text-zinc-600 sm:text-base">
+                <span className="font-medium text-zinc-800">Erik Freiherr von Gregory</span>
+              </p>
+            </div>
+
+            <div className="mx-auto flex w-full max-w-[17.5rem] justify-center lg:mx-0 lg:max-w-none lg:justify-end xl:max-w-[19rem]">
+              <div
+                className={cn(
+                  "evg-clean-hover relative w-full overflow-hidden rounded-tl-[2.35rem] rounded-tr-[1.65rem] rounded-br-[2.45rem] rounded-bl-[1.55rem] border border-black/10 bg-gradient-to-br from-black/5 to-black/0 p-2 sm:p-2.5",
+                  "shadow-[0_14px_30px_-20px_rgba(24,24,27,0.28)] backdrop-blur-[14px] ring-1 ring-black/[0.04]",
+                  "transition-[border-color,box-shadow,ring-color] duration-200 hover:border-[#e07a40]/35 hover:shadow-[0_16px_34px_-20px_rgba(198,90,32,0.24)]",
+                )}
+              >
+                <UeberUnsLiquidPortrait className="relative z-0" />
+              </div>
+            </div>
           </div>
         </div>
         </section>
@@ -208,13 +228,13 @@ export default function UeberUnsPage() {
           </h2>
           <p className="mx-auto mt-7 max-w-xl text-pretty text-base leading-[1.65] text-zinc-600 sm:text-lg">
             Wir übersetzen eure Marke in{" "}
-            <strong className="font-medium text-zinc-900">Bilder und Texte</strong>, die im Alltag funktionieren —
-            schnell genug für Social, stark genug für Kampagnen.
+            <strong className="font-medium text-zinc-900">Bilder, Texte und Videos</strong>, die im Alltag funktionieren
+            — schnell genug für Social, stark genug für Kampagnen und Clips.
           </p>
           <p className="mx-auto mt-4 max-w-xl text-pretty text-sm leading-relaxed text-zinc-500 sm:text-base">
             Was uns wichtig ist: dass ihr euch verstanden fühlt und am Ende Assets habt, die{" "}
-            <strong className="font-medium text-zinc-700">wirklich einsetzbar</strong> sind — nicht nur „nice“
-            aussehen.
+            <strong className="font-medium text-zinc-700">wirklich einsetzbar</strong> sind — ob Motiv, Post oder
+            Werbevideo — nicht nur „nice“ aussehen.
           </p>
           <ul className="mt-11 flex flex-wrap items-center justify-center gap-2">
             {["Briefing-first", "DACH-fokussiert", "Lieferobjekte statt Endlos-Schleife", "Tokens planbar"].map((t) => (
@@ -246,9 +266,15 @@ export default function UeberUnsPage() {
           </p>
         </div>
 
-        <div className="relative mt-14 rounded-[1.75rem] bg-gradient-to-b from-zinc-50/95 to-white p-6 ring-1 ring-zinc-200/60 sm:mt-16 sm:p-9 lg:p-10">
+        <div
+          className={cn(
+            "evg-clean-hover relative mt-14 overflow-hidden rounded-[1.75rem] border border-black/10 bg-gradient-to-br from-black/5 to-black/0 p-6 shadow-[0_14px_30px_-20px_rgba(24,24,27,0.26)] backdrop-blur-[14px] ring-1 ring-black/[0.04]",
+            "transition-[border-color,box-shadow,ring-color] duration-200 hover:border-[#e07a40]/35 hover:shadow-[0_16px_34px_-20px_rgba(198,90,32,0.24)]",
+            "sm:mt-16 sm:p-9 lg:p-10",
+          )}
+        >
           <div
-            className="pointer-events-none absolute inset-0 rounded-[1.75rem] bg-[radial-gradient(ellipse_70%_50%_at_50%_0%,rgba(198,90,32,0.04),transparent_65%)]"
+            className="pointer-events-none absolute inset-0 rounded-[1.75rem] bg-[radial-gradient(ellipse_70%_50%_at_50%_0%,rgba(198,90,32,0.06),transparent_62%)]"
             aria-hidden
           />
           <div className="relative text-left">

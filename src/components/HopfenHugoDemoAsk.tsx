@@ -1,7 +1,7 @@
 "use client";
 
 import { useCallback, useEffect, useId, useRef, useState } from "react";
-import { Loader2, Send } from "lucide-react";
+import { Loader2, MessageCircle, Send, X } from "lucide-react";
 
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
@@ -34,7 +34,11 @@ export function HopfenHugoDemoAsk({ className }: { className?: string }) {
   const logId = useId();
   const inputId = useId();
   const endRef = useRef<HTMLDivElement>(null);
+  const textareaRef = useRef<HTMLTextAreaElement>(null);
+  const launcherRef = useRef<HTMLButtonElement>(null);
+  const wasOpenRef = useRef(false);
 
+  const [open, setOpen] = useState(false);
   const [messages, setMessages] = useState<ChatMsg[]>([
     { id: "welcome", role: "assistant", text: WELCOME_TEXT },
   ]);
@@ -48,6 +52,27 @@ export function HopfenHugoDemoAsk({ className }: { className?: string }) {
   useEffect(() => {
     scrollToBottom();
   }, [messages, loading, scrollToBottom]);
+
+  useEffect(() => {
+    if (open) {
+      wasOpenRef.current = true;
+      const id = requestAnimationFrame(() => textareaRef.current?.focus());
+      return () => cancelAnimationFrame(id);
+    }
+    if (wasOpenRef.current) {
+      launcherRef.current?.focus();
+    }
+    wasOpenRef.current = false;
+  }, [open]);
+
+  useEffect(() => {
+    if (!open) return;
+    const onKeyDown = (e: KeyboardEvent) => {
+      if (e.key === "Escape") setOpen(false);
+    };
+    window.addEventListener("keydown", onKeyDown);
+    return () => window.removeEventListener("keydown", onKeyDown);
+  }, [open]);
 
   const sendText = useCallback(async (raw: string) => {
     const text = raw.trim();
@@ -108,31 +133,80 @@ export function HopfenHugoDemoAsk({ className }: { className?: string }) {
     }
   }, [loading]);
 
+  const shellClass =
+    "relative w-full max-w-md justify-self-center lg:max-w-none lg:justify-self-end";
+
+  if (!open) {
+    return (
+      <div className={cn(shellClass, className)}>
+        <div className="flex flex-col overflow-hidden rounded-2xl border border-zinc-200/90 bg-white/95 p-6 shadow-[0_16px_40px_-28px_rgba(15,23,42,0.14)] ring-1 ring-zinc-950/[0.04] backdrop-blur-sm sm:p-7">
+          <div className="flex items-start gap-4">
+            <div
+              className="flex h-12 w-12 shrink-0 items-center justify-center rounded-xl border border-lime-900/15 bg-[#d9ff6a]/50 shadow-sm"
+              aria-hidden
+            >
+              <MessageCircle className="h-6 w-6 text-lime-950/85" strokeWidth={1.75} />
+            </div>
+            <div className="min-w-0 flex-1">
+              <h3 className="font-display text-lg font-semibold tracking-tight text-zinc-900">Demo-Chat</h3>
+              <p className="mt-2 text-pretty text-sm leading-relaxed text-zinc-600">
+                Wie im Dashboard: erst öffnen, dann mit Hopfen Hugo zu Prompts und Bild-Setup schreiben — hier im Browser
+                testweise.
+              </p>
+            </div>
+          </div>
+          <Button
+            ref={launcherRef}
+            type="button"
+            className="mt-6 h-11 w-full rounded-xl border-lime-900/20 bg-[#ecfccb] text-base font-semibold text-lime-950 shadow-sm hover:bg-[#d9f99d]"
+            onClick={() => setOpen(true)}
+          >
+            <MessageCircle className="mr-2 h-4 w-4" aria-hidden />
+            Chat mit Hopfen Hugo öffnen
+          </Button>
+        </div>
+      </div>
+    );
+  }
+
   return (
     <aside
       className={cn(
-        "relative flex h-[min(32rem,72dvh)] w-full max-w-md flex-col justify-self-center overflow-hidden rounded-2xl border border-zinc-200/90 bg-white shadow-[0_16px_40px_-28px_rgba(15,23,42,0.18)] ring-1 ring-zinc-950/[0.04] sm:h-[min(28rem,65dvh)] lg:max-w-none lg:justify-self-end",
+        shellClass,
+        "flex h-[min(32rem,72dvh)] flex-col overflow-hidden rounded-2xl border border-zinc-200/90 bg-white shadow-[0_16px_40px_-28px_rgba(15,23,42,0.18)] ring-1 ring-zinc-950/[0.04] sm:h-[min(28rem,65dvh)]",
         className,
       )}
       aria-labelledby={titleId}
     >
       {/* Kopf */}
-      <div className="shrink-0 border-b border-zinc-200/80 bg-gradient-to-r from-zinc-50/95 to-white px-4 py-3">
-        <div className="flex items-center gap-3">
-          <div
-            className="flex h-11 w-11 shrink-0 items-center justify-center rounded-xl border border-lime-900/15 bg-[#d9ff6a]/50 shadow-sm"
-            aria-hidden
+      <div className="shrink-0 border-b border-zinc-200/80 bg-gradient-to-r from-zinc-50/95 to-white px-3 py-3 sm:px-4">
+        <div className="flex items-center gap-2">
+          <div className="flex min-w-0 flex-1 items-center gap-3">
+            <div
+              className="flex h-11 w-11 shrink-0 items-center justify-center rounded-xl border border-lime-900/15 bg-[#d9ff6a]/50 shadow-sm"
+              aria-hidden
+            >
+              <span className="text-lg" aria-hidden>
+                🍺
+              </span>
+            </div>
+            <div className="min-w-0">
+              <h3 id={titleId} className="truncate font-semibold tracking-tight text-zinc-900">
+                Hopfen Hugo
+              </h3>
+              <p className="truncate text-xs text-zinc-500">Demo · nur Bildgenerierung</p>
+            </div>
+          </div>
+          <Button
+            type="button"
+            variant="ghost"
+            size="icon"
+            className="h-10 w-10 shrink-0 rounded-xl text-zinc-600 hover:bg-zinc-100 hover:text-zinc-900"
+            aria-label="Chat schließen"
+            onClick={() => setOpen(false)}
           >
-            <span className="text-lg" aria-hidden>
-              🍺
-            </span>
-          </div>
-          <div className="min-w-0">
-            <h3 id={titleId} className="truncate font-semibold tracking-tight text-zinc-900">
-              Hopfen Hugo
-            </h3>
-            <p className="truncate text-xs text-zinc-500">Demo · nur Bildgenerierung</p>
-          </div>
+            <X className="h-5 w-5" aria-hidden />
+          </Button>
         </div>
       </div>
 
@@ -213,6 +287,7 @@ export function HopfenHugoDemoAsk({ className }: { className?: string }) {
         </label>
         <div className="flex items-end gap-2">
           <textarea
+            ref={textareaRef}
             id={inputId}
             name="hopfen-hugo-chat"
             rows={1}

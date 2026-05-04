@@ -48,6 +48,10 @@ export type FeatureCardProps = FeatureCardPillarProps | FeatureCardIconProps;
 
 const easeOut = [0.22, 1, 0.36, 1] as const;
 
+/** Liquid/Glass wie „Zwei Wege mit EvGlab“ / HowItWorks (`sharedGlassInfoBoxClass`). */
+const glassPillarCardClass =
+  "evg-clean-hover border border-black/12 bg-gradient-to-br from-black/5 to-black/0 shadow-[0_10px_22px_-18px_rgba(24,24,27,0.28)] backdrop-blur-[14px] ring-1 ring-black/[0.04] transition-[border-color,box-shadow,ring-color] duration-200 hover:border-[#c65a20]/55 hover:ring-[#c65a20]/25 hover:shadow-[0_16px_34px_-20px_rgba(198,90,32,0.24)]";
+
 /**
  * Karten-Komponente: nummerierte Säule (Editorial + linker Akzent) oder Icon-Feature (zentriert).
  */
@@ -57,12 +61,8 @@ export function FeatureCard(props: FeatureCardProps) {
     return (
       <article
         className={cn(
-          "group relative flex flex-col overflow-hidden rounded-2xl border border-zinc-200/55 bg-white pl-6 pr-7 pb-9 pt-8 text-left sm:pl-7 sm:pr-8 sm:pb-10 sm:pt-9",
-          /* Hover: kein translate — nur Schatten + Ring, eine weiche Kurve */
-          "shadow-[0_2px_0_rgba(255,255,255,0.9)_inset,0_10px_28px_-18px_rgba(15,23,42,0.07)]",
-          "transition-[box-shadow,ring-color,border-color] duration-500 ease-[cubic-bezier(0.22,1,0.36,1)]",
-          "hover:border-zinc-300/70 hover:shadow-[0_2px_0_rgba(255,255,255,0.95)_inset,0_20px_44px_-22px_rgba(15,23,42,0.11)]",
-          "hover:ring-2 hover:ring-[#c65a20]/12 motion-reduce:transition-none",
+          "group relative flex flex-col overflow-hidden rounded-2xl pl-6 pr-7 pb-9 pt-8 text-left sm:pl-7 sm:pr-8 sm:pb-10 sm:pt-9",
+          glassPillarCardClass,
           className,
         )}
       >
@@ -79,8 +79,8 @@ export function FeatureCard(props: FeatureCardProps) {
           <span
             className={cn(
               "font-display block text-[clamp(2.85rem,5.2vw,3.6rem)] font-light tabular-nums leading-[0.95] tracking-tight",
-              "text-[#c65a20]/15 transition-colors duration-500 ease-[cubic-bezier(0.22,1,0.36,1)]",
-              "group-hover:text-[#c65a20]/25 motion-reduce:transition-none",
+              "text-[#c65a20]/22 transition-colors duration-500 ease-[cubic-bezier(0.22,1,0.36,1)]",
+              "group-hover:text-[#c65a20]/32 motion-reduce:transition-none",
             )}
             aria-hidden
           >
@@ -105,13 +105,12 @@ export function FeatureCard(props: FeatureCardProps) {
   return (
     <div
       className={cn(
-        "group flex flex-col items-center rounded-xl border border-zinc-200/90 bg-white p-8 text-center text-zinc-900",
-        "shadow-sm transition-[box-shadow,ring-color] duration-500 ease-[cubic-bezier(0.22,1,0.36,1)]",
-        "hover:shadow-[0_16px_40px_-20px_rgba(15,23,42,0.1)] hover:ring-2 hover:ring-[#c65a20]/10 motion-reduce:transition-none",
+        "group flex flex-col items-center rounded-xl p-8 text-center text-zinc-900",
+        glassPillarCardClass,
         className,
       )}
     >
-      <div className="mb-6 rounded-full bg-zinc-100 p-4 text-zinc-700 transition-colors duration-300 group-hover:bg-zinc-50">
+      <div className="mb-6 rounded-full border border-black/8 bg-gradient-to-br from-white/55 to-white/20 p-4 text-zinc-800 shadow-[0_6px_14px_-12px_rgba(24,24,27,0.35)] backdrop-blur-sm ring-1 ring-white/40 transition-colors duration-300">
         {icon}
       </div>
       <h3 className="text-lg font-semibold tracking-tight">{title}</h3>
