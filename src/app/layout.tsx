@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import { Inter, Playfair_Display } from "next/font/google";
+import Script from "next/script";
 import { Analytics } from "@vercel/analytics/react";
 import { SpeedInsights } from "@vercel/speed-insights/next";
 import { AppShell } from "@/components/AppShell";
@@ -91,6 +92,9 @@ export default function RootLayout({
     <html lang="de" className={`${inter.variable} ${playfair.variable}`}>
       <head>
         <link rel="preload" href="/hero-portrait.svg" as="image" />
+        <Script id="scroll-restoration-reset" strategy="beforeInteractive">
+          {`(function(){try{if("scrollRestoration" in window.history){window.history.scrollRestoration="manual";}var shouldReset=window.location.pathname==="/"&&!window.location.hash;if(shouldReset){window.scrollTo(0,0);}window.addEventListener("pageshow",function(){if(window.location.pathname==="/"&&!window.location.hash){window.scrollTo(0,0);}}, { passive: true });}catch(_e){}})();`}
+        </Script>
       </head>
       <body className="bg-[#0a0f14] text-neutral-900 antialiased">
         <SiteSmoothScroll />

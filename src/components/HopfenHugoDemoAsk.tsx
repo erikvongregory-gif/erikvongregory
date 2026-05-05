@@ -41,6 +41,7 @@ export function HopfenHugoDemoAsk({ className }: { className?: string }) {
   const wasOpenRef = useRef(false);
 
   const [open, setOpen] = useState(false);
+  const [openEntered, setOpenEntered] = useState(false);
   const [messages, setMessages] = useState<ChatMsg[]>([
     { id: "welcome", role: "assistant", text: WELCOME_TEXT },
   ]);
@@ -65,6 +66,15 @@ export function HopfenHugoDemoAsk({ className }: { className?: string }) {
       launcherRef.current?.focus();
     }
     wasOpenRef.current = false;
+  }, [open]);
+
+  useEffect(() => {
+    if (!open) {
+      setOpenEntered(false);
+      return;
+    }
+    const id = requestAnimationFrame(() => setOpenEntered(true));
+    return () => cancelAnimationFrame(id);
   }, [open]);
 
   useEffect(() => {
@@ -167,14 +177,15 @@ export function HopfenHugoDemoAsk({ className }: { className?: string }) {
   }
 
   return (
-    <aside
-      className={cn(
-        shellClass,
-        "flex h-[min(32rem,72dvh)] flex-col overflow-hidden rounded-2xl border border-zinc-200/90 bg-white shadow-[0_16px_40px_-28px_rgba(15,23,42,0.18)] ring-1 ring-zinc-950/[0.04] sm:h-[min(28rem,65dvh)]",
-        className,
-      )}
-      aria-labelledby={titleId}
-    >
+    <div className={cn(shellClass, className)}>
+      <aside
+        className={cn(
+          "absolute left-0 top-0 z-20 flex h-[min(32rem,72dvh)] w-full flex-col overflow-hidden rounded-2xl border border-zinc-200/90 bg-white shadow-[0_16px_40px_-28px_rgba(15,23,42,0.18)] ring-1 ring-zinc-950/[0.04] sm:h-[min(28rem,65dvh)]",
+          "origin-top transition-[opacity,transform] duration-300 ease-out motion-reduce:transition-none",
+          openEntered ? "translate-y-0 scale-y-100 opacity-100" : "-translate-y-1 scale-y-95 opacity-0",
+        )}
+        aria-labelledby={titleId}
+      >
       {/* Kopf */}
       <div className="shrink-0 border-b border-zinc-200/80 bg-gradient-to-r from-zinc-50/95 to-white px-3 py-3 sm:px-4">
         <div className="flex items-center gap-2">
@@ -315,6 +326,7 @@ export function HopfenHugoDemoAsk({ className }: { className?: string }) {
         </div>
         <p className="mt-2 text-center text-[10px] text-zinc-400">Enter sendet · Shift+Enter neue Zeile · max. 1200 Zeichen</p>
       </form>
-    </aside>
+      </aside>
+    </div>
   );
 }

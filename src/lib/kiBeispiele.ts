@@ -41,16 +41,19 @@ export type KiBeispielVideoLandscape = {
 export const KI_BEISPIEL_VIDEOS_9X16: readonly KiBeispielVideoPortrait[] = [
   {
     src: "/videos/ki-werbevideo-brauerei-reels-motiv-1-vertical-9x16.mp4",
+    poster: "/videos/ki-werbevideo-brauerei-reels-motiv-1-vertical-9x16-poster.webp",
     title: "9:16 – Reel / Story (Beispiel 1)",
     caption: "Hochformat für Instagram Stories, Reels und vertikale Ads.",
   },
   {
     src: "/videos/ki-werbevideo-brauerei-reels-motiv-2-vertical-9x16.mp4",
+    poster: "/videos/ki-werbevideo-brauerei-reels-motiv-2-vertical-9x16-poster.webp",
     title: "9:16 – Reel / Story (Beispiel 2)",
     caption: "Zweites Motiv im gleichen Format — ideal für Serien oder A/B-Tests im Feed.",
   },
   {
     src: "/videos/ki-werbevideo-brauerei-reels-motiv-3-vertical-9x16.mp4",
+    poster: "/videos/ki-werbevideo-brauerei-reels-motiv-3-vertical-9x16-poster.webp",
     title: "9:16 – Reel / Story (Beispiel 3)",
     caption: "Drittes Hochformat-Motiv — z. B. für Content-Serien, saisonale Posts oder wechselnde CTA-Varianten.",
   },

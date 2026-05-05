@@ -120,9 +120,9 @@ export default function UeberUnsPage() {
               animateWhenInView={false}
               parts={[
                 { text: "KI-Marketing mit Substanz für" },
-                { text: "Brauereien und Getränkemarken", className: "font-medium text-zinc-900" },
+                { text: "Brauereien und Getränkemarken", className: "font-medium text-[#b45309]" },
                 { text: "in" },
-                { text: "Deutschland, Österreich und der Schweiz.", className: "font-medium text-zinc-900" },
+                { text: "Deutschland, Österreich und der Schweiz.", className: "font-medium text-[#b45309]" },
                 {
                   text: "Kein Agentur-Baukasten — sondern klare Lieferobjekte und ein Setup, das zu eurem Tempo passt.",
                 },
@@ -168,7 +168,7 @@ export default function UeberUnsPage() {
                     tone="onLight"
                     parts={[
                       { text: "Angefangen hat es mit einer einfachen Frage: Wie bekommen Brauereien" },
-                      { text: "schneller gute Werbemotive", className: "font-medium text-zinc-800" },
+                      { text: "schneller gute Werbemotive", className: "font-medium text-[#b45309]" },
                       {
                         text: ", ohne dass jedes Bild Wochen an interner Kapazität frisst? KI ist dafür das Werkzeug — aber nur, wenn Briefing, Markenprofil und Freigaben sauber sitzen.",
                       },
@@ -181,11 +181,11 @@ export default function UeberUnsPage() {
                     tone="onLight"
                     parts={[
                       { text: "Heute bündeln wir genau das:" },
-                      { text: "fertige Assets", className: "font-medium text-zinc-800" },
+                      { text: "fertige Assets", className: "font-medium text-[#b45309]" },
                       {
                         text: ", nachvollziehbare Pakete und — für Teams mit laufendem Bedarf — ein Dashboard mit Token-Abo. Immer mit dem Ziel, dass ihr",
                       },
-                      { text: "sichtbar bleibt", className: "font-medium text-zinc-800" },
+                      { text: "sichtbar bleibt", className: "font-medium text-[#b45309]" },
                       { text: ", wo Flasche, Gastro und Saison zählen." },
                     ]}
                     className="text-inherit leading-[inherit]"
@@ -242,11 +242,11 @@ export default function UeberUnsPage() {
                   <BlurText
                     tone="onLight"
                     parts={[
-                      { text: "Hopfen Hugo", className: "font-medium text-zinc-900" },
+                      { text: "Hopfen Hugo", className: "font-medium text-[#b45309]" },
                       {
                         text: "ist euer Chat-Assistent im EvGlab-Dashboard — speziell für",
                       },
-                      { text: "KI-Bildgenerierung", className: "font-medium text-zinc-900" },
+                      { text: "KI-Bildgenerierung", className: "font-medium text-[#b45309]" },
                       {
                         text: "und alles, was dazu im Tool gehört: Prompts, Motive, Stil und Markenlook, Varianten, Formate, Mediathek sowie Token und Bedienung der Bild-Funktionen.",
                       },
@@ -259,9 +259,9 @@ export default function UeberUnsPage() {
                     tone="onLight"
                     parts={[
                       { text: "Keine Rezepte, kein Sudhaus-Wissen: Wenn es nichts mit" },
-                      { text: "Werbebildern und Bild-Workflows", className: "font-medium text-zinc-900" },
+                      { text: "Werbebildern und Bild-Workflows", className: "font-medium text-[#b45309]" },
                       { text: "zu tun hat, verweist er euch klar darauf. So bleibt der Fokus auf dem, was EvGlab liefert —" },
-                      { text: "schnell nutzbare Bilder", className: "font-medium text-zinc-900" },
+                      { text: "schnell nutzbare Bilder", className: "font-medium text-[#b45309]" },
                       { text: "für Social, Kampagne und Außenauftritt." },
                     ]}
                     className="text-inherit leading-[inherit]"
@@ -304,7 +304,7 @@ export default function UeberUnsPage() {
               tone="onLight"
               parts={[
                 { text: "Wir übersetzen eure Marke in" },
-                { text: "Bilder, Texte und Videos", className: "font-medium text-zinc-900" },
+                { text: "Bilder, Texte und Videos", className: "font-medium text-[#b45309]" },
                 {
                   text: ", die im Alltag funktionieren — schnell genug für Social, stark genug für Kampagnen und Clips.",
                 },
@@ -319,7 +319,7 @@ export default function UeberUnsPage() {
                 {
                   text: "Was uns wichtig ist: dass ihr euch verstanden fühlt und am Ende Assets habt, die",
                 },
-                { text: "wirklich einsetzbar", className: "font-medium text-zinc-700" },
+                { text: "wirklich einsetzbar", className: "font-medium text-[#b45309]" },
                 {
                   text: "sind — ob Motiv, Post oder Werbevideo — nicht nur „nice“ aussehen.",
                 },
@@ -356,7 +356,7 @@ export default function UeberUnsPage() {
             <BlurText
               tone="onLight"
               parts={[
-                { text: "Tipp:", className: "font-medium text-zinc-800" },
+                { text: "Tipp:", className: "font-medium text-[#b45309]" },
                 { text: "Mit der Maus über die" },
                 { text: "orangefarbenen Begriffe", className: "font-medium text-[#b45309]" },
                 {
