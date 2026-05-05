@@ -257,61 +257,62 @@ body {
   }
 }
 
-/* Rechtliche Seiten – Impressum & Datenschutz */
-/* Mobile: dunkler Hintergrund */
+/* Rechtliche Seiten – AGB, Impressum, Datenschutz: immer weißer Hintergrund */
 body[data-legal-page="true"] {
-  background: linear-gradient(165deg, #0a0f14 0%, #0f172a 35%, #0c1222 70%, #05100d 100%) !important;
-  color: white;
+  background: #ffffff !important;
+  color: #1a1a1a;
 }
 
 .legal-page {
-  background: linear-gradient(165deg, #0a0f14 0%, #0f172a 35%, #0c1222 70%, #05100d 100%);
+  background: #ffffff;
   min-height: 100vh;
+}
+
+.legal-page .legal-back {
+  color: #c65a20 !important;
+}
+.legal-page .legal-back:hover {
+  color: #d46830 !important;
+}
+.legal-page .legal-back:focus-visible {
+  --tw-ring-color: rgba(198, 90, 32, 0.5);
+  --tw-ring-offset-color: rgba(255, 253, 248, 0.9);
+}
+.legal-page h1,
+.legal-page h2,
+.legal-page h3 {
+  color: #2d2d2d !important;
+}
+.legal-page .legal-content p,
+.legal-page .legal-content li {
+  color: #4a4a4a !important;
+}
+.legal-page .legal-content a {
+  color: #c65a20 !important;
+  text-decoration-color: rgba(198, 90, 32, 0.5);
+}
+.legal-page .legal-content a:hover {
+  color: #d46830 !important;
+}
+.legal-page nav a {
+  color: #c65a20 !important;
+}
+.legal-page nav a:hover {
+  color: #d46830 !important;
+}
+.legal-page .border-white\/10,
+.legal-page .border-white\/15 {
+  border-color: rgba(0, 0, 0, 0.1) !important;
 }
 
 /* Desktop: gleicher Verlauf-Hintergrund wie Startseite (SiteGradientBackdrop) */
 @media (min-width: 768px) {
   body[data-legal-page="true"] {
-    background: transparent !important;
+    background: #ffffff !important;
     color: #1a1a1a;
   }
   .legal-page {
-    background: transparent;
-  }
-  .legal-page .legal-back {
-    color: #c65a20 !important;
-  }
-  .legal-page .legal-back:hover {
-    color: #d46830 !important;
-  }
-  .legal-page .legal-back:focus-visible {
-    --tw-ring-color: rgba(198, 90, 32, 0.5);
-    --tw-ring-offset-color: rgba(255, 253, 248, 0.9);
-  }
-  .legal-page h1,
-  .legal-page h2,
-  .legal-page h3 {
-    color: #2d2d2d !important;
-  }
-  .legal-page .legal-content p,
-  .legal-page .legal-content li {
-    color: #4a4a4a !important;
-  }
-  .legal-page .legal-content a {
-    color: #c65a20 !important;
-    text-decoration-color: rgba(198, 90, 32, 0.5);
-  }
-  .legal-page .legal-content a:hover {
-    color: #d46830 !important;
-  }
-  .legal-page nav a {
-    color: #c65a20 !important;
-  }
-  .legal-page nav a:hover {
-    color: #d46830 !important;
-  }
-  .legal-page .border-white\/10 {
-    border-color: rgba(0, 0, 0, 0.1) !important;
+    background: #ffffff;
   }
 }
 
