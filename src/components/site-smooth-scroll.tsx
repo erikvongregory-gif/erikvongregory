@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect } from "react";
+import { useLayoutEffect } from "react";
 import Lenis from "lenis";
 import "lenis/dist/lenis.css";
 
@@ -9,7 +9,14 @@ import "lenis/dist/lenis.css";
  * Bei `prefers-reduced-motion: reduce` wird nichts gestartet.
  */
 export function SiteSmoothScroll() {
-  useEffect(() => {
+  useLayoutEffect(() => {
+    if (window.location.pathname === "/" && !window.location.hash) {
+      // Force absolute top before any smooth-scroll engine boots.
+      window.scrollTo({ top: 0, left: 0, behavior: "auto" });
+      document.documentElement.scrollTop = 0;
+      document.body.scrollTop = 0;
+    }
+
     if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
 
     const lenis = new Lenis({

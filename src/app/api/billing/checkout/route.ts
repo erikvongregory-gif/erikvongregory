@@ -39,21 +39,6 @@ export async function POST(req: Request) {
     const originError = enforceSameOrigin(req);
     if (originError) return originError;
 
-    if (!isSupabaseConfigured()) {
-      return NextResponse.json({ error: "Supabase ist nicht konfiguriert." }, { status: 500 });
-    }
-
-    const supabase = await createClient();
-    const {
-      data: { user },
-    } = await supabase.auth.getUser();
-    if (!user) {
-      return NextResponse.json(
-        { error: "Konto erforderlich. Bitte zuerst registrieren.", code: "ACCOUNT_REQUIRED" },
-        { status: 401 },
-      );
-    }
-
     const parsed = checkoutSchema.safeParse(await req.json());
     if (!parsed.success) {
       return NextResponse.json({ error: "Ungültige Anfrage." }, { status: 400 });
@@ -61,34 +46,48 @@ export async function POST(req: Request) {
     const plan: SubscriptionPlanKey = parsed.data.plan;
 
     const stripe = getStripeClient();
-    await ensureBillingRow(user.id);
-    const billing = await getBillingRow(user.id);
+    let userId: string | null = null;
+    let userEmail: string | null = null;
+    let customerId: string | null = null;
 
-    let customerId = billing?.stripe_customer_id ?? null;
-    if (!customerId) {
-      const customer = await stripe.customers.create({
-        email: user.email ?? undefined,
-        metadata: { user_id: user.id },
-      });
-      customerId = customer.id;
-      await setStripeCustomerId(user.id, customer.id);
+    if (isSupabaseConfigured()) {
+      const supabase = await createClient();
+      const {
+        data: { user },
+      } = await supabase.auth.getUser();
+      if (user) {
+        userId = user.id;
+        userEmail = user.email ?? null;
+        await ensureBillingRow(user.id);
+        const billing = await getBillingRow(user.id);
+        customerId = billing?.stripe_customer_id ?? null;
+        if (!customerId) {
+          const customer = await stripe.customers.create({
+            email: user.email ?? undefined,
+            metadata: { user_id: user.id },
+          });
+          customerId = customer.id;
+          await setStripeCustomerId(user.id, customer.id);
+        }
+      }
     }
 
     const priceId = getPriceIdForPlan(plan);
     const { origin } = new URL(req.url);
     const session = await stripe.checkout.sessions.create({
       mode: "subscription",
-      customer: customerId,
+      ...(customerId ? { customer: customerId } : {}),
+      ...(customerId || !userEmail ? {} : { customer_email: userEmail }),
       line_items: [{ price: priceId, quantity: 1 }],
-      success_url: `${origin}/dashboard?billing=success&session_id={CHECKOUT_SESSION_ID}`,
-      cancel_url: `${origin}/dashboard?billing=cancel`,
+      success_url: `${origin}/?checkout=success&session_id={CHECKOUT_SESSION_ID}`,
+      cancel_url: `${origin}/?checkout=cancel`,
       metadata: {
-        user_id: user.id,
+        ...(userId ? { user_id: userId } : {}),
         plan,
       },
       subscription_data: {
         metadata: {
-          user_id: user.id,
+          ...(userId ? { user_id: userId } : {}),
           plan,
         },
       },

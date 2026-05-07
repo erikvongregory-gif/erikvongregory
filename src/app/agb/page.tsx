@@ -125,8 +125,8 @@ export default function AgbPage() {
           <section>
             <h2 className="mb-3 text-lg font-semibold text-white">§ 5 Vergütung, Aufrechnung</h2>
             <p className="text-white/90">
-              (1) Die Vergütung richtet sich nach Angebot oder Vereinbarung. Alle Preise verstehen sich, soweit
-              gesetzlich schuldig, zuzüglich der jeweils gültigen Umsatzsteuer.
+              (1) Die Vergütung richtet sich nach Angebot oder Vereinbarung. Als Kleinunternehmer gemäß § 19 UStG wird
+              derzeit keine Umsatzsteuer ausgewiesen und berechnet.
             </p>
             <p className="mt-3">
               (2) Rechnungen sind – sofern nicht anders vereinbart – innerhalb von 14 Tagen nach Rechnungsdatum ohne

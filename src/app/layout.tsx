@@ -1,6 +1,5 @@
 import type { Metadata } from "next";
 import { Inter, Playfair_Display } from "next/font/google";
-import Script from "next/script";
 import { Analytics } from "@vercel/analytics/react";
 import { SpeedInsights } from "@vercel/speed-insights/next";
 import { AppShell } from "@/components/AppShell";
@@ -91,10 +90,13 @@ export default function RootLayout({
   return (
     <html lang="de" className={`${inter.variable} ${playfair.variable}`}>
       <head>
+        <script
+          // Run as early as possible to avoid one-frame scroll flash on "/".
+          dangerouslySetInnerHTML={{
+            __html: `(function(){try{if("scrollRestoration" in window.history){window.history.scrollRestoration="manual";}var shouldReset=window.location.pathname==="/"&&!window.location.hash;function forceTop(){window.scrollTo({top:0,left:0,behavior:"auto"});if(document.documentElement){document.documentElement.scrollTop=0;}if(document.body){document.body.scrollTop=0;}}if(shouldReset){var style=document.createElement("style");style.setAttribute("data-scroll-reset-style","1");style.textContent='html{scroll-behavior:auto !important;}';document.head.appendChild(style);forceTop();var frames=0;var released=false;var release=function(){if(released)return;released=true;if(style&&style.parentNode){style.parentNode.removeChild(style);}};var tick=function(){forceTop();frames+=1;if(frames<28){requestAnimationFrame(tick);}else{release();}};requestAnimationFrame(tick);setTimeout(release,1400);}window.addEventListener("pageshow",function(){if(window.location.pathname==="/"&&!window.location.hash){window.scrollTo({top:0,left:0,behavior:"auto"});}}, { passive: true });}catch(_e){}})();`,
+          }}
+        />
         <link rel="preload" href="/hero-portrait.svg" as="image" />
-        <Script id="scroll-restoration-reset" strategy="beforeInteractive">
-          {`(function(){try{if("scrollRestoration" in window.history){window.history.scrollRestoration="manual";}var shouldReset=window.location.pathname==="/"&&!window.location.hash;if(shouldReset){window.scrollTo(0,0);}window.addEventListener("pageshow",function(){if(window.location.pathname==="/"&&!window.location.hash){window.scrollTo(0,0);}}, { passive: true });}catch(_e){}})();`}
-        </Script>
       </head>
       <body className="bg-[#0a0f14] text-neutral-900 antialiased">
         <SiteSmoothScroll />

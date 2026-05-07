@@ -27,8 +27,8 @@ import {
   type PricingCardProps,
 } from "@/components/ui/animated-glassy-pricing";
 import FAQsComponent from "@/components/ui/faqs-component";
+import { LEGAL } from "@/lib/legal";
 import type { SubscriptionPlanKey } from "@/lib/billing/tokenState";
-import { buildAppLoginUrl } from "@/lib/appLoginUrl";
 
 type PricingPackageDef = {
   planIcon: LucideIcon;
@@ -64,6 +64,20 @@ function trackEvent(event: string, payload?: Record<string, unknown>) {
   if (Array.isArray(w.dataLayer)) {
     w.dataLayer.push({ event, ...payload });
   }
+}
+
+async function startPlanCheckout(plan: SubscriptionPlanKey) {
+  const response = await fetch("/api/billing/checkout", {
+    method: "POST",
+    headers: { "content-type": "application/json" },
+    body: JSON.stringify({ plan }),
+    credentials: "include",
+  });
+  const payload = (await response.json().catch(() => null)) as { url?: string; error?: string } | null;
+  if (!response.ok || !payload?.url) {
+    throw new Error(payload?.error || "Checkout konnte nicht gestartet werden.");
+  }
+  window.location.assign(payload.url);
 }
 
 const PRICING_PACKAGES: PricingPackageDef[] = [
@@ -237,22 +251,34 @@ function scrollToContactPaket(paketName: string) {
   document.body.removeChild(a);
 }
 
-function toPricingCardProps(pkg: PricingPackageDef): PricingCardProps {
+function toPricingCardProps(
+  pkg: PricingPackageDef,
+  options?: {
+    checkoutBusyPlan?: SubscriptionPlanKey | null;
+    onCheckoutPlan?: (plan: SubscriptionPlanKey) => void;
+  },
+): PricingCardProps {
   const isStarter = pkg.name === "Starter Paket";
   const isGrowth = pkg.name === "Wachstumspaket";
   const isDashboardPlan = Boolean(pkg.checkoutPlanKey);
   const isDashboardPro = pkg.checkoutPlanKey === "pro";
   const highlighted = !!pkg.highlight;
   const basePriceSubtext = pkg.priceSubtext ?? (pkg.oldPrice ? "einmalig" : "pro Monat");
+  const vatSuffix = LEGAL.ustId.includes("§ 19 UStG")
+    ? "gemäß § 19 UStG ohne Umsatzsteuer"
+    : "+19% MwSt.";
   return {
     planName: pkg.name,
     planIcon: pkg.planIcon,
     description: pkg.oldPrice ? `${pkg.description} (statt ${pkg.oldPrice})` : pkg.description,
     price: pkg.price,
     currencyPrefix: "",
-    priceSubtext: `${basePriceSubtext} · +19% MwSt.`,
+    priceSubtext: `${basePriceSubtext} · ${vatSuffix}`,
     features: pkg.delivery ? [...pkg.features, `Lieferzeit: ${pkg.delivery}`] : [...pkg.features],
-    buttonText: pkg.cta.replace(/👉\s*/, "").trim(),
+    buttonText:
+      pkg.checkoutPlanKey && options?.checkoutBusyPlan === pkg.checkoutPlanKey
+        ? "Weiterleitung..."
+        : pkg.cta.replace(/👉\s*/, "").trim(),
     isPopular: highlighted,
     buttonVariant: isDashboardPlan
       ? isDashboardPro
@@ -267,11 +293,12 @@ function toPricingCardProps(pkg: PricingPackageDef): PricingCardProps {
     onCtaClick: () => {
       trackEvent("plan_selected", { planName: pkg.name, checkoutPlanKey: pkg.checkoutPlanKey ?? null });
       if (pkg.checkoutPlanKey) {
-        trackEvent("pricing_redirect_app_login", {
+        if (options?.checkoutBusyPlan) return;
+        trackEvent("pricing_redirect_checkout", {
           plan: pkg.checkoutPlanKey,
           source: "pricing_dashboard_abo",
         });
-        window.location.assign(buildAppLoginUrl({ plan: pkg.checkoutPlanKey }));
+        options?.onCheckoutPlan?.(pkg.checkoutPlanKey);
         return;
       }
       scrollToContactPaket(pkg.name);
@@ -442,6 +469,7 @@ export function PricingBoxes() {
   const [inView, setInView] = useState(false);
   const [selectedPath, setSelectedPath] = useState<OfferPath | null>(null);
   const [isDesktop, setIsDesktop] = useState<boolean | null>(null);
+  const [checkoutBusyPlan, setCheckoutBusyPlan] = useState<SubscriptionPlanKey | null>(null);
   const sharedGlassInfoBoxClass =
     "evg-clean-hover rounded-xl border border-black/12 bg-gradient-to-br from-black/5 to-black/0 text-left shadow-[0_10px_22px_-18px_rgba(24,24,27,0.28)] backdrop-blur-[14px] ring-1 ring-black/[0.04] transition-[border-color,box-shadow,ring-color] duration-200 hover:border-[#c65a20]/55 hover:ring-[#c65a20]/25 hover:shadow-[0_16px_34px_-20px_rgba(198,90,32,0.24)]";
 
@@ -486,6 +514,18 @@ export function PricingBoxes() {
       window.clearTimeout(t2);
     };
   }, [selectedPath]);
+
+  const handleCheckoutPlan = useCallback((plan: SubscriptionPlanKey) => {
+    setCheckoutBusyPlan(plan);
+    void startPlanCheckout(plan).catch(() => {
+      setCheckoutBusyPlan(null);
+      trackEvent("pricing_checkout_error", {
+        plan,
+        source: "homepage_pricing",
+      });
+      window.alert("Checkout konnte gerade nicht gestartet werden. Bitte gleich erneut versuchen.");
+    });
+  }, []);
 
   return (
     <section ref={sectionRef} className={`mt-10 ${inView ? "pricing-in-view" : ""}`}>
@@ -611,7 +651,10 @@ export function PricingBoxes() {
                       const pkg = PRICING_PACKAGES[index]!;
                       return (
                         <PricingCard
-                          {...toPricingCardProps(pkg)}
+                          {...toPricingCardProps(pkg, {
+                            checkoutBusyPlan,
+                            onCheckoutPlan: handleCheckoutPlan,
+                          })}
                           className={`pricing-card-slide-${index} relative z-[2] w-full max-w-sm`}
                         />
                       );
@@ -627,7 +670,10 @@ export function PricingBoxes() {
                     return (
                       <PricingCard
                         key={pkg.name}
-                        {...toPricingCardProps(pkg)}
+                        {...toPricingCardProps(pkg, {
+                          checkoutBusyPlan,
+                          onCheckoutPlan: handleCheckoutPlan,
+                        })}
                         className={`pricing-card-slide-${position} relative z-[2] h-full md:h-[42rem] md:w-[21rem] md:scale-100`}
                       />
                     );
@@ -697,7 +743,10 @@ export function PricingBoxes() {
                       const pkg = DASHBOARD_SUBSCRIPTION_PACKAGES[index]!;
                       return (
                         <PricingCard
-                          {...toPricingCardProps(pkg)}
+                          {...toPricingCardProps(pkg, {
+                            checkoutBusyPlan,
+                            onCheckoutPlan: handleCheckoutPlan,
+                          })}
                           className={`pricing-card-slide-sub-${index} relative z-[2] w-full max-w-sm`}
                         />
                       );
@@ -713,7 +762,10 @@ export function PricingBoxes() {
                     return (
                       <PricingCard
                         key={pkg.name}
-                        {...toPricingCardProps(pkg)}
+                        {...toPricingCardProps(pkg, {
+                          checkoutBusyPlan,
+                          onCheckoutPlan: handleCheckoutPlan,
+                        })}
                         className={`pricing-card-slide-sub-${index} relative z-[2] h-full md:h-[42rem] md:w-[21rem] md:scale-100`}
                       />
                     );

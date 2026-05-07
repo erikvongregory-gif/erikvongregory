@@ -1,4 +1,5 @@
 import { NextResponse } from "next/server";
+import { evaluateInvite, getInviteByToken } from "@/lib/invite/server";
 import { isInviteOnlyEnabled, isSupabaseConfigured } from "@/lib/supabase/env";
 import { createRouteHandlerClient } from "@/lib/supabase/server";
 import { createNoStoreRedirect, normalizeNextPath } from "@/lib/security/authResponses";
@@ -8,12 +9,26 @@ export async function GET(request: Request) {
   const requestId = getOrCreateRequestId(request);
   const { origin, searchParams } = new URL(request.url);
   const safeNext = normalizeNextPath(searchParams.get("next"));
+  const inviteToken = (searchParams.get("inviteToken") ?? "").trim();
 
   if (!isSupabaseConfigured()) {
     return createNoStoreRedirect(`${origin}/?auth=signin&error=config`, requestId);
   }
   if (isInviteOnlyEnabled()) {
-    return createNoStoreRedirect(`${origin}/?auth=signin&error=invite_only`, requestId);
+    if (!inviteToken) {
+      return createNoStoreRedirect(`${origin}/?auth=signin&error=invite_only`, requestId);
+    }
+    try {
+      const invite = await getInviteByToken(inviteToken);
+      const status = evaluateInvite(invite);
+      if (status !== "valid") {
+        const reason =
+          status === "expired" ? "invite_expired" : status === "used" ? "invite_used" : "invite_invalid";
+        return createNoStoreRedirect(`${origin}/invite/${encodeURIComponent(inviteToken)}?error=${reason}`, requestId);
+      }
+    } catch {
+      return createNoStoreRedirect(`${origin}/invite/${encodeURIComponent(inviteToken)}?error=invite_invalid`, requestId);
+    }
   }
 
   const cookieCarrier = NextResponse.next();
@@ -21,7 +36,9 @@ export async function GET(request: Request) {
   const { data, error } = await supabase.auth.signInWithOAuth({
     provider: "google",
     options: {
-      redirectTo: `${origin}/auth/callback?next=${encodeURIComponent(safeNext)}`,
+      redirectTo: `${origin}/auth/callback?next=${encodeURIComponent(safeNext)}${
+        inviteToken ? `&inviteToken=${encodeURIComponent(inviteToken)}` : ""
+      }`,
       queryParams: {
         access_type: "offline",
         prompt: "consent",

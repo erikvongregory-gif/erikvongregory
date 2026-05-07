@@ -18,17 +18,17 @@ export const metadata: Metadata = {
     "KI Bilder für Brauerei Werbung",
     "Marketing Automatisierung Brauerei",
   ],
-  alternates: { canonical: "https://evglab.com" },
+  alternates: { canonical: "https://www.evglab.com" },
   openGraph: {
     title: "KI-Marketing für Brauereien | EvGlab",
     description:
       "KI-Bilder, Posts und Bewertungen für Brauereien — ab 79 €/Monat. Selbst im Dashboard oder fertig geliefert.",
-    url: "https://evglab.com",
+    url: "https://www.evglab.com",
     type: "website",
     locale: "de_DE",
     images: [
       {
-        url: "https://evglab.com/og/evglab-og.jpg",
+        url: "https://www.evglab.com/og/evglab-og.jpg",
         width: 1200,
         height: 630,
         alt: "KI-Marketing für Brauereien | EvGlab",
@@ -39,7 +39,7 @@ export const metadata: Metadata = {
     card: "summary_large_image",
     title: "KI-Marketing für Brauereien | EvGlab",
     description: "KI-Bilder, Posts und Bewertungen für Brauereien — ab 79 €/Monat.",
-    images: ["https://evglab.com/og/evglab-og.jpg"],
+    images: ["https://www.evglab.com/og/evglab-og.jpg"],
   },
 };
 
@@ -48,7 +48,7 @@ export default function Home() {
     "@context": "https://schema.org",
     "@type": "ProfessionalService",
     name: "EvGlab",
-    url: "https://evglab.com",
+    url: "https://www.evglab.com",
     logo: SITE.brandLogoUrl,
     description:
       "KI-Marketing für Brauereien: Werbebilder, Social-Media-Posts und Google-Bewertungsmanagement.",

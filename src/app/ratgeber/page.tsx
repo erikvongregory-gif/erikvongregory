@@ -1,17 +1,17 @@
 import type { Metadata } from "next";
 import Link from "next/link";
-import { QuizSection } from "@/components/ui/quiz-section";
+import { RatgeberAdvisorQuiz } from "@/components/ui/ratgeber-advisor-quiz";
 import { SITE } from "@/lib/siteConfig";
 
 export const metadata: Metadata = {
   title: "Ratgeber: EvGlab-Wissenscheck für Brauereien | EvGlab",
   description:
-    "Interaktives Quiz zu EvGlab, Premium-Paketen und dem Token-Dashboard — mit direkter Auswertung.",
+    "Interaktiver Ratgeber-Quiz fuer Brauereien: finde heraus, ob Dashboard oder Premium-Umsetzung besser zu deinem Team passt.",
   alternates: { canonical: `${SITE.baseUrl}/ratgeber` },
   openGraph: {
     title: "Ratgeber: EvGlab-Wissenscheck | EvGlab",
     description:
-      "Kurzes Wissensquiz für Brauereien in DACH — inklusive Auswertung und nächsten Schritten.",
+      "Klickbarer Entscheidungs-Quiz fuer Brauereien in DACH mit direkter Empfehlung: Dashboard oder Premium-Umsetzung.",
     url: `${SITE.baseUrl}/ratgeber`,
     locale: "de_DE",
     type: "website",
@@ -20,7 +20,7 @@ export const metadata: Metadata = {
 
 export default function RatgeberIndexPage() {
   return (
-    <article className="min-h-screen bg-white text-zinc-900">
+    <article id="ratgeber-page" className="relative z-[75] min-h-screen bg-white text-zinc-900">
       <div className="mx-auto max-w-3xl px-4 py-14 sm:px-6 sm:py-20">
         <nav className="mb-8 text-sm text-zinc-600">
           <Link href="/" className="text-[#b45309] hover:underline">
@@ -33,9 +33,10 @@ export default function RatgeberIndexPage() {
         </nav>
         <h1 className="text-3xl font-bold tracking-tight sm:text-4xl">Ratgeber: EvGlab-Wissenscheck</h1>
         <p className="mt-4 text-lg text-zinc-600">
-          Fünf Fragen zu <strong>Angebot, Tokens und Markenprofil</strong> — mit direkter Auswertung.
+          Beantworte fünf kurze Fragen zu <strong>Zeit, Workflow und Zielbild</strong> und erhalte eine klare Empfehlung:
+          Dashboard oder Premium-Umsetzung.
         </p>
-        <QuizSection embedded className="mt-10" />
+        <RatgeberAdvisorQuiz className="mt-10" />
       </div>
     </article>
   );

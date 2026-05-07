@@ -1,32 +1,7 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64">
-  <defs>
-    <linearGradient id="labGradient" x1="0%" y1="0%" x2="100%" y2="0%">
-      <stop offset="0%" stop-color="#ffc090" />
-      <stop offset="50%" stop-color="#e07a40" />
-      <stop offset="100%" stop-color="#d46830" />
-    </linearGradient>
-  </defs>
-  <rect x="1.5" y="1.5" width="61" height="61" rx="14" fill="#0a0f14" stroke="rgba(255,255,255,0.14)" />
-  <text
-    x="8"
-    y="37"
-    fill="#f4f4f5"
-    font-family="Inter, system-ui, sans-serif"
-    font-size="22"
-    font-weight="800"
-    letter-spacing="-0.5"
-  >
-    EvG
-  </text>
-  <text
-    x="35"
-    y="38"
-    fill="url(#labGradient)"
-    font-family="'Playfair Display', Georgia, serif"
-    font-size="14"
-    font-style="italic"
-    font-weight="400"
-  >
-    lab
-  </text>
+<?xml version="1.0" encoding="UTF-8"?>
+<svg width="400" height="400" viewBox="0 0 400 400" fill="none" xmlns="http://www.w3.org/2000/svg">
+<rect width="400" height="400" fill="#111110"></rect>
+  <path d="M 48.00 136.00 C 124.00 88.00 169.60 88.00 200.00 136.00 S 276.00 184.00 352.00 136.00" stroke="#F4F0E8" stroke-width="23.20" fill="none" stroke-linecap="round" opacity="0.45"></path>
+  <path d="M 48.00 200.00 C 124.00 136.00 169.60 136.00 200.00 200.00 S 276.00 264.00 352.00 200.00" stroke="#F4F0E8" stroke-width="23.20" fill="none" stroke-linecap="round" opacity="0.75"></path>
+  <path d="M 48.00 272.00 C 124.00 228.00 169.60 228.00 200.00 272.00 S 276.00 316.00 352.00 272.00" stroke="#F4F0E8" stroke-width="23.20" fill="none" stroke-linecap="round" opacity="1"></path>
 </svg>

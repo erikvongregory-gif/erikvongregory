@@ -1,4 +1,5 @@
 import type { EmailOtpType } from "@supabase/supabase-js";
+import { consumeInviteByToken } from "@/lib/invite/server";
 import { isInviteOnlyEnabled, isSupabaseConfigured } from "@/lib/supabase/env";
 import { createRouteHandlerClient } from "@/lib/supabase/server";
 import { createNoStoreRedirect, normalizeNextPath } from "@/lib/security/authResponses";
@@ -12,11 +13,12 @@ export async function GET(request: Request) {
   const tokenHash = searchParams.get("token_hash");
   const type = searchParams.get("type") as EmailOtpType | null;
   const safeNext = normalizeNextPath(searchParams.get("next"));
+  const inviteToken = (searchParams.get("inviteToken") ?? "").trim();
 
   if (!isSupabaseConfigured()) {
     return createNoStoreRedirect(`${origin}/?auth=signin&error=config`, requestId);
   }
-  if (isInviteOnlyEnabled() && type === "signup") {
+  if (isInviteOnlyEnabled() && type === "signup" && !inviteToken) {
     return createNoStoreRedirect(`${origin}/?auth=signin&error=invite_required`, requestId);
   }
 
@@ -40,7 +42,33 @@ export async function GET(request: Request) {
         6_000,
         "auth_callback_exchange_timeout",
       );
-      if (!error) return redirectResponse;
+      if (!error) {
+        if (isInviteOnlyEnabled()) {
+          if (!inviteToken) {
+            return createNoStoreRedirect(`${origin}/?auth=signin&error=invite_required`, requestId);
+          }
+          const {
+            data: { user },
+          } = await withTimeout(supabase.auth.getUser(), 6_000, "auth_callback_user_timeout");
+          const email = user?.email?.trim().toLowerCase() ?? "";
+          if (!email) {
+            return createNoStoreRedirect(`${origin}/?auth=signin&error=auth`, requestId);
+          }
+          const consumed = await consumeInviteByToken(inviteToken, email);
+          if (!consumed.ok) {
+            const reason =
+              consumed.status === "expired"
+                ? "invite_expired"
+                : consumed.status === "used"
+                  ? "invite_used"
+                  : consumed.status === "email_mismatch"
+                    ? "invite_email_mismatch"
+                    : "invite_invalid";
+            return createNoStoreRedirect(`${origin}/invite/${encodeURIComponent(inviteToken)}?error=${reason}`, requestId);
+          }
+        }
+        return redirectResponse;
+      }
     } catch {
       logAuthEvent({
         event: "callback_timeout",

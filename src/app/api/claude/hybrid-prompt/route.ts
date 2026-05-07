@@ -31,6 +31,42 @@ function getPreferredModel(): string {
   return "claude-3-5-sonnet-latest";
 }
 
+const ENGLISH_FINALIZE_SYSTEM = [
+  "You prepare the final text for an English-only image generation model.",
+  "Output ONLY fluent English prose: one cohesive image prompt, no headings, no bullet lists, no JSON, no quotes around the whole text.",
+  "Translate every German (or other non-English) phrase into natural English.",
+  "Keep proper nouns as real names when they are brand, beer, or place names; do not leave explanatory German around them.",
+  "Preserve all creative and technical detail from the draft; do not drop constraints.",
+].join(" ");
+
+async function finalizeEnglishOnlyPrompt(
+  client: Anthropic,
+  draft: string,
+  brandProfileContext: string,
+): Promise<string> {
+  const trimmed = draft.trim();
+  if (!trimmed) return trimmed;
+  const response = await client.messages.create({
+    model: getPreferredModel(),
+    max_tokens: 2048,
+    temperature: 0.15,
+    system:
+      ENGLISH_FINALIZE_SYSTEM +
+      (brandProfileContext
+        ? `\n\nBrand profile constraints (integrate in English; translate any non-English source):\n${brandProfileContext}`
+        : ""),
+    messages: [
+      {
+        role: "user",
+        content: `Rewrite into one polished English-only image generation prompt. Input may mix languages — output must not.\n\n---\n${trimmed}\n---`,
+      },
+    ],
+  });
+  const textBlock = response.content.find((item) => item.type === "text");
+  const out = textBlock?.type === "text" ? textBlock.text.trim() : "";
+  return out || trimmed;
+}
+
 function parseJsonObject(text: string): Record<string, unknown> | null {
   const trimmed = text.trim();
   const direct = trimmed.match(/\{[\s\S]*\}/);
@@ -116,6 +152,29 @@ export async function POST(req: Request) {
 
     const { initialInput, history, questionCount } = parsed.data;
     const apiKey = process.env.ANTHROPIC_API_KEY;
+    const anthropic = apiKey ? new Anthropic({ apiKey }) : null;
+
+    async function respondComplete(rawPrompt: string, warning?: string) {
+      let prompt = rawPrompt.trim();
+      if (!prompt) {
+        prompt = buildLocalFallbackPrompt(initialInput, history);
+      }
+      if (anthropic) {
+        try {
+          prompt = await finalizeEnglishOnlyPrompt(anthropic, prompt, brandProfileContext);
+        } catch (err) {
+          const msg = err instanceof Error ? err.message : "unknown";
+          console.error("[hybrid-prompt] English finalize failed:", msg);
+        }
+      }
+      return NextResponse.json(
+        warning
+          ? { status: "complete" as const, prompt, warning }
+          : { status: "complete" as const, prompt },
+        { status: 200 },
+      );
+    }
+
     if (!apiKey) {
       return NextResponse.json(
         {
@@ -127,7 +186,8 @@ export async function POST(req: Request) {
       );
     }
 
-    const anthropic = new Anthropic({ apiKey });
+    const claude = anthropic as Anthropic;
+
     const requiredFields = [
       "bildtyp",
       "biertyp",
@@ -141,62 +201,74 @@ export async function POST(req: Request) {
       "shotType",
     ] as const;
 
-    const response = await anthropic.messages.create({
-      model: getPreferredModel(),
-      max_tokens: 900,
-      temperature: 0.2,
-      system:
-        `${DEFAULT_BREWERY_IMAGE_SKILL_SYSTEM_PROMPT}\n\n` +
-        "You are an expert brewery image prompt strategist. Reply with JSON only. " +
-        'Schema: {"status":"follow_up","question":"...","missingFields":["..."],"collected":{"field":"value"}} OR {"status":"complete","prompt":"...","collected":{"field":"value"}}.' +
-        "Follow-up questions must be short, specific, and in German. " +
-        "Final prompt must be in English and production-ready for image generation. " +
-        "When status=complete, the prompt must be highly detailed (at least 180 words) and include: " +
-        "scene setup, product and glass constraints, subject styling, camera/lens, lighting, composition, texture realism, color palette, and quality constraints. " +
-        "Avoid short generic prompts. Keep constraints concise and integrated; avoid long repetitive MANDATORY lock blocks.\n\n" +
-        ANTI_GENERIC_MASTER_BLOCK,
-      messages: [
-        {
-          role: "user",
-          content: [
-            "User initial request:",
-            initialInput,
-            "",
-            "Collected follow-up answers:",
-            history.length > 0 ? JSON.stringify(history, null, 2) : "[]",
-            "",
-            `Already asked follow-up questions: ${questionCount}`,
-            "",
-            `Required fields that MUST be captured before completion: ${requiredFields.join(", ")}`,
-            "",
-            "Rules:",
-            "- Extract all required fields from initialInput + history.",
-            "- If at least one required field is missing, return status=follow_up.",
-            "- Ask only ONE focused follow-up that can fill one or multiple missing required fields.",
-            "- Never ask about fields already present in collected data.",
-            "- Include missingFields array in follow_up response.",
-            "- Only return complete when all required fields are present.",
-            "- If questionCount >= 10 and still missing, ask one final compact multi-field follow-up.",
-            "- In complete mode, produce a rich commercial-grade prompt with concrete visual directives, not a short sentence.",
-            "- Always include a human realism directive in the final prompt: hyper-realistic adult humans, natural anatomy/proportions, and explicit anti-artifact constraints for faces/hands/skin.",
-            "- Always include an environment realism directive for outdoor scenes: physically plausible water behavior, layered background depth, and anti-generic/no-stock-like scenery constraints.",
-            "- Always include liquid continuity constraints for pouring scenes: bottle volume and glass fill must be physically consistent (no near-full bottle when glass is nearly full).",
-            "- Always enforce the anti-generic master directives: distinctive brand anchors, specific scene details, and authored camera intent.",
-            "- If user requests headline/text in the visual, instruct clean negative space and post-production text overlay instead of in-image typography rendering.",
-            "",
-            "Brand profile context (MUST apply to all outputs):",
-            brandProfileContext,
-          ].join("\n"),
-        },
-      ],
-    });
+    let response: Anthropic.Messages.Message;
+    try {
+      response = await claude.messages.create({
+        model: getPreferredModel(),
+        max_tokens: 900,
+        temperature: 0.2,
+        system:
+          `${DEFAULT_BREWERY_IMAGE_SKILL_SYSTEM_PROMPT}\n\n` +
+          "You are an expert brewery image prompt strategist. Reply with JSON only. " +
+          'Schema: {"status":"follow_up","question":"...","missingFields":["..."],"collected":{"field":"value"}} OR {"status":"complete","prompt":"...","collected":{"field":"value"}}.' +
+          "Follow-up questions must be short, specific, and in German. " +
+          "When status=complete, the prompt string must be 100% English: fully translate every phrase from the user's German (or other non-English) request and Q&A into natural English. " +
+          "Never mix German and English inside the prompt; proper nouns (brand/beer/place names) may stay as names. " +
+          "Final prompt must be production-ready for image generation. " +
+          "When status=complete, the prompt must be highly detailed (at least 180 words) and include: " +
+          "scene setup, product and glass constraints, subject styling, camera/lens, lighting, composition, texture realism, color palette, and quality constraints. " +
+          "Avoid short generic prompts. Keep constraints concise and integrated; avoid long repetitive MANDATORY lock blocks.\n\n" +
+          ANTI_GENERIC_MASTER_BLOCK,
+        messages: [
+          {
+            role: "user",
+            content: [
+              "User initial request:",
+              initialInput,
+              "",
+              "Collected follow-up answers:",
+              history.length > 0 ? JSON.stringify(history, null, 2) : "[]",
+              "",
+              `Already asked follow-up questions: ${questionCount}`,
+              "",
+              `Required fields that MUST be captured before completion: ${requiredFields.join(", ")}`,
+              "",
+              "Rules:",
+              "- Extract all required fields from initialInput + history.",
+              "- If at least one required field is missing, return status=follow_up.",
+              "- Ask only ONE focused follow-up that can fill one or multiple missing required fields.",
+              "- Never ask about fields already present in collected data.",
+              "- Include missingFields array in follow_up response.",
+              "- Only return complete when all required fields are present.",
+              "- If questionCount >= 10 and still missing, ask one final compact multi-field follow-up.",
+              "- In complete mode, produce a rich commercial-grade prompt with concrete visual directives, not a short sentence.",
+              "- Always include a human realism directive in the final prompt: hyper-realistic adult humans, natural anatomy/proportions, and explicit anti-artifact constraints for faces/hands/skin.",
+              "- Always include an environment realism directive for outdoor scenes: physically plausible water behavior, layered background depth, and anti-generic/no-stock-like scenery constraints.",
+              "- Always include liquid continuity constraints for pouring scenes: bottle volume and glass fill must be physically consistent (no near-full bottle when glass is nearly full).",
+              "- Always enforce the anti-generic master directives: distinctive brand anchors, specific scene details, and authored camera intent.",
+              "- If user requests headline/text in the visual, instruct clean negative space and post-production text overlay instead of in-image typography rendering.",
+              "",
+              "Brand profile context (MUST apply to all outputs):",
+              brandProfileContext,
+            ].join("\n"),
+          },
+        ],
+      });
+    } catch (error) {
+      const reason = error instanceof Error ? error.message : "unknown";
+      console.error("[hybrid-prompt] Anthropic call failed:", reason);
+      return await respondComplete(
+        buildLocalFallbackPrompt(initialInput, history),
+        `Claude-Aufruf fehlgeschlagen (${reason}). Lokaler Fallback wurde verwendet.`,
+      );
+    }
 
     const textBlock = response.content.find((item) => item.type === "text");
     const text = textBlock?.type === "text" ? textBlock.text : "";
     const payload = parseJsonObject(text);
 
     if (!payload) {
-      return NextResponse.json({ status: "complete", prompt: initialInput }, { status: 200 });
+      return await respondComplete(buildLocalFallbackPrompt(initialInput, history));
     }
 
     const status = payload.status;
@@ -206,10 +278,7 @@ export async function POST(req: Request) {
     }
 
     const prompt = typeof payload.prompt === "string" ? payload.prompt.trim() : "";
-    if (!prompt) {
-      return NextResponse.json({ status: "complete", prompt: initialInput }, { status: 200 });
-    }
-    return NextResponse.json({ status: "complete", prompt }, { status: 200 });
+    return await respondComplete(prompt);
   } catch {
     return NextResponse.json({ error: "Hybrid-Prompt konnte nicht verarbeitet werden." }, { status: 500 });
   }

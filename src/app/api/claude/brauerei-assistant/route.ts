@@ -11,27 +11,28 @@ const requestSchema = z.object({
 
 const HOPFEN_HUGO_SYSTEM = [
   "Du bist Hopfen Hugo, der Chat-Assistent im EvGlab-Dashboard.",
-  "Du beantwortest ausschliesslich Themen rund um KI-Bildgenerierung und die zugehoerigen Schritte im Dashboard: Bild-Prompts, Motive, Szenen, Licht, Kamera/Stil, Marken-Look, Brand-Lock, Varianten, Aufloesung/Format, Mediathek fuer generierte Bilder, Token-Verbrauch und Bedienung der Bild-Tools.",
-  "Du gibst keine Rezepte, kein Brauwissen, keine Gaer-/Sudhaus-Anleitungen, kein allgemeines Bierwissen und keine Themen ausserhalb von Bild-Workflows in EvGlab.",
-  "Wenn die Nutzerfrage nicht klar zu KI-Bildern oder diesen Dashboard-Schritten gehoert: lehne in einem kurzen Satz ab und biete maximal ein konkretes Bild-Thema an (z. B. naechstes Werbemotiv, Prompt-Formulierung).",
-  "Keine Meta-Tipps wie \"frag konkret\" oder \"beende mit Danke\" — keine Life-Coach- oder ChatGPT-Allgemeinplaetze.",
-  "Antworte auf Deutsch, kurz und praktisch, ohne Markdown-Listen wenn es ohne geht.",
+  "Du darfst ueber allgemeine, harmlose Alltagsthemen reden und auf Wunsch den Stil wechseln (z. B. Schweizerdeutsch, bayerisch, locker, freundlich).",
+  "Verweigere nur unzulaessige oder gefaehrliche Inhalte (illegale Handlungen, Gewaltanleitungen, Selbstverletzung, Hass, Betrug, Datenschutzverletzungen, sexualisierte Inhalte mit Minderjaehrigen).",
+  "Wenn es um EvGlab und KI-Bilder geht, gib praktische Hilfe zu Prompts, Motiven, Szenen, Licht, Stil und Markenkonsistenz.",
+  "Gib keine Optimierungs- oder Spartipps zu Token, Billing, Abo oder internen Dashboard-Kosten.",
+  "Antworte kurz, freundlich und natuerlich auf Deutsch; Dialekt nur wenn gewuenscht.",
 ].join(" ");
 
 function fallbackAnswer(question: string): string {
   const q = question.toLowerCase();
-  if (
-    /rezept|brauen|maisch|wuerze|würze|gaer|gär|hefe|sudhaus|weiss|weiß|weizen|hopfeneinkauf|wasserprofile/i.test(q)
-  ) {
-    return "Dazu kann ich nicht helfen: Ich unterstuetze nur KI-Bildgenerierung in EvGlab — etwa Prompt, Szene, Licht oder Markenlook fuer euer naechstes Werbemotiv. Was moechtet ihr als Naechstes visuell umsetzen?";
+  if (/schweizerdeutsch|schwiizerdutsch|schwiizerdütsch/.test(q)) {
+    return "Ja klar, ich cha au Schwiizerdutsch rede. Wenn du wotsch, antworte ich ab jetzt im Schwiizer Stil.";
+  }
+  if (/bayerisch|bayrisch|dialekt|mundart|freundlich|locker|duzen|siezen|tonfall|humor|witzig/i.test(q)) {
+    return "Klar, mach ich gern. Ich passe meinen Stil an und antworte dir freundlich und locker.";
+  }
+  if (/token|abo|billing|budget|credit|kosten sparen|spar|guenstig|günstig/i.test(q)) {
+    return "Zu Token-, Abo- oder Billing-Optimierung gebe ich keine Tipps. Bei Bildideen, Prompt und Stil helfe ich dir gern.";
   }
   if (/marke|brand|stil|look|prompt|bild|motiv|foto|render|kampagne/i.test(q)) {
-    return "Fuer starke Bilder: Brand-Lock sinnvoll setzen, Referenzen knapp halten und den Prompt mit Szene, Licht, Produktpose und Format (z. B. 4:5 fuer Feed) schreiben — dann Varianten erzeugen und die beste behalten.";
+    return "Gern. Nenn mir Produkt, Stimmung und Format, dann formuliere ich dir direkt einen starken Prompt.";
   }
-  if (/token|abo|billing|budget|credit/i.test(q)) {
-    return "Unter Abo & Tokens siehst du Verbrauch und Restbudget fuer Bilder. Bei knappen Credits: weniger Varianten, passende Aufloesung waehlen und Prompts schlank halten.";
-  }
-  return "Ich helfe nur bei KI-Bildern in EvGlab: Prompt, Szene, Stil, Markenkonsistenz, Mediathek und Tokens fuer Bilder. Schreibt kurz, welches Motiv ihr braucht (Produkt, Umgebung, Format), dann schlage ich die naechsten Schritte vor.";
+  return "Klar, ich bin da. Wenn du willst, antworte ich normal, locker, bayerisch oder Schweizerdeutsch.";
 }
 
 function getPreferredModel(): string {
@@ -40,7 +41,16 @@ function getPreferredModel(): string {
   return "claude-3-5-sonnet-latest";
 }
 
+function hasUsableAnthropicKey(value: string | undefined): value is string {
+  if (!value) return false;
+  const normalized = value.trim();
+  if (!normalized) return false;
+  if (/^paste[_-]?anthropic[_-]?api[_-]?key$/i.test(normalized)) return false;
+  return true;
+}
+
 export async function POST(req: Request) {
+  let questionForFallback = "";
   try {
     const rateError = await enforceRateLimitPersistent(req, {
       keyPrefix: "brauerei-assistant",
@@ -57,8 +67,9 @@ export async function POST(req: Request) {
     }
 
     const { question, currentTab, assistantPersona } = parsed.data;
+    questionForFallback = question;
     const apiKey = process.env.ANTHROPIC_API_KEY;
-    if (!apiKey) {
+    if (!hasUsableAnthropicKey(apiKey)) {
       return NextResponse.json({ answer: fallbackAnswer(question) }, { status: 200 });
     }
 
@@ -78,7 +89,7 @@ export async function POST(req: Request) {
             "Nutzerfrage:",
             question,
             "",
-            "Antworte nur im Rahmen von KI-Bildgenerierung und EvGlab-Bild-Workflows (siehe System).",
+            "Folge den Systemregeln: allgemein harmlose Fragen sind okay, aber keine Hilfe zu illegalen/gefaehrlichen Themen und keine Token-/Billing-Spar-Tipps.",
           ].join("\n"),
         },
       ],
@@ -88,6 +99,6 @@ export async function POST(req: Request) {
     const answer = textBlock?.type === "text" ? textBlock.text.trim() : "";
     return NextResponse.json({ answer: answer || fallbackAnswer(question) }, { status: 200 });
   } catch {
-    return NextResponse.json({ error: "Assistent konnte nicht antworten." }, { status: 500 });
+    return NextResponse.json({ answer: fallbackAnswer(questionForFallback) }, { status: 200 });
   }
 }
