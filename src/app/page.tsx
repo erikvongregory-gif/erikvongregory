@@ -177,7 +177,10 @@ export default function Home() {
         type="application/ld+json"
         dangerouslySetInnerHTML={{ __html: JSON.stringify(siteNavigationJsonLd) }}
       />
-      <ResponsiveHomeLayout />
+      {/* Eigener Hero-Band: auch wenn dynamische Layouts noch laden, bleibt #pakete unterhalb des ersten Viewports. */}
+      <div className="min-h-[100dvh] w-full min-w-0">
+        <ResponsiveHomeLayout />
+      </div>
       <PricingSection />
       <Section7AIDemo />
     </>

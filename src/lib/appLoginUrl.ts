@@ -6,7 +6,10 @@
  * NEXT_PUBLIC_APP_LOGIN_URL=http://localhost:3001/anmelden
  */
 export const APP_LOGIN_URL =
-  process.env.NEXT_PUBLIC_APP_LOGIN_URL?.trim() || "https://app.evglab.com/anmelden";
+  process.env.NEXT_PUBLIC_APP_LOGIN_URL?.trim() ||
+  (process.env.NODE_ENV === "development"
+    ? "http://localhost:3001/anmelden"
+    : "https://app.evglab.com/anmelden");
 
 /** Login-URL der App mit optionalen Query-Parametern (z. B. `plan` nach Pricing-Klick). */
 export function buildAppLoginUrl(params?: Record<string, string>): string {
