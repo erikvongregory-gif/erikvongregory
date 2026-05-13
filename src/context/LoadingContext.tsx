@@ -4,8 +4,6 @@ import {
   createContext,
   useCallback,
   useContext,
-  useEffect,
-  useLayoutEffect,
   useState,
 } from "react";
 import {
@@ -30,31 +28,16 @@ const LoadingContext = createContext<LoadingContextValue | null>(null);
 export const EVGLAB_SPLASH_SEEN_KEY = "evglab_splash_seen";
 
 export function LoadingProvider({ children }: { children: React.ReactNode }) {
-  const [isLoadComplete, setIsLoadComplete] = useState(false);
-  const [cookiePreferences, setCookiePreferences] = useState<CookiePrefs | null>(null);
-
-  useLayoutEffect(() => {
-    try {
-      const seenLocal = localStorage.getItem(EVGLAB_SPLASH_SEEN_KEY) === "1";
-      const seenSession = sessionStorage.getItem(EVGLAB_SPLASH_SEEN_KEY) === "1";
-      if (seenSession && !seenLocal) {
-        localStorage.setItem(EVGLAB_SPLASH_SEEN_KEY, "1");
-      }
-      if (seenLocal || seenSession) {
-        setIsLoadComplete(true);
-      }
-    } catch {
-      /* private mode */
-    }
-  }, []);
-
-  useEffect(() => {
-    if (typeof window === "undefined") return;
+  const [isLoadComplete, setIsLoadComplete] = useState(true);
+  const [cookiePreferences, setCookiePreferences] = useState<CookiePrefs | null>(() => {
+    if (typeof window === "undefined") return null;
     const raw = localStorage.getItem(COOKIE_CONSENT_KEY);
     const parsed = parseStoredCookieConsent(raw);
-    if (parsed) setCookiePreferences(parsed);
-    else if (raw) localStorage.removeItem(COOKIE_CONSENT_KEY);
-  }, []);
+    if (!parsed && raw) {
+      localStorage.removeItem(COOKIE_CONSENT_KEY);
+    }
+    return parsed;
+  });
 
   const setLoadComplete = useCallback(() => {
     setIsLoadComplete(true);

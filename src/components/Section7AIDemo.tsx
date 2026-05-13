@@ -87,7 +87,7 @@ export function Section7AIDemo() {
                       className="absolute inset-0 h-full w-full object-cover object-center"
                       controls
                       playsInline
-                      preload="metadata"
+                      preload="none"
                       poster={v.poster}
                       aria-label={v.title}
                     >
@@ -118,7 +118,7 @@ export function Section7AIDemo() {
                   className="absolute inset-0 z-0 h-full w-full object-cover object-center"
                   controls
                   playsInline
-                  preload="auto"
+                  preload="none"
                   poster={KI_BEISPIEL_VIDEO_16X9.poster}
                   aria-label={KI_BEISPIEL_VIDEO_16X9.title}
                 >

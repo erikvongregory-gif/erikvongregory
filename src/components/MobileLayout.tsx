@@ -1,8 +1,6 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { useLoading } from "@/context/LoadingContext";
-import { Hero } from "@/components/ui/animated-hero";
 import { ScrollReveal } from "./ScrollReveal";
 import { HowItWorks } from "@/components/ui/how-it-works";
 import { Section2BreweryCards } from "@/components/Section2BreweryCards";
@@ -37,7 +35,6 @@ const SECTION4_ITEMS = [
 ];
 
 export function MobileLayout() {
-  const { heroReady } = useLoading();
   const [openSolutionIndex, setOpenSolutionIndex] = useState<number>(-1);
   const [showSection4Shader, setShowSection4Shader] = useState(false);
 
@@ -95,16 +92,6 @@ export function MobileLayout() {
   return (
     <>
       <div className="relative z-10 flex flex-col">
-        {/* Hero: exakt wie Desktop */}
-        <div
-          id="start"
-          className={`section1-wrapper relative mx-auto w-full max-w-screen-2xl ${heroReady ? "section1-ready" : ""}`}
-        >
-          <div className="min-w-0">
-            <Hero />
-          </div>
-        </div>
-        {/* Section 2 – Karten wie Desktop */}
         <div id="warum" className="scroll-mt-24" aria-hidden />
         <section
           id="section-2"

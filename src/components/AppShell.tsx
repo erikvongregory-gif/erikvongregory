@@ -1,10 +1,8 @@
 "use client";
 
-import { useLayoutEffect, useMemo, useState } from "react";
 import dynamic from "next/dynamic";
 import { usePathname } from "next/navigation";
 import { ScrollHeader } from "@/components/ScrollHeader";
-import { LoadingScreen } from "@/components/LoadingScreen";
 import { LegalPageTheme } from "@/components/LegalPageTheme";
 import { SiteGradientBackdrop } from "@/components/ui/gradient-backgrounds";
 import { useLoading } from "@/context/LoadingContext";
@@ -23,12 +21,10 @@ type AppShellProps = {
 
 export function AppShell({ children }: AppShellProps) {
   const pathname = usePathname();
-  const isHomeRoute = pathname === "/";
-  const [homeReady, setHomeReady] = useState(!isHomeRoute);
   const { isLoadComplete } = useLoading();
   const isDashboardRoute = pathname?.startsWith("/dashboard") ?? false;
   const isAdminRoute = pathname?.startsWith("/admin") ?? false;
-  const isAuthFlow = useMemo(() => {
+  const isAuthFlow = (() => {
     if (typeof window === "undefined") return false;
     const params = new URLSearchParams(window.location.search);
     const authQuery = params.get("auth");
@@ -39,38 +35,10 @@ export function AppShell({ children }: AppShellProps) {
       noticeQuery === "admin_2fa_required" ||
       noticeQuery === "admin_2fa_resent"
     );
-  }, [pathname]);
+  })();
 
   const skipShell = isDashboardRoute || isAdminRoute;
-  const showLoadingScreen = !isAuthFlow;
   const showHeader = isAuthFlow || isLoadComplete;
-  const shouldHideHomeContent = isHomeRoute && !homeReady;
-
-  useLayoutEffect(() => {
-    if (!isHomeRoute) {
-      setHomeReady(true);
-      return;
-    }
-
-    setHomeReady(false);
-    window.scrollTo({ top: 0, left: 0, behavior: "auto" });
-    document.documentElement.scrollTop = 0;
-    document.body.scrollTop = 0;
-
-    let raf1 = 0;
-    let raf2 = 0;
-    raf1 = window.requestAnimationFrame(() => {
-      window.scrollTo({ top: 0, left: 0, behavior: "auto" });
-      raf2 = window.requestAnimationFrame(() => {
-        setHomeReady(true);
-      });
-    });
-
-    return () => {
-      if (raf1) window.cancelAnimationFrame(raf1);
-      if (raf2) window.cancelAnimationFrame(raf2);
-    };
-  }, [isHomeRoute]);
 
   if (skipShell) {
     return <main id="main" className="relative min-h-[100dvh] bg-gray-50">{children}</main>;
@@ -85,7 +53,6 @@ export function AppShell({ children }: AppShellProps) {
       >
         Zum Inhalt springen
       </a>
-      {showLoadingScreen ? <LoadingScreen /> : null}
       <ContactFunnel />
       <CookieBanner />
       <LegalPageTheme />
@@ -96,7 +63,7 @@ export function AppShell({ children }: AppShellProps) {
       >
         <ScrollHeader />
       </div>
-      <div className={shouldHideHomeContent ? "invisible" : ""}>{children}</div>
+      <div>{children}</div>
       <footer id="contact" className="relative z-[70] border-t border-zinc-200/80 bg-transparent py-10 sm:py-12">
         <div className="mx-auto max-w-6xl px-4 sm:px-6">
           <div className="grid gap-8 sm:gap-12 md:grid-cols-2 lg:grid-cols-4">

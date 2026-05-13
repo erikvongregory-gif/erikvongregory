@@ -122,6 +122,9 @@ export const HeroSection = React.forwardRef<HTMLDivElement, HeroSectionProps>(
                         <img
                           src={image.src}
                           alt={image.alt}
+                          loading="lazy"
+                          decoding="async"
+                          fetchPriority="low"
                           className="h-full w-full object-cover transition-[filter,transform] duration-500 ease-in-out"
                           style={
                             isCenter

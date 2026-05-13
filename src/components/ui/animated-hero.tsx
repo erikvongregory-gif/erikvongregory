@@ -9,8 +9,6 @@ import { LiquidMetalButton } from "@/components/ui/liquid-metal-button";
 import Floating, { FloatingElement } from "@/components/ui/parallax-floating";
 import { useLoading } from "@/context/LoadingContext";
 import { KI_BEISPIELE } from "@/lib/kiBeispiele";
-import { createClient as createSupabaseClient } from "@/lib/supabase/client";
-import { isSupabaseConfigured } from "@/lib/supabase/env";
 
 const HERO_FLOAT_LAYOUT = [
   {
@@ -52,93 +50,139 @@ function Hero() {
   const [isAuthenticated, setIsAuthenticated] = useState(false);
   const [freeTrialImageUsed, setFreeTrialImageUsed] = useState(false);
   const [hasActiveSubscription, setHasActiveSubscription] = useState(false);
+  const [showFloatingExamples, setShowFloatingExamples] = useState(false);
 
   useEffect(() => {
-    if (!isSupabaseConfigured()) {
-      setIsAuthenticated(false);
-      setFreeTrialImageUsed(false);
-      setHasActiveSubscription(false);
-      return;
+    if (typeof window === "undefined") return;
+    if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
+    if (!window.matchMedia("(min-width: 768px)").matches) return;
+
+    let idleId: number | null = null;
+    let timeoutId: ReturnType<typeof setTimeout> | null = null;
+
+    const enableFloating = () => setShowFloatingExamples(true);
+
+    if ("requestIdleCallback" in window) {
+      idleId = (window as Window & { requestIdleCallback: (cb: IdleRequestCallback) => number }).requestIdleCallback(
+        enableFloating,
+      );
+    } else {
+      timeoutId = globalThis.setTimeout(enableFloating, 900);
     }
 
-    const supabase = createSupabaseClient();
-    let active = true;
+    return () => {
+      if (idleId !== null) {
+        (window as Window & { cancelIdleCallback?: (id: number) => void }).cancelIdleCallback?.(idleId);
+      }
+      if (timeoutId !== null) {
+        globalThis.clearTimeout(timeoutId);
+      }
+    };
+  }, []);
 
-    const loadHeroCtaState = async () => {
-      const {
-        data: { session },
-      } = await supabase.auth.getSession();
+  useEffect(() => {
+    let active = true;
+    let idleId: number | null = null;
+    let timeoutId: ReturnType<typeof setTimeout> | null = null;
+    let unsubscribeAuth: (() => void) | null = null;
+    let removeBillingListener: (() => void) | null = null;
+
+    const initHeroCtaState = async () => {
+      const [{ createClient }, { isSupabaseConfigured }] = await Promise.all([
+        import("@/lib/supabase/client"),
+        import("@/lib/supabase/env"),
+      ]);
       if (!active) return;
-      const hasSession = Boolean(session?.user);
-      setIsAuthenticated(hasSession);
-      if (!hasSession) {
+      if (!isSupabaseConfigured()) {
+        setIsAuthenticated(false);
         setFreeTrialImageUsed(false);
         setHasActiveSubscription(false);
         return;
       }
-      try {
-        const res = await fetch("/api/billing/state", { cache: "no-store" });
+
+      const supabase = createClient();
+
+      const loadHeroCtaState = async () => {
+        const {
+          data: { session },
+        } = await supabase.auth.getSession();
         if (!active) return;
-        if (!res.ok) {
-          setFreeTrialImageUsed(false);
-          return;
-        }
-        const data = (await res.json()) as {
-          state?: {
-            freeTrialImageUsed?: boolean;
-            plan?: string | null;
-            status?: string;
-          };
-        };
-        setFreeTrialImageUsed(Boolean(data.state?.freeTrialImageUsed));
-        const status = data.state?.status ?? "none";
-        const plan = data.state?.plan ?? null;
-        setHasActiveSubscription(Boolean(plan) && status !== "none" && status !== "canceled");
-      } catch {
-        if (active) {
+        const hasSession = Boolean(session?.user);
+        setIsAuthenticated(hasSession);
+        if (!hasSession) {
           setFreeTrialImageUsed(false);
           setHasActiveSubscription(false);
+          return;
         }
-      }
-    };
+        try {
+          const res = await fetch("/api/billing/state", { cache: "no-store" });
+          if (!active) return;
+          if (!res.ok) {
+            setFreeTrialImageUsed(false);
+            return;
+          }
+          const data = (await res.json()) as {
+            state?: {
+              freeTrialImageUsed?: boolean;
+              plan?: string | null;
+              status?: string;
+            };
+          };
+          setFreeTrialImageUsed(Boolean(data.state?.freeTrialImageUsed));
+          const status = data.state?.status ?? "none";
+          const plan = data.state?.plan ?? null;
+          setHasActiveSubscription(Boolean(plan) && status !== "none" && status !== "canceled");
+        } catch {
+          if (active) {
+            setFreeTrialImageUsed(false);
+            setHasActiveSubscription(false);
+          }
+        }
+      };
 
-    const scheduleCtaStateLoad = () => {
-      if (typeof window === "undefined") {
-        void loadHeroCtaState();
-        return;
-      }
-      if ("requestIdleCallback" in window) {
-        (window as Window & { requestIdleCallback: (cb: IdleRequestCallback) => number }).requestIdleCallback(
-          () => {
-            void loadHeroCtaState();
-          },
-        );
-        return;
-      }
-      globalThis.setTimeout(() => {
-        void loadHeroCtaState();
-      }, 700);
-    };
-
-    scheduleCtaStateLoad();
-
-    const {
-      data: { subscription },
-    } = supabase.auth.onAuthStateChange((_event, session) => {
-      if (!active) return;
-      setIsAuthenticated(Boolean(session?.user));
       void loadHeroCtaState();
-    });
 
-    const onBillingUpdated = () => {
-      void loadHeroCtaState();
+      const {
+        data: { subscription },
+      } = supabase.auth.onAuthStateChange((_event, session) => {
+        if (!active) return;
+        setIsAuthenticated(Boolean(session?.user));
+        void loadHeroCtaState();
+      });
+      unsubscribeAuth = () => subscription.unsubscribe();
+
+      const onBillingUpdated = () => {
+        void loadHeroCtaState();
+      };
+      window.addEventListener("evglab-billing-updated", onBillingUpdated as EventListener);
+      removeBillingListener = () => {
+        window.removeEventListener("evglab-billing-updated", onBillingUpdated as EventListener);
+      };
     };
-    window.addEventListener("evglab-billing-updated", onBillingUpdated as EventListener);
+
+    if (typeof window === "undefined") return;
+    if ("requestIdleCallback" in window) {
+      idleId = (window as Window & { requestIdleCallback: (cb: IdleRequestCallback) => number }).requestIdleCallback(
+        () => {
+          void initHeroCtaState();
+        },
+      );
+    } else {
+      timeoutId = globalThis.setTimeout(() => {
+        void initHeroCtaState();
+      }, 900);
+    }
 
     return () => {
       active = false;
-      subscription.unsubscribe();
-      window.removeEventListener("evglab-billing-updated", onBillingUpdated as EventListener);
+      if (idleId !== null) {
+        (window as Window & { cancelIdleCallback?: (id: number) => void }).cancelIdleCallback?.(idleId);
+      }
+      if (timeoutId !== null) {
+        globalThis.clearTimeout(timeoutId);
+      }
+      unsubscribeAuth?.();
+      removeBillingListener?.();
     };
   }, []);
 
@@ -175,23 +219,28 @@ function Hero() {
 
   return (
     <div className="relative w-full overflow-visible">
-      <Floating sensitivity={-0.5} className="pointer-events-none absolute inset-0 z-0 hidden h-full min-h-full md:block" aria-hidden>
-        {HERO_FLOAT_LAYOUT.map((slot, i) => {
-          const imgIndex = i < KI_BEISPIELE.length ? i : 1;
-          const img = KI_BEISPIELE[imgIndex];
-          return (
-            <FloatingElement key={`hero-float-${i}-${img.src}`} depth={slot.depth} className={slot.className}>
-              <BlurFade delay={slot.delay} duration={0.45} blur="8px">
-                <motion.img
-                  src={img.src}
-                  alt={img.alt}
-                  className={`cursor-default rounded-xl object-cover shadow-2xl duration-200 blur-[2px] sm:blur-[3px] md:blur-[4px] ${slot.imgClass}`}
-                />
-              </BlurFade>
-            </FloatingElement>
-          );
-        })}
-      </Floating>
+      {showFloatingExamples ? (
+        <Floating sensitivity={-0.5} className="pointer-events-none absolute inset-0 z-0 hidden h-full min-h-full md:block" aria-hidden>
+          {HERO_FLOAT_LAYOUT.map((slot, i) => {
+            const imgIndex = i < KI_BEISPIELE.length ? i : 1;
+            const img = KI_BEISPIELE[imgIndex];
+            return (
+              <FloatingElement key={`hero-float-${i}-${img.src}`} depth={slot.depth} className={slot.className}>
+                <BlurFade delay={slot.delay} duration={0.45} blur="8px">
+                  <motion.img
+                    src={img.src}
+                    alt={img.alt}
+                    loading="lazy"
+                    decoding="async"
+                    fetchPriority="low"
+                    className={`cursor-default rounded-xl object-cover shadow-2xl duration-200 blur-[2px] sm:blur-[3px] md:blur-[4px] ${slot.imgClass}`}
+                  />
+                </BlurFade>
+              </FloatingElement>
+            );
+          })}
+        </Floating>
+      ) : null}
       <div className="container mx-auto">
         <div className="relative z-10 flex flex-col items-center justify-center gap-8 py-20 max-md:gap-6 max-md:pb-12 max-md:pt-28 sm:max-md:pb-16 sm:max-md:pt-32 lg:py-40">
           <div

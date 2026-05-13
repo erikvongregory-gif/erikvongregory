@@ -96,7 +96,6 @@ export default function RootLayout({
             __html: `(function(){try{if("scrollRestoration" in window.history){window.history.scrollRestoration="manual";}var shouldReset=window.location.pathname==="/"&&!window.location.hash;function forceTop(){window.scrollTo({top:0,left:0,behavior:"auto"});if(document.documentElement){document.documentElement.scrollTop=0;}if(document.body){document.body.scrollTop=0;}}if(shouldReset){var style=document.createElement("style");style.setAttribute("data-scroll-reset-style","1");style.textContent='html{scroll-behavior:auto !important;}';document.head.appendChild(style);forceTop();var frames=0;var released=false;var release=function(){if(released)return;released=true;if(style&&style.parentNode){style.parentNode.removeChild(style);}};var tick=function(){forceTop();frames+=1;if(frames<28){requestAnimationFrame(tick);}else{release();}};requestAnimationFrame(tick);setTimeout(release,1400);}window.addEventListener("pageshow",function(){if(window.location.pathname==="/"&&!window.location.hash){window.scrollTo({top:0,left:0,behavior:"auto"});}}, { passive: true });}catch(_e){}})();`,
           }}
         />
-        <link rel="preload" href="/hero-portrait.svg" as="image" />
       </head>
       <body className="bg-[#0a0f14] text-neutral-900 antialiased">
         <SiteSmoothScroll />
