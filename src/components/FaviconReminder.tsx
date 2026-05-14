@@ -2,17 +2,25 @@
 
 import { useEffect } from "react";
 
-const NORMAL_ICON = "/icon.svg?v=20260427";
-const REMINDER_ICON = "/icon-reminder.svg?v=20260427";
+const ICON_VERSION = "20260514a";
+const NORMAL_ICON = `/favicon.ico?v=${ICON_VERSION}`;
+const REMINDER_ICON = `/icon-reminder.svg?v=${ICON_VERSION}`;
 const REMINDER_TITLE = "EvGlab wartet auf dich";
+
+function getFaviconType(href: string) {
+  if (href.endsWith(".svg") || href.includes(".svg?")) return "image/svg+xml";
+  if (href.endsWith(".png") || href.includes(".png?")) return "image/png";
+  return "image/x-icon";
+}
 
 function setFavicons(href: string) {
   const links = document.querySelectorAll<HTMLLinkElement>("link[rel='icon'], link[rel='shortcut icon']");
+  const type = getFaviconType(href);
 
   if (links.length === 0) {
     const fallback = document.createElement("link");
     fallback.rel = "icon";
-    fallback.type = "image/svg+xml";
+    fallback.type = type;
     fallback.href = href;
     document.head.appendChild(fallback);
     return;
@@ -20,7 +28,7 @@ function setFavicons(href: string) {
 
   links.forEach((link) => {
     link.href = href;
-    if (!link.type) link.type = "image/svg+xml";
+    link.type = type;
   });
 }
 

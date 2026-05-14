@@ -25,6 +25,8 @@ const playfair = Playfair_Display({
   style: ["normal", "italic"],
 });
 
+const ICON_VERSION = "20260514a";
+
 export const viewport = {
   width: "device-width",
   initialScale: 1,
@@ -72,11 +74,15 @@ export const metadata: Metadata = {
   },
   category: "Business",
   icons: {
-    icon: [{ url: "/icon.svg?v=20260427", type: "image/svg+xml" }],
-    shortcut: ["/icon.svg?v=20260427"],
-    apple: [{ url: "/icon.png?v=20260427", sizes: "180x180", type: "image/png" }],
+    icon: [
+      { url: `/favicon.ico?v=${ICON_VERSION}`, sizes: "any" },
+      { url: `/icon.svg?v=${ICON_VERSION}`, type: "image/svg+xml" },
+      { url: `/icon.png?v=${ICON_VERSION}`, sizes: "512x512", type: "image/png" },
+    ],
+    shortcut: [`/favicon.ico?v=${ICON_VERSION}`],
+    apple: [{ url: `/apple-icon.png?v=${ICON_VERSION}`, sizes: "180x180", type: "image/png" }],
   },
-  manifest: "/manifest.json",
+  manifest: `/manifest.json?v=${ICON_VERSION}`,
   ...(SITE.googleSiteVerification?.trim() && {
     verification: { google: SITE.googleSiteVerification.trim() },
   }),
