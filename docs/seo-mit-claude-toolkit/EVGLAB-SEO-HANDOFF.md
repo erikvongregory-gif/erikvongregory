@@ -4,16 +4,14 @@ Diese Punkte kann ich nicht vollautomatisch im Code fuer dich erledigen. Bitte i
 
 ## 1) Google Search Console (Pflicht)
 
-- Property fuer `https://evglab.com` anlegen (URL-Prefix oder Domain Property).
+- Domain Property fuer `evglab.com` oder alternativ URL-Prefix fuer `https://www.evglab.com` nutzen.
 - Verifizierung setzen:
   - Entweder DNS-TXT in deinem Domain-Provider, oder
   - HTML-Tag in `SITE.googleSiteVerification` eintragen.
-- `https://evglab.com/sitemap.xml` in GSC einreichen.
+- Nur `https://www.evglab.com/sitemap.xml` in GSC eingereicht lassen.
 - Indexierung fuer diese Seiten manuell anstossen:
   - `/`
-  - `/loesungen/saisonkampagne-brauerei`
-  - `/loesungen/biergarten-event-marketing`
-  - `/loesungen/haendler-gastro-promotion`
+  - `/loesungen`
   - `/impressum`, `/datenschutz`, `/agb`
 
 ## 2) Rich Results und Social Validatoren

@@ -1,8 +1,27 @@
 import { NextResponse, type NextRequest } from "next/server";
 import { updateSession } from "@/lib/supabase/middleware";
 
+const DIRECT_CANONICAL_REDIRECTS: Record<string, string> = {
+  "/loesungen/saisonkampagne-brauerei": "/loesungen",
+  "/loesungen/biergarten-event-marketing": "/loesungen",
+  "/loesungen/haendler-gastro-promotion": "/loesungen",
+};
+
 export async function middleware(request: NextRequest) {
   const host = request.nextUrl.hostname.toLowerCase();
+  const { pathname } = request.nextUrl;
+  const canonicalTarget = DIRECT_CANONICAL_REDIRECTS[pathname];
+
+  if (canonicalTarget) {
+    const redirectUrl = request.nextUrl.clone();
+    redirectUrl.protocol = "https:";
+    redirectUrl.hostname = "www.evglab.com";
+    redirectUrl.port = "";
+    redirectUrl.pathname = canonicalTarget;
+    redirectUrl.search = "";
+    return NextResponse.redirect(redirectUrl, 308);
+  }
+
   const isLegacyHost = host === "erikvongregory.com" || host === "www.erikvongregory.com";
   const isApexEvglab = host === "evglab.com";
   if (isLegacyHost || isApexEvglab) {
@@ -13,7 +32,6 @@ export async function middleware(request: NextRequest) {
     return NextResponse.redirect(redirectUrl, 308);
   }
 
-  const { pathname } = request.nextUrl;
   const authAppPaths =
     pathname.startsWith("/dashboard") ||
     pathname.startsWith("/admin") ||
