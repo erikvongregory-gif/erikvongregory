@@ -57,7 +57,7 @@ function SectionDivider() {
 
 export default function UeberUnsPage() {
   return (
-    <main className="relative z-20 overflow-hidden bg-gradient-to-b from-white via-zinc-50/85 to-zinc-100/95 text-zinc-900">
+    <main className="ueber-uns-page relative z-20 overflow-hidden bg-gradient-to-b from-white via-zinc-50/85 to-zinc-100/95 text-zinc-900">
       <UeberUnsMountScroll />
       <div
         className="pointer-events-none absolute inset-x-0 top-0 h-[min(70vh,520px)] bg-[radial-gradient(ellipse_80%_60%_at_50%_-10%,rgba(198,90,32,0.09),transparent_55%)]"

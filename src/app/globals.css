@@ -1908,6 +1908,38 @@ body[data-legal-page="true"] {
   text-shadow: none;
 }
 
+@keyframes mobile-header-menu-in {
+  from {
+    opacity: 0;
+    transform: translateY(-4px) scale(0.98);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+
+.mobile-header-menu-panel--open {
+  transform-origin: top right;
+  animation: mobile-header-menu-in 0.28s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+/* Über-uns Mobile: kein Blur-/Glow-„Funkeln“ am Fließtext */
+@media (max-width: 767px) {
+  .ueber-uns-page .blur-text > span {
+    opacity: 1 !important;
+    filter: none !important;
+    transform: none !important;
+    text-shadow: none !important;
+    transition: none !important;
+    will-change: auto;
+  }
+
+  .ueber-uns-page .section7-badge-pulse {
+    animation: none;
+  }
+}
+
 /*
  * Große Displays: leicht erhöhte Basis-Typografie, damit UI/Schrift
  * auf 1440p/4K visuell nicht zu klein wirkt.

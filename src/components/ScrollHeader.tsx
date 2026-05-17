@@ -149,6 +149,15 @@ export function ScrollHeader() {
 
   useEffect(() => {
     if (!dropdownOpen) return;
+    const prevOverflow = document.body.style.overflow;
+    document.body.style.overflow = "hidden";
+    return () => {
+      document.body.style.overflow = prevOverflow;
+    };
+  }, [dropdownOpen]);
+
+  useEffect(() => {
+    if (!dropdownOpen) return;
     const onPointer = (e: MouseEvent | TouchEvent) => {
       if (mobileAuthDialogOpen) return;
       const el = mobileNavRef.current;
@@ -345,9 +354,9 @@ export function ScrollHeader() {
 
   return (
     <>
-      {/* Mobile: kompakter Header mit Dropdown */}
+      {/* Mobile: Logo links, Menü-Overlay rechts (kein Layout-Shift) */}
       <header
-        className="mobile-top-header pointer-events-none fixed left-0 right-0 top-0 z-[100] box-border flex items-center justify-between gap-3 bg-transparent pl-[max(1rem,env(safe-area-inset-left))] pr-[max(1rem,env(safe-area-inset-right))] pt-[max(0.35rem,env(safe-area-inset-top))] pb-1 md:hidden"
+        className="mobile-top-header pointer-events-none fixed inset-x-0 top-0 z-[100] box-border flex items-center justify-between gap-3 pl-[max(1rem,env(safe-area-inset-left))] pr-[max(1rem,env(safe-area-inset-right))] pt-[max(0.35rem,env(safe-area-inset-top))] pb-1 md:hidden"
         aria-label="Seitennavigation"
       >
         <a
@@ -359,15 +368,25 @@ export function ScrollHeader() {
         >
           Kontakt
         </a>
-        <div className="pointer-events-auto min-w-0 shrink px-1 py-0.5">
-          {headerLogo}
-        </div>
 
-        <div ref={mobileNavRef} className="pointer-events-auto relative shrink-0">
+        <div className="pointer-events-auto min-w-0 shrink px-1 py-0.5">{headerLogo}</div>
+
+        {dropdownOpen ? (
+          <button
+            type="button"
+            tabIndex={-1}
+            aria-hidden
+            className="pointer-events-auto fixed inset-0 z-[99] bg-black/20 backdrop-blur-[2px]"
+            onClick={() => setDropdownOpen(false)}
+          />
+        ) : null}
+
+        <div ref={mobileNavRef} className="pointer-events-auto relative z-[101] shrink-0">
           <button
             type="button"
             className="inline-flex h-10 w-10 items-center justify-center rounded-lg bg-transparent text-neutral-900 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-neutral-400 focus-visible:ring-offset-2"
             aria-expanded={dropdownOpen}
+            aria-controls="mobile-header-menu"
             aria-haspopup="menu"
             aria-label={dropdownOpen ? "Menü schließen" : "Menü öffnen"}
             onClick={() => setDropdownOpen((o) => !o)}
@@ -387,8 +406,9 @@ export function ScrollHeader() {
 
           {dropdownOpen ? (
             <div
-              className="absolute right-0 top-full z-[110] mt-2 min-w-[14.5rem] overflow-hidden rounded-2xl border border-white/10 bg-[#12151b] py-2 text-white shadow-[0_24px_40px_-24px_rgba(0,0,0,0.9)]"
+              id="mobile-header-menu"
               role="menu"
+              className="mobile-header-menu-panel absolute right-0 top-full z-[110] mt-1.5 min-w-[14.5rem] origin-top-right overflow-hidden rounded-2xl border border-black/[0.08] bg-white/95 py-2 shadow-[0_16px_48px_-12px_rgba(0,0,0,0.2)] backdrop-blur-xl mobile-header-menu-panel--open"
             >
               {GLOW_NAV_ITEMS.map(({ href, label }) => {
                 const isActive =
@@ -403,19 +423,19 @@ export function ScrollHeader() {
                       e.preventDefault();
                       handleNavClick(href);
                     }}
-                    className="block rounded-lg px-4 py-2.5 text-[15px] text-zinc-200 transition hover:bg-white/10 focus-visible:bg-white/10 focus-visible:outline-none"
-                    style={
-                      isActive ? { color: "#c8ff26", fontWeight: 600 } : undefined
-                    }
+                    className={cn(
+                      "block rounded-xl px-4 py-2.5 text-[15px] text-zinc-700 transition hover:bg-black/[0.04] focus-visible:bg-black/[0.04] focus-visible:outline-none",
+                      isActive && "font-semibold text-[#5a7a00]",
+                    )}
                   >
                     {label}
                   </a>
                 );
               })}
-              <div className="mt-2 border-t border-white/10 bg-transparent px-3 pb-2 pt-3">
+              <div className="mt-2 border-t border-black/[0.06] px-3 pb-1 pt-3">
                 <a
                   href={APP_LOGIN_URL}
-                  className="inline-flex h-10 w-full items-center justify-center rounded-full border border-white/10 bg-white/5 px-4 text-sm font-medium text-white shadow-none transition hover:bg-white/10"
+                  className="inline-flex h-10 w-full items-center justify-center rounded-full border border-black/[0.08] bg-zinc-900 px-4 text-sm font-medium text-white transition hover:bg-zinc-800"
                 >
                   Anmelden
                 </a>

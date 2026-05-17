@@ -191,14 +191,14 @@ export function BlurText({
   if (prefersReducedMotion) {
     const plain = parts?.length ? parts.map((p) => p.text).join(" ") : text;
     return (
-      <span ref={rootRef} className={cn("inline", className)}>
+      <span ref={rootRef} className={cn("blur-text inline", className)}>
         {plain}
       </span>
     );
   }
 
   return (
-    <span ref={rootRef} className={cn("inline", className)}>
+    <span ref={rootRef} className={cn("blur-text inline", className)}>
       {textWords.map((word, index) => (
         <span
           key={`${word.text}-${index}`}
