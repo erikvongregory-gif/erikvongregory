@@ -9,6 +9,7 @@ import { LiquidMetalButton } from "@/components/ui/liquid-metal-button";
 import Floating, { FloatingElement } from "@/components/ui/parallax-floating";
 import { MobileGalleryHero } from "@/components/mobile/MobileGalleryHero";
 import { useLoading } from "@/context/LoadingContext";
+import { navigateToAppDashboard } from "@/lib/appLoginUrl";
 import { KI_BEISPIELE } from "@/lib/kiBeispiele";
 
 const HERO_FLOAT_LAYOUT = [
@@ -197,17 +198,8 @@ function Hero() {
   const [ctaPending, setCtaPending] = useState(false);
 
   const onPrimaryCtaClick = () => {
-    if (typeof window === "undefined") return;
-    if (!isAuthenticated) {
-      window.dispatchEvent(
-        new CustomEvent("evglab-open-auth-modal", {
-          detail: { mode: "signup" },
-        }),
-      );
-      return;
-    }
     setCtaPending(true);
-    window.location.assign("/dashboard");
+    navigateToAppDashboard();
   };
 
   const onGalleryOpen = () => {

@@ -3,7 +3,7 @@
 import { useEffect, useState } from "react";
 import { ScrollReveal } from "./ScrollReveal";
 import { HowItWorks } from "@/components/ui/how-it-works";
-import { Section2BreweryCards } from "@/components/Section2BreweryCards";
+import { WarumEvGlabSection } from "@/components/mobile/WarumEvGlabSection";
 import { CONTAINED_SHADER_BG, ShaderCanvas } from "@/components/ui/animated-glassy-pricing";
 
 const SECTION4_ITEMS = [
@@ -93,14 +93,11 @@ export function MobileLayout() {
     <>
       <div className="relative z-10 flex flex-col">
         <div id="warum" className="scroll-mt-24" aria-hidden />
-        <section
-          id="section-2"
-          className="insurance-card-theme relative z-30 px-4 pt-10 pb-16 sm:pt-14 md:pt-24"
-        >
+        <section id="section-2" className="relative z-30 bg-paper">
           <ScrollReveal>
-            <Section2BreweryCards layout="stack" />
+            <WarumEvGlabSection />
           </ScrollReveal>
-          <HowItWorks className="mt-8 border-t border-zinc-200/40 pt-10 sm:mt-10 sm:pt-12" />
+          <HowItWorks className="mx-4 mt-8 border-t border-ink/10 pt-10 pb-16 sm:mt-10 sm:pt-12" />
         </section>
 
         {/* Section 4 */}

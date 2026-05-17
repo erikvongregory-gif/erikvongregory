@@ -1,4 +1,19 @@
 /**
+ * Basis-URL der Dashboard-App (getrennt von der Marketing-Site).
+ * Produktion: https://app.evglab.com
+ *
+ * Lokal: in `.env.local`, z. B. `NEXT_PUBLIC_APP_BASE_URL=http://localhost:3001`
+ */
+export const APP_BASE_URL =
+  process.env.NEXT_PUBLIC_APP_BASE_URL?.trim() ||
+  (process.env.NODE_ENV === "development"
+    ? "http://localhost:3001"
+    : "https://app.evglab.com");
+
+/** Dashboard-Start — Hero-CTA „3 Bilder kostenlos generieren“ */
+export const APP_DASHBOARD_URL = `${APP_BASE_URL.replace(/\/$/, "")}/dashboard`;
+
+/**
  * Ziel der „Anmelden“-Links im Marketing (Dashboard-App).
  * Produktion: https://app.evglab.com/anmelden
  *
@@ -7,9 +22,13 @@
  */
 export const APP_LOGIN_URL =
   process.env.NEXT_PUBLIC_APP_LOGIN_URL?.trim() ||
-  (process.env.NODE_ENV === "development"
-    ? "http://localhost:3001/anmelden"
-    : "https://app.evglab.com/anmelden");
+  `${APP_BASE_URL.replace(/\/$/, "")}/anmelden`;
+
+/** Volle Navigation zur App (z. B. Hero-CTA) */
+export function navigateToAppDashboard(): void {
+  if (typeof window === "undefined") return;
+  window.location.assign(APP_DASHBOARD_URL);
+}
 
 /** Login-URL der App mit optionalen Query-Parametern (z. B. `plan` nach Pricing-Klick). */
 export function buildAppLoginUrl(params?: Record<string, string>): string {

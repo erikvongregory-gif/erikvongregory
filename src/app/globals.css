@@ -1935,6 +1935,24 @@ body[data-legal-page="true"] {
   animation: mobile-header-menu-in 0.28s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
+@keyframes mobile-hero-eyebrow-dot-pulse {
+  0%,
+  100% {
+    transform: scale(1);
+    opacity: 1;
+    box-shadow: 0 0 0 0 rgba(199, 105, 30, 0.45);
+  }
+  50% {
+    transform: scale(1.35);
+    opacity: 0.88;
+    box-shadow: 0 0 0 5px rgba(199, 105, 30, 0.2);
+  }
+}
+
+.mobile-hero-eyebrow-dot {
+  animation: mobile-hero-eyebrow-dot-pulse 2s ease-in-out infinite;
+}
+
 /* Mobile Startseite — Gallery-Led Hero (Option C) */
 @media (max-width: 767px) {
   body:has(.mobile-root-home) .site-gradient-backdrop-fill {
@@ -1951,6 +1969,11 @@ body[data-legal-page="true"] {
 @media (max-width: 767px) and (prefers-reduced-motion: reduce) {
   .mobile-gallery-hero button[aria-pressed] {
     transition: none !important;
+  }
+
+  .mobile-hero-eyebrow-dot {
+    animation: none;
+    box-shadow: none;
   }
 }
 

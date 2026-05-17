@@ -168,7 +168,7 @@ export function MobileGalleryHero({
       aria-labelledby="mobile-gallery-hero-heading"
     >
       <p className="flex items-center gap-2 px-5 pt-1 font-mono-hero text-[11px] uppercase tracking-[1.2px] text-ink3">
-        <span className="h-1.5 w-1.5 shrink-0 rounded-full bg-amber" aria-hidden />
+        <span className="mobile-hero-eyebrow-dot h-1.5 w-1.5 shrink-0 rounded-full bg-amber" aria-hidden />
         Heute generiert · {motifLabel} Motive
       </p>
 
