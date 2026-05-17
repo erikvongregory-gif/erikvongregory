@@ -19,8 +19,8 @@ export interface SiteGradientBackdropProps {
  */
 export function SiteGradientBackdrop({ className }: SiteGradientBackdropProps) {
   return (
-    <div className={cn("fixed inset-0 z-0 overflow-hidden", className)} aria-hidden>
-      <div className="absolute inset-0" style={ORANGE_RADIAL_PAGE_BG} />
+    <div className={cn("site-gradient-backdrop fixed inset-0 z-0 overflow-hidden", className)} aria-hidden>
+      <div className="site-gradient-backdrop-fill absolute inset-0" style={ORANGE_RADIAL_PAGE_BG} />
     </div>
   );
 }

@@ -7,6 +7,7 @@ import { Button } from "@/components/ui/button";
 import { BlurFade } from "@/components/ui/blur-fade";
 import { LiquidMetalButton } from "@/components/ui/liquid-metal-button";
 import Floating, { FloatingElement } from "@/components/ui/parallax-floating";
+import { MobileGalleryHero } from "@/components/mobile/MobileGalleryHero";
 import { useLoading } from "@/context/LoadingContext";
 import { KI_BEISPIELE } from "@/lib/kiBeispiele";
 
@@ -193,6 +194,8 @@ function Hero() {
     return "Jetzt kostenloses Bild erstellen";
   }, [isAuthenticated, freeTrialImageUsed, hasActiveSubscription]);
 
+  const [ctaPending, setCtaPending] = useState(false);
+
   const onPrimaryCtaClick = () => {
     if (typeof window === "undefined") return;
     if (!isAuthenticated) {
@@ -203,7 +206,17 @@ function Hero() {
       );
       return;
     }
+    setCtaPending(true);
     window.location.assign("/dashboard");
+  };
+
+  const onGalleryOpen = () => {
+    if (typeof window === "undefined") return;
+    const el =
+      document.getElementById("beispiele") ??
+      document.getElementById("echte-beispiele-aus-der-praxis");
+    if (!el) return;
+    el.scrollIntoView({ behavior: "smooth", block: "start" });
   };
 
   useEffect(() => {
@@ -241,36 +254,44 @@ function Hero() {
           })}
         </Floating>
       ) : null}
-      <div className="container mx-auto">
-        <div className="relative z-10 flex flex-col items-center justify-center gap-8 py-20 max-md:gap-6 max-md:pb-12 max-md:pt-28 sm:max-md:pb-16 sm:max-md:pt-32 lg:py-40">
+      <div className="container mx-auto max-md:max-w-none max-md:px-0">
+        <div
+          className={`md:hidden transition-opacity duration-500 ease-out ${
+            heroReady ? "opacity-100" : "opacity-0"
+          }`}
+        >
+          <MobileGalleryHero
+            primaryCtaLabel={primaryCtaLabel}
+            onPrimaryCtaClick={onPrimaryCtaClick}
+            ctaPending={ctaPending}
+            onGalleryOpen={onGalleryOpen}
+          />
+        </div>
+
+        <div className="relative z-10 hidden flex-col items-center justify-center gap-8 py-20 md:flex lg:py-40">
           <div
             className={`flex w-full flex-col items-center transition-opacity duration-500 ease-out ${
               heroReady ? "opacity-100" : "opacity-0"
             }`}
           >
-              <BlurFade delay={0.04} duration={0.45} className="hidden md:block">
+              <BlurFade delay={0.04} duration={0.45}>
                 <Button variant="secondary" size="sm" className="gap-4">
                   Fokus: KI-Content für Brauereien <MoveRight className="w-4 h-4" />
                 </Button>
               </BlurFade>
-              <BlurFade delay={0.04} duration={0.45} className="mb-3 flex justify-center md:hidden">
-                <Button variant="secondary" size="sm" className="gap-2 text-xs">
-                  Fokus: KI-Content für Brauereien <MoveRight className="h-3.5 w-3.5" />
-                </Button>
-              </BlurFade>
 
-              <BlurFade delay={0.12} duration={0.48} className="flex flex-col gap-4 max-md:mx-auto max-md:w-[min(92vw,22rem)]">
+              <BlurFade delay={0.12} duration={0.48} className="flex flex-col gap-4">
                 <div
-                  className="max-w-2xl text-center text-5xl font-regular tracking-tighter max-md:mx-auto max-md:w-full max-md:max-w-[18.5rem] max-md:text-[2rem] max-md:leading-[1.12] md:text-7xl"
+                  className="max-w-2xl text-center text-5xl font-regular tracking-tighter md:text-7xl"
                   aria-hidden
                 >
                   <span className="text-spektr-cyan-50">KI-Marketing für Brauereien</span>
-                  <span className="relative flex w-full justify-center overflow-hidden text-center max-md:mt-2 max-md:min-h-[2.6rem] sm:max-md:min-h-[3rem] md:min-h-0 md:pb-4 md:pt-1">
+                  <span className="relative flex w-full justify-center overflow-hidden text-center md:pb-4 md:pt-1">
                     &nbsp;
                     {titles.map((title, index) => (
                       <motion.span
                         key={index}
-                        className="absolute font-semibold max-md:px-1 max-md:text-[2rem] sm:max-md:text-[2.25rem] md:px-0 md:text-[1.12em]"
+                        className="absolute font-semibold md:text-[1.12em]"
                         initial={{ opacity: 0, y: -100 }}
                         transition={{ type: "spring", stiffness: 50 }}
                         animate={
@@ -285,14 +306,13 @@ function Hero() {
                   </span>
                 </div>
 
-                <p className="max-w-2xl text-center text-lg leading-relaxed tracking-tight text-muted-foreground max-md:mx-auto max-md:w-full max-md:max-w-[21rem] max-md:px-2 max-md:text-[1rem] max-md:leading-[1.42] sm:max-md:text-lg md:text-xl">
-                  <span className="max-md:text-zinc-700">Weniger Aufwand, bessere Ergebnisse:</span>{" "}
-                  <span className="hero-mobile-subtitle-shine">KI-Produktfotos, Kampagnenmotive und Social-Content</span>{" "}
-                  <span className="max-md:text-zinc-600">in deinem Markenstil.</span>
+                <p className="max-w-2xl text-center text-lg leading-relaxed tracking-tight text-muted-foreground md:text-xl">
+                  Weniger Aufwand, bessere Ergebnisse: KI-Produktfotos, Kampagnenmotive und Social-Content in
+                  deinem Markenstil.
                 </p>
               </BlurFade>
 
-              <BlurFade delay={0.2} duration={0.5} className="hidden flex-row flex-wrap items-center justify-center gap-3 md:mt-4 md:flex">
+              <BlurFade delay={0.2} duration={0.5} className="mt-4 flex flex-row flex-wrap items-center justify-center gap-3">
                 <div>
                   <LiquidMetalButton
                     label={primaryCtaLabel}
@@ -302,41 +322,14 @@ function Hero() {
                 <div>
                   <LiquidMetalButton
                     label="Beispiele ansehen"
-                    onClick={() => {
-                      if (typeof window === "undefined") return;
-                      const el = document.getElementById("echte-beispiele-aus-der-praxis");
-                      if (!el) return;
-                      el.scrollIntoView({ behavior: "smooth", block: "start" });
-                    }}
-                  />
-                </div>
-              </BlurFade>
-
-              <BlurFade delay={0.2} duration={0.5} className="mt-2 flex w-full flex-col items-center gap-3 md:hidden">
-                <div className="flex justify-center">
-                  <Button
-                    onClick={onPrimaryCtaClick}
-                    className="h-[50px] w-[224px] rounded-[100px] bg-[#c65a20] text-[15px] font-normal text-white transition hover:bg-[#b14f1c]"
-                  >
-                    {primaryCtaLabel}
-                  </Button>
-                </div>
-                <div className="flex w-[min(92vw,22rem)] items-center justify-center">
-                  <LiquidMetalButton
-                    label="Beispiele ansehen"
-                    size="large"
-                    onClick={() => {
-                      if (typeof window === "undefined") return;
-                      const el = document.getElementById("echte-beispiele-aus-der-praxis");
-                      if (!el) return;
-                      el.scrollIntoView({ behavior: "smooth", block: "start" });
-                    }}
+                    onClick={onGalleryOpen}
                   />
                 </div>
               </BlurFade>
           </div>
         </div>
       </div>
+
     </div>
   );
 }

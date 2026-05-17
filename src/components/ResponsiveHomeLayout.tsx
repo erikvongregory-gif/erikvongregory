@@ -27,11 +27,13 @@ export function ResponsiveHomeLayout() {
   }, []);
 
   return (
-    <div className={`block min-h-[100dvh] w-full min-w-0 ${isDesktop ? "" : "mobile-root"}`}>
+    <div
+      className={`block min-h-[100dvh] w-full min-w-0 ${isDesktop ? "" : "mobile-root mobile-root-home"}`}
+    >
       <main id="main" className="relative min-h-[100dvh] overflow-x-hidden bg-transparent pt-14 sm:pt-16">
         <div
           id="start"
-          className={`section1-wrapper relative mx-auto w-full max-w-screen-2xl ${heroReady ? "section1-ready" : ""}`}
+          className={`section1-wrapper relative mx-auto w-full max-w-screen-2xl ${heroReady ? "section1-ready" : ""} ${isDesktop === false ? "section1-wrapper--mobile-gallery" : ""}`}
         >
           <Hero />
         </div>

@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import { Inter, Playfair_Display } from "next/font/google";
+import { Inter, Inter_Tight, JetBrains_Mono, Newsreader, Playfair_Display } from "next/font/google";
 import { Analytics } from "@vercel/analytics/react";
 import { SpeedInsights } from "@vercel/speed-insights/next";
 import { AppShell } from "@/components/AppShell";
@@ -23,6 +23,28 @@ const playfair = Playfair_Display({
   variable: "--font-serif",
   weight: ["400", "500", "600", "700"],
   style: ["normal", "italic"],
+});
+
+const newsreader = Newsreader({
+  subsets: ["latin", "latin-ext"],
+  display: "swap",
+  variable: "--font-newsreader",
+  weight: ["300", "400", "500", "600"],
+  style: ["normal", "italic"],
+});
+
+const interTight = Inter_Tight({
+  subsets: ["latin", "latin-ext"],
+  display: "swap",
+  variable: "--font-inter-tight",
+  weight: ["400", "500", "600", "700"],
+});
+
+const jetbrainsMono = JetBrains_Mono({
+  subsets: ["latin", "latin-ext"],
+  display: "swap",
+  variable: "--font-jetbrains",
+  weight: ["400", "500"],
 });
 
 const ICON_VERSION = "20260514a";
@@ -94,7 +116,10 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="de" className={`${inter.variable} ${playfair.variable}`}>
+    <html
+      lang="de"
+      className={`${inter.variable} ${playfair.variable} ${newsreader.variable} ${interTight.variable} ${jetbrainsMono.variable}`}
+    >
       <head>
         <script
           // Run as early as possible to avoid one-frame scroll flash on "/".
