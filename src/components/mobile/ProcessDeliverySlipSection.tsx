@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useRef, useState, type CSSProperties } from "react";
 import {
   BARCODE_BAR_HEIGHTS,
   formatStepTimeTag,
@@ -24,15 +24,17 @@ function OutputArrowIcon() {
   );
 }
 
-function SignatureIcon() {
+function SignatureIcon({ animate }: { animate: boolean }) {
   return (
     <svg width="60" height="22" viewBox="0 0 60 22" fill="none" aria-hidden className="ml-auto opacity-85">
       <path
         d="M2 14 Q 8 4, 14 14 T 28 14 Q 36 6, 44 16 T 58 12"
+        pathLength={1}
         stroke="#C7691E"
         strokeWidth="2"
         fill="none"
         strokeLinecap="round"
+        className={cn(animate && "process-delivery-signature-path--animate")}
       />
     </svg>
   );
@@ -196,12 +198,27 @@ export function ProcessDeliverySlipSection() {
           >
             <div className="flex h-[22px] items-end gap-0.5" aria-hidden>
               {BARCODE_BAR_HEIGHTS.map((height, i) => (
-                <span key={i} className="w-0.5 bg-ink opacity-85" style={{ height }} />
+                <span
+                  key={i}
+                  className={cn(
+                    "w-0.5 bg-ink opacity-85",
+                    inView && !reducedMotion && "process-delivery-barcode-bar--animate",
+                  )}
+                  style={
+                    inView && !reducedMotion
+                      ? ({
+                          height,
+                          ["--barcode-delay" as string]: `${i * 0.065}s`,
+                          ["--barcode-duration" as string]: `${0.95 + (i % 5) * 0.14}s`,
+                        } as CSSProperties)
+                      : { height }
+                  }
+                />
               ))}
             </div>
             <div className="text-right">
               <p className="m-0 font-mono-hero text-[9px] uppercase tracking-[0.8px] text-ink3">GENEHMIGT</p>
-              <SignatureIcon />
+              <SignatureIcon animate={inView && !reducedMotion} />
             </div>
           </footer>
         </article>

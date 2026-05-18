@@ -3,6 +3,7 @@ import { ResponsiveHomeLayout } from "@/components/ResponsiveHomeLayout";
 import { PricingSection } from "@/components/PricingSection";
 import { Section7AIDemo } from "@/components/Section7AIDemo";
 import { SITE } from "@/lib/siteConfig";
+import { TRESENGESPRAECH_FAQS } from "@/lib/tresengespraechFaqs";
 
 export const metadata: Metadata = {
   title: "KI-Marketing für Brauereien: Bilder, Posts & Bewertungen | EvGlab",
@@ -72,48 +73,14 @@ export default function Home() {
   const faqJsonLd = {
     "@context": "https://schema.org",
     "@type": "FAQPage",
-    mainEntity: [
-      {
-        "@type": "Question",
-        name: "Wie schnell sehe ich erste Ergebnisse?",
-        acceptedAnswer: {
-          "@type": "Answer",
-          text: "Erste fertige Bilder und Posts innerhalb von 3–5 Tagen nach Bestellung. Im Dashboard-Abo sofort nach dem Login.",
-        },
+    mainEntity: TRESENGESPRAECH_FAQS.map((faq) => ({
+      "@type": "Question",
+      name: faq.q,
+      acceptedAnswer: {
+        "@type": "Answer",
+        text: faq.a,
       },
-      {
-        "@type": "Question",
-        name: "Ist das Risiko gering, wenn ich starte?",
-        acceptedAnswer: {
-          "@type": "Answer",
-          text: "Ja. Pakete sind einmalig ohne Abo-Bindung. Das Dashboard-Abo ist monatlich kündbar. Kein Vertrag, kein Kleingedrucktes.",
-        },
-      },
-      {
-        "@type": "Question",
-        name: "Wie viel Aufwand habe ich intern wirklich?",
-        acceptedAnswer: {
-          "@type": "Answer",
-          text: "Bei Paketen fast null — du schickst Logo und Briefing, wir liefern. Im Dashboard ca. 5–15 Minuten pro Post.",
-        },
-      },
-      {
-        "@type": "Question",
-        name: "Kann ich später hoch- oder runterwechseln?",
-        acceptedAnswer: {
-          "@type": "Answer",
-          text: "Ja, jederzeit zum Monatsende. Kein Aufpreis, kein Prozess.",
-        },
-      },
-      {
-        "@type": "Question",
-        name: "Sind die Inhalte wirklich in meinem Markenstil?",
-        acceptedAnswer: {
-          "@type": "Answer",
-          text: "Ja. Du hinterlegst einmal dein Markenprofil (Logo, Tonalität, Farbschema) — alle Bilder und Texte werden konsistent in deinem Stil ausgespielt.",
-        },
-      },
-    ],
+    })),
   };
 
   const siteNavigationJsonLd = {

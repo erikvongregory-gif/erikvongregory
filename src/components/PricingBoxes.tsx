@@ -18,7 +18,10 @@ import {
   TrendingUp,
 } from "lucide-react";
 
+import { trackEvent } from "@/lib/analytics";
+import { scrollToContactPaket } from "@/lib/contactPaket";
 import { cn } from "@/lib/utils";
+import { MobilePricingSection } from "@/components/mobile/MobilePricingSection";
 
 import {
   CONTAINED_SHADER_BG,
@@ -27,6 +30,7 @@ import {
   type PricingCardProps,
 } from "@/components/ui/animated-glassy-pricing";
 import FAQsComponent from "@/components/ui/faqs-component";
+import { MobileFaqChatSection } from "@/components/mobile/MobileFaqChatSection";
 import { LEGAL } from "@/lib/legal";
 import type { SubscriptionPlanKey } from "@/lib/billing/tokenState";
 
@@ -56,15 +60,6 @@ type AddonRow = {
   priceSubtext: string;
 };
 type OfferPath = "service" | "dashboard";
-
-function trackEvent(event: string, payload?: Record<string, unknown>) {
-  if (typeof window === "undefined") return;
-  window.dispatchEvent(new CustomEvent("evglab-analytics-event", { detail: { event, ...payload } }));
-  const w = window as typeof window & { dataLayer?: Array<Record<string, unknown>> };
-  if (Array.isArray(w.dataLayer)) {
-    w.dataLayer.push({ event, ...payload });
-  }
-}
 
 async function startPlanCheckout(plan: SubscriptionPlanKey) {
   const response = await fetch("/api/billing/checkout", {
@@ -238,18 +233,6 @@ const ADDONS: AddonRow[] = [
 ];
 /** Desktop: von günstig nach teuer (teuerste Karte rechts). */
 const ADDONS_DESKTOP_ORDER = [0, 2, 1] as const;
-
-/** Öffnet den ContactFunnel wie ein Klick auf `a[href="#contact"][data-paket]`. */
-function scrollToContactPaket(paketName: string) {
-  if (typeof window === "undefined") return;
-  const a = document.createElement("a");
-  a.href = "#contact";
-  a.setAttribute("data-paket", paketName);
-  a.style.cssText = "position:fixed;left:-9999px;opacity:0;pointer-events:none";
-  document.body.appendChild(a);
-  a.click();
-  document.body.removeChild(a);
-}
 
 function toPricingCardProps(
   pkg: PricingPackageDef,
@@ -528,10 +511,17 @@ export function PricingBoxes() {
   }, []);
 
   return (
-    <section ref={sectionRef} className={`mt-10 ${inView ? "pricing-in-view" : ""}`}>
+    <section ref={sectionRef} className={`max-md:mt-0 md:mt-10 ${inView ? "pricing-in-view" : ""}`}>
       <div className="pricing-loop-stack-root relative isolate z-0 rounded-3xl max-md:rounded-none max-md:overflow-visible md:overflow-hidden">
         <div className="pricing-loop-content-stack relative z-20 px-1 py-4 sm:px-2 md:py-8">
-          <div className="evg-clean-hover mb-8 rounded-2xl border border-black/10 bg-gradient-to-br from-black/5 to-black/0 p-4 shadow-[0_14px_30px_-20px_rgba(24,24,27,0.26)] backdrop-blur-[14px] hover:border-[#e07a40]/35 hover:shadow-[0_16px_34px_-20px_rgba(198,90,32,0.24)] max-md:border-transparent max-md:bg-transparent max-md:shadow-none max-md:backdrop-blur-0 md:mb-10 md:p-5">
+          {isDesktop === false ? (
+            <MobilePricingSection
+              checkoutBusyPlan={checkoutBusyPlan}
+              onCheckoutPlan={handleCheckoutPlan}
+            />
+          ) : null}
+
+          <div className="evg-clean-hover mb-8 hidden rounded-2xl border border-black/10 bg-gradient-to-br from-black/5 to-black/0 p-4 shadow-[0_14px_30px_-20px_rgba(24,24,27,0.26)] backdrop-blur-[14px] hover:border-[#e07a40]/35 hover:shadow-[0_16px_34px_-20px_rgba(198,90,32,0.24)] md:mb-10 md:block md:p-5">
             <div className="mb-4 flex flex-col items-center gap-2 text-center">
               <span className="inline-flex items-center gap-2 rounded-full border border-[rgba(224,122,64,0.35)] bg-[rgba(224,122,64,0.14)] px-4 py-1.5 text-sm font-medium text-[#c65a20]">
                 <span aria-hidden>✦</span>
@@ -583,7 +573,7 @@ export function PricingBoxes() {
           </div>
 
           <div
-            className="relative isolate"
+            className="relative isolate max-md:hidden"
             aria-hidden={selectedPath !== "service"}
           >
             <div
@@ -684,7 +674,7 @@ export function PricingBoxes() {
           </div>
 
           <div
-            className="relative isolate"
+            className="relative isolate max-md:hidden"
             aria-hidden={selectedPath !== "dashboard"}
           >
             <div
@@ -778,7 +768,7 @@ export function PricingBoxes() {
 
           <div
             className={cn(
-              "will-change-[max-height,opacity,transform] transition-[max-height,opacity,transform] duration-500 ease-out motion-reduce:transition-none",
+              "will-change-[max-height,opacity,transform] transition-[max-height,opacity,transform] duration-500 ease-out motion-reduce:transition-none max-md:hidden",
               selectedPath === "service"
                 ? "max-h-[1700px] translate-y-0 scale-100 overflow-visible opacity-100"
                 : "pointer-events-none max-h-0 -translate-y-1 scale-[0.99] overflow-hidden opacity-0",
@@ -835,9 +825,13 @@ export function PricingBoxes() {
             </div>
           </div>
 
-          <div className="evg-clean-hover mt-8 rounded-2xl border border-zinc-200/70 bg-white/20 p-2 backdrop-blur-[10px] hover:border-[#e07a40]/35 hover:shadow-[0_16px_34px_-20px_rgba(198,90,32,0.24)] md:p-3">
-            <FAQsComponent />
-          </div>
+          {isDesktop === false ? (
+            <MobileFaqChatSection />
+          ) : (
+            <div className="evg-clean-hover mt-8 rounded-2xl border border-zinc-200/70 bg-white/20 p-2 backdrop-blur-[10px] hover:border-[#e07a40]/35 hover:shadow-[0_16px_34px_-20px_rgba(198,90,32,0.24)] md:p-3">
+              <FAQsComponent />
+            </div>
+          )}
         </div>
       </div>
     </section>

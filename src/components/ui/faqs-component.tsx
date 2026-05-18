@@ -8,39 +8,13 @@ import {
   AccordionItem,
   AccordionTrigger,
 } from "@/components/ui/accordion";
+import { TRESENGESPRAECH_FAQS } from "@/lib/tresengespraechFaqs";
 
-const FAQ_ITEMS = [
-  {
-    id: "item-1",
-    question: "Wie schnell sehe ich erste Ergebnisse?",
-    answer:
-      "Erste fertige Bilder und Posts innerhalb von 3–5 Tagen nach Bestellung. Im Dashboard-Abo sofort nach dem Login.",
-  },
-  {
-    id: "item-2",
-    question: "Ist das Risiko gering, wenn ich starte?",
-    answer:
-      "Ja. Pakete sind einmalig ohne Abo-Bindung. Das Dashboard-Abo ist monatlich kündbar. Kein Vertrag, kein Kleingedrucktes.",
-  },
-  {
-    id: "item-3",
-    question: "Wie viel Aufwand habe ich intern wirklich?",
-    answer:
-      "Bei Paketen fast null — du schickst Logo und Briefing, wir liefern. Im Dashboard ca. 5–15 Minuten pro Post.",
-  },
-  {
-    id: "item-4",
-    question: "Kann ich später hoch- oder runterwechseln?",
-    answer:
-      "Ja, jederzeit zum Monatsende. Kein Aufpreis, kein Prozess.",
-  },
-  {
-    id: "item-5",
-    question: "Sind die Inhalte wirklich in meinem Markenstil?",
-    answer:
-      "Ja. Du hinterlegst einmal dein Markenprofil (Logo, Tonalität, Farbschema) — alle Bilder und Texte werden konsistent in deinem Stil ausgespielt.",
-  },
-] as const;
+const FAQ_ITEMS = TRESENGESPRAECH_FAQS.map((faq, index) => ({
+  id: `item-${index + 1}`,
+  question: faq.q,
+  answer: faq.a,
+}));
 
 export default function FAQsComponent() {
   return (
