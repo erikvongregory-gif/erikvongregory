@@ -3,6 +3,7 @@
 import { navigateToAppDashboard } from "@/lib/appLoginUrl";
 import { KI_BEISPIEL_VIDEO_16X9, KI_BEISPIEL_VIDEOS_9X16, KI_CAROUSEL } from "@/lib/kiBeispiele";
 import { cn } from "@/lib/utils";
+import { ScrollRevealStagger } from "@/components/ScrollRevealStagger";
 import { HeroSection } from "@/components/ui/feature-carousel";
 import { LiquidMetalButton } from "@/components/ui/liquid-metal-button";
 
@@ -18,8 +19,8 @@ export function Section7AIDemo() {
         id="section-7"
         className="relative z-20 border-t-0 px-4 pb-10 pt-16 sm:pb-12 sm:pt-20 md:border-t md:border-neutral-300/40 md:pb-14 md:pt-24"
       >
-        <div className="section7-inner mx-auto max-w-6xl">
-        <div className="mb-6 text-center md:mb-8">
+        <ScrollRevealStagger softEntrance staggerMs={90} className="section7-inner mx-auto max-w-6xl">
+        <div className="mobile-scroll-reveal-item mb-6 text-center md:mb-8">
           <span className="section7-badge section7-badge-pulse inline-flex items-center gap-2 rounded-full border border-[rgba(224,122,64,0.35)] bg-[rgba(224,122,64,0.15)] px-4 py-1.5 text-sm font-medium text-[#c65a20]">
             <span aria-hidden>✦</span>
             KI-Demo
@@ -28,7 +29,7 @@ export function Section7AIDemo() {
 
         <div
           id="echte-beispiele-aus-der-praxis"
-          className="section7-slide-into scroll-mt-24"
+          className="mobile-scroll-reveal-item section7-slide-into scroll-mt-24"
         >
           <HeroSection
             className="min-h-0"
@@ -49,7 +50,7 @@ export function Section7AIDemo() {
 
         <div
           id="beispiele-videos"
-          className="mt-16 scroll-mt-24 border-t border-neutral-200/70 pt-14 sm:mt-20 sm:pt-16 md:mt-20 md:pt-16"
+          className="mobile-scroll-reveal-item mt-16 scroll-mt-24 border-t border-neutral-200/70 pt-14 sm:mt-20 sm:pt-16 md:mt-20 md:pt-16"
         >
           <div className="mb-8 text-center md:mb-10">
             <span className="section7-badge inline-flex items-center gap-2 rounded-full border border-[rgba(224,122,64,0.35)] bg-[rgba(224,122,64,0.12)] px-4 py-1.5 text-sm font-medium text-[#c65a20]">
@@ -136,19 +137,21 @@ export function Section7AIDemo() {
           </div>
         </div>
 
-        <p className="section7-footer mt-8 text-center text-base font-medium sm:mt-10 sm:text-lg">
-          So kann auch deine Brauerei mit professionellen Bildern und Werbematerial überzeugen –
-          schnell, günstig und ohne Grafikdesigner.
-        </p>
-        <div className="mt-5 flex justify-center sm:mt-6">
-          <LiquidMetalButton
-            label="3 Bilder kostenlos generieren"
-            onClick={openSignup}
-            size="large"
-            widthPx={300}
-          />
+        <div className="mobile-scroll-reveal-item">
+          <p className="section7-footer mt-8 text-center text-base font-medium sm:mt-10 sm:text-lg">
+            So kann auch deine Brauerei mit professionellen Bildern und Werbematerial überzeugen –
+            schnell, günstig und ohne Grafikdesigner.
+          </p>
+          <div className="mt-5 flex justify-center sm:mt-6">
+            <LiquidMetalButton
+              label="3 Bilder kostenlos generieren"
+              onClick={openSignup}
+              size="large"
+              widthPx={300}
+            />
+          </div>
         </div>
-        </div>
+        </ScrollRevealStagger>
       </section>
     </>
   );

@@ -1,9 +1,11 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { ScrollReveal } from "./ScrollReveal";
+import { ScrollRevealStagger } from "./ScrollRevealStagger";
 import { HowItWorks } from "@/components/ui/how-it-works";
+import { MOBILE_EDITORIAL_PX } from "@/lib/mobileEditorial";
 import { WarumEvGlabSection } from "@/components/mobile/WarumEvGlabSection";
+import { cn } from "@/lib/utils";
 import { CONTAINED_SHADER_BG, ShaderCanvas } from "@/components/ui/animated-glassy-pricing";
 
 const SECTION4_ITEMS = [
@@ -93,16 +95,26 @@ export function MobileLayout() {
     <>
       <div className="relative z-10 flex flex-col">
         <div id="warum" className="scroll-mt-24" aria-hidden />
-        <section id="section-2" className="relative z-30 bg-paper">
-          <ScrollReveal>
-            <WarumEvGlabSection />
-          </ScrollReveal>
-          <HowItWorks className="mx-4 mt-8 border-t border-ink/10 pt-10 pb-16 sm:mt-10 sm:pt-12" />
+        <section
+          id="section-2"
+          aria-labelledby="warum-headline"
+          className={cn(
+            MOBILE_EDITORIAL_PX,
+            "mobile-editorial-flow relative z-30 border-t border-ink/[0.06] pt-8 pb-10",
+          )}
+        >
+          <WarumEvGlabSection />
+          <HowItWorks variant="editorial" className="pb-2" />
         </section>
+
+        <div className="mobile-section-bridge pointer-events-none" aria-hidden>
+          <div className="h-px bg-ink/10" />
+          <div className="h-10 bg-gradient-to-b from-paper to-transparent" />
+        </div>
 
         {/* Section 4 */}
         <div id="loesungen" className="scroll-mt-24" aria-hidden />
-        <section id="section-4" className="insurance-card-theme relative z-30 px-4 py-16">
+        <section id="section-4" className="insurance-card-theme relative z-30 px-4 pb-16 pt-6">
           <div className="section4-loop-stack-root section4-mobile-ring-unclipped relative isolate z-0 mx-auto max-w-2xl">
             {showSection4Shader ? (
               <div
@@ -117,14 +129,14 @@ export function MobileLayout() {
               </div>
             ) : null}
             <div className="section4-loop-content-stack relative z-20 transform-gpu">
-          <ScrollReveal>
-          <div className="mb-6 inline-flex w-full justify-center">
+          <ScrollRevealStagger softEntrance staggerMs={85}>
+          <div className="mobile-scroll-reveal-item mb-6 inline-flex w-full justify-center">
             <span className="inline-flex items-center gap-2 rounded-full border border-[rgba(224,122,64,0.35)] bg-[rgba(224,122,64,0.14)] px-4 py-1.5 text-sm font-medium text-[#c65a20]">
               <span aria-hidden>✦</span>
               Meine Angebote
             </span>
           </div>
-          <h2 className="mb-6 text-center text-2xl font-bold tracking-tight text-zinc-900 drop-shadow-sm sm:text-3xl">
+          <h2 className="mobile-scroll-reveal-item mb-6 text-center text-2xl font-bold tracking-tight text-zinc-900 drop-shadow-sm sm:text-3xl">
             Meine 5{" "}
             <span
               className="font-light italic text-[#c65a20]"
@@ -133,9 +145,9 @@ export function MobileLayout() {
               Lösungen
             </span>
           </h2>
-          <div className="mx-auto max-w-2xl space-y-3">
+          <div className="mobile-scroll-reveal-contents mx-auto flex max-w-2xl flex-col gap-3">
             {SECTION4_ITEMS.map((item, i) => (
-              <div key={item.title} className="section4-mobile-card group rounded-2xl px-4 py-3 transition-all duration-300">
+              <div key={item.title} className="mobile-scroll-reveal-item section4-mobile-card group rounded-2xl px-4 py-3 transition-all duration-300">
                 <button
                   type="button"
                   onClick={() => setOpenSolutionIndex((prev) => (prev === i ? -1 : i))}
@@ -172,7 +184,7 @@ export function MobileLayout() {
               </div>
             ))}
           </div>
-          </ScrollReveal>
+          </ScrollRevealStagger>
             </div>
           </div>
         </section>

@@ -43,7 +43,10 @@ export function ResponsiveHomeLayout() {
           </div>
         ) : null}
         {isDesktop === false ? (
-          <div id="mobile-content" className="mobile-root flex w-full flex-col">
+          <div
+            id="mobile-content"
+            className="mobile-root mobile-root-home flex w-full flex-col overflow-x-hidden bg-paper text-ink"
+          >
             <MobileLayout />
           </div>
         ) : null}

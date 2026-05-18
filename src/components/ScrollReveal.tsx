@@ -1,7 +1,8 @@
 "use client";
 
-import { useRef, useEffect, useState, type ReactNode } from "react";
-import { useLoading } from "@/context/LoadingContext";
+import { useInViewReveal } from "@/hooks/useInViewReveal";
+import { cn } from "@/lib/utils";
+import type { ReactNode } from "react";
 
 type ScrollRevealProps = {
   children: ReactNode;
@@ -17,44 +18,25 @@ export function ScrollReveal({
   className = "",
   softEntrance = false,
 }: ScrollRevealProps) {
-  const ref = useRef<HTMLDivElement>(null);
-  const [isVisible, setIsVisible] = useState(false);
-  const { isLoadComplete } = useLoading();
+  const { ref, isVisible } = useInViewReveal({
+    delay,
+    rootMargin: softEntrance ? "0px 0px -4% 0px" : "0px 0px -6% 0px",
+  });
 
-  useEffect(() => {
-    const el = ref.current;
-    if (!el) return;
-
-    if (typeof window !== "undefined" && window.matchMedia("(prefers-reduced-motion: reduce)").matches) {
-      setIsVisible(true);
-      return;
-    }
-
-    /** Ohne Warten feuert der Observer unter dem Splash — Animation läuft unsichtbar und wirkt „kaputt“. */
-    if (!isLoadComplete) return;
-
-    const observer = new IntersectionObserver(
-      ([entry]) => {
-        if (!entry.isIntersecting) return;
-        setIsVisible(true);
-        observer.disconnect();
-      },
-      { threshold: 0, rootMargin: "0px 0px -8% 0px" },
-    );
-
-    observer.observe(el);
-    return () => observer.disconnect();
-  }, [isLoadComplete]);
-
-  const hiddenY = softEntrance ? "translate-y-[26px]" : "translate-y-5";
-  const durationClass = softEntrance ? "duration-[850ms] ease-[cubic-bezier(0.16,1,0.3,1)]" : "duration-500 ease-[cubic-bezier(0.22,1,0.36,1)]";
+  const hiddenY = softEntrance ? "translate-y-[22px]" : "translate-y-3.5";
+  const durationClass = softEntrance
+    ? "duration-[780ms] ease-[cubic-bezier(0.16,1,0.3,1)]"
+    : "duration-[560ms] ease-[cubic-bezier(0.22,1,0.36,1)]";
 
   return (
     <div
       ref={ref}
-      className={`transition-all ${durationClass} ${
-        isVisible ? "translate-y-0 opacity-100" : `${hiddenY} opacity-0`
-      } ${className}`}
+      className={cn(
+        "transition-[opacity,transform] will-change-[opacity,transform]",
+        durationClass,
+        isVisible ? "translate-y-0 opacity-100" : cn(hiddenY, "opacity-0"),
+        className,
+      )}
       style={{ transitionDelay: `${delay}ms` }}
     >
       {children}

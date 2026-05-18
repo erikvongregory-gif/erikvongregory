@@ -2,6 +2,8 @@
 
 import Image from "next/image";
 import { useCallback, useEffect, useMemo, useState } from "react";
+import { useLoading } from "@/context/LoadingContext";
+import { MOBILE_EDITORIAL_PX } from "@/lib/mobileEditorial";
 import { cn } from "@/lib/utils";
 import {
   MOBILE_HERO_CATEGORY_STATS,
@@ -135,6 +137,7 @@ export function MobileGalleryHero({
   ctaPending = false,
   onGalleryOpen,
 }: MobileGalleryHeroProps) {
+  const { heroReady } = useLoading();
   const defaultActive = MOBILE_HERO_POLAROIDS.findIndex((p) => p.id === "product");
   const [activeIndex, setActiveIndex] = useState(defaultActive >= 0 ? defaultActive : 0);
   const [motifCount, setMotifCount] = useState(MOBILE_HERO_MOTIF_COUNT);
@@ -164,17 +167,28 @@ export function MobileGalleryHero({
 
   return (
     <section
-      className="mobile-gallery-hero relative w-full min-w-0 bg-paper text-ink pb-2"
+      className={cn(
+        "mobile-gallery-hero relative w-full min-w-0 bg-paper text-ink pb-0",
+        heroReady && "mobile-gallery-hero--ready",
+      )}
       aria-labelledby="mobile-gallery-hero-heading"
     >
-      <p className="flex items-center gap-2 px-5 pt-1 font-mono-hero text-[11px] uppercase tracking-[1.2px] text-ink3">
+      <p
+        className={cn(
+          "mobile-hero-fade mobile-hero-fade-0 flex items-center gap-2 pt-1 font-mono-hero text-[11px] uppercase tracking-[1.2px] text-ink3",
+          MOBILE_EDITORIAL_PX,
+        )}
+      >
         <span className="mobile-hero-eyebrow-dot h-1.5 w-1.5 shrink-0 rounded-full bg-amber" aria-hidden />
         Heute generiert · {motifLabel} Motive
       </p>
 
       <h1
         id="mobile-gallery-hero-heading"
-        className="m-0 px-5 pt-3 font-serif-hero text-[40px] font-normal leading-[1.03] tracking-[-1px] [font-variation-settings:'opsz'_48]"
+        className={cn(
+          "mobile-hero-fade mobile-hero-fade-1 m-0 pt-3 font-serif-hero text-[40px] font-normal leading-[1.03] tracking-[-1px] [font-variation-settings:'opsz'_48]",
+          MOBILE_EDITORIAL_PX,
+        )}
       >
         So sieht dein{" "}
         <span className="block">
@@ -186,7 +200,7 @@ export function MobileGalleryHero({
         </span>
       </h1>
 
-      <div className="relative mb-2 h-[280px] shrink-0 px-5">
+      <div className={cn("mobile-hero-fade mobile-hero-fade-2 relative mb-2 h-[280px] shrink-0", MOBILE_EDITORIAL_PX)}>
         {MOBILE_HERO_POLAROIDS.map((card, index) => {
           const slot = slotForIndex(index, activeIndex);
           const layout = SLOT_LAYOUT[slot];
@@ -223,12 +237,12 @@ export function MobileGalleryHero({
         })}
       </div>
 
-      <p className="mb-4 mt-1 px-5 font-sans-tight text-sm leading-[1.5] text-ink2">
+      <p className={cn("mobile-hero-fade mobile-hero-fade-3 mb-4 mt-1 font-sans-tight text-sm leading-[1.5] text-ink2", MOBILE_EDITORIAL_PX)}>
         Produktfotos, Kampagnen&shy;motive und Social-Content — jedes Motiv konsistent zu deinem
         Markenstil, ohne Studio.
       </p>
 
-      <div className="px-5">
+      <div className={cn("mobile-hero-fade mobile-hero-fade-4", MOBILE_EDITORIAL_PX)}>
         <button
           type="button"
           disabled={ctaPending}
@@ -239,7 +253,7 @@ export function MobileGalleryHero({
         </button>
       </div>
 
-      <p className="mt-3 flex items-center justify-center gap-2 px-5 font-mono-hero text-[10.5px] tracking-[0.6px] text-ink3">
+      <p className={cn("mobile-hero-fade mobile-hero-fade-5 mt-3 flex items-center justify-center gap-2 font-mono-hero text-[10.5px] tracking-[0.6px] text-ink3", MOBILE_EDITORIAL_PX)}>
         <span>oder</span>
         <button
           type="button"
@@ -250,7 +264,7 @@ export function MobileGalleryHero({
         </button>
       </p>
 
-      <ul className="mt-auto flex gap-2 px-5 pb-6 pt-3">
+      <ul className={cn("mobile-hero-fade mobile-hero-fade-6 mt-auto flex gap-2 pb-5 pt-3", MOBILE_EDITORIAL_PX)}>
         {MOBILE_HERO_CATEGORY_STATS.map(({ value, label }) => (
           <li key={label} className="min-w-0 flex-1">
             <div className="rounded-[10px] border border-ink/10 bg-white px-2.5 py-2.5">

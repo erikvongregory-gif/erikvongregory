@@ -10,7 +10,7 @@ export function WarumEvGlabPullQuote({ quote, caption, className }: WarumEvGlabP
   return (
     <blockquote
       className={cn(
-        "mt-8 rounded-r-[10px] border-l-[3px] border-amber bg-white p-5 pl-[22px]",
+        "mt-8 w-full rounded-r-[10px] border-l-[3px] border-amber bg-white p-5 pl-[22px]",
         className,
       )}
     >
