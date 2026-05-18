@@ -91,20 +91,28 @@ function TapButton({ index, tap, isActive, reducedMotion, pourKey, onSelect }: T
   );
 }
 
-type BeerGlassProps = {
+type BeerMugProps = {
   pourKey: number;
 };
 
-function BeerGlass({ pourKey }: BeerGlassProps) {
+function BeerMug({ pourKey }: BeerMugProps) {
   return (
-    <div className="relative mt-[18px] flex justify-center">
-      <div className="tap-wall-glass relative h-[200px] w-[156px] overflow-hidden">
+    <div
+      className="tap-wall-mug-stage relative mt-[18px] h-[200px] w-full"
+      role="img"
+      aria-label="Bierkrug mit Schaumkrone"
+    >
+      <div className="tap-wall-mug-body overflow-hidden">
+        <span className="tap-wall-mug-rim pointer-events-none absolute inset-x-0 top-0 z-[2] h-2" aria-hidden />
         <div key={`beer-${pourKey}`} className="tap-wall-beer-fill absolute inset-x-0 bottom-0 will-change-[height]" aria-hidden />
         <div key={`foam-${pourKey}`} className="tap-wall-foam absolute inset-x-0 top-[32%] h-[22px]" aria-hidden />
         {BUBBLE_SIZES.map((size, i) => (
           <span
             key={`bubble-${pourKey}-${i}`}
-            className={cn("tap-wall-bubble absolute rounded-full bg-foam/90 will-change-transform", `tap-wall-bubble-${i}`)}
+            className={cn(
+              "tap-wall-bubble absolute rounded-full bg-foam/90 will-change-transform",
+              `tap-wall-bubble-${i}`,
+            )}
             style={{
               width: size,
               height: size,
@@ -115,10 +123,11 @@ function BeerGlass({ pourKey }: BeerGlassProps) {
           />
         ))}
         <span
-          className="pointer-events-none absolute bottom-7 left-2 top-3 w-1 rounded-[2px] bg-gradient-to-b from-white/60 to-white/15"
+          className="pointer-events-none absolute bottom-7 left-2.5 top-4 z-[1] w-1 rounded-[2px] bg-gradient-to-b from-white/60 to-white/15"
           aria-hidden
         />
       </div>
+      <span className="tap-wall-mug-handle h-[100px] w-[42px]" aria-hidden />
     </div>
   );
 }
@@ -206,7 +215,7 @@ export function TapWallSection() {
         </div>
       </div>
 
-      <BeerGlass pourKey={pourCounter} />
+      <BeerMug pourKey={pourCounter} />
 
       <div key={active} className="tap-wall-info-fade relative px-6 pt-6 text-center" role="region" aria-live="polite">
         <p className="m-0 mb-2.5 font-mono-hero text-[10px] uppercase tracking-[1.4px] text-amber">
