@@ -192,6 +192,13 @@ svg {
     font-family: inherit;
   }
 
+  .mobile-root-home .mobile-beispiele-section h2,
+  .mobile-root-home .mobile-beispiele-section h3,
+  .mobile-root-home .mobile-beispiele-section p,
+  .mobile-root-home .mobile-beispiele-section button {
+    font-family: inherit;
+  }
+
   .mobile-root-home .mobile-faq-chat h2,
   .mobile-root-home .mobile-faq-chat p,
   .mobile-root-home .mobile-faq-chat button,
@@ -2513,8 +2520,24 @@ body[data-legal-page="true"] {
 
 /* Section 7 – Mobile: transparent = ein durchgehender fixierter Verlauf (SiteGradientBackdrop), kein Versatz am Übergang */
 @media (max-width: 768px) {
-  #section-7 {
+  #section-7:not(.mobile-beispiele-section) {
     background: transparent !important;
+  }
+
+  #section-7.mobile-beispiele-section {
+    background-color: var(--color-paper) !important;
+    position: relative;
+    z-index: 80;
+  }
+
+  body:has(.mobile-root-home) .mobile-beispiele-section .font-serif-hero {
+    font-family: var(--font-serif-hero);
+    font-weight: 400;
+    font-style: normal;
+  }
+
+  body:has(.mobile-root-home) .mobile-beispiele-section .font-mono-hero {
+    font-family: var(--font-mono-hero);
   }
 
   /* Mobile: Kartenfläche unter den Thumbnails/Video soll nicht als dunkles Rechteck wirken */
@@ -4297,6 +4320,37 @@ body[data-legal-page="true"] {
   animation: mobile-faq-bubble-enter 220ms ease-out forwards;
 }
 
+/* Mobile Beispiele — Featured + Video */
+@keyframes mobile-beispiele-featured-fade {
+  from {
+    opacity: 0.92;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+@keyframes mobile-beispiele-progress-loop {
+  from {
+    width: 0;
+  }
+  to {
+    width: 100%;
+  }
+}
+
+.mobile-beispiele-featured--fade {
+  animation: mobile-beispiele-featured-fade 200ms ease-out both;
+}
+
+.mobile-beispiele-progress-bar--animate {
+  animation: mobile-beispiele-progress-loop linear infinite;
+}
+
+.mobile-beispiele-play-hint {
+  animation: mobile-beispiele-featured-fade 200ms ease-out both;
+}
+
 @keyframes mobile-faq-typing-dot {
   0%,
   80%,
@@ -4430,5 +4484,11 @@ body[data-legal-page="true"] {
     animation: none !important;
     opacity: 0.85 !important;
     transform: none !important;
+  }
+
+  .mobile-beispiele-featured--fade,
+  .mobile-beispiele-progress-bar--animate,
+  .mobile-beispiele-play-hint {
+    animation: none !important;
   }
 }

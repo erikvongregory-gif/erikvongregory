@@ -4,6 +4,7 @@ import { navigateToAppDashboard } from "@/lib/appLoginUrl";
 import { KI_BEISPIEL_VIDEO_16X9, KI_BEISPIEL_VIDEOS_9X16, KI_CAROUSEL } from "@/lib/kiBeispiele";
 import { cn } from "@/lib/utils";
 import { ScrollRevealStagger } from "@/components/ScrollRevealStagger";
+import { MobileBeispieleSection } from "@/components/mobile/MobileBeispieleSection";
 import { HeroSection } from "@/components/ui/feature-carousel";
 import { LiquidMetalButton } from "@/components/ui/liquid-metal-button";
 
@@ -14,10 +15,14 @@ export function Section7AIDemo() {
 
   return (
     <>
-      <div id="beispiele" className="scroll-mt-24" aria-hidden />
+      <div className="relative z-[80] md:hidden">
+        <MobileBeispieleSection />
+      </div>
+
+      <div id="beispiele" className="scroll-mt-24 hidden md:block" aria-hidden />
       <section
         id="section-7"
-        className="relative z-20 border-t-0 px-4 pb-10 pt-16 sm:pb-12 sm:pt-20 md:border-t md:border-neutral-300/40 md:pb-14 md:pt-24"
+        className="relative z-20 hidden border-t-0 px-4 pb-10 pt-16 sm:pb-12 sm:pt-20 md:block md:border-t md:border-neutral-300/40 md:pb-14 md:pt-24"
       >
         <ScrollRevealStagger softEntrance staggerMs={90} className="section7-inner mx-auto max-w-6xl">
         <div className="mobile-scroll-reveal-item mb-6 text-center md:mb-8">
