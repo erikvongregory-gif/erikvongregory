@@ -384,7 +384,7 @@ export function ScrollHeader() {
         <div ref={mobileNavRef} className="pointer-events-auto relative z-[101] shrink-0">
           <button
             type="button"
-            className="inline-flex h-10 w-10 items-center justify-center rounded-lg bg-transparent text-neutral-900 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-neutral-400 focus-visible:ring-offset-2"
+            className="inline-flex h-14 w-14 min-h-14 min-w-14 items-center justify-center rounded-xl bg-transparent text-neutral-900 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-neutral-400 focus-visible:ring-offset-2"
             aria-expanded={dropdownOpen}
             aria-controls="mobile-header-menu"
             aria-haspopup="menu"
@@ -392,11 +392,11 @@ export function ScrollHeader() {
             onClick={() => setDropdownOpen((o) => !o)}
           >
             {dropdownOpen ? (
-              <svg className="h-5 w-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden>
+              <svg className="h-7 w-7" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden>
                 <path d="M18 6L6 18M6 6l12 12" />
               </svg>
             ) : (
-              <svg className="h-5 w-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden>
+              <svg className="h-7 w-7" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden>
                 <line x1="3" y1="6" x2="21" y2="6" />
                 <line x1="3" y1="12" x2="21" y2="12" />
                 <line x1="3" y1="18" x2="21" y2="18" />
