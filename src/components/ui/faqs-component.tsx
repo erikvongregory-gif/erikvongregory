@@ -18,7 +18,7 @@ const FAQ_ITEMS = TRESENGESPRAECH_FAQS.map((faq, index) => ({
 
 export default function FAQsComponent() {
   return (
-    <section className="bg-transparent py-16 md:py-24">
+    <section id="section-fragen" className="bg-transparent py-16 md:py-24 scroll-mt-24">
       <div className="mx-auto max-w-3xl px-6">
         <div className="space-y-12">
           <h2 className="text-center text-4xl font-semibold text-zinc-900">

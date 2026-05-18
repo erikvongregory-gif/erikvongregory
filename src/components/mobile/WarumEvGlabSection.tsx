@@ -5,9 +5,6 @@ import { WarumEvGlabComparisonTable } from "@/components/mobile/WarumEvGlabCompa
 import { WarumEvGlabPullQuote } from "@/components/mobile/WarumEvGlabPullQuote";
 import { ScrollRevealStagger } from "@/components/ScrollRevealStagger";
 
-const PULL_QUOTE =
-  "Klarheit vor Komplexität. Qualität vor Hype. Umsetzung vor Theorie.";
-
 export function WarumEvGlabSection() {
   return (
     <ScrollRevealStagger softEntrance staggerMs={75}>
@@ -24,14 +21,14 @@ export function WarumEvGlabSection() {
         <em className="font-medium italic text-amber">Zeile für Zeile</em>.
       </h2>
 
-      <p className="mobile-scroll-reveal-item mt-3.5 max-w-[320px] font-sans-tight text-sm leading-[1.5] text-ink2">
-        Was die meisten Brauereien machen — und was sich mit EvGlab ändert.
+      <p className="mobile-scroll-reveal-item mt-3.5 max-w-[300px] font-sans-tight text-sm leading-[1.5] text-ink2">
+        Fünf Punkte — kurz der Unterschied.
       </p>
 
       <WarumEvGlabComparisonTable className="mobile-scroll-reveal-item mt-[22px]" />
 
       <div className="mobile-scroll-reveal-item">
-        <WarumEvGlabPullQuote quote={PULL_QUOTE} caption="Wofür ich stehe" />
+        <WarumEvGlabPullQuote />
       </div>
     </ScrollRevealStagger>
   );

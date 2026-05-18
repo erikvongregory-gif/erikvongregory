@@ -119,10 +119,12 @@ export function JsonLd() {
     itemListElement: [
       { "@type": "SiteNavigationElement", position: 1, name: "Startseite", url: SITE.baseUrl },
       { "@type": "SiteNavigationElement", position: 2, name: "Warum", url: `${SITE.baseUrl}/#warum` },
-      { "@type": "SiteNavigationElement", position: 3, name: "Lösungen", url: `${SITE.baseUrl}/#loesungen` },
-      { "@type": "SiteNavigationElement", position: 4, name: "Pakete", url: `${SITE.baseUrl}/#pakete` },
-      { "@type": "SiteNavigationElement", position: 5, name: "Beispiele", url: `${SITE.baseUrl}/#beispiele` },
-      { "@type": "SiteNavigationElement", position: 6, name: "Kontakt", url: `${SITE.baseUrl}/#contact` },
+      { "@type": "SiteNavigationElement", position: 3, name: "Ablauf", url: `${SITE.baseUrl}/#prozess` },
+      { "@type": "SiteNavigationElement", position: 4, name: "Leistungen", url: `${SITE.baseUrl}/#loesungen` },
+      { "@type": "SiteNavigationElement", position: 5, name: "Preise", url: `${SITE.baseUrl}/#pakete` },
+      { "@type": "SiteNavigationElement", position: 6, name: "Fragen", url: `${SITE.baseUrl}/#fragen` },
+      { "@type": "SiteNavigationElement", position: 7, name: "Praxis", url: `${SITE.baseUrl}/#beispiele` },
+      { "@type": "SiteNavigationElement", position: 8, name: "Kontakt", url: `${SITE.baseUrl}/#contact` },
     ],
   };
 

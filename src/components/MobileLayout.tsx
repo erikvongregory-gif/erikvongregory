@@ -22,6 +22,7 @@ export function MobileLayout() {
           <WarumEvGlabSection />
         </section>
 
+        <div id="prozess" className="scroll-mt-24" aria-hidden />
         <ProcessDeliverySlipSection />
 
         <div className="mobile-section-bridge pointer-events-none" aria-hidden>

@@ -825,6 +825,7 @@ export function PricingBoxes() {
             </div>
           </div>
 
+          <div id="fragen" className="scroll-mt-24" aria-hidden />
           {isDesktop === false ? (
             <MobileFaqChatSection />
           ) : (

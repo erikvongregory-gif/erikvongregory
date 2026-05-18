@@ -180,6 +180,7 @@ export function MobileFaqChatSection() {
   return (
     <section
       ref={sectionRef}
+      id="section-fragen"
       aria-labelledby="faq-heading"
       className="mobile-faq-chat w-full min-h-full bg-paper pt-10 pb-9 font-sans-tight text-ink"
     >

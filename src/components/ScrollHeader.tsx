@@ -4,7 +4,7 @@ import { useEffect, useRef, useState } from "react";
 import Image from "next/image";
 import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
-import { HelpCircle, Home, Info, Layers, Mail, Package, Sparkles } from "lucide-react";
+import { HelpCircle, Home, Info, Layers, Mail, MessageCircle, Package, Route, Sparkles } from "lucide-react";
 import { MenuBar, type GlowMenuItem } from "@/components/ui/glow-menu";
 import { scrollToSection } from "@/lib/scrollToSection";
 import { cn } from "@/lib/utils";
@@ -12,7 +12,9 @@ import { APP_LOGIN_URL } from "@/lib/appLoginUrl";
 import { SITE } from "@/lib/siteConfig";
 import { useLoading } from "@/context/LoadingContext";
 
-const GLOW_NAV_ITEMS: GlowMenuItem[] = [
+type HomeNavItem = GlowMenuItem & { mobileOnly?: boolean };
+
+const GLOW_NAV_ITEMS: HomeNavItem[] = [
   {
     icon: Home,
     label: "Start",
@@ -32,8 +34,18 @@ const GLOW_NAV_ITEMS: GlowMenuItem[] = [
     iconHoverClass: "group-hover:text-[#c65a20]",
   },
   {
+    icon: Route,
+    label: "Ablauf",
+    href: "#prozess",
+    mobileOnly: true,
+    gradient:
+      "radial-gradient(circle, rgba(20,120,100,0.18) 0%, rgba(16,100,80,0.08) 50%, rgba(16,100,80,0) 100%)",
+    iconColor: "text-teal-700",
+    iconHoverClass: "group-hover:text-teal-700",
+  },
+  {
     icon: Layers,
-    label: "Lösungen",
+    label: "Leistungen",
     href: "#loesungen",
     gradient:
       "radial-gradient(circle, rgba(59,130,246,0.18) 0%, rgba(37,99,235,0.07) 50%, rgba(29,78,216,0) 100%)",
@@ -42,7 +54,7 @@ const GLOW_NAV_ITEMS: GlowMenuItem[] = [
   },
   {
     icon: Package,
-    label: "Pakete",
+    label: "Preise",
     href: "#pakete",
     gradient:
       "radial-gradient(circle, rgba(224,122,64,0.24) 0%, rgba(198,90,32,0.14) 50%, rgba(184,77,21,0) 100%)",
@@ -50,8 +62,17 @@ const GLOW_NAV_ITEMS: GlowMenuItem[] = [
     iconHoverClass: "group-hover:text-[#c65a20]",
   },
   {
+    icon: MessageCircle,
+    label: "Fragen",
+    href: "#fragen",
+    gradient:
+      "radial-gradient(circle, rgba(99,102,241,0.16) 0%, rgba(79,70,229,0.07) 50%, rgba(79,70,229,0) 100%)",
+    iconColor: "text-indigo-600",
+    iconHoverClass: "group-hover:text-indigo-600",
+  },
+  {
     icon: Sparkles,
-    label: "Beispiele",
+    label: "Praxis",
     href: "#beispiele",
     gradient:
       "radial-gradient(circle, rgba(168,85,247,0.18) 0%, rgba(147,51,234,0.07) 50%, rgba(126,34,206,0) 100%)",
@@ -82,11 +103,17 @@ const GLOW_NAV_ITEMS: GlowMenuItem[] = [
 const SECTION_SPY_ELEMENT_ID: Record<string, string> = {
   start: "start",
   warum: "section-2",
+  prozess: "section-3",
   loesungen: "section-4",
   pakete: "pakete-preise",
+  fragen: "section-fragen",
   beispiele: "section-7",
   contact: "contact",
 };
+
+function navItemsForMenu(mobile: boolean): GlowMenuItem[] {
+  return GLOW_NAV_ITEMS.filter((item) => !item.mobileOnly || mobile);
+}
 
 export function ScrollHeader() {
   const pathname = usePathname();
@@ -410,7 +437,7 @@ export function ScrollHeader() {
               role="menu"
               className="mobile-header-menu-panel absolute right-0 top-full z-[110] mt-1.5 min-w-[14.5rem] origin-top-right overflow-hidden rounded-2xl border border-black/[0.08] bg-white/95 py-2 shadow-[0_16px_48px_-12px_rgba(0,0,0,0.2)] backdrop-blur-xl mobile-header-menu-panel--open"
             >
-              {GLOW_NAV_ITEMS.map(({ href, label }) => {
+              {navItemsForMenu(true).map(({ href, label }) => {
                 const isActive =
                   (href.startsWith("#") && activeSection === href) ||
                   (pathname === "/ueber-uns" && href.startsWith("/ueber-uns"));
@@ -461,7 +488,7 @@ export function ScrollHeader() {
               <div className="min-w-0 max-w-full overflow-x-auto [-ms-overflow-style:none] [scrollbar-width:none] [&::-webkit-scrollbar]:hidden">
                 <MenuBar
                   className="w-full max-w-full sm:w-max sm:max-w-none"
-                  items={GLOW_NAV_ITEMS}
+                  items={navItemsForMenu(false)}
                   activeItem={activeGlowLabel}
                   headerLight={shouldUseHeaderLightTheme}
                   overMedia={navOverUeberHeroMedia}
