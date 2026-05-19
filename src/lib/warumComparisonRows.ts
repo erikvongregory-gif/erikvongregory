@@ -60,9 +60,3 @@ export const WARUM_COMPARISON_ROWS: WarumComparisonRow[] = [
     withEvGlab: "Feedback in 5 Minuten, Rest übernehmen wir",
   },
 ];
-
-export const WARUM_VALUE_PILLARS = [
-  { label: "Klarheit", icon: Target },
-  { label: "Qualität", icon: ImageIcon },
-  { label: "Umsetzung", icon: Clock3 },
-] as const;

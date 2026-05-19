@@ -5,6 +5,9 @@ import { WarumEvGlabComparisonTable } from "@/components/mobile/WarumEvGlabCompa
 import { WarumEvGlabPullQuote } from "@/components/mobile/WarumEvGlabPullQuote";
 import { ScrollRevealStagger } from "@/components/ScrollRevealStagger";
 
+const PULL_QUOTE =
+  "Klarheit vor Komplexität. Qualität vor Hype. Umsetzung vor Theorie.";
+
 export function WarumEvGlabSection() {
   return (
     <ScrollRevealStagger softEntrance staggerMs={75}>
@@ -28,7 +31,7 @@ export function WarumEvGlabSection() {
       <WarumEvGlabComparisonTable className="mobile-scroll-reveal-item mt-[22px]" />
 
       <div className="mobile-scroll-reveal-item">
-        <WarumEvGlabPullQuote />
+        <WarumEvGlabPullQuote quote={PULL_QUOTE} caption="Wofür ich stehe" />
       </div>
     </ScrollRevealStagger>
   );
