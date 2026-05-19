@@ -1,19 +1,18 @@
 "use client";
 
-import { useEffect } from "react";
+import { useEffect, useLayoutEffect } from "react";
+import { applyHomeScrollReset } from "@/lib/homeScrollReset";
 import "lenis/dist/lenis.css";
 
 /**
  * Weiches Scrollen (Lenis) für die gesamte Site.
- * Bei `prefers-reduced-motion: reduce` wird nichts gestartet.
+ * Auf „/“: Scroll-Reset vor dem Paint (React-19-konform, kein Layout-<script>).
  */
 export function SiteSmoothScroll() {
+  useLayoutEffect(() => applyHomeScrollReset(), []);
+
   useEffect(() => {
     if (window.location.pathname === "/" && !window.location.hash) {
-      // Force absolute top before any smooth-scroll engine boots.
-      window.scrollTo({ top: 0, left: 0, behavior: "auto" });
-      document.documentElement.scrollTop = 0;
-      document.body.scrollTop = 0;
       return;
     }
 

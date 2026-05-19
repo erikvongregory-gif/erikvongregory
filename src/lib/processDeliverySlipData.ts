@@ -18,8 +18,8 @@ export const PROCESS_STEPS: ProcessStep[] = [
     n: "02",
     time: "Tag 2–5",
     head: "KI erzeugt Motive & Texte",
-    detail: "Werbebilder · Social-Posts · Varianten",
-    out: "12–40 Motive · 1 Paket",
+    detail: "Starter 5 · Wachstum 10 · Premium 10+",
+    out: "5–10 Motive · je nach Paket",
   },
   {
     n: "03",

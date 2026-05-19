@@ -6,8 +6,8 @@ import { useLoading } from "@/context/LoadingContext";
 import { MOBILE_EDITORIAL_PX } from "@/lib/mobileEditorial";
 import { cn } from "@/lib/utils";
 import {
-  MOBILE_HERO_CATEGORY_STATS,
-  MOBILE_HERO_MOTIF_COUNT,
+  getDailyCategoryStats,
+  getDailyMotifCount,
   MOBILE_HERO_POLAROIDS,
   type MobileHeroPolaroid,
 } from "@/lib/mobileHeroConfig";
@@ -142,8 +142,15 @@ export function MobileGalleryHero({
   const { heroReady } = useLoading();
   const defaultActive = MOBILE_HERO_POLAROIDS.findIndex((p) => p.id === "product");
   const [activeIndex, setActiveIndex] = useState(defaultActive >= 0 ? defaultActive : 0);
-  const [motifCount, setMotifCount] = useState(MOBILE_HERO_MOTIF_COUNT);
   const [reducedMotion, setReducedMotion] = useState(false);
+
+  const { motifLabel, categoryStats } = useMemo(() => {
+    const today = new Date();
+    return {
+      motifLabel: getDailyMotifCount(today).toLocaleString("de-DE"),
+      categoryStats: getDailyCategoryStats(today),
+    };
+  }, []);
 
   useEffect(() => {
     const mq = window.matchMedia("(prefers-reduced-motion: reduce)");
@@ -152,16 +159,6 @@ export function MobileGalleryHero({
     mq.addEventListener("change", apply);
     return () => mq.removeEventListener("change", apply);
   }, []);
-
-  useEffect(() => {
-    // TODO: API/WebSocket — live Motiv-Zähler (z. B. alle 30s)
-    setMotifCount(MOBILE_HERO_MOTIF_COUNT);
-  }, []);
-
-  const motifLabel = useMemo(
-    () => motifCount.toLocaleString("de-DE"),
-    [motifCount],
-  );
 
   const bringToFront = useCallback((index: number) => {
     setActiveIndex(index);
@@ -267,7 +264,7 @@ export function MobileGalleryHero({
       </p>
 
       <ul className={cn("mobile-hero-fade mobile-hero-fade-6 mt-auto flex gap-2 pb-5 pt-3", MOBILE_EDITORIAL_PX)}>
-        {MOBILE_HERO_CATEGORY_STATS.map(({ value, label }) => (
+        {categoryStats.map(({ value, label }) => (
           <li key={label} className="min-w-0 flex-1">
             <div className="rounded-[10px] border border-ink/10 bg-white px-2.5 py-2.5">
               <p className="font-serif-hero text-lg leading-none tracking-[-0.3px] text-ink">{value}</p>

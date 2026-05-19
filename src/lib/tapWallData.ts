@@ -4,6 +4,7 @@ export type TapWallItem = {
   shortLabel: string;
   title: string;
   body: string;
+  /** Kurzzeile unten — entspricht Manufaktur-/Werkstatt-Paketen in der Preis-Section */
   deliv: string;
 };
 
@@ -13,39 +14,39 @@ export const TAPS: TapWallItem[] = [
     label: "Produkt",
     shortLabel: "PROD",
     title: "KI-Produktfotos für Bier & Getränke",
-    body: "Studio-Qualität ohne Studio. Flasche, Dose, Glas — in deinem Markenstil, in jeder Umgebung.",
-    deliv: "Bildpaket · ab 8 Motive",
+    body: "Studio-Qualität ohne Studio. Flasche, Dose, Glas — im Starter-Paket mit 5 Motiven in deinem Markenstil.",
+    deliv: "Starter · 5 Motive · 890 €",
   },
   {
     n: "02",
     label: "Kampagne",
     shortLabel: "KAMP",
     title: "KI-Bildkampagnen für Social Media",
-    body: "Saison-, Event- und Themen-Sets als konsistente Bildserien. Keine Einzelmotive — Serien.",
-    deliv: "Kampagnen-Set · 12–20 Motive",
+    body: "Saison-, Event- und Themen-Sets als konsistente Bildserien — im Wachstumspaket mit 10 Motiven und Posts für Feed und Ads.",
+    deliv: "Wachstum · 10 Motive · 1.690 €",
   },
   {
     n: "03",
     label: "Betrieb",
     shortLabel: "BETR",
-    title: "Automatisiertes Social-Media-Marketing",
-    body: "Planung, Veröffentlichung, Reporting laufen im Hintergrund. Du gibst frei, der Rest passiert.",
-    deliv: "Monatlicher Betrieb",
+    title: "Content im Dashboard — monatlich",
+    body: "Laufend Motive im Werkstatt-Abo erzeugen: Tokens, Team-Zugänge und Support — ohne Einzelprojekt pro Kampagne.",
+    deliv: "Werkstatt Start · ab 79 €/Mo.",
   },
   {
     n: "04",
     label: "Website",
     shortLabel: "WEB",
     title: "Moderne Websites mit Storytelling",
-    body: "Eine Seite, die deine Geschichte erzählt — und Reservierungen, Tap-Listen, Shop integriert.",
-    deliv: "Website · 2 Wochen",
+    body: "Onepager mit Texten, Struktur und Social-Setup — im Brauerei-Premium-Paket inkl. 10 KI-Produktbildern.",
+    deliv: "Premium · 2–3 Wochen · 3.990 €",
   },
   {
     n: "05",
     label: "Content",
     shortLabel: "CONT",
     title: "KI-Content für Instagram & Ads",
-    body: "Reels-Hooks, Story-Templates, Ad-Creatives. Performance-Content statt hübscher Posts.",
-    deliv: "Wöchentlicher Drop",
+    body: "Posts inkl. Texte für Instagram, Facebook und Ads — im Wachstumspaket oder fortlaufend über das Token-Abo.",
+    deliv: "Wachstum · 10 Posts inkl. Text",
   },
 ];
