@@ -109,12 +109,14 @@ function PolaroidMedia({
 function WavyUnderline() {
   return (
     <svg
-      className="pointer-events-none absolute -bottom-1.5 left-0 h-2.5 w-[60px] opacity-50"
+      className="mobile-hero-wavy-underline pointer-events-none absolute -bottom-1.5 left-0 h-2.5 w-[60px]"
       viewBox="0 0 60 10"
       fill="none"
       aria-hidden
     >
       <path
+        className="mobile-hero-wavy-underline__path"
+        pathLength={1}
         d="M2 6 C 15 1, 30 9, 45 4 S 58 6, 58 6"
         stroke="currentColor"
         strokeWidth="2"
