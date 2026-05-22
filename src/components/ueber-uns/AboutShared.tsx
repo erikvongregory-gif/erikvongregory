@@ -47,12 +47,13 @@ export function FounderPortraitCard({ compact }: { compact?: boolean }) {
             src={FOUNDER.portraitSrc}
             alt={FOUNDER.portraitAlt}
             fill
-            className="object-cover object-[center_20%]"
-            sizes={compact ? "280px" : "420px"}
+            quality={92}
+            className="about-founder-portrait object-cover object-[center_18%]"
+            sizes={compact ? "(max-width: 1023px) 92vw, 360px" : "(max-width: 1023px) 92vw, 560px"}
             priority
           />
           <div
-            className="pointer-events-none absolute inset-0 bg-[radial-gradient(ellipse_at_50%_30%,rgba(232,146,89,0.18)_0%,rgba(21,17,12,0)_60%)]"
+            className="pointer-events-none absolute inset-0 bg-[radial-gradient(ellipse_at_50%_28%,rgba(232,146,89,0.1)_0%,rgba(21,17,12,0)_55%)]"
             aria-hidden
           />
           <span className="absolute left-3 top-3 rounded-lg bg-[rgba(21,17,12,0.6)] px-2 py-1 font-mono-hero text-[9px] uppercase tracking-wider text-paper backdrop-blur">
@@ -116,7 +117,7 @@ export function DachMapSvg({
       role="img"
       aria-labelledby="dach-map-title"
     >
-      <title id="dach-map-title">Region DACH mit aktiven Brauerei-Standorten</title>
+      <title id="dach-map-title">Region DACH — Beispiel-Fokusstädte (keine Kundenliste)</title>
       <path d="M80 80 L220 40 L320 70 L340 140 L280 220 L120 200 Z" stroke="rgba(24,20,15,0.18)" strokeWidth="1.4" fill="none" />
       <path d="M300 120 L380 100 L420 180 L360 240 L300 200 Z" stroke="rgba(24,20,15,0.18)" strokeWidth="1.4" fill="none" />
       <path d="M160 200 L240 180 L280 260 L200 270 Z" stroke="rgba(24,20,15,0.18)" strokeWidth="1.4" fill="none" />

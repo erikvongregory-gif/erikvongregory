@@ -501,6 +501,11 @@ body[data-legal-page="true"] {
   }
 }
 
+/* Über-uns Gründer-Porträt: schärfere Darstellung auf Retina */
+.about-founder-portrait {
+  filter: contrast(1.02) saturate(1.03);
+}
+
 /* Hero Portrait – kommt von unten */
 @keyframes hero-portrait-slide-up {
   from {
@@ -4615,6 +4620,17 @@ body[data-legal-page="true"] {
   }
 }
 
+@keyframes evgFadeUp {
+  from {
+    opacity: 0;
+    transform: translateY(8px);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+
 @keyframes evgLivePulse {
   0%,
   100% {
@@ -4645,6 +4661,22 @@ body[data-legal-page="true"] {
   body:has(.about-root) .app-shell-site-footer {
     display: none;
   }
+
+  body:has(.ratgeber-page) .app-shell-site-footer {
+    display: none;
+  }
+}
+
+.ratgeber-root .font-serif-hero {
+  font-family: var(--font-serif-hero);
+}
+
+.ratgeber-root .font-sans-tight {
+  font-family: var(--font-sans-tight);
+}
+
+.ratgeber-root .font-mono-hero {
+  font-family: var(--font-mono-hero);
 }
 
 .about-root .font-serif-hero {
@@ -4699,24 +4731,29 @@ body[data-legal-page="true"] {
     will-change: opacity, transform;
   }
 
-  #desktop-hero .desktop-reveal-item {
+  #desktop-hero .desktop-reveal-item,
+  #about-hero .desktop-reveal-item {
     transform: translate3d(0, 28px, 0);
   }
 
-  #desktop-hero .desktop-reveal-item--from-right {
+  #desktop-hero .desktop-reveal-item--from-right,
+  #about-hero .desktop-reveal-item--from-right {
     transform: translate3d(40px, 0, 0);
   }
 
-  #desktop-hero.desktop-hero--ready .desktop-reveal-item {
+  #desktop-hero.desktop-hero--ready .desktop-reveal-item,
+  #about-hero.desktop-hero--ready .desktop-reveal-item {
     animation: desktop-reveal-up 0.82s cubic-bezier(0.16, 1, 0.3, 1) both;
     animation-delay: var(--desktop-reveal-delay, 0ms);
   }
 
-  #desktop-hero.desktop-hero--ready .desktop-reveal-item--from-right {
+  #desktop-hero.desktop-hero--ready .desktop-reveal-item--from-right,
+  #about-hero.desktop-hero--ready .desktop-reveal-item--from-right {
     animation-name: desktop-reveal-from-right;
   }
 
-  #desktop-hero.desktop-hero--ready .desktop-reveal-item--from-left {
+  #desktop-hero.desktop-hero--ready .desktop-reveal-item--from-left,
+  #about-hero.desktop-hero--ready .desktop-reveal-item--from-left {
     animation-name: desktop-reveal-from-left;
   }
 
@@ -4796,7 +4833,8 @@ body[data-legal-page="true"] {
 
 @media (min-width: 1024px) and (prefers-reduced-motion: reduce) {
   .desktop-reveal-item,
-  #desktop-hero.desktop-hero--ready .desktop-reveal-item {
+  #desktop-hero.desktop-hero--ready .desktop-reveal-item,
+  #about-hero.desktop-hero--ready .desktop-reveal-item {
     opacity: 1 !important;
     transform: none !important;
     animation: none !important;

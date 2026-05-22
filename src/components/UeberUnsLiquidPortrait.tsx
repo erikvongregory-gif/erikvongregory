@@ -35,7 +35,7 @@ export function UeberUnsLiquidPortrait({ className }: { className?: string }) {
         </linearGradient>
       </defs>
       <image
-        href="/ueber-uns-hintergrund.png"
+        href="/ueber-uns-portrait.webp"
         x={IMAGE_X}
         y={IMAGE_Y}
         width={W * IMAGE_ZOOM}

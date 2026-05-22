@@ -5,26 +5,32 @@ import { useEffect, useState } from "react";
 
 const HOME_DARK_SECTIONS = ["desktop-hero", "desktop-prozess", "desktop-beispiele", "desktop-footer"];
 const ABOUT_DARK_SECTIONS = ["about-hero", "about-hugo", "about-closing"];
+const RATGEBER_DARK_SECTIONS = ["ratgeber-recommendation"];
 
 export function useSiteNavTheme() {
   const pathname = usePathname();
   const [isDark, setIsDark] = useState(() => pathname === "/" || pathname === "/ueber-uns");
 
   useEffect(() => {
-    if (pathname !== "/" && pathname !== "/ueber-uns") {
+    if (pathname !== "/" && pathname !== "/ueber-uns" && pathname !== "/ratgeber") {
       setIsDark(false);
       return;
     }
 
-    const ids = pathname === "/" ? HOME_DARK_SECTIONS : ABOUT_DARK_SECTIONS;
+    const ids =
+      pathname === "/"
+        ? HOME_DARK_SECTIONS
+        : pathname === "/ratgeber"
+          ? RATGEBER_DARK_SECTIONS
+          : ABOUT_DARK_SECTIONS;
     const sections = ids.map((id) => document.getElementById(id)).filter(Boolean) as HTMLElement[];
     if (!sections.length) {
-      setIsDark(true);
+      setIsDark(pathname === "/ratgeber" ? false : true);
       return;
     }
 
     const navBottom = 68;
-    const scrollThreshold = pathname === "/" ? 700 : 400;
+    const scrollThreshold = pathname === "/" ? 700 : pathname === "/ratgeber" ? 120 : 400;
 
     const update = () => {
       const overDark = sections.some((el) => {

@@ -7,7 +7,7 @@ export const FOUNDER = {
   rolle: "Strategie & Umsetzung",
   fokus: "Brauerei-Marketing",
   seit: "2026",
-  portraitSrc: "/ueber-uns-hintergrund.png",
+  portraitSrc: "/ueber-uns-portrait.webp",
   portraitAlt: "Erik Freiherr von Gregory — Gründer EvGlab",
 } as const;
 
@@ -141,20 +141,21 @@ export const SATZ_TAGS = [
   "Tokens planbar",
 ] as const;
 
-export const DACH_STAEDTE: {
+/** Beispiel-Fokusregionen — kein Kundenstamm, sondern typischer Einstieg pro Markt */
+export const DACH_FOCUS_ROWS: {
   cc: string;
   stadt: string;
   region: string;
-  mode: "Premium" | "Token-Abo";
+  angebot: "Premium" | "Dashboard";
 }[] = [
-  { cc: "DE", stadt: "München", region: "Bayern", mode: "Premium" },
-  { cc: "DE", stadt: "Hamburg", region: "Norddeutschland", mode: "Token-Abo" },
-  { cc: "DE", stadt: "Köln", region: "Rheinland", mode: "Premium" },
-  { cc: "DE", stadt: "Berlin", region: "Hauptstadt", mode: "Token-Abo" },
-  { cc: "AT", stadt: "Wien", region: "Österreich", mode: "Premium" },
-  { cc: "AT", stadt: "Salzburg", region: "Alpenraum", mode: "Token-Abo" },
-  { cc: "CH", stadt: "Zürich", region: "Schweiz", mode: "Premium" },
-  { cc: "CH", stadt: "Bern", region: "Mittelland", mode: "Token-Abo" },
+  { cc: "DE", stadt: "München", region: "Bayern", angebot: "Premium" },
+  { cc: "DE", stadt: "Hamburg", region: "Norddeutschland", angebot: "Dashboard" },
+  { cc: "DE", stadt: "Köln", region: "Rheinland", angebot: "Premium" },
+  { cc: "DE", stadt: "Berlin", region: "Hauptstadt", angebot: "Dashboard" },
+  { cc: "AT", stadt: "Wien", region: "Österreich", angebot: "Premium" },
+  { cc: "AT", stadt: "Salzburg", region: "Alpenraum", angebot: "Dashboard" },
+  { cc: "CH", stadt: "Zürich", region: "Schweiz", angebot: "Premium" },
+  { cc: "CH", stadt: "Bern", region: "Mittelland", angebot: "Dashboard" },
 ];
 
 export const DACH_MAP_CITIES_DESKTOP = [
