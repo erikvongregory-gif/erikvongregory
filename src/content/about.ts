@@ -1,3 +1,5 @@
+import { SITE } from "@/lib/siteConfig";
+
 export const FOUNDER = {
   name: "Erik Freiherr von Gregory",
   nameItalic: "Freiherr",
@@ -191,9 +193,9 @@ export const KONTAKT_KANAALE: {
   },
   {
     kanal: "WhatsApp",
-    wert: "+49 …",
+    wert: SITE.contactPhoneDisplay,
     meta: "Für Brauereien direkt",
-    href: "https://wa.me/4915565602176",
-    ariaLabel: "WhatsApp an EvGlab",
+    href: SITE.whatsappUrl,
+    ariaLabel: `WhatsApp: ${SITE.contactPhoneDisplay}`,
   },
 ];

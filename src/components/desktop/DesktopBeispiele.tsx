@@ -5,6 +5,7 @@ import { useEffect, useMemo, useRef, useState } from "react";
 import { BEISPIELE_IMAGES, BEISPIELE_VIDEOS, type Beispiel } from "@/lib/mobileBeispiele";
 import { navigateToAppDashboard } from "@/lib/appLoginUrl";
 import { DesktopContainer } from "@/components/desktop/DesktopContainer";
+import { DesktopRevealItem, DesktopRevealStagger } from "@/components/desktop/DesktopReveal";
 import { PlaceholderMedia } from "@/components/desktop/PlaceholderMedia";
 import { cn } from "@/lib/utils";
 
@@ -182,17 +183,20 @@ export function DesktopBeispiele() {
       <div id="desktop-beispiele" aria-hidden />
       <div id="beispiele" className="scroll-mt-24" aria-hidden />
       <DesktopContainer>
-        <div className="grid grid-cols-2 items-end gap-12 border-b border-[rgba(244,239,230,0.08)] pb-12">
-          <div>
-            <p className="mb-4 font-mono-hero text-[11px] uppercase tracking-[1.4px] text-amber2">
-              Aus der Praxis · 12 Brauereien
-            </p>
-            <h2 id="desktop-beispiele-heading" className="font-serif-hero text-[72px] font-normal leading-[0.98] tracking-[-2px]">
-              Echte <em className="italic text-amber2">Beispiele</em>,
-              <br />
-              kein Demo-Theater.
-            </h2>
-          </div>
+        <DesktopRevealStagger className="grid grid-cols-2 items-end gap-12 border-b border-[rgba(244,239,230,0.08)] pb-12" softEntrance>
+          <DesktopRevealItem>
+            <div>
+              <p className="mb-4 font-mono-hero text-[11px] uppercase tracking-[1.4px] text-amber2">
+                Aus der Praxis · 12 Brauereien
+              </p>
+              <h2 id="desktop-beispiele-heading" className="font-serif-hero text-[72px] font-normal leading-[0.98] tracking-[-2px]">
+                Echte <em className="italic text-amber2">Beispiele</em>,
+                <br />
+                kein Demo-Theater.
+              </h2>
+            </div>
+          </DesktopRevealItem>
+          <DesktopRevealItem>
           <div className="flex flex-col items-end gap-6">
             <p className="max-w-[400px] text-right text-[15px] leading-[1.6] text-[#C8BFAD]">
               Motive aus echten Brauerei-Projekten — konsistent im Markenstil, ohne Stockfoto-Look.
@@ -217,11 +221,15 @@ export function DesktopBeispiele() {
               ))}
             </div>
           </div>
-        </div>
+          </DesktopRevealItem>
+        </DesktopRevealStagger>
 
         {featured ? (
-          <div className="grid grid-cols-[1.6fr_1fr] gap-8 pt-4">
+          <DesktopRevealStagger className="grid grid-cols-[1.6fr_1fr] gap-8 pt-4" staggerMs={120}>
+            <DesktopRevealItem from="right">
             <FeaturedPanel item={featured} mode={mode} heightClass={featuredHeight(mode)} />
+            </DesktopRevealItem>
+            <DesktopRevealItem>
             <div>
               <div className="mb-4 flex items-baseline justify-between font-mono-hero text-[10px] uppercase tracking-wider text-[#8C7E68]">
                 <span>Weitere Motive · {thumbs.length}</span>
@@ -239,23 +247,28 @@ export function DesktopBeispiele() {
                 Alle 240+ Motive in der Galerie
               </button>
             </div>
-          </div>
+            </DesktopRevealItem>
+          </DesktopRevealStagger>
         ) : null}
 
-        <div className="mt-16 flex items-center justify-between gap-8 border-t border-[rgba(244,239,230,0.08)] pt-8">
-          <p className="max-w-[640px] font-serif-hero text-[22px] italic leading-snug text-[#E8DFCB]">
-            Bilder, die nach Brauerei aussehen — nicht nach Stockfoto. Und das alles, ohne dass jemand das Studio
-            verlässt.
-          </p>
-          <button
-            type="button"
-            onClick={() => navigateToAppDashboard()}
-            className="inline-flex items-center gap-3 rounded-xl bg-amber px-6 py-4 font-sans-tight text-[15px] font-bold text-[#15110C] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-[3px] focus-visible:outline-amber"
-          >
-            Eigene Motive starten
-            <span className="rounded-md bg-[#15110C]/15 px-2 py-0.5 font-mono-hero text-[10px] uppercase">FREE · 3/3</span>
-          </button>
-        </div>
+        <DesktopRevealStagger className="mt-16 flex items-center justify-between gap-8 border-t border-[rgba(244,239,230,0.08)] pt-8" softEntrance>
+          <DesktopRevealItem>
+            <p className="max-w-[640px] font-serif-hero text-[22px] italic leading-snug text-[#E8DFCB]">
+              Bilder, die nach Brauerei aussehen — nicht nach Stockfoto. Und das alles, ohne dass jemand das Studio
+              verlässt.
+            </p>
+          </DesktopRevealItem>
+          <DesktopRevealItem>
+            <button
+              type="button"
+              onClick={() => navigateToAppDashboard()}
+              className="inline-flex items-center gap-3 rounded-xl bg-amber px-6 py-4 font-sans-tight text-[15px] font-bold text-[#15110C] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-[3px] focus-visible:outline-amber"
+            >
+              Eigene Motive starten
+              <span className="rounded-md bg-[#15110C]/15 px-2 py-0.5 font-mono-hero text-[10px] uppercase">FREE · 3/3</span>
+            </button>
+          </DesktopRevealItem>
+        </DesktopRevealStagger>
       </DesktopContainer>
     </section>
   );

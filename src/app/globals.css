@@ -4658,3 +4658,247 @@ body[data-legal-page="true"] {
 .about-root .font-mono-hero {
   font-family: var(--font-mono-hero);
 }
+
+/* Desktop (≥1024px) — Hero-Load + Scroll-Reveal */
+@keyframes desktop-reveal-up {
+  from {
+    opacity: 0;
+    transform: translate3d(0, 28px, 0);
+  }
+  to {
+    opacity: 1;
+    transform: translate3d(0, 0, 0);
+  }
+}
+
+@keyframes desktop-reveal-from-right {
+  from {
+    opacity: 0;
+    transform: translate3d(40px, 0, 0);
+  }
+  to {
+    opacity: 1;
+    transform: translate3d(0, 0, 0);
+  }
+}
+
+@keyframes desktop-reveal-from-left {
+  from {
+    opacity: 0;
+    transform: translate3d(-32px, 0, 0);
+  }
+  to {
+    opacity: 1;
+    transform: translate3d(0, 0, 0);
+  }
+}
+
+@media (min-width: 1024px) {
+  .desktop-reveal-item {
+    opacity: 0;
+    will-change: opacity, transform;
+  }
+
+  #desktop-hero .desktop-reveal-item {
+    transform: translate3d(0, 28px, 0);
+  }
+
+  #desktop-hero .desktop-reveal-item--from-right {
+    transform: translate3d(40px, 0, 0);
+  }
+
+  #desktop-hero.desktop-hero--ready .desktop-reveal-item {
+    animation: desktop-reveal-up 0.82s cubic-bezier(0.16, 1, 0.3, 1) both;
+    animation-delay: var(--desktop-reveal-delay, 0ms);
+  }
+
+  #desktop-hero.desktop-hero--ready .desktop-reveal-item--from-right {
+    animation-name: desktop-reveal-from-right;
+  }
+
+  #desktop-hero.desktop-hero--ready .desktop-reveal-item--from-left {
+    animation-name: desktop-reveal-from-left;
+  }
+
+  .desktop-reveal-group .desktop-reveal-item {
+    transform: translate3d(0, 22px, 0);
+    transition:
+      opacity 0.62s cubic-bezier(0.22, 1, 0.36, 1),
+      transform 0.62s cubic-bezier(0.22, 1, 0.36, 1);
+    transition-delay: var(--desktop-reveal-delay, 0ms);
+  }
+
+  .desktop-reveal-group--soft .desktop-reveal-item {
+    transform: translate3d(0, 30px, 0);
+    transition:
+      opacity 0.78s cubic-bezier(0.16, 1, 0.3, 1),
+      transform 0.78s cubic-bezier(0.16, 1, 0.3, 1);
+  }
+
+  .desktop-reveal-group--visible .desktop-reveal-item {
+    opacity: 1;
+    transform: translate3d(0, 0, 0);
+  }
+
+  .desktop-reveal-group--visible .desktop-reveal-item--from-right {
+    transform: translate3d(0, 0, 0);
+  }
+
+  .desktop-reveal-group--visible .desktop-reveal-item--from-left {
+    transform: translate3d(0, 0, 0);
+  }
+
+  .desktop-reveal-group--visible .desktop-reveal-item:nth-child(1) {
+    transition-delay: calc(var(--desktop-reveal-stagger, 85ms) * 0 + var(--desktop-reveal-delay, 0ms));
+  }
+  .desktop-reveal-group--visible .desktop-reveal-item:nth-child(2) {
+    transition-delay: calc(var(--desktop-reveal-stagger, 85ms) * 1 + var(--desktop-reveal-delay, 0ms));
+  }
+  .desktop-reveal-group--visible .desktop-reveal-item:nth-child(3) {
+    transition-delay: calc(var(--desktop-reveal-stagger, 85ms) * 2 + var(--desktop-reveal-delay, 0ms));
+  }
+  .desktop-reveal-group--visible .desktop-reveal-item:nth-child(4) {
+    transition-delay: calc(var(--desktop-reveal-stagger, 85ms) * 3 + var(--desktop-reveal-delay, 0ms));
+  }
+  .desktop-reveal-group--visible .desktop-reveal-item:nth-child(5) {
+    transition-delay: calc(var(--desktop-reveal-stagger, 85ms) * 4 + var(--desktop-reveal-delay, 0ms));
+  }
+  .desktop-reveal-group--visible .desktop-reveal-item:nth-child(6) {
+    transition-delay: calc(var(--desktop-reveal-stagger, 85ms) * 5 + var(--desktop-reveal-delay, 0ms));
+  }
+  .desktop-reveal-group--visible .desktop-reveal-item:nth-child(7) {
+    transition-delay: calc(var(--desktop-reveal-stagger, 85ms) * 6 + var(--desktop-reveal-delay, 0ms));
+  }
+  .desktop-reveal-group--visible .desktop-reveal-item:nth-child(8) {
+    transition-delay: calc(var(--desktop-reveal-stagger, 85ms) * 7 + var(--desktop-reveal-delay, 0ms));
+  }
+  .desktop-reveal-group--visible .desktop-reveal-item:nth-child(9) {
+    transition-delay: calc(var(--desktop-reveal-stagger, 85ms) * 8 + var(--desktop-reveal-delay, 0ms));
+  }
+  .desktop-reveal-group--visible .desktop-reveal-item:nth-child(10) {
+    transition-delay: calc(var(--desktop-reveal-stagger, 85ms) * 9 + var(--desktop-reveal-delay, 0ms));
+  }
+  .desktop-reveal-group--visible .desktop-reveal-item:nth-child(11) {
+    transition-delay: calc(var(--desktop-reveal-stagger, 85ms) * 10 + var(--desktop-reveal-delay, 0ms));
+  }
+  .desktop-reveal-group--visible .desktop-reveal-item:nth-child(12) {
+    transition-delay: calc(var(--desktop-reveal-stagger, 85ms) * 11 + var(--desktop-reveal-delay, 0ms));
+  }
+
+  .desktop-reveal-group .desktop-reveal-item--from-right {
+    transform: translate3d(36px, 0, 0);
+  }
+
+  .desktop-reveal-group .desktop-reveal-item--from-left {
+    transform: translate3d(-28px, 0, 0);
+  }
+}
+
+@media (min-width: 1024px) and (prefers-reduced-motion: reduce) {
+  .desktop-reveal-item,
+  #desktop-hero.desktop-hero--ready .desktop-reveal-item {
+    opacity: 1 !important;
+    transform: none !important;
+    animation: none !important;
+    transition: none !important;
+  }
+}
+
+/* Über uns – DACH-Karte: Pins pulsieren gestaffelt */
+@keyframes dach-map-pin-ring-pulse {
+  0%,
+  100% {
+    transform: scale(1);
+    stroke-opacity: 0.32;
+  }
+  50% {
+    transform: scale(1.18);
+    stroke-opacity: 0.58;
+  }
+}
+
+@keyframes dach-map-pin-dot-pulse {
+  0%,
+  100% {
+    transform: scale(1);
+  }
+  50% {
+    transform: scale(1.14);
+  }
+}
+
+@keyframes dach-map-pin-ripple {
+  0% {
+    transform: scale(1);
+    opacity: 0.38;
+  }
+  70%,
+  100% {
+    transform: scale(2.6);
+    opacity: 0;
+  }
+}
+
+.about-root .dach-map-pin__ring,
+.about-root .dach-map-pin__dot,
+.about-root .dach-map-pin__ripple {
+  transform-origin: center;
+  transform-box: fill-box;
+}
+
+.about-root .dach-map-pin__ring {
+  animation: dach-map-pin-ring-pulse 2.5s ease-in-out infinite;
+  animation-delay: var(--dach-pin-delay, 0s);
+}
+
+.about-root .dach-map-pin__dot {
+  animation: dach-map-pin-dot-pulse 2.5s ease-in-out infinite;
+  animation-delay: var(--dach-pin-delay, 0s);
+}
+
+.about-root .dach-map-pin__ripple {
+  pointer-events: none;
+  animation: dach-map-pin-ripple 2.5s ease-out infinite;
+  animation-delay: var(--dach-pin-delay, 0s);
+}
+
+.about-root .dach-map .dach-map-pin {
+  opacity: 0;
+  transition: opacity 0.55s cubic-bezier(0.22, 1, 0.36, 1);
+  transition-delay: var(--dach-pin-delay, 0s);
+}
+
+.about-root .dach-map.dach-map--in-view .dach-map-pin {
+  opacity: 1;
+}
+
+.about-root .dach-map.dach-map--in-view .dach-map-pin__label {
+  animation: dach-map-pin-label-in 0.55s cubic-bezier(0.22, 1, 0.36, 1) both;
+  animation-delay: calc(var(--dach-pin-delay, 0s) + 0.12s);
+}
+
+@keyframes dach-map-pin-label-in {
+  from {
+    opacity: 0;
+    transform: translateX(6px);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .about-root .dach-map-pin__ring,
+  .about-root .dach-map-pin__dot,
+  .about-root .dach-map-pin__ripple,
+  .about-root .dach-map.dach-map--in-view .dach-map-pin__label {
+    animation: none;
+  }
+
+  .about-root .dach-map .dach-map-pin,
+  .about-root .dach-map.dach-map--in-view .dach-map-pin {
+    opacity: 1;
+    transition: none;
+  }
+}

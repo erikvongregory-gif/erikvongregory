@@ -1,6 +1,7 @@
 "use client";
 
 import type { ReactNode } from "react";
+import { SITE } from "@/lib/siteConfig";
 import { cn } from "@/lib/utils";
 import { Mail } from "lucide-react";
 import { FaLinkedin, FaWhatsapp } from "react-icons/fa";
@@ -21,7 +22,7 @@ const DEFAULT_LINKS: ConnectLink[] = [
     icon: "linkedin",
   },
   {
-    href: "https://wa.me/4915565602176",
+    href: SITE.whatsappUrl,
     label: "WhatsApp",
     description: "Direktnachricht über WhatsApp",
     icon: "whatsapp",

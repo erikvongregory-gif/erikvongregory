@@ -2,6 +2,7 @@
 
 import { FAQ_GROUPS } from "@/content/desktop-home";
 import { DesktopContainer } from "@/components/desktop/DesktopContainer";
+import { DesktopRevealItem, DesktopRevealStagger } from "@/components/desktop/DesktopReveal";
 
 export function DesktopFaq() {
   return (
@@ -10,17 +11,24 @@ export function DesktopFaq() {
       <div id="fragen" className="scroll-mt-24" aria-hidden />
       <DesktopContainer>
         <div className="grid grid-cols-[1fr_1.6fr] items-start gap-24">
-          <div className="sticky top-24">
+          <DesktopRevealStagger className="sticky top-24 space-y-0" softEntrance>
+            <DesktopRevealItem>
             <p className="mb-4 font-mono-hero text-[11px] uppercase tracking-[1.4px] text-amber">FAQ · 06 Fragen</p>
+            </DesktopRevealItem>
+            <DesktopRevealItem>
             <h2 id="desktop-faq-heading" className="font-serif-hero text-[64px] font-normal leading-[0.98] tracking-[-1.8px] text-ink">
               Häufige <em className="italic text-amber">Fragen</em>.
               <br />
               Offene Antworten.
             </h2>
+            </DesktopRevealItem>
+            <DesktopRevealItem>
             <p className="mt-5 text-[15px] leading-[1.6] text-ink2">
               Kein Versteckspiel — die wichtigsten Punkte vor dem Start, während der Zusammenarbeit und zu den
               Ergebnissen.
             </p>
+            </DesktopRevealItem>
+            <DesktopRevealItem>
             <div className="mt-8 rounded-2xl border border-ink/10 bg-white p-7">
               <div className="mb-4 flex items-center gap-4">
                 <span className="flex h-[52px] w-[52px] items-center justify-center rounded-full bg-gradient-to-br from-amber to-amber2 font-serif-hero text-2xl font-medium text-paper">
@@ -41,11 +49,14 @@ export function DesktopFaq() {
                 Nachricht schreiben →
               </a>
             </div>
-          </div>
+            </DesktopRevealItem>
+          </DesktopRevealStagger>
 
           <div className="space-y-12">
             {FAQ_GROUPS.map((group) => (
-              <article key={group.n}>
+              <DesktopRevealStagger key={group.n} softEntrance staggerMs={80}>
+              <DesktopRevealItem>
+              <article>
                 <header className="mb-6 flex items-baseline gap-3.5 border-b border-ink/10 pb-4">
                   <span className="font-serif-hero text-[22px] italic text-amber">{group.n}</span>
                   <h3 className="font-serif-hero text-[22px] font-medium text-ink">{group.title}</h3>
@@ -61,6 +72,8 @@ export function DesktopFaq() {
                   ))}
                 </div>
               </article>
+              </DesktopRevealItem>
+              </DesktopRevealStagger>
             ))}
           </div>
         </div>

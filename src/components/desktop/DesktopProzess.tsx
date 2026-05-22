@@ -2,6 +2,7 @@
 
 import { PROCESS_STEPS } from "@/content/desktop-home";
 import { DesktopContainer } from "@/components/desktop/DesktopContainer";
+import { DesktopRevealItem, DesktopRevealStagger } from "@/components/desktop/DesktopReveal";
 
 function ClockIcon() {
   return (
@@ -25,31 +26,36 @@ export function DesktopProzess() {
 
       <div id="prozess" className="scroll-mt-24" aria-hidden />
       <DesktopContainer>
-        <div className="flex items-end justify-between gap-16 border-b border-[rgba(244,239,230,0.08)] pb-16">
-          <div>
-            <p className="mb-4 font-mono-hero text-[11px] uppercase tracking-[1.4px] text-amber2">
-              So funktioniert&apos;s · 03 Schritte
+        <DesktopRevealStagger className="flex items-end justify-between gap-16 border-b border-[rgba(244,239,230,0.08)] pb-16" softEntrance>
+          <DesktopRevealItem>
+            <div>
+              <p className="mb-4 font-mono-hero text-[11px] uppercase tracking-[1.4px] text-amber2">
+                So funktioniert&apos;s · 03 Schritte
+              </p>
+              <h2 id="desktop-prozess-heading" className="font-serif-hero text-[72px] font-normal leading-[0.98] tracking-[-2px] text-paper">
+                Von der Idee
+                <br />
+                zum <em className="italic text-amber2">fertigen Motiv</em>.
+              </h2>
+            </div>
+          </DesktopRevealItem>
+          <DesktopRevealItem>
+            <p className="max-w-[420px] text-[15px] leading-[1.6] text-[#C8BFAD]">
+              Drei Schritte. Jeder mit klarem Output, definierter Dauer und einem{" "}
+              <em className="italic text-[#E8DFCB]">echten Lieferschein</em> — kein „dann melden wir uns“.
             </p>
-            <h2 id="desktop-prozess-heading" className="font-serif-hero text-[72px] font-normal leading-[0.98] tracking-[-2px] text-paper">
-              Von der Idee
-              <br />
-              zum <em className="italic text-amber2">fertigen Motiv</em>.
-            </h2>
-          </div>
-          <p className="max-w-[420px] text-[15px] leading-[1.6] text-[#C8BFAD]">
-            Drei Schritte. Jeder mit klarem Output, definierter Dauer und einem{" "}
-            <em className="italic text-[#E8DFCB]">echten Lieferschein</em> — kein „dann melden wir uns“.
-          </p>
-        </div>
+          </DesktopRevealItem>
+        </DesktopRevealStagger>
 
         <div className="relative pt-24">
           <div
             className="pointer-events-none absolute left-[8.5%] right-[8.5%] top-[48px] h-px bg-gradient-to-r from-transparent via-amber2/40 to-transparent"
             aria-hidden
           />
-          <div className="grid grid-cols-3 gap-14">
+          <DesktopRevealStagger className="grid grid-cols-3 gap-14" staggerMs={140}>
             {PROCESS_STEPS.map((step) => (
-              <article key={step.n} className="relative">
+              <DesktopRevealItem key={step.n}>
+              <article className="relative">
                 <div
                   className="relative z-10 mx-auto mb-8 flex h-24 w-24 items-center justify-center rounded-full border border-amber2/35 bg-[#15110C] font-serif-hero text-[36px] font-light italic text-amber2 shadow-[0_0_0_8px_#0F0C08]"
                   aria-hidden
@@ -78,8 +84,9 @@ export function DesktopProzess() {
                   </dl>
                 </div>
               </article>
+              </DesktopRevealItem>
             ))}
-          </div>
+          </DesktopRevealStagger>
         </div>
       </DesktopContainer>
     </section>

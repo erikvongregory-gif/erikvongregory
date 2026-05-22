@@ -3,6 +3,7 @@
 import { useState } from "react";
 import { LOESUNGEN } from "@/content/desktop-home";
 import { DesktopContainer } from "@/components/desktop/DesktopContainer";
+import { DesktopRevealItem, DesktopRevealStagger } from "@/components/desktop/DesktopReveal";
 import { scrollToContactPaket } from "@/lib/contactPaket";
 import { cn } from "@/lib/utils";
 
@@ -21,26 +22,30 @@ export function DesktopLoesungen() {
     <section id="section-4" aria-labelledby="desktop-loesungen-heading" className="scroll-mt-24 bg-paper py-20 lg:py-[120px]">
       <div id="loesungen" className="scroll-mt-24" aria-hidden />
       <DesktopContainer>
-        <div className="grid grid-cols-[1fr_1.4fr] items-end gap-16 border-b border-ink/10 pb-20">
-          <div>
-            <p className="mb-4 font-mono-hero text-[11px] uppercase tracking-[1.4px] text-ink3">Meine Leistungen · 05 Lösungen</p>
-            <h2 id="desktop-loesungen-heading" className="font-serif-hero text-[80px] font-normal leading-[0.98] tracking-[-2.4px] text-ink">
-              Was ich für
-              <br />
-              dich <em className="italic text-amber">baue</em>.
-            </h2>
-          </div>
-          <p className="text-lg leading-[1.55] text-ink2">
-            Fünf Bausteine, einzeln buchbar oder als Jahresplan kombiniert. Alle in{" "}
-            <em className="italic">deinem</em> Markenstil, alle praxisnah, alle sofort einsetzbar.
-          </p>
-        </div>
+        <DesktopRevealStagger className="grid grid-cols-[1fr_1.4fr] items-end gap-16 border-b border-ink/10 pb-20" softEntrance>
+          <DesktopRevealItem>
+            <div>
+              <p className="mb-4 font-mono-hero text-[11px] uppercase tracking-[1.4px] text-ink3">Meine Leistungen · 05 Lösungen</p>
+              <h2 id="desktop-loesungen-heading" className="font-serif-hero text-[80px] font-normal leading-[0.98] tracking-[-2.4px] text-ink">
+                Was ich für
+                <br />
+                dich <em className="italic text-amber">baue</em>.
+              </h2>
+            </div>
+          </DesktopRevealItem>
+          <DesktopRevealItem>
+            <p className="text-lg leading-[1.55] text-ink2">
+              Fünf Bausteine, einzeln buchbar oder als Jahresplan kombiniert. Alle in{" "}
+              <em className="italic">deinem</em> Markenstil, alle praxisnah, alle sofort einsetzbar.
+            </p>
+          </DesktopRevealItem>
+        </DesktopRevealStagger>
 
-        <ul className="border-t border-ink/10">
+        <DesktopRevealStagger className="border-t border-ink/10" staggerMs={90}>
           {LOESUNGEN.map((item, i) => {
             const isHover = hovered === i;
             return (
-              <li key={item.n}>
+              <DesktopRevealItem key={item.n}>
                 <button
                   type="button"
                   className={cn(
@@ -88,16 +93,19 @@ export function DesktopLoesungen() {
                     </span>
                   </div>
                 </button>
-              </li>
+              </DesktopRevealItem>
             );
           })}
-        </ul>
+        </DesktopRevealStagger>
 
-        <div className="mt-12 flex items-center justify-between rounded-[18px] border border-ink/10 bg-white p-8 px-10">
+        <DesktopRevealStagger className="mt-12 flex items-center justify-between rounded-[18px] border border-ink/10 bg-white p-8 px-10" softEntrance>
+          <DesktopRevealItem>
           <div>
             <p className="mb-2 font-mono-hero text-[11px] uppercase tracking-wider text-amber">Jahresplan · Empfohlen</p>
             <h3 className="font-serif-hero text-[30px] font-medium text-ink">Alle fünf zusammen, einmal im Quartal abgestimmt.</h3>
           </div>
+          </DesktopRevealItem>
+          <DesktopRevealItem>
           <div className="flex gap-3">
             <button
               type="button"
@@ -114,7 +122,8 @@ export function DesktopLoesungen() {
               Gespräch buchen →
             </button>
           </div>
-        </div>
+          </DesktopRevealItem>
+        </DesktopRevealStagger>
       </DesktopContainer>
     </section>
   );

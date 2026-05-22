@@ -3,39 +3,63 @@
 import Link from "next/link";
 import { navigateToAppDashboard } from "@/lib/appLoginUrl";
 import { DesktopContainer } from "@/components/desktop/DesktopContainer";
+import { DesktopRevealItem, DesktopRevealStagger } from "@/components/desktop/DesktopReveal";
 import { WaveMark } from "@/components/desktop/WaveMark";
+import { SITE } from "@/lib/siteConfig";
 import { cn } from "@/lib/utils";
 
-const FOOTER_COLS = [
+type FooterRow = {
+  key: string;
+  value: string;
+  href?: string;
+  external?: boolean;
+};
+
+const FOOTER_COLS: { title: string; rows: FooterRow[] }[] = [
   {
     title: "Direkt",
     rows: [
-      ["E-Mail", "kontakt@evglab.com"],
-      ["Anruf", "nach Termin"],
+      { key: "E-Mail", value: "kontakt@evglab.com", href: "mailto:kontakt@evglab.com" },
+      {
+        key: "Anruf",
+        value: SITE.contactPhoneDisplay,
+        href: SITE.whatsappUrl,
+        external: true,
+      },
     ],
   },
   {
     title: "Social",
     rows: [
-      ["LinkedIn", "evglab"],
-      ["WhatsApp", "+49 …"],
+      {
+        key: "LinkedIn",
+        value: "evglab",
+        href: "https://www.linkedin.com/in/erik-freiherr-von-gregory-22852b329",
+        external: true,
+      },
+      {
+        key: "WhatsApp",
+        value: SITE.contactPhoneDisplay,
+        href: SITE.whatsappUrl,
+        external: true,
+      },
     ],
   },
   {
     title: "Sitz",
     rows: [
-      ["Land", "Deutschland"],
-      ["Hosting", "DSGVO · DE"],
+      { key: "Land", value: "Deutschland" },
+      { key: "Hosting", value: "DSGVO · DE" },
     ],
   },
   {
     title: "Mehr",
     rows: [
-      ["Wissens-Quiz", "/ratgeber"],
-      ["Über uns", "/ueber-uns"],
+      { key: "Wissens-Quiz", value: "/ratgeber", href: "/ratgeber" },
+      { key: "Über uns", value: "/ueber-uns", href: "/ueber-uns" },
     ],
   },
-] as const;
+];
 
 type SiteFooterProps = {
   className?: string;
@@ -51,7 +75,8 @@ export function SiteFooter({ className, footerId = "site-footer" }: SiteFooterPr
         className={cn("scroll-mt-24 bg-[#0F0C08] py-12 text-paper sm:py-16 lg:py-20", className)}
       >
         <DesktopContainer>
-          <div className="grid gap-10 border-b border-[rgba(244,239,230,0.08)] pb-10 sm:gap-12 sm:pb-12 lg:grid-cols-[1.4fr_1fr] lg:gap-16 lg:pb-16">
+          <DesktopRevealStagger className="grid gap-10 border-b border-[rgba(244,239,230,0.08)] pb-10 sm:gap-12 sm:pb-12 lg:grid-cols-[1.4fr_1fr] lg:gap-16 lg:pb-16" softEntrance>
+            <DesktopRevealItem>
             <div>
               <p className="mb-4 flex items-center gap-3 font-mono-hero text-[10px] uppercase tracking-[1.4px] text-amber2 sm:mb-6 sm:text-[11px]">
                 <span className="h-px w-6 bg-amber2/50 sm:w-8" aria-hidden />
@@ -78,6 +103,8 @@ export function SiteFooter({ className, footerId = "site-footer" }: SiteFooterPr
                 </a>
               </div>
             </div>
+            </DesktopRevealItem>
+            <DesktopRevealItem>
             <div className="grid grid-cols-2 gap-6 sm:gap-8">
               {FOOTER_COLS.map((col) => (
                 <div key={col.title}>
@@ -85,15 +112,30 @@ export function SiteFooter({ className, footerId = "site-footer" }: SiteFooterPr
                     {col.title}
                   </p>
                   <ul className="space-y-2">
-                    {col.rows.map(([key, val]) => (
-                      <li key={key} className="flex justify-between gap-3 text-[12px] sm:gap-4 sm:text-[13px]">
-                        <span className="font-mono-hero text-[#8C7E68]">{key}</span>
-                        {val.startsWith("/") ? (
-                          <Link href={val} className="shrink-0 text-[#E8DFCB] hover:text-amber2">
-                            {val === "/ratgeber" ? "→ Quiz" : "→ Seite"}
-                          </Link>
+                    {col.rows.map((row) => (
+                      <li key={row.key} className="flex justify-between gap-3 text-[12px] sm:gap-4 sm:text-[13px]">
+                        <span className="font-mono-hero text-[#8C7E68]">{row.key}</span>
+                        {row.href ? (
+                          row.href.startsWith("/") ? (
+                            <Link href={row.href} className="shrink-0 text-[#E8DFCB] hover:text-amber2">
+                              {row.href === "/ratgeber" ? "→ Quiz" : "→ Seite"}
+                            </Link>
+                          ) : (
+                            <a
+                              href={row.href}
+                              className="shrink-0 text-right font-mono-hero text-[#E8DFCB] transition hover:text-amber2 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-amber"
+                              {...(row.external
+                                ? { target: "_blank", rel: "noopener noreferrer" }
+                                : {})}
+                              {...(row.href === SITE.whatsappUrl
+                                ? { "aria-label": `WhatsApp: ${SITE.contactPhoneDisplay}` }
+                                : {})}
+                            >
+                              {row.value}
+                            </a>
+                          )
                         ) : (
-                          <span className="text-right font-mono-hero text-[#E8DFCB]">{val}</span>
+                          <span className="text-right font-mono-hero text-[#E8DFCB]">{row.value}</span>
                         )}
                       </li>
                     ))}
@@ -101,13 +143,17 @@ export function SiteFooter({ className, footerId = "site-footer" }: SiteFooterPr
                 </div>
               ))}
             </div>
-          </div>
+            </DesktopRevealItem>
+          </DesktopRevealStagger>
 
-          <div className="flex flex-col gap-5 pt-6 font-mono-hero text-[10px] uppercase tracking-wider text-[#8C7E68] sm:flex-row sm:items-center sm:justify-between sm:pt-7 sm:text-[11px]">
+          <DesktopRevealStagger className="flex flex-col gap-5 pt-6 font-mono-hero text-[10px] uppercase tracking-wider text-[#8C7E68] sm:flex-row sm:items-center sm:justify-between sm:pt-7 sm:text-[11px]" staggerMs={70}>
+            <DesktopRevealItem>
             <p className="flex items-center gap-2 text-[#C8BFAD]">
               <WaveMark className="shrink-0 text-amber2" />
               © 2026 EvGlab · Alle Rechte vorbehalten
             </p>
+            </DesktopRevealItem>
+            <DesktopRevealItem>
             <nav className="flex flex-wrap gap-x-5 gap-y-2 sm:gap-6" aria-label="Rechtliches">
               <Link href="/impressum" className="hover:text-paper">
                 Impressum
@@ -122,7 +168,8 @@ export function SiteFooter({ className, footerId = "site-footer" }: SiteFooterPr
                 Cookies
               </Link>
             </nav>
-          </div>
+            </DesktopRevealItem>
+          </DesktopRevealStagger>
         </DesktopContainer>
       </footer>
     </>

@@ -1,4 +1,7 @@
+"use client";
+
 import Image from "next/image";
+import { useInViewReveal } from "@/hooks/useInViewReveal";
 import type { HugoMessage } from "@/content/about";
 import { FOUNDER } from "@/content/about";
 import { APP_DISPLAY_HOST } from "@/lib/appLoginUrl";
@@ -103,10 +106,13 @@ export function DachMapSvg({
   cities: readonly { name: string; x: number; y: number }[];
   className?: string;
 }) {
+  const { ref, isVisible } = useInViewReveal({ rootMargin: "0px 0px -10% 0px", threshold: 0.12 });
+
   return (
     <svg
+      ref={ref}
       viewBox="0 0 480 300"
-      className={cn("h-full w-full", className)}
+      className={cn("dach-map h-full w-full", isVisible && "dach-map--in-view", className)}
       role="img"
       aria-labelledby="dach-map-title"
     >
@@ -123,18 +129,35 @@ export function DachMapSvg({
       <text x="215" y="255" className="fill-ink3 font-mono text-[14px]" style={{ fontFamily: "var(--font-jetbrains)" }}>
         CH
       </text>
-      {cities.map((c) => (
-        <g key={c.name}>
-          <circle cx={c.x} cy={c.y} r={11} fill="none" stroke="#C7691E" strokeOpacity={0.4} strokeWidth={1.5} />
-          <circle cx={c.x} cy={c.y} r={5} fill="#C7691E" />
-          <text
-            x={c.x + 14}
-            y={c.y + 5}
-            className="fill-ink font-serif text-[13px]"
-            style={{ fontFamily: "var(--font-newsreader)" }}
-          >
-            {c.name}
-          </text>
+      {cities.map((c, i) => (
+        <g
+          key={c.name}
+          className="dach-map-pin"
+          style={{ ["--dach-pin-delay" as string]: `${i * 0.28}s` }}
+        >
+          <g transform={`translate(${c.x} ${c.y})`}>
+            <circle className="dach-map-pin__ripple" cx={0} cy={0} r={5} fill="#C7691E" aria-hidden />
+            <circle
+              className="dach-map-pin__ring"
+              cx={0}
+              cy={0}
+              r={11}
+              fill="none"
+              stroke="#C7691E"
+              strokeOpacity={0.4}
+              strokeWidth={1.5}
+              aria-hidden
+            />
+            <circle className="dach-map-pin__dot" cx={0} cy={0} r={5} fill="#C7691E" aria-hidden />
+            <text
+              x={14}
+              y={5}
+              className="dach-map-pin__label fill-ink font-serif text-[13px]"
+              style={{ fontFamily: "var(--font-newsreader)" }}
+            >
+              {c.name}
+            </text>
+          </g>
         </g>
       ))}
     </svg>

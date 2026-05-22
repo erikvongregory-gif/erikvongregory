@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useSyncExternalStore } from "react";
 import dynamic from "next/dynamic";
 import { Hero } from "@/components/ui/animated-hero";
 import { useLoading } from "@/context/LoadingContext";
@@ -23,27 +23,35 @@ const MobileLayout = dynamic(
 
 const DESKTOP_MIN = "(min-width: 1024px)";
 
+function subscribeDesktopMq(onStoreChange: () => void) {
+  const mq = window.matchMedia(DESKTOP_MIN);
+  mq.addEventListener("change", onStoreChange);
+  return () => mq.removeEventListener("change", onStoreChange);
+}
+
+function getDesktopMqSnapshot() {
+  return window.matchMedia(DESKTOP_MIN).matches;
+}
+
+/** Mobile-first – muss mit SSR übereinstimmen, sonst Hydration-Mismatch */
+function getDesktopMqServerSnapshot() {
+  return false;
+}
+
 export function ResponsiveHomeLayout() {
   const { heroReady } = useLoading();
-  const [isDesktop, setIsDesktop] = useState<boolean | null>(() => {
-    if (typeof window === "undefined") return null;
-    return window.matchMedia(DESKTOP_MIN).matches;
-  });
-
-  useEffect(() => {
-    const media = window.matchMedia(DESKTOP_MIN);
-    const apply = () => setIsDesktop(media.matches);
-    apply();
-    media.addEventListener("change", apply);
-    return () => media.removeEventListener("change", apply);
-  }, []);
+  const isDesktop = useSyncExternalStore(
+    subscribeDesktopMq,
+    getDesktopMqSnapshot,
+    getDesktopMqServerSnapshot,
+  );
 
   return (
     <div
       className={`block min-h-[100dvh] w-full min-w-0 ${isDesktop ? "desktop-root" : "mobile-root mobile-root-home"}`}
     >
       <main id="main" className="relative min-h-[100dvh] overflow-x-hidden bg-paper pt-14 sm:pt-16 lg:pt-[68px]">
-        {isDesktop === false ? (
+        {!isDesktop ? (
           <div
             id="start"
             className={`section1-wrapper relative mx-auto w-full max-w-screen-2xl section1-wrapper--mobile-gallery ${heroReady ? "section1-ready" : ""}`}
@@ -58,7 +66,7 @@ export function ResponsiveHomeLayout() {
           </div>
         ) : null}
 
-        {isDesktop === false ? (
+        {!isDesktop ? (
           <div
             id="mobile-content"
             className="mobile-root mobile-root-home flex w-full flex-col overflow-x-hidden bg-paper text-ink"

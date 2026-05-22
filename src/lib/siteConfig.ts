@@ -38,6 +38,10 @@ export const SITE = {
   locale: "de_DE",
   ogImage: "/og/evglab-og.jpg", // 1200×630 für WhatsApp, LinkedIn, Twitter etc.
 
+  /** Anzeige im Footer / Kontakt; Chat über WhatsApp Business */
+  contactPhoneDisplay: "+49 15565 602176",
+  whatsappUrl: "https://wa.me/4915565602176",
+
   /** Google Search Console – Code von search.google.com/search-console eintragen, z.B. "abc123xyz" */
   googleSiteVerification: "",
 } as const;

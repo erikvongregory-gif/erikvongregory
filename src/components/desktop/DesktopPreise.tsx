@@ -4,6 +4,7 @@ import { useCallback, useState } from "react";
 import type { SubscriptionPlanKey } from "@/lib/billing/tokenState";
 import { PREIS_MODE_COPY, PREIS_PLAENE, type PricingTier } from "@/content/desktop-home";
 import { DesktopContainer } from "@/components/desktop/DesktopContainer";
+import { DesktopRevealItem, DesktopRevealStagger } from "@/components/desktop/DesktopReveal";
 import { scrollToContactPaket } from "@/lib/contactPaket";
 import { cn } from "@/lib/utils";
 
@@ -109,54 +110,66 @@ export function DesktopPreise() {
       <div id="preise" className="scroll-mt-24" aria-hidden />
       <div id="pakete" className="scroll-mt-24" aria-hidden />
       <DesktopContainer>
-        <div className="mx-auto max-w-[760px] text-center">
-          <p className="mb-6 flex items-center justify-center gap-4 font-mono-hero text-[11px] uppercase tracking-[1.4px] text-amber">
-            <span className="h-px w-12 bg-amber/40" aria-hidden />
-            Zwei Wege mit EvGlab
-            <span className="h-px w-12 bg-amber/40" aria-hidden />
-          </p>
-          <h2 id="desktop-preise-heading" className="font-serif-hero text-[72px] font-normal leading-[0.98] tracking-[-2px] text-ink">
-            Du entscheidest:
-            <br />
-            Premium oder <em className="italic text-amber">Selbstbedienung</em>.
-          </h2>
-        </div>
+        <DesktopRevealStagger className="mx-auto max-w-[760px] text-center" softEntrance>
+          <DesktopRevealItem>
+            <p className="mb-6 flex items-center justify-center gap-4 font-mono-hero text-[11px] uppercase tracking-[1.4px] text-amber">
+              <span className="h-px w-12 bg-amber/40" aria-hidden />
+              Zwei Wege mit EvGlab
+              <span className="h-px w-12 bg-amber/40" aria-hidden />
+            </p>
+          </DesktopRevealItem>
+          <DesktopRevealItem>
+            <h2 id="desktop-preise-heading" className="font-serif-hero text-[72px] font-normal leading-[0.98] tracking-[-2px] text-ink">
+              Du entscheidest:
+              <br />
+              Premium oder <em className="italic text-amber">Selbstbedienung</em>.
+            </h2>
+          </DesktopRevealItem>
+        </DesktopRevealStagger>
 
-        <div className="mx-auto mb-16 mt-10 flex w-fit rounded-[14px] border border-ink/12 bg-white p-1.5">
-          {(["premium", "self"] as const).map((m) => (
-            <button
-              key={m}
-              type="button"
-              aria-pressed={mode === m}
-              onClick={() => setMode(m)}
-              className={cn(
-                "rounded-[10px] px-6 py-3.5 font-sans-tight text-sm font-medium transition duration-200",
-                mode === m ? "bg-ink text-paper" : "text-ink2 hover:text-ink",
-              )}
-            >
-              {PREIS_MODE_COPY[m].toggle}
-            </button>
-          ))}
-        </div>
+        <DesktopRevealStagger className="mx-auto mb-16 mt-10 flex w-fit justify-center">
+          <DesktopRevealItem>
+            <div className="flex rounded-[14px] border border-ink/12 bg-white p-1.5">
+              {(["premium", "self"] as const).map((m) => (
+                <button
+                  key={m}
+                  type="button"
+                  aria-pressed={mode === m}
+                  onClick={() => setMode(m)}
+                  className={cn(
+                    "rounded-[10px] px-6 py-3.5 font-sans-tight text-sm font-medium transition duration-200",
+                    mode === m ? "bg-ink text-paper" : "text-ink2 hover:text-ink",
+                  )}
+                >
+                  {PREIS_MODE_COPY[m].toggle}
+                </button>
+              ))}
+            </div>
+          </DesktopRevealItem>
+        </DesktopRevealStagger>
 
-        <div className="mx-auto mb-16 max-w-[640px] text-center">
-          <p className="font-serif-hero text-[22px] italic text-ink">{copy.headline}</p>
-          <p className="mt-3 text-[15px] leading-[1.6] text-ink2">{copy.body}</p>
-        </div>
+        <DesktopRevealStagger className="mx-auto mb-16 max-w-[640px] text-center" softEntrance>
+          <DesktopRevealItem>
+            <p className="font-serif-hero text-[22px] italic text-ink">{copy.headline}</p>
+          </DesktopRevealItem>
+          <DesktopRevealItem>
+            <p className="mt-3 text-[15px] leading-[1.6] text-ink2">{copy.body}</p>
+          </DesktopRevealItem>
+        </DesktopRevealStagger>
 
-        <div className="grid grid-cols-3 gap-5">
+        <DesktopRevealStagger className="grid grid-cols-3 gap-5" staggerMs={110} key={mode}>
           {tiers.map((tier) => (
-            <TierCard
-              key={`${mode}-${tier.name}`}
-              tier={tier}
-              mode={mode}
-              busy={checkoutBusy !== null}
-              onCheckout={onCheckout}
-            />
+            <DesktopRevealItem key={`${mode}-${tier.name}`}>
+              <TierCard tier={tier} mode={mode} busy={checkoutBusy !== null} onCheckout={onCheckout} />
+            </DesktopRevealItem>
           ))}
-        </div>
+        </DesktopRevealStagger>
 
-        <p className="mt-8 text-center font-mono-hero text-[11px] uppercase tracking-wider text-ink3">{copy.disclaimer}</p>
+        <DesktopRevealStagger className="mt-8 text-center">
+          <DesktopRevealItem>
+            <p className="font-mono-hero text-[11px] uppercase tracking-wider text-ink3">{copy.disclaimer}</p>
+          </DesktopRevealItem>
+        </DesktopRevealStagger>
       </DesktopContainer>
     </section>
   );
