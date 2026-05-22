@@ -133,11 +133,7 @@ function Hero() {
         </Floating>
       ) : null}
       <div className="container mx-auto max-md:max-w-none max-md:px-0">
-        <div
-          className={`lg:hidden transition-opacity duration-500 ease-out ${
-            heroReady ? "opacity-100" : "opacity-0"
-          }`}
-        >
+        <div className="lg:hidden">
           <MobileGalleryHero
             primaryCtaLabel={primaryCtaLabel}
             onPrimaryCtaClick={onPrimaryCtaClick}

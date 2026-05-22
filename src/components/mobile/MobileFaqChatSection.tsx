@@ -184,6 +184,7 @@ export function MobileFaqChatSection() {
       aria-labelledby="faq-heading"
       className="mobile-faq-chat w-full min-h-full bg-paper pt-10 pb-9 font-sans-tight text-ink"
     >
+      <div id="faq" className="scroll-mt-24" aria-hidden />
       <div className="px-5">
         <div className="mb-3.5 flex items-center gap-2.5">
           <span className="h-px w-7 shrink-0 bg-amber" aria-hidden />

@@ -1,30 +1,42 @@
 "use client";
 
 import { usePathname } from "next/navigation";
-import { useEffect, useState } from "react";
+import { useLayoutEffect, useState } from "react";
 
 const HOME_DARK_SECTIONS = ["desktop-hero", "desktop-prozess", "desktop-beispiele", "desktop-footer"];
 const ABOUT_DARK_SECTIONS = ["about-hero", "about-hugo", "about-closing"];
 const RATGEBER_DARK_SECTIONS = ["ratgeber-recommendation"];
 
+/** Gleicher Wert auf Server und beim ersten Client-Render (kein window/matchMedia). */
+function navThemeInitial(pathname: string | null): boolean {
+  return pathname === "/ueber-uns";
+}
+
 export function useSiteNavTheme() {
   const pathname = usePathname();
-  const [isDark, setIsDark] = useState(() => pathname === "/" || pathname === "/ueber-uns");
+  const [isDark, setIsDark] = useState(() => navThemeInitial(pathname));
 
-  useEffect(() => {
+  useLayoutEffect(() => {
     if (pathname !== "/" && pathname !== "/ueber-uns" && pathname !== "/ratgeber") {
       setIsDark(false);
       return;
     }
 
+    const isDesktop = window.matchMedia("(min-width: 1024px)").matches;
     const ids =
       pathname === "/"
-        ? HOME_DARK_SECTIONS
+        ? isDesktop
+          ? HOME_DARK_SECTIONS
+          : []
         : pathname === "/ratgeber"
           ? RATGEBER_DARK_SECTIONS
           : ABOUT_DARK_SECTIONS;
     const sections = ids.map((id) => document.getElementById(id)).filter(Boolean) as HTMLElement[];
     if (!sections.length) {
+      if (pathname === "/") {
+        setIsDark(false);
+        return;
+      }
       setIsDark(pathname === "/ratgeber" ? false : true);
       return;
     }

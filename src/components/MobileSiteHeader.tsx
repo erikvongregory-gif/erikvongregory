@@ -8,6 +8,7 @@ import { APP_LOGIN_URL } from "@/lib/appLoginUrl";
 import { scrollToSection } from "@/lib/scrollToSection";
 import { SITE } from "@/lib/siteConfig";
 import { useLoading } from "@/context/LoadingContext";
+import { useSiteNavTheme } from "@/components/useSiteNavTheme";
 import { cn } from "@/lib/utils";
 import { GLOW_NAV_ITEMS, navItemsForMenu, SECTION_SPY_ELEMENT_ID } from "@/lib/mobileNav";
 
@@ -15,6 +16,9 @@ export function MobileSiteHeader() {
   const pathname = usePathname();
   const router = useRouter();
   const { isLoadComplete } = useLoading();
+  const navThemeDark = useSiteNavTheme();
+  /** Über-uns Mobile: immer heller Header (dunkler Hero). Ratgeber: nur auf dunklem Ergebnis-Block. */
+  const isDark = pathname === "/ratgeber" && navThemeDark;
   const [dropdownOpen, setDropdownOpen] = useState(false);
   const [mobileAuthDialogOpen, setMobileAuthDialogOpen] = useState(false);
   const [activeSection, setActiveSection] = useState("");
@@ -191,9 +195,16 @@ export function MobileSiteHeader() {
     return null;
   }
 
+  const logoSrc = isDark ? SITE.brandLogoPathOnDark : SITE.brandLogoPath;
+
   return (
     <header
-      className="mobile-top-header pointer-events-none fixed inset-x-0 top-0 z-[100] box-border flex items-center justify-between gap-3 pl-[max(1rem,env(safe-area-inset-left))] pr-[max(1rem,env(safe-area-inset-right))] pt-[max(0.35rem,env(safe-area-inset-top))] pb-1 lg:hidden"
+      className={cn(
+        "mobile-top-header pointer-events-none fixed inset-x-0 top-0 z-[100] box-border flex items-center justify-between gap-3 pl-[max(1rem,env(safe-area-inset-left))] pr-[max(1rem,env(safe-area-inset-right))] pt-[max(0.35rem,env(safe-area-inset-top))] pb-1 transition-[background-color,box-shadow] duration-[250ms] ease-out lg:hidden",
+        isDark
+          ? "mobile-top-header--on-dark border-b border-[rgba(244,239,230,0.08)] bg-[#15110C]/88 backdrop-blur-md"
+          : "mobile-top-header--editorial border-b border-ink/[0.08] bg-paper/90 shadow-[0_1px_0_color-mix(in_srgb,var(--color-ink)_6%,transparent)] backdrop-blur-md",
+      )}
       aria-label="Seitennavigation"
     >
       <a ref={contactLinkRef} href="#contact" tabIndex={-1} className="sr-only" aria-hidden>
@@ -206,7 +217,7 @@ export function MobileSiteHeader() {
           className="premium-header-logo inline-flex items-center rounded focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:ring-white/60 focus-visible:ring-offset-transparent"
         >
           <Image
-            src={SITE.brandLogoPath}
+            src={logoSrc}
             alt={SITE.brandLogoAlt}
             width={400}
             height={400}
@@ -230,7 +241,12 @@ export function MobileSiteHeader() {
       <div ref={mobileNavRef} className="pointer-events-auto relative z-[101] shrink-0">
         <button
           type="button"
-          className="inline-flex h-14 w-14 min-h-14 min-w-14 items-center justify-center rounded-xl bg-transparent text-neutral-900 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-neutral-400 focus-visible:ring-offset-2"
+          className={cn(
+            "inline-flex h-14 w-14 min-h-14 min-w-14 items-center justify-center rounded-xl bg-transparent focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-offset-2",
+            isDark
+              ? "text-paper focus-visible:ring-amber/50 focus-visible:ring-offset-[#15110C]"
+              : "text-ink focus-visible:ring-amber/40 focus-visible:ring-offset-paper",
+          )}
           aria-expanded={dropdownOpen}
           aria-controls="mobile-header-menu"
           aria-haspopup="menu"
@@ -254,7 +270,12 @@ export function MobileSiteHeader() {
           <div
             id="mobile-header-menu"
             role="menu"
-            className="mobile-header-menu-panel mobile-header-menu-panel--open absolute right-0 top-full z-[110] mt-1.5 min-w-[14.5rem] origin-top-right overflow-hidden rounded-2xl border border-black/[0.08] bg-white/95 py-2 shadow-[0_16px_48px_-12px_rgba(0,0,0,0.2)] backdrop-blur-xl"
+            className={cn(
+              "mobile-header-menu-panel mobile-header-menu-panel--open absolute right-0 top-full z-[110] mt-1.5 min-w-[14.5rem] origin-top-right overflow-hidden rounded-2xl py-2 shadow-[0_16px_48px_-12px_rgba(0,0,0,0.28)] backdrop-blur-xl",
+              isDark
+                ? "border border-[rgba(244,239,230,0.12)] bg-[#15110C]/96"
+                : "border border-ink/10 bg-paper/95",
+            )}
           >
             {navItemsForMenu(true).map(({ href, label }) => {
               const isActive =
@@ -270,18 +291,34 @@ export function MobileSiteHeader() {
                     handleNavClick(href);
                   }}
                   className={cn(
-                    "block rounded-xl px-4 py-2.5 text-[15px] text-zinc-700 transition hover:bg-black/[0.04] focus-visible:bg-black/[0.04] focus-visible:outline-none",
-                    isActive && "font-semibold text-[#5a7a00]",
+                    "block rounded-xl px-4 py-2.5 font-sans-tight text-[15px] transition focus-visible:outline-none",
+                    isDark
+                      ? "text-[#A89B83] hover:bg-[rgba(244,239,230,0.06)] hover:text-paper focus-visible:bg-[rgba(244,239,230,0.06)]"
+                      : "text-ink2 hover:bg-ink/5 hover:text-ink focus-visible:bg-ink/5",
+                    isActive &&
+                      (isDark
+                        ? "bg-[rgba(244,239,230,0.08)] font-semibold text-paper"
+                        : "bg-ink/5 font-semibold text-ink"),
                   )}
                 >
                   {label}
                 </a>
               );
             })}
-            <div className="mt-2 border-t border-black/[0.06] px-3 pb-1 pt-3">
+            <div
+              className={cn(
+                "mt-2 border-t px-3 pb-1 pt-3",
+                isDark ? "border-[rgba(244,239,230,0.08)]" : "border-ink/10",
+              )}
+            >
               <a
                 href={APP_LOGIN_URL}
-                className="inline-flex h-10 w-full items-center justify-center rounded-full border border-black/[0.08] bg-zinc-900 px-4 text-sm font-medium text-white transition hover:bg-zinc-800"
+                className={cn(
+                  "inline-flex h-10 w-full items-center justify-center rounded-[10px] px-4 font-sans-tight text-sm font-medium transition focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-[3px] focus-visible:outline-amber",
+                  isDark
+                    ? "border border-[rgba(244,239,230,0.12)] text-[#A89B83] hover:border-[rgba(244,239,230,0.2)] hover:text-paper"
+                    : "border border-ink/10 text-ink3 hover:text-ink",
+                )}
               >
                 Anmelden
               </a>

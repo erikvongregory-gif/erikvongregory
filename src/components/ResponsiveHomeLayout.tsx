@@ -50,7 +50,10 @@ export function ResponsiveHomeLayout() {
     <div
       className={`block min-h-[100dvh] w-full min-w-0 ${isDesktop ? "desktop-root" : "mobile-root mobile-root-home"}`}
     >
-      <main id="main" className="relative min-h-[100dvh] overflow-x-hidden bg-paper pt-14 sm:pt-16 lg:pt-[68px]">
+      <main
+        id="main"
+        className="relative min-h-[100dvh] overflow-x-hidden bg-paper pt-[var(--mobile-top-header-offset)] lg:pt-[var(--site-header-offset)]"
+      >
         {!isDesktop ? (
           <div
             id="start"

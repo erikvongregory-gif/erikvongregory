@@ -10,7 +10,10 @@ export function RatgeberPage() {
   const ratgeber = useRatgeber();
 
   return (
-    <main id="main" className="ratgeber-page relative z-20 min-h-[100dvh] bg-paper text-ink pt-14 sm:pt-16 lg:pt-[68px]">
+    <main
+      id="main"
+      className="ratgeber-page relative z-20 min-h-[100dvh] bg-paper text-ink pt-[var(--mobile-top-header-offset)] lg:pt-[var(--site-header-offset)]"
+    >
       <div className="lg:hidden">
         <RatgeberMobile ratgeber={ratgeber} />
       </div>

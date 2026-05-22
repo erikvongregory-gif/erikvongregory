@@ -1,7 +1,7 @@
 "use client";
 
 import Image from "next/image";
-import { useCallback, useEffect, useMemo, useState } from "react";
+import { useCallback, useEffect, useLayoutEffect, useMemo, useState } from "react";
 import { useLoading } from "@/context/LoadingContext";
 import { MOBILE_EDITORIAL_PX } from "@/lib/mobileEditorial";
 import { cn } from "@/lib/utils";
@@ -143,6 +143,9 @@ export function MobileGalleryHero({
   const defaultActive = MOBILE_HERO_POLAROIDS.findIndex((p) => p.id === "product");
   const [activeIndex, setActiveIndex] = useState(defaultActive >= 0 ? defaultActive : 0);
   const [reducedMotion, setReducedMotion] = useState(false);
+  /** Gestaffelte CSS-Keyframes — nach Layout/Paint, sonst oft kein Start bei Hydration. */
+  const [fadeReady, setFadeReady] = useState(false);
+  const revealReady = heroReady && fadeReady;
 
   const { motifLabel, categoryStats } = useMemo(() => {
     const today = new Date();
@@ -160,6 +163,25 @@ export function MobileGalleryHero({
     return () => mq.removeEventListener("change", apply);
   }, []);
 
+  useLayoutEffect(() => {
+    if (!heroReady) {
+      setFadeReady(false);
+      return;
+    }
+    if (reducedMotion) {
+      setFadeReady(true);
+      return;
+    }
+    let raf2 = 0;
+    const raf1 = requestAnimationFrame(() => {
+      raf2 = requestAnimationFrame(() => setFadeReady(true));
+    });
+    return () => {
+      cancelAnimationFrame(raf1);
+      cancelAnimationFrame(raf2);
+    };
+  }, [heroReady, reducedMotion]);
+
   const bringToFront = useCallback((index: number) => {
     setActiveIndex(index);
   }, []);
@@ -168,13 +190,13 @@ export function MobileGalleryHero({
     <section
       className={cn(
         "mobile-gallery-hero relative w-full min-w-0 bg-paper text-ink pb-0",
-        heroReady && "mobile-gallery-hero--ready",
+        revealReady && "mobile-gallery-hero--ready",
       )}
       aria-labelledby="mobile-gallery-hero-heading"
     >
       <p
         className={cn(
-          "mobile-hero-fade mobile-hero-fade-0 flex items-center gap-2 pt-1 font-mono-hero text-[11px] uppercase tracking-[1.2px] text-ink3",
+          "mobile-hero-fade mobile-hero-fade-0 flex items-center gap-2 pt-2 font-mono-hero text-[11px] uppercase tracking-[1.2px] text-ink3",
           MOBILE_EDITORIAL_PX,
         )}
       >

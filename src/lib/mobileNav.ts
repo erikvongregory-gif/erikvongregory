@@ -105,7 +105,9 @@ export const SECTION_SPY_ELEMENT_ID: Record<string, string> = {
   prozess: "section-3",
   loesungen: "section-4",
   pakete: "pakete-preise",
+  preise: "pakete-preise",
   fragen: "section-fragen",
+  faq: "section-fragen",
   beispiele: "section-7",
   contact: "contact",
 };
