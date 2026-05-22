@@ -1,20 +1,26 @@
 "use client";
 
-import { DesktopSection2 } from "@/components/DesktopSection2";
-import { DesktopSection4 } from "@/components/DesktopSection4";
-import { DesktopFadeInView } from "@/components/DesktopFadeInView";
+import { DesktopHero } from "@/components/desktop/DesktopHero";
+import { DesktopWarum } from "@/components/desktop/DesktopWarum";
+import { DesktopProzess } from "@/components/desktop/DesktopProzess";
+import { DesktopLoesungen } from "@/components/desktop/DesktopLoesungen";
+import { DesktopPreise } from "@/components/desktop/DesktopPreise";
+import { DesktopBeispiele } from "@/components/desktop/DesktopBeispiele";
+import { DesktopFaq } from "@/components/desktop/DesktopFaq";
+import { DesktopFooter } from "@/components/desktop/DesktopFooter";
 
 export function DesktopLayout() {
   return (
-    <div className="flex w-full flex-col">
-      <div id="warum" className="scroll-mt-24" aria-hidden />
-      <DesktopFadeInView className="section2-slide-trigger">
-        <DesktopSection2 />
-      </DesktopFadeInView>
-      <div id="loesungen" className="scroll-mt-24" aria-hidden />
-      <DesktopFadeInView delay={150} className="section4-cards-trigger" resetOnExit>
-        <DesktopSection4 />
-      </DesktopFadeInView>
-    </div>
+    <>
+      <div id="start" className="scroll-mt-24" aria-hidden />
+      <DesktopHero />
+      <DesktopWarum />
+      <DesktopProzess />
+      <DesktopLoesungen />
+      <DesktopPreise />
+      <DesktopBeispiele />
+      <DesktopFaq />
+      <DesktopFooter />
+    </>
   );
 }

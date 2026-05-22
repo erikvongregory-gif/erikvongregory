@@ -1,3 +1,4 @@
+import type { User } from "@supabase/supabase-js";
 import { cookies } from "next/headers";
 import { createClient } from "@/lib/supabase/server";
 import {
@@ -16,10 +17,25 @@ export async function GET(request: Request) {
     return withRequestIdJson({ authenticated: false, admin: false }, requestId, { status: 200 });
   }
 
-  const supabase = await createClient();
-  const {
-    data: { user },
-  } = await supabase.auth.getUser();
+  let user: User | null = null;
+  try {
+    const supabase = await createClient();
+    const { data, error } = await supabase.auth.getUser();
+    if (error) {
+      return withRequestIdJson(
+        { authenticated: false, admin: false, admin2faRequired: false },
+        requestId,
+        { status: 200 },
+      );
+    }
+    user = data.user;
+  } catch {
+    return withRequestIdJson(
+      { authenticated: false, admin: false, admin2faRequired: false },
+      requestId,
+      { status: 200 },
+    );
+  }
 
   if (!user) {
     return withRequestIdJson(

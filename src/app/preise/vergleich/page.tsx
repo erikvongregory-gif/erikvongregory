@@ -8,7 +8,7 @@ export const metadata = {
 
 export default function PreiseVergleichPage() {
   return (
-    <main className="min-h-[100dvh] bg-paper px-5 py-14 font-sans-tight text-ink">
+    <main className="min-h-[100dvh] bg-paper px-5 pb-14 pt-[calc(68px+2.5rem)] font-sans-tight text-ink">
       <p className="m-0 font-mono-hero text-[11px] tracking-[1.4px] text-amber uppercase">Preise</p>
       <h1 className="mt-3 font-serif-hero text-3xl font-normal tracking-[-1px]">Alle 6 Pakete im Vergleich</h1>
       <p className="mt-3 max-w-lg text-sm leading-relaxed text-ink2">

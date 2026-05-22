@@ -32,7 +32,7 @@ const footerNavLink =
 
 export default function ImpressumPage() {
   return (
-    <main className="legal-page relative z-10 min-h-screen px-4 py-20 sm:px-6 sm:py-28 md:py-32">
+    <main className="legal-page relative z-10 min-h-screen px-4 pb-20 pt-[calc(68px+3rem)] sm:px-6 sm:pb-28 md:pb-32">
       <article className="legal-article mx-auto max-w-3xl md:rounded-2xl md:border md:border-zinc-200/70 md:bg-white/85 md:px-8 md:py-10 md:shadow-lg md:backdrop-blur-sm">
         <Link
           href="/"

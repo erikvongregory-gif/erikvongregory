@@ -21,7 +21,7 @@ export const metadata: Metadata = {
 export default function RatgeberIndexPage() {
   return (
     <article id="ratgeber-page" className="relative z-[75] min-h-screen bg-white text-zinc-900">
-      <div className="mx-auto max-w-3xl px-4 py-14 sm:px-6 sm:py-20">
+      <div className="mx-auto max-w-3xl px-4 pb-14 pt-[calc(68px+2.5rem)] sm:px-6 sm:pb-20">
         <nav className="mb-8 text-sm text-zinc-600">
           <Link href="/" className="text-[#b45309] hover:underline">
             Start

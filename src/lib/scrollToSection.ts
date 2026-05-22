@@ -5,10 +5,8 @@
 export function scrollToSection(hash: string) {
   const id = hash.replace(/^#/, "");
   if (!id || typeof window === "undefined") return;
-  const isDesktop = window.matchMedia("(min-width: 768px)").matches;
-  const wrapper = document.getElementById(
-    isDesktop ? "desktop-content" : "mobile-content",
-  );
+  const isDesktop = window.matchMedia("(min-width: 1024px)").matches;
+  const wrapper = document.getElementById(isDesktop ? "desktop-content" : "mobile-content");
   const target =
     wrapper?.querySelector(`#${CSS.escape(id)}`) ??
     document.getElementById(id);

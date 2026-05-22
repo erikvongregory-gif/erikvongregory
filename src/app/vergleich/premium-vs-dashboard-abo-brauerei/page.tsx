@@ -51,7 +51,7 @@ export default function VergleichPremiumDashboardPage() {
   return (
     <article className="min-h-screen bg-white text-zinc-900">
       <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(faqJsonLd) }} />
-      <div className="mx-auto max-w-3xl px-4 py-14 sm:px-6 sm:py-20">
+      <div className="mx-auto max-w-3xl px-4 pb-14 pt-[calc(68px+2.5rem)] sm:px-6 sm:pb-20">
         <nav className="mb-8 text-sm text-zinc-600">
           <Link href="/" className="text-[#b45309] hover:underline">
             Start

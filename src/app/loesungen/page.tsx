@@ -41,7 +41,7 @@ const pages = [
 
 export default function LoesungenPage() {
   return (
-    <main className="relative z-20 mx-auto max-w-5xl px-4 py-16 text-zinc-900">
+    <main className="relative z-20 mx-auto max-w-5xl px-4 pb-16 pt-[calc(68px+3rem)] text-zinc-900">
       <h1 className="text-3xl font-bold sm:text-4xl">Lösungen für Brauereien</h1>
       <p className="mt-4 max-w-3xl text-zinc-700">
         Diese Seite bündelt die wichtigsten EvGlab-Szenarien für Brauereien auf einer einzigen Seite.

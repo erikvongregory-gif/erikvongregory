@@ -120,7 +120,7 @@ export default function RootLayout({
       lang="de"
       className={`${inter.variable} ${playfair.variable} ${newsreader.variable} ${interTight.variable} ${jetbrainsMono.variable}`}
     >
-      <body className="bg-[#0a0f14] text-neutral-900 antialiased">
+      <body className="bg-paper text-neutral-900 antialiased">
         <SiteSmoothScroll />
         <JsonLd />
         <FaviconReminder />

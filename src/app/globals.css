@@ -130,7 +130,7 @@ svg {
 
 /*
  * Mobile-Startseite (.mobile-root): kein desktop-light-theme auf <main>.
- * Hero/Flächen liegen über dem dunklen SiteGradientBackdrop – helle Typo nur gezielt (z. B. DesktopHero).
+ * Hintergrund nur über Section-Flächen (bg-paper / bg-ink), kein globaler Verlauf.
  */
 
 /* Mobile – Schriftart wie Desktop (Inter + Playfair für Akzente) */
@@ -302,7 +302,7 @@ svg {
 html {
   scroll-behavior: smooth;
   -webkit-overflow-scrolling: touch;
-  background: #0a0f14;
+  background: var(--color-paper);
 }
 
 /* Desktop: Native Scroll – kein smooth, verhindert Buckling */
@@ -315,31 +315,29 @@ html {
 @media (max-width: 768px) {
   html {
     overflow-x: hidden;
-    /* Startseite: nur SiteGradientBackdrop (Orange-Radial), kein zweiter Body-Verlauf */
-    background: transparent;
+    background: var(--color-paper);
   }
 }
 
 body {
   font-family: var(--font-main);
-  background: #0a0f14;
+  background: var(--color-paper);
   /* overflow-x: clip statt hidden – verhindert Scroll-Buckling auf Desktop */
   overflow-x: clip;
 }
 
 @media (max-width: 768px) {
   body:not([data-legal-page="true"]) {
-    background: transparent !important;
+    background: var(--color-paper) !important;
   }
 }
 
-/* Desktop: kein volles #0a0f14 mehr – SiteGradientBackdrop (fixed) scheint durch */
 @media (min-width: 768px) {
   html {
-    background: transparent;
+    background: var(--color-paper);
   }
-  body {
-    background: transparent !important;
+  body:not([data-legal-page="true"]) {
+    background: var(--color-paper) !important;
   }
 }
 
@@ -391,7 +389,6 @@ body[data-legal-page="true"] {
   border-color: rgba(0, 0, 0, 0.1) !important;
 }
 
-/* Desktop: gleicher Verlauf-Hintergrund wie Startseite (SiteGradientBackdrop) */
 @media (min-width: 768px) {
   body[data-legal-page="true"] {
     background: #ffffff !important;
@@ -2193,13 +2190,8 @@ body[data-legal-page="true"] {
   animation: mobile-hero-eyebrow-dot-pulse 2s ease-in-out infinite;
 }
 
-/* Mobile Startseite — Gallery-Led Hero (Option C) */
-@media (max-width: 767px) {
-  body:has(.mobile-root-home) .site-gradient-backdrop-fill {
-    background: #f4efe6 !important;
-    background-image: none !important;
-  }
-
+/* Mobile Startseite (< 1024px, gleicher Breakpoint wie ResponsiveHomeLayout) */
+@media (max-width: 1023px) {
   body:has(.mobile-root-home) .mobile-top-header button {
     color: #18140f;
   }
@@ -2223,6 +2215,10 @@ body[data-legal-page="true"] {
   }
 
   .mobile-root-home .mobile-section-bridge {
+    background-color: var(--color-paper);
+  }
+
+  .mobile-root-home .section1-wrapper {
     background-color: var(--color-paper);
   }
 }
@@ -2574,13 +2570,13 @@ body[data-legal-page="true"] {
   color: #6b6b6b;
 }
 
-/* Section 7 – Mobile: transparent = ein durchgehender fixierter Verlauf (SiteGradientBackdrop), kein Versatz am Übergang */
-@media (max-width: 768px) {
-  #section-7:not(.mobile-beispiele-section) {
+/* Section 7 – Mobile/Tablet-Home (< 1024px): Papier statt Orange-Verlauf */
+@media (max-width: 1023px) {
+  body:has(.mobile-root-home) #section-7:not(.mobile-beispiele-section) {
     background: transparent !important;
   }
 
-  #section-7.mobile-beispiele-section {
+  body:has(.mobile-root-home) #section-7.mobile-beispiele-section {
     background-color: var(--color-paper) !important;
     position: relative;
     z-index: 80;
@@ -2604,7 +2600,7 @@ body[data-legal-page="true"] {
     box-shadow: none !important;
   }
 }
-/* Section 7: kein eigener Flächenhintergrund – site-weiter SiteGradientBackdrop */
+/* Section 7 (Legacy-Komponenten): Flächenhintergrund über Section/CSS */
 
 /* Section7 – Typo & Karten: heller Block nur ab Tablet/Desktop; Mobile bleibt heller Komponenten-Schrift */
 @media (min-width: 768px) {
@@ -4005,7 +4001,7 @@ body[data-legal-page="true"] {
     color: rgba(255, 200, 170, 0.9) !important;
   }
 
-  /* Footer – gleiche Farbe wie Hintergrund (transparent = SiteGradientBackdrop durch) */
+  /* Footer (Legacy #contact) – Hintergrund der Seite */
   footer#contact {
     background: transparent !important;
     border-color: rgba(0, 0, 0, 0.06) !important;
@@ -4586,4 +4582,79 @@ body[data-legal-page="true"] {
   .mobile-beispiele-play-hint {
     animation: none !important;
   }
+
+  .evg-cursor,
+  .evg-spin,
+  .evg-live-dot {
+    animation: none !important;
+  }
+}
+
+/* Desktop editorial home (lg+) */
+.desktop-root .font-serif-hero {
+  font-family: var(--font-serif-hero);
+}
+
+.desktop-root .font-sans-tight {
+  font-family: var(--font-sans-tight);
+}
+
+.desktop-root .font-mono-hero {
+  font-family: var(--font-mono-hero);
+}
+
+@keyframes evgCursor {
+  to {
+    opacity: 0;
+  }
+}
+
+@keyframes evgSpin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+@keyframes evgLivePulse {
+  0%,
+  100% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0.35;
+  }
+}
+
+.evg-cursor {
+  animation: evgCursor 1s steps(2) infinite;
+}
+
+.evg-spin {
+  animation: evgSpin 0.9s linear infinite;
+}
+
+.evg-live-dot {
+  animation: evgLivePulse 1.8s ease-in-out infinite;
+}
+
+@media (min-width: 1024px) {
+  body:has(#desktop-content) .app-shell-site-footer {
+    display: none;
+  }
+
+  body:has(.about-root) .app-shell-site-footer {
+    display: none;
+  }
+}
+
+.about-root .font-serif-hero {
+  font-family: var(--font-serif-hero);
+}
+
+.about-root .font-sans-tight {
+  font-family: var(--font-sans-tight);
+}
+
+.about-root .font-mono-hero {
+  font-family: var(--font-mono-hero);
 }

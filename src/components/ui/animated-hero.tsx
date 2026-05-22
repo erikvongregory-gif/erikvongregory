@@ -49,15 +49,12 @@ function Hero() {
   const { heroReady } = useLoading();
   const [titleNumber, setTitleNumber] = useState(0);
   const titles = useMemo(() => ["KI-gestützt", "automatisiert", "skalierbar"], []);
-  const [isAuthenticated, setIsAuthenticated] = useState(false);
-  const [freeTrialImageUsed, setFreeTrialImageUsed] = useState(false);
-  const [hasActiveSubscription, setHasActiveSubscription] = useState(false);
   const [showFloatingExamples, setShowFloatingExamples] = useState(false);
 
   useEffect(() => {
     if (typeof window === "undefined") return;
     if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
-    if (!window.matchMedia("(min-width: 768px)").matches) return;
+    if (!window.matchMedia("(min-width: 1024px)").matches) return;
 
     let idleId: number | null = null;
     let timeoutId: ReturnType<typeof setTimeout> | null = null;
@@ -82,118 +79,7 @@ function Hero() {
     };
   }, []);
 
-  useEffect(() => {
-    let active = true;
-    let idleId: number | null = null;
-    let timeoutId: ReturnType<typeof setTimeout> | null = null;
-    let unsubscribeAuth: (() => void) | null = null;
-    let removeBillingListener: (() => void) | null = null;
-
-    const initHeroCtaState = async () => {
-      const [{ createClient }, { isSupabaseConfigured }] = await Promise.all([
-        import("@/lib/supabase/client"),
-        import("@/lib/supabase/env"),
-      ]);
-      if (!active) return;
-      if (!isSupabaseConfigured()) {
-        setIsAuthenticated(false);
-        setFreeTrialImageUsed(false);
-        setHasActiveSubscription(false);
-        return;
-      }
-
-      const supabase = createClient();
-
-      const loadHeroCtaState = async () => {
-        const {
-          data: { session },
-        } = await supabase.auth.getSession();
-        if (!active) return;
-        const hasSession = Boolean(session?.user);
-        setIsAuthenticated(hasSession);
-        if (!hasSession) {
-          setFreeTrialImageUsed(false);
-          setHasActiveSubscription(false);
-          return;
-        }
-        try {
-          const res = await fetch("/api/billing/state", { cache: "no-store" });
-          if (!active) return;
-          if (!res.ok) {
-            setFreeTrialImageUsed(false);
-            return;
-          }
-          const data = (await res.json()) as {
-            state?: {
-              freeTrialImageUsed?: boolean;
-              plan?: string | null;
-              status?: string;
-            };
-          };
-          setFreeTrialImageUsed(Boolean(data.state?.freeTrialImageUsed));
-          const status = data.state?.status ?? "none";
-          const plan = data.state?.plan ?? null;
-          setHasActiveSubscription(Boolean(plan) && status !== "none" && status !== "canceled");
-        } catch {
-          if (active) {
-            setFreeTrialImageUsed(false);
-            setHasActiveSubscription(false);
-          }
-        }
-      };
-
-      void loadHeroCtaState();
-
-      const {
-        data: { subscription },
-      } = supabase.auth.onAuthStateChange((_event, session) => {
-        if (!active) return;
-        setIsAuthenticated(Boolean(session?.user));
-        void loadHeroCtaState();
-      });
-      unsubscribeAuth = () => subscription.unsubscribe();
-
-      const onBillingUpdated = () => {
-        void loadHeroCtaState();
-      };
-      window.addEventListener("evglab-billing-updated", onBillingUpdated as EventListener);
-      removeBillingListener = () => {
-        window.removeEventListener("evglab-billing-updated", onBillingUpdated as EventListener);
-      };
-    };
-
-    if (typeof window === "undefined") return;
-    if ("requestIdleCallback" in window) {
-      idleId = (window as Window & { requestIdleCallback: (cb: IdleRequestCallback) => number }).requestIdleCallback(
-        () => {
-          void initHeroCtaState();
-        },
-      );
-    } else {
-      timeoutId = globalThis.setTimeout(() => {
-        void initHeroCtaState();
-      }, 900);
-    }
-
-    return () => {
-      active = false;
-      if (idleId !== null) {
-        (window as Window & { cancelIdleCallback?: (id: number) => void }).cancelIdleCallback?.(idleId);
-      }
-      if (timeoutId !== null) {
-        globalThis.clearTimeout(timeoutId);
-      }
-      unsubscribeAuth?.();
-      removeBillingListener?.();
-    };
-  }, []);
-
-  const primaryCtaLabel = useMemo(() => {
-    if (!isAuthenticated) return "3 Bilder kostenlos generieren";
-    if (hasActiveSubscription) return "Zum Dashboard";
-    if (freeTrialImageUsed) return "Zu Abo & Tokens";
-    return "Jetzt kostenloses Bild erstellen";
-  }, [isAuthenticated, freeTrialImageUsed, hasActiveSubscription]);
+  const primaryCtaLabel = "3 Bilder kostenlos generieren";
 
   const [ctaPending, setCtaPending] = useState(false);
 
@@ -225,7 +111,7 @@ function Hero() {
   return (
     <div className="relative w-full overflow-visible">
       {showFloatingExamples ? (
-        <Floating sensitivity={-0.5} className="pointer-events-none absolute inset-0 z-0 hidden h-full min-h-full md:block" aria-hidden>
+        <Floating sensitivity={-0.5} className="pointer-events-none absolute inset-0 z-0 hidden h-full min-h-full lg:block" aria-hidden>
           {HERO_FLOAT_LAYOUT.map((slot, i) => {
             const imgIndex = i < KI_BEISPIELE.length ? i : 1;
             const img = KI_BEISPIELE[imgIndex];
@@ -248,7 +134,7 @@ function Hero() {
       ) : null}
       <div className="container mx-auto max-md:max-w-none max-md:px-0">
         <div
-          className={`md:hidden transition-opacity duration-500 ease-out ${
+          className={`lg:hidden transition-opacity duration-500 ease-out ${
             heroReady ? "opacity-100" : "opacity-0"
           }`}
         >
@@ -260,7 +146,7 @@ function Hero() {
           />
         </div>
 
-        <div className="relative z-10 hidden flex-col items-center justify-center gap-8 py-20 md:flex lg:py-40">
+        <div className="relative z-10 hidden flex-col items-center justify-center gap-8 py-20 lg:flex lg:py-40">
           <div
             className={`flex w-full flex-col items-center transition-opacity duration-500 ease-out ${
               heroReady ? "opacity-100" : "opacity-0"

@@ -10,6 +10,15 @@ export const APP_BASE_URL =
     ? "http://localhost:3001"
     : "https://app.evglab.com");
 
+/** Hostname für UI-Mockups (Browser-Leiste, Studio-Demo) — folgt NEXT_PUBLIC_APP_BASE_URL. */
+export const APP_DISPLAY_HOST = (() => {
+  try {
+    return new URL(APP_BASE_URL).host;
+  } catch {
+    return "app.evglab.com";
+  }
+})();
+
 /** Dashboard-Start — Hero-CTA „3 Bilder kostenlos generieren“ */
 export const APP_DASHBOARD_URL = `${APP_BASE_URL.replace(/\/$/, "")}/dashboard`;
 

@@ -1,7 +1,6 @@
 import type { Metadata } from "next";
 import { ResponsiveHomeLayout } from "@/components/ResponsiveHomeLayout";
-import { PricingSection } from "@/components/PricingSection";
-import { Section7AIDemo } from "@/components/Section7AIDemo";
+import { HomeMobileOnlySections } from "@/components/HomeMobileOnlySections";
 import { SITE } from "@/lib/siteConfig";
 import { TRESENGESPRAECH_FAQS } from "@/lib/tresengespraechFaqs";
 
@@ -160,8 +159,7 @@ export default function Home() {
       <div className="min-h-[100dvh] w-full min-w-0">
         <ResponsiveHomeLayout />
       </div>
-      <PricingSection />
-      <Section7AIDemo />
+      <HomeMobileOnlySections />
     </>
   );
 }

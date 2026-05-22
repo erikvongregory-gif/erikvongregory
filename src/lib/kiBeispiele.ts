@@ -9,6 +9,9 @@ export const KI_BEISPIELE = [
   { src: "/ki-beispiel-biergarten.webp", alt: "Lünebräu – Lifestyle-Foto im Biergarten" },
 ] as const;
 
+/** Desktop-Hero-Studio-Mockup: zwei fertige 9:16-Varianten + Rendering-Slot. */
+export const KI_HERO_MOCKUP_THUMBS = [KI_BEISPIELE[3], KI_BEISPIELE[1]] as const;
+
 /** Karussell „Echte Beispiele“ – lokale Assets, gemischte Formate. */
 export const KI_CAROUSEL = [
   { src: "/ki-beispiel-1.svg", alt: "KI-generiertes Werbebild Brauerei: Bierflasche im Biergarten" },
