@@ -109,10 +109,10 @@ export function DachMapSvg({
   const { ref, isVisible } = useInViewReveal({ rootMargin: "0px 0px -10% 0px", threshold: 0.12 });
 
   return (
+    <div ref={ref} className={cn("h-full w-full", className)}>
     <svg
-      ref={ref}
       viewBox="0 0 480 300"
-      className={cn("dach-map h-full w-full", isVisible && "dach-map--in-view", className)}
+      className={cn("dach-map h-full w-full", isVisible && "dach-map--in-view")}
       role="img"
       aria-labelledby="dach-map-title"
     >
@@ -161,6 +161,7 @@ export function DachMapSvg({
         </g>
       ))}
     </svg>
+    </div>
   );
 }
 
