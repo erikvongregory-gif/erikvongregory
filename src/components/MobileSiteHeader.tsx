@@ -1,16 +1,33 @@
 "use client";
 
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useLayoutEffect, useRef, useState } from "react";
+import { createPortal } from "react-dom";
 import Link from "next/link";
 import { WaveMark } from "@/components/desktop/WaveMark";
 import { usePathname, useRouter } from "next/navigation";
-import { APP_LOGIN_URL } from "@/lib/appLoginUrl";
+import { APP_LOGIN_URL, navigateToAppDashboard } from "@/lib/appLoginUrl";
 import { scrollToSection } from "@/lib/scrollToSection";
 import { SITE } from "@/lib/siteConfig";
 import { useLoading } from "@/context/LoadingContext";
 import { useSiteNavTheme } from "@/components/useSiteNavTheme";
 import { cn } from "@/lib/utils";
-import { GLOW_NAV_ITEMS, navItemsForMenu, SECTION_SPY_ELEMENT_ID } from "@/lib/mobileNav";
+import { GLOW_NAV_ITEMS, SECTION_SPY_ELEMENT_ID } from "@/lib/mobileNav";
+import { scheduleAfterPaint } from "@/lib/scheduleAfterPaint";
+import drawerStyles from "@/components/mobile-drawer-nav.module.css";
+
+/** Längste Exit-Animation (Drawer-Slide) + Puffer */
+const DRAWER_EXIT_MS = 420;
+
+const MOBILE_DRAWER_NAV = [
+  { label: "Start", tag: "Home", href: "#start" },
+  { label: "Warum", tag: "Vorteile", href: "#warum" },
+  { label: "Ablauf", tag: "Prozess", href: "#prozess" },
+  { label: "Leistungen", tag: "Services", href: "#loesungen" },
+  { label: "Preise", tag: "Pakete", href: "#pakete" },
+  { label: "Praxis", tag: "Beispiele", href: "#beispiele" },
+  { label: "Über uns", tag: "Team", href: "/ueber-uns#ueber-intro" },
+  { label: "Kontakt", tag: "Schreib uns", href: "#contact" },
+] as const;
 
 export function MobileSiteHeader() {
   const pathname = usePathname();
@@ -20,10 +37,70 @@ export function MobileSiteHeader() {
   /** Über-uns Mobile: immer heller Header (dunkler Hero). Ratgeber: nur auf dunklem Ergebnis-Block. */
   const isDark = pathname === "/ratgeber" && navThemeDark;
   const [dropdownOpen, setDropdownOpen] = useState(false);
-  const [mobileAuthDialogOpen, setMobileAuthDialogOpen] = useState(false);
+  /** Portal gemountet – Drawer zunächst ohne Enter-Klasse */
+  const [drawerShown, setDrawerShown] = useState(false);
+  /** Triggert CSS-Keyframes beim Öffnen */
+  const [drawerEnter, setDrawerEnter] = useState(false);
+  /** Triggert CSS-Keyframes beim Schließen */
+  const [drawerExit, setDrawerExit] = useState(false);
+  const [mounted, setMounted] = useState(false);
   const [activeSection, setActiveSection] = useState("");
-  const mobileNavRef = useRef<HTMLDivElement>(null);
   const contactLinkRef = useRef<HTMLAnchorElement>(null);
+  const drawerRef = useRef<HTMLElement>(null);
+
+  useEffect(() => {
+    setMounted(true);
+  }, []);
+
+  useLayoutEffect(() => {
+    if (dropdownOpen) {
+      setDrawerExit(false);
+      setDrawerShown(true);
+      setDrawerEnter(false);
+      return;
+    }
+
+    if (!drawerShown || drawerExit) return;
+
+    const reduced =
+      typeof window !== "undefined" && window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+    if (reduced) {
+      setDrawerEnter(false);
+      setDrawerExit(false);
+      setDrawerShown(false);
+      return;
+    }
+
+    setDrawerEnter(false);
+    const el = drawerRef.current;
+    if (el) void el.getBoundingClientRect();
+    setDrawerExit(true);
+  }, [dropdownOpen, drawerShown, drawerExit]);
+
+  useLayoutEffect(() => {
+    if (!dropdownOpen || !drawerShown || drawerEnter || drawerExit) return;
+
+    const reduced =
+      typeof window !== "undefined" && window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+    if (reduced) {
+      setDrawerEnter(true);
+      return;
+    }
+
+    const el = drawerRef.current;
+    if (el) void el.getBoundingClientRect();
+
+    return scheduleAfterPaint(() => setDrawerEnter(true));
+  }, [dropdownOpen, drawerShown, drawerEnter, drawerExit]);
+
+  useEffect(() => {
+    if (!drawerExit) return;
+    const t = window.setTimeout(() => {
+      setDrawerShown(false);
+      setDrawerExit(false);
+    }, DRAWER_EXIT_MS);
+    return () => window.clearTimeout(t);
+  }, [drawerExit]);
 
   useEffect(() => {
     setDropdownOpen(false);
@@ -47,41 +124,13 @@ export function MobileSiteHeader() {
   }, []);
 
   useEffect(() => {
-    if (!dropdownOpen) return;
+    if (!drawerShown) return;
     const prevOverflow = document.body.style.overflow;
     document.body.style.overflow = "hidden";
     return () => {
       document.body.style.overflow = prevOverflow;
     };
-  }, [dropdownOpen]);
-
-  useEffect(() => {
-    if (!dropdownOpen) return;
-    const onPointer = (e: MouseEvent | TouchEvent) => {
-      if (mobileAuthDialogOpen) return;
-      const el = mobileNavRef.current;
-      if (!el) return;
-      const target = e.target;
-      if (target instanceof Node && !el.contains(target)) setDropdownOpen(false);
-    };
-    document.addEventListener("mousedown", onPointer);
-    document.addEventListener("touchstart", onPointer, { passive: true });
-    return () => {
-      document.removeEventListener("mousedown", onPointer);
-      document.removeEventListener("touchstart", onPointer);
-    };
-  }, [dropdownOpen, mobileAuthDialogOpen]);
-
-  useEffect(() => {
-    const onAuthDialogOpenChange = (event: Event) => {
-      const customEvent = event as CustomEvent<{ open?: boolean }>;
-      setMobileAuthDialogOpen(Boolean(customEvent.detail?.open));
-    };
-    window.addEventListener("evglab-mobile-auth-dialog-open-change", onAuthDialogOpenChange as EventListener);
-    return () => {
-      window.removeEventListener("evglab-mobile-auth-dialog-open-change", onAuthDialogOpenChange as EventListener);
-    };
-  }, []);
+  }, [drawerShown]);
 
   useEffect(() => {
     const navIds = GLOW_NAV_ITEMS.filter((item) => item.href.startsWith("#")).map((item) => item.href.replace(/^#/, ""));
@@ -139,7 +188,7 @@ export function MobileSiteHeader() {
     };
   }, [pathname, isLoadComplete]);
 
-  const homeScrollHashes = GLOW_NAV_ITEMS.filter(
+  const homeScrollHashes = MOBILE_DRAWER_NAV.filter(
     (item) => item.href.startsWith("#") && item.href !== "#contact",
   ).map((item) => item.href);
 
@@ -179,7 +228,7 @@ export function MobileSiteHeader() {
       setDropdownOpen(false);
       return;
     }
-    if (pathname != null && pathname !== "/" && homeScrollHashes.includes(href)) {
+    if (pathname != null && pathname !== "/" && (homeScrollHashes as readonly string[]).includes(href)) {
       void router.push(`/${href}`);
       window.setTimeout(() => scrollToSection(href), 80);
       setDropdownOpen(false);
@@ -223,21 +272,99 @@ export function MobileSiteHeader() {
         </Link>
       </div>
 
-      {dropdownOpen ? (
-        <button
-          type="button"
-          tabIndex={-1}
-          aria-hidden
-          className="pointer-events-auto fixed inset-0 z-[99] bg-black/20 backdrop-blur-[2px]"
-          onClick={() => setDropdownOpen(false)}
-        />
-      ) : null}
+      {mounted && drawerShown
+        ? createPortal(
+            <>
+              <button
+                type="button"
+                tabIndex={-1}
+                aria-hidden
+                className={cn(
+                  drawerStyles.backdrop,
+                  drawerEnter && drawerStyles.backdropEnter,
+                  drawerExit && drawerStyles.backdropExit,
+                )}
+                onClick={() => setDropdownOpen(false)}
+              />
+              <nav
+                ref={drawerRef}
+                id="mobile-header-menu"
+                role="menu"
+                aria-label="Hauptnavigation"
+                className={cn(
+                  drawerStyles.drawer,
+                  drawerEnter && drawerStyles.drawerEnter,
+                  drawerExit && drawerStyles.drawerExit,
+                )}
+              >
+                <button
+                  type="button"
+                  className={drawerStyles.drawerClose}
+                  aria-label="Menü schließen"
+                  onClick={() => setDropdownOpen(false)}
+                >
+                  <span className={drawerStyles.drawerCloseIcon} aria-hidden />
+                </button>
+                <ul className={drawerStyles.navList}>
+                  {MOBILE_DRAWER_NAV.map(({ href, label, tag }) => {
+                    const isActive =
+                      (href.startsWith("#") && activeSection === href) ||
+                      (pathname === "/ueber-uns" && href.startsWith("/ueber-uns"));
+                    return (
+                      <li key={href} className={drawerStyles.navItem} role="none">
+                        <a
+                          href={href}
+                          role="menuitem"
+                          onClick={(e) => {
+                            e.preventDefault();
+                            handleNavClick(href);
+                          }}
+                          className={cn(drawerStyles.navLink, isActive && drawerStyles.navLinkActive)}
+                        >
+                          <span className={drawerStyles.navLinkText}>{label}</span>
+                          <span className={drawerStyles.navLinkTag}>{tag}</span>
+                        </a>
+                      </li>
+                    );
+                  })}
+                </ul>
+                <div className={drawerStyles.drawerFooter}>
+                  <button
+                    type="button"
+                    className={drawerStyles.ctaDrawer}
+                    onClick={() => {
+                      setDropdownOpen(false);
+                      navigateToAppDashboard();
+                    }}
+                  >
+                    3 Bilder kostenlos generieren
+                  </button>
+                  <a
+                    href={APP_LOGIN_URL}
+                    className={drawerStyles.loginLink}
+                    onClick={() => setDropdownOpen(false)}
+                  >
+                    Bereits Konto? Anmelden →
+                  </a>
+                </div>
+              </nav>
+            </>,
+            document.body,
+          )
+        : null}
 
-      <div ref={mobileNavRef} className="pointer-events-auto relative z-[101] shrink-0">
+      <div
+        className={cn(
+          "pointer-events-auto relative shrink-0",
+          dropdownOpen || drawerExit ? "z-[201]" : "z-[102]",
+        )}
+      >
         <button
           type="button"
           className={cn(
-            "inline-flex h-14 w-14 min-h-14 min-w-14 items-center justify-center rounded-xl bg-transparent focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-offset-2",
+            drawerStyles.burger,
+            dropdownOpen && drawerStyles.burgerOpen,
+            "inline-flex h-14 w-14 min-h-14 min-w-14 items-center justify-center rounded-xl focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-offset-2",
             isDark
               ? "text-paper focus-visible:ring-amber/50 focus-visible:ring-offset-[#15110C]"
               : "text-ink focus-visible:ring-amber/40 focus-visible:ring-offset-paper",
@@ -248,78 +375,10 @@ export function MobileSiteHeader() {
           aria-label={dropdownOpen ? "Menü schließen" : "Menü öffnen"}
           onClick={() => setDropdownOpen((o) => !o)}
         >
-          {dropdownOpen ? (
-            <svg className="h-7 w-7" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden>
-              <path d="M18 6L6 18M6 6l12 12" />
-            </svg>
-          ) : (
-            <svg className="h-7 w-7" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden>
-              <line x1="3" y1="6" x2="21" y2="6" />
-              <line x1="3" y1="12" x2="21" y2="12" />
-              <line x1="3" y1="18" x2="21" y2="18" />
-            </svg>
-          )}
+          <span className={drawerStyles.burgerLine} aria-hidden />
+          <span className={drawerStyles.burgerLine} aria-hidden />
+          <span className={drawerStyles.burgerLine} aria-hidden />
         </button>
-
-        {dropdownOpen ? (
-          <div
-            id="mobile-header-menu"
-            role="menu"
-            className={cn(
-              "mobile-header-menu-panel mobile-header-menu-panel--open absolute right-0 top-full z-[110] mt-1.5 min-w-[14.5rem] origin-top-right overflow-hidden rounded-2xl py-2 shadow-[0_16px_48px_-12px_rgba(0,0,0,0.28)] backdrop-blur-xl",
-              isDark
-                ? "border border-[rgba(244,239,230,0.12)] bg-[#15110C]/96"
-                : "border border-ink/10 bg-paper/95",
-            )}
-          >
-            {navItemsForMenu(true).map(({ href, label }) => {
-              const isActive =
-                (href.startsWith("#") && activeSection === href) ||
-                (pathname === "/ueber-uns" && href.startsWith("/ueber-uns"));
-              return (
-                <a
-                  key={href}
-                  href={href}
-                  role="menuitem"
-                  onClick={(e) => {
-                    e.preventDefault();
-                    handleNavClick(href);
-                  }}
-                  className={cn(
-                    "block rounded-xl px-4 py-2.5 font-sans-tight text-[15px] transition focus-visible:outline-none",
-                    isDark
-                      ? "text-[#A89B83] hover:bg-[rgba(244,239,230,0.06)] hover:text-paper focus-visible:bg-[rgba(244,239,230,0.06)]"
-                      : "text-ink2 hover:bg-ink/5 hover:text-ink focus-visible:bg-ink/5",
-                    isActive &&
-                      (isDark
-                        ? "bg-[rgba(244,239,230,0.08)] font-semibold text-paper"
-                        : "bg-ink/5 font-semibold text-ink"),
-                  )}
-                >
-                  {label}
-                </a>
-              );
-            })}
-            <div
-              className={cn(
-                "mt-2 border-t px-3 pb-1 pt-3",
-                isDark ? "border-[rgba(244,239,230,0.08)]" : "border-ink/10",
-              )}
-            >
-              <a
-                href={APP_LOGIN_URL}
-                className={cn(
-                  "inline-flex h-10 w-full items-center justify-center rounded-[10px] px-4 font-sans-tight text-sm font-medium transition focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-[3px] focus-visible:outline-amber",
-                  isDark
-                    ? "border border-[rgba(244,239,230,0.12)] text-[#A89B83] hover:border-[rgba(244,239,230,0.2)] hover:text-paper"
-                    : "border border-ink/10 text-ink3 hover:text-ink",
-                )}
-              >
-                Anmelden
-              </a>
-            </div>
-          </div>
-        ) : null}
       </div>
     </header>
   );
