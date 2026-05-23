@@ -42,13 +42,6 @@ export function CookieBanner() {
 
   return (
     <CookiePanel
-      title="Diese Website verwendet Cookies"
-      message="Wir verwenden Cookies, um dein Erlebnis auf unserer Website zu verbessern."
-      acceptText="Alle akzeptieren"
-      customizeText="Anpassen"
-      icon="cookie"
-      privacyHref="/datenschutz"
-      termsHref="/agb"
       storageEnabled={false}
       initialOpen={isOpen}
       initialPrefs={initialPrefs}
@@ -56,7 +49,6 @@ export function CookieBanner() {
       onClose={() => setIsOpen(false)}
       onAcceptAll={() => applyConsent({ analytics: true, marketing: true })}
       onSavePreferences={(prefs) => applyConsent({ analytics: prefs.analytics, marketing: prefs.marketing })}
-      theme="dark"
     />
   );
 }
