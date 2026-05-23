@@ -149,7 +149,7 @@ export function SiteFooter({ className, footerId = "site-footer" }: SiteFooterPr
           <DesktopRevealStagger className="flex flex-col gap-5 pt-6 font-mono-hero text-[10px] uppercase tracking-wider text-[#8C7E68] sm:flex-row sm:items-center sm:justify-between sm:pt-7 sm:text-[11px]" staggerMs={70}>
             <DesktopRevealItem>
             <p className="flex items-center gap-2 text-[#C8BFAD]">
-              <WaveMark className="shrink-0 text-amber2" />
+              <WaveMark className="h-5 w-5 shrink-0" />
               © 2026 EvGlab · Alle Rechte vorbehalten
             </p>
             </DesktopRevealItem>

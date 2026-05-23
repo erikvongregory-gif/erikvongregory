@@ -103,7 +103,7 @@ export function SiteHeader() {
               isDark ? "text-paper" : "text-ink",
             )}
           >
-            <WaveMark className={cn("h-6 w-6 shrink-0", isDark ? "text-amber2" : "text-amber")} />
+            <WaveMark className="h-6 w-6 shrink-0" />
             <span className="font-serif-hero text-[20px] font-medium tracking-[-0.4px] sm:text-[22px]">EvGlab</span>
           </Link>
 

@@ -5,13 +5,13 @@
 export const SITE = {
   name: "EvGlab",
   baseUrl: "https://www.evglab.com",
-  /** Absolut-URL des Markenlogos (JSON-LD, Rich Results) */
-  brandLogoUrl: "https://www.evglab.com/evglab-logo-brauerei-ki-marketing-schwarz-wellen-transparent.svg" as const,
-  /** Pfad unter /public – Wellen-Logo (dunkle Linien) */
-  brandLogoPath: "/evglab-logo-brauerei-ki-marketing-schwarz-wellen-transparent.svg" as const,
-  /** Helle Wellen – für sehr dunkle Header/Hintergründe */
+  /** Absolut-URL des Wellen-Marks (JSON-LD, Rich Results) */
+  brandLogoUrl: "https://www.evglab.com/evglab-mark.svg" as const,
+  /** Terrakotta-Wellen — Standard */
+  brandLogoPath: "/evglab-mark.svg" as const,
+  /** Helle Wellen — auf sehr dunklem Hintergrund */
   brandLogoPathOnDark: "/evglab-logo-brauerei-ki-marketing-weiss-wellen-transparent.svg" as const,
-  brandLogoAlt: "EvGlab – KI-Marketing und Content für Brauereien" as const,
+  brandLogoAlt: "EvGlab Wellen-Mark" as const,
   defaultTitle: "Das KI-Content-System für Brauereien | EvGlab",
   defaultDescription:
     "EvGlab ist das KI-Content-System für Brauereien: planbare Produktbilder, Kampagnen und Social-Content für mehr Sichtbarkeit, Wiedererkennung und Anfragen.",

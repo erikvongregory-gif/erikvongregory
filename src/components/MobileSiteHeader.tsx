@@ -1,8 +1,8 @@
 "use client";
 
 import { useEffect, useRef, useState } from "react";
-import Image from "next/image";
 import Link from "next/link";
+import { WaveMark } from "@/components/desktop/WaveMark";
 import { usePathname, useRouter } from "next/navigation";
 import { APP_LOGIN_URL } from "@/lib/appLoginUrl";
 import { scrollToSection } from "@/lib/scrollToSection";
@@ -189,13 +189,9 @@ export function MobileSiteHeader() {
     setDropdownOpen(false);
   };
 
-  const logoSizes = "h-10 w-auto sm:h-11";
-
   if (pathname?.startsWith("/dashboard")) {
     return null;
   }
-
-  const logoSrc = isDark ? SITE.brandLogoPathOnDark : SITE.brandLogoPath;
 
   return (
     <header
@@ -214,17 +210,16 @@ export function MobileSiteHeader() {
       <div className="pointer-events-auto min-w-0 shrink px-1 py-0.5">
         <Link
           href="/"
-          className="premium-header-logo inline-flex items-center rounded focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:ring-white/60 focus-visible:ring-offset-transparent"
+          className={cn(
+            "inline-flex min-w-0 items-center gap-2 rounded focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:ring-amber/50 focus-visible:ring-offset-transparent",
+            isDark ? "text-paper" : "text-ink",
+          )}
+          aria-label={SITE.brandLogoAlt}
         >
-          <Image
-            src={logoSrc}
-            alt={SITE.brandLogoAlt}
-            width={400}
-            height={400}
-            priority
-            unoptimized
-            className={cn(logoSizes, "object-contain transition-opacity duration-200")}
-          />
+          <WaveMark className="h-7 w-7 shrink-0" />
+          <span className="truncate font-serif-hero text-[20px] font-medium leading-none tracking-[-0.4px]">
+            {SITE.name}
+          </span>
         </Link>
       </div>
 
