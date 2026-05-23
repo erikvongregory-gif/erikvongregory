@@ -2,6 +2,7 @@
 
 import dynamic from "next/dynamic";
 import { usePathname } from "next/navigation";
+import { LoadingScreen } from "@/components/LoadingScreen";
 import { SiteHeader } from "@/components/SiteHeader";
 import { LegalPageTheme } from "@/components/LegalPageTheme";
 import { useLoading } from "@/context/LoadingContext";
@@ -51,6 +52,7 @@ export function AppShell({ children }: AppShellProps) {
       >
         Zum Inhalt springen
       </a>
+      {!isAuthFlow && !skipShell ? <LoadingScreen /> : null}
       <ContactFunnel />
       <CookieBanner />
       <LegalPageTheme />

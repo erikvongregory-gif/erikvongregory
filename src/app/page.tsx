@@ -66,7 +66,7 @@ export default function Home() {
       contactType: "sales",
       availableLanguage: "German",
     },
-    sameAs: ["https://www.linkedin.com/in/erik-freiherr-von-gregory-22852b329"],
+    sameAs: [SITE.linkedinUrl],
   };
 
   const faqJsonLd = {

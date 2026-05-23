@@ -4,6 +4,7 @@ import {
   createContext,
   useCallback,
   useContext,
+  useLayoutEffect,
   useState,
 } from "react";
 import {
@@ -12,6 +13,7 @@ import {
   parseStoredCookieConsent,
   serializeCookieConsent,
 } from "@/lib/cookieConsent";
+import { scheduleAfterPaint } from "@/lib/scheduleAfterPaint";
 
 type LoadingContextValue = {
   isLoadComplete: boolean;
@@ -27,8 +29,19 @@ const LoadingContext = createContext<LoadingContextValue | null>(null);
 /** Einmal pro Browser (localStorage): Intro-Splash nur beim ersten Aufruf der Site, nicht bei interner Navigation oder neuem Tab. */
 export const EVGLAB_SPLASH_SEEN_KEY = "evglab_splash_seen";
 
+export function isSplashAlreadySeen(): boolean {
+  try {
+    return (
+      localStorage.getItem(EVGLAB_SPLASH_SEEN_KEY) === "1" ||
+      sessionStorage.getItem(EVGLAB_SPLASH_SEEN_KEY) === "1"
+    );
+  } catch {
+    return false;
+  }
+}
+
 export function LoadingProvider({ children }: { children: React.ReactNode }) {
-  const [isLoadComplete, setIsLoadComplete] = useState(true);
+  const [isLoadComplete, setIsLoadComplete] = useState(false);
   const [cookiePreferences, setCookiePreferences] = useState<CookiePrefs | null>(() => {
     if (typeof window === "undefined") return null;
     const raw = localStorage.getItem(COOKIE_CONSENT_KEY);
@@ -46,6 +59,12 @@ export function LoadingProvider({ children }: { children: React.ReactNode }) {
     } catch {
       /* private mode */
     }
+  }, []);
+
+  /** Wiederkehrender Besuch: Hero-Einblendungen erst nach Paint, nicht während Hydration. */
+  useLayoutEffect(() => {
+    if (!isSplashAlreadySeen()) return;
+    return scheduleAfterPaint(() => setIsLoadComplete(true));
   }, []);
 
   const saveCookieConsent = useCallback((prefs: CookiePrefs) => {
@@ -75,9 +94,9 @@ export function useLoading() {
   const ctx = useContext(LoadingContext);
   return (
     ctx ?? {
-      isLoadComplete: true,
+      isLoadComplete: false,
       cookiePreferences: { analytics: false, marketing: false },
-      heroReady: true,
+      heroReady: false,
       setLoadComplete: () => {},
       saveCookieConsent: () => {},
     }

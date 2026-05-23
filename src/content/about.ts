@@ -189,7 +189,7 @@ export const KONTAKT_KANAALE: {
     kanal: "LinkedIn",
     wert: "evglab",
     meta: "Schnell · unkompliziert",
-    href: "https://www.linkedin.com/in/erik-freiherr-von-gregory-22852b329",
+    href: SITE.linkedinUrl,
     ariaLabel: "EvGlab auf LinkedIn",
   },
   {

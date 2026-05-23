@@ -978,7 +978,7 @@ body[data-legal-page="true"] {
   display: contents;
 }
 
-/* Mobile Gallery Hero — gestaffeltes Erscheinen nach Splash */
+/* Mobile Gallery Hero — gestaffeltes Erscheinen nach Splash / erstem Paint */
 .mobile-gallery-hero .mobile-hero-fade {
   opacity: 0;
   transform: translateY(12px);
@@ -986,36 +986,40 @@ body[data-legal-page="true"] {
 
 .section1-wrapper.section1-ready .mobile-gallery-hero .mobile-hero-fade,
 .mobile-gallery-hero.mobile-gallery-hero--ready .mobile-hero-fade {
-  animation: section1-fade-in 0.62s cubic-bezier(0.16, 1, 0.3, 1) both;
+  opacity: 1;
+  transform: translateY(0);
+  transition:
+    opacity 0.62s cubic-bezier(0.16, 1, 0.3, 1),
+    transform 0.62s cubic-bezier(0.16, 1, 0.3, 1);
 }
 
 .section1-wrapper.section1-ready .mobile-gallery-hero .mobile-hero-fade-0,
 .mobile-gallery-hero.mobile-gallery-hero--ready .mobile-hero-fade-0 {
-  animation-delay: 0ms;
+  transition-delay: 0ms;
 }
 .section1-wrapper.section1-ready .mobile-gallery-hero .mobile-hero-fade-1,
 .mobile-gallery-hero.mobile-gallery-hero--ready .mobile-hero-fade-1 {
-  animation-delay: 80ms;
+  transition-delay: 80ms;
 }
 .section1-wrapper.section1-ready .mobile-gallery-hero .mobile-hero-fade-2,
 .mobile-gallery-hero.mobile-gallery-hero--ready .mobile-hero-fade-2 {
-  animation-delay: 160ms;
+  transition-delay: 160ms;
 }
 .section1-wrapper.section1-ready .mobile-gallery-hero .mobile-hero-fade-3,
 .mobile-gallery-hero.mobile-gallery-hero--ready .mobile-hero-fade-3 {
-  animation-delay: 240ms;
+  transition-delay: 240ms;
 }
 .section1-wrapper.section1-ready .mobile-gallery-hero .mobile-hero-fade-4,
 .mobile-gallery-hero.mobile-gallery-hero--ready .mobile-hero-fade-4 {
-  animation-delay: 320ms;
+  transition-delay: 320ms;
 }
 .section1-wrapper.section1-ready .mobile-gallery-hero .mobile-hero-fade-5,
 .mobile-gallery-hero.mobile-gallery-hero--ready .mobile-hero-fade-5 {
-  animation-delay: 400ms;
+  transition-delay: 400ms;
 }
 .section1-wrapper.section1-ready .mobile-gallery-hero .mobile-hero-fade-6,
 .mobile-gallery-hero.mobile-gallery-hero--ready .mobile-hero-fade-6 {
-  animation-delay: 480ms;
+  transition-delay: 480ms;
 }
 
 /* Hero — wellige Unterstreichung unter „Bier“: einzeichnen, dann leicht wippen */
@@ -1078,7 +1082,7 @@ body[data-legal-page="true"] {
   .mobile-gallery-hero.mobile-gallery-hero--ready .mobile-hero-fade {
     opacity: 1;
     transform: none;
-    animation: none;
+    transition: none;
   }
 
   .mobile-hero-wavy-underline {

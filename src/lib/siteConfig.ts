@@ -42,6 +42,9 @@ export const SITE = {
   contactPhoneDisplay: "+49 15565 602176",
   whatsappUrl: "https://wa.me/4915565602176",
 
+  /** Persönliches LinkedIn-Profil (Footer, Über uns, JSON-LD) */
+  linkedinUrl: "https://www.linkedin.com/in/erik-freiherr-von-gregory-22852b329/" as const,
+
   /** Google Search Console – Code von search.google.com/search-console eintragen, z.B. "abc123xyz" */
   googleSiteVerification: "",
 } as const;

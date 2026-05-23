@@ -33,8 +33,8 @@ const FOOTER_COLS: { title: string; rows: FooterRow[] }[] = [
     rows: [
       {
         key: "LinkedIn",
-        value: "evglab",
-        href: "https://www.linkedin.com/in/erik-freiherr-von-gregory-22852b329",
+        value: "Profil",
+        href: SITE.linkedinUrl,
         external: true,
       },
       {
@@ -129,7 +129,9 @@ export function SiteFooter({ className, footerId = "site-footer" }: SiteFooterPr
                                 : {})}
                               {...(row.href === SITE.whatsappUrl
                                 ? { "aria-label": `WhatsApp: ${SITE.contactPhoneDisplay}` }
-                                : {})}
+                                : row.href === SITE.linkedinUrl
+                                  ? { "aria-label": "LinkedIn-Profil von Erik von Gregory" }
+                                  : {})}
                             >
                               {row.value}
                             </a>

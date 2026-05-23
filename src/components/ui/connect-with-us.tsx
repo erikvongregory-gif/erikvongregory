@@ -16,7 +16,7 @@ export type ConnectLink = {
 
 const DEFAULT_LINKS: ConnectLink[] = [
   {
-    href: "https://www.linkedin.com/in/erik-freiherr-von-gregory-22852b329",
+    href: SITE.linkedinUrl,
     label: "LinkedIn",
     description: "EvGlab auf LinkedIn — Updates und Kontakt",
     icon: "linkedin",

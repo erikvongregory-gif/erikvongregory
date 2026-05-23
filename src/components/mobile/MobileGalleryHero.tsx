@@ -4,6 +4,7 @@ import Image from "next/image";
 import { useCallback, useEffect, useLayoutEffect, useMemo, useState } from "react";
 import { useLoading } from "@/context/LoadingContext";
 import { MOBILE_EDITORIAL_PX } from "@/lib/mobileEditorial";
+import { scheduleAfterPaint } from "@/lib/scheduleAfterPaint";
 import { cn } from "@/lib/utils";
 import {
   getDailyCategoryStats,
@@ -172,14 +173,7 @@ export function MobileGalleryHero({
       setFadeReady(true);
       return;
     }
-    let raf2 = 0;
-    const raf1 = requestAnimationFrame(() => {
-      raf2 = requestAnimationFrame(() => setFadeReady(true));
-    });
-    return () => {
-      cancelAnimationFrame(raf1);
-      cancelAnimationFrame(raf2);
-    };
+    return scheduleAfterPaint(() => setFadeReady(true));
   }, [heroReady, reducedMotion]);
 
   const bringToFront = useCallback((index: number) => {

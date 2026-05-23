@@ -1,22 +1,12 @@
 "use client";
 
 import { useEffect, useLayoutEffect, useState } from "react";
-import { EVGLAB_SPLASH_SEEN_KEY, useLoading } from "@/context/LoadingContext";
+import { isSplashAlreadySeen, useLoading } from "@/context/LoadingContext";
+import { scheduleAfterPaint } from "@/lib/scheduleAfterPaint";
 
 const FADE_OUT_MS = 400;
 const DURATION_DESKTOP = 1400;
 const DURATION_MOBILE = 1200;
-
-function isSplashAlreadySeen(): boolean {
-  try {
-    return (
-      localStorage.getItem(EVGLAB_SPLASH_SEEN_KEY) === "1" ||
-      sessionStorage.getItem(EVGLAB_SPLASH_SEEN_KEY) === "1"
-    );
-  } catch {
-    return false;
-  }
-}
 
 export function LoadingScreen() {
   const { setLoadComplete } = useLoading();
@@ -24,10 +14,10 @@ export function LoadingScreen() {
   const [duration, setDuration] = useState(DURATION_DESKTOP);
 
   useLayoutEffect(() => {
-    if (isSplashAlreadySeen()) {
-      setPhase("done");
-    }
-  }, []);
+    if (!isSplashAlreadySeen()) return;
+    setPhase("done");
+    return scheduleAfterPaint(() => setLoadComplete());
+  }, [setLoadComplete]);
 
   useEffect(() => {
     const id = setTimeout(() => {
