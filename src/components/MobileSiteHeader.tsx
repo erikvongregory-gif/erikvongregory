@@ -7,6 +7,7 @@ import { WaveMark } from "@/components/desktop/WaveMark";
 import { usePathname, useRouter } from "next/navigation";
 import { APP_LOGIN_URL, navigateToAppDashboard } from "@/lib/appLoginUrl";
 import { scrollToSection } from "@/lib/scrollToSection";
+import { openCookieSettings } from "@/lib/cookieConsent";
 import { SITE } from "@/lib/siteConfig";
 import { useLoading } from "@/context/LoadingContext";
 import { useSiteNavTheme } from "@/components/useSiteNavTheme";
@@ -346,6 +347,18 @@ export function MobileSiteHeader() {
                   >
                     Bereits Konto? Anmelden →
                   </a>
+                  <div className={drawerStyles.drawerLegal} role="group" aria-label="Rechtliches">
+                    <button
+                      type="button"
+                      className={drawerStyles.drawerLegalBtn}
+                      onClick={() => {
+                        setDropdownOpen(false);
+                        openCookieSettings();
+                      }}
+                    >
+                      Cookie-Einstellungen
+                    </button>
+                  </div>
                 </div>
               </nav>
             </>,

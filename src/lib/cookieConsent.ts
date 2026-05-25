@@ -1,5 +1,12 @@
 export const COOKIE_CONSENT_KEY = "cookie-consent";
 
+export const COOKIE_SETTINGS_EVENT = "evglab-open-cookie-settings";
+
+export function openCookieSettings() {
+  if (typeof window === "undefined") return;
+  window.dispatchEvent(new CustomEvent(COOKIE_SETTINGS_EVENT));
+}
+
 export type CookiePrefs = {
   analytics: boolean;
   marketing: boolean;

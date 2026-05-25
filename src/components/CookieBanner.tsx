@@ -2,12 +2,18 @@
 
 import { useEffect, useState } from "react";
 import { useLoading } from "@/context/LoadingContext";
-import { COOKIE_CONSENT_KEY, parseStoredCookieConsent, type CookiePrefs } from "@/lib/cookieConsent";
+import {
+  COOKIE_CONSENT_KEY,
+  COOKIE_SETTINGS_EVENT,
+  parseStoredCookieConsent,
+  type CookiePrefs,
+} from "@/lib/cookieConsent";
 import { CookiePanel } from "@/components/ui/cookie-banner-1";
 
 export function CookieBanner() {
   const [isOpen, setIsOpen] = useState(false);
   const [forceOpenToken, setForceOpenToken] = useState(0);
+  const [settingsMode, setSettingsMode] = useState(false);
   const [initialPrefs, setInitialPrefs] = useState({ necessary: true, functional: false, analytics: false, marketing: false });
   const { saveCookieConsent } = useLoading();
 
@@ -25,6 +31,7 @@ export function CookieBanner() {
   const applyConsent = (prefs: CookiePrefs) => {
     saveCookieConsent(prefs);
     setIsOpen(false);
+    setSettingsMode(false);
   };
 
   useEffect(() => {
@@ -33,11 +40,12 @@ export function CookieBanner() {
       if (parsed) {
         setInitialPrefs((p) => ({ ...p, analytics: parsed.analytics, marketing: parsed.marketing }));
       }
+      setSettingsMode(true);
       setIsOpen(true);
       setForceOpenToken((n) => n + 1);
     };
-    window.addEventListener("evglab-open-cookie-settings", openSettings);
-    return () => window.removeEventListener("evglab-open-cookie-settings", openSettings);
+    window.addEventListener(COOKIE_SETTINGS_EVENT, openSettings);
+    return () => window.removeEventListener(COOKIE_SETTINGS_EVENT, openSettings);
   }, []);
 
   return (
@@ -46,7 +54,11 @@ export function CookieBanner() {
       initialOpen={isOpen}
       initialPrefs={initialPrefs}
       forceOpenToken={forceOpenToken}
-      onClose={() => setIsOpen(false)}
+      settingsMode={settingsMode}
+      onClose={() => {
+        setIsOpen(false);
+        setSettingsMode(false);
+      }}
       onAcceptAll={() => applyConsent({ analytics: true, marketing: true })}
       onSavePreferences={(prefs) => applyConsent({ analytics: prefs.analytics, marketing: prefs.marketing })}
     />

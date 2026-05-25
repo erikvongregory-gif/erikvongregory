@@ -5,6 +5,7 @@ import { navigateToAppDashboard } from "@/lib/appLoginUrl";
 import { DesktopContainer } from "@/components/desktop/DesktopContainer";
 import { DesktopRevealItem, DesktopRevealStagger } from "@/components/desktop/DesktopReveal";
 import { WaveMark } from "@/components/desktop/WaveMark";
+import { openCookieSettings } from "@/lib/cookieConsent";
 import { SITE } from "@/lib/siteConfig";
 import { cn } from "@/lib/utils";
 
@@ -60,6 +61,9 @@ const FOOTER_COLS: { title: string; rows: FooterRow[] }[] = [
     ],
   },
 ];
+
+const LEGAL_NAV_LINK =
+  "inline-flex items-center border-0 bg-transparent p-0 font-inherit text-inherit uppercase tracking-wider hover:text-paper";
 
 type SiteFooterProps = {
   className?: string;
@@ -156,19 +160,22 @@ export function SiteFooter({ className, footerId = "site-footer" }: SiteFooterPr
             </p>
             </DesktopRevealItem>
             <DesktopRevealItem>
-            <nav className="flex flex-wrap gap-x-5 gap-y-2 sm:gap-6" aria-label="Rechtliches">
-              <Link href="/impressum" className="hover:text-paper">
+            <nav
+              className="flex flex-wrap items-center gap-x-5 gap-y-2 sm:gap-6"
+              aria-label="Rechtliches"
+            >
+              <Link href="/impressum" className={LEGAL_NAV_LINK}>
                 Impressum
               </Link>
-              <Link href="/datenschutz" className="hover:text-paper">
+              <Link href="/datenschutz" className={LEGAL_NAV_LINK}>
                 Datenschutz
               </Link>
-              <Link href="/agb" className="hover:text-paper">
+              <Link href="/agb" className={LEGAL_NAV_LINK}>
                 AGB
               </Link>
-              <Link href="/cookies" className="hover:text-paper">
+              <button type="button" onClick={() => openCookieSettings()} className={LEGAL_NAV_LINK}>
                 Cookies
-              </Link>
+              </button>
             </nav>
             </DesktopRevealItem>
           </DesktopRevealStagger>

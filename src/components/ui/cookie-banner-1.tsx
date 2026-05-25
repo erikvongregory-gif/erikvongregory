@@ -23,6 +23,8 @@ interface CookiePanelProps {
   initialOpen?: boolean;
   initialPrefs?: Partial<CookieBannerPrefs>;
   forceOpenToken?: number;
+  /** Footer „Cookies“: kompakte Einstellungsansicht (v. a. Mobile). */
+  settingsMode?: boolean;
   onAcceptAll?: () => void;
   onSavePreferences?: (prefs: CookieBannerPrefs) => void;
   onClose?: () => void;
@@ -61,6 +63,7 @@ const CookiePanel = (props: CookiePanelProps) => {
     initialOpen = false,
     initialPrefs,
     forceOpenToken,
+    settingsMode = false,
     onAcceptAll,
     onSavePreferences,
     onClose,
@@ -202,19 +205,32 @@ const CookiePanel = (props: CookiePanelProps) => {
     </div>
   );
 
+  const dialogLabel = settingsMode ? "Cookie-Einstellungen" : "Cookie consent";
+
   return (
     <div
-      role="dialog"
-      aria-live="polite"
-      aria-label="Cookie consent"
-      className={cn(styles.root, className)}
+      className={cn(styles.viewport, visible && styles.viewportOpen)}
+      aria-hidden={!visible}
     >
+      <button
+        type="button"
+        className={styles.backdrop}
+        tabIndex={visible ? 0 : -1}
+        aria-label="Cookie-Dialog schließen"
+        onClick={() => closeWithExit()}
+      />
       <div
-        className={cn(
-          styles.banner,
-          visible && !exiting ? styles.bannerEnter : exiting ? styles.bannerExit : undefined,
-        )}
+        role="dialog"
+        aria-live="polite"
+        aria-label={dialogLabel}
+        className={cn(styles.root, settingsMode && styles.rootSettings, className)}
       >
+        <div
+          className={cn(
+            styles.banner,
+            visible && !exiting ? styles.bannerEnter : exiting ? styles.bannerExit : undefined,
+          )}
+        >
         <div className={styles.ticker}>
           <span className={styles.tickerLeft}>EVGLAB · DATENSCHUTZ</span>
           <span className={styles.tickerRight}>
@@ -233,17 +249,30 @@ const CookiePanel = (props: CookiePanelProps) => {
             <X size={15} aria-hidden="true" />
           </button>
 
-          <h3 className={styles.title}>
-            Diese Website
-            <br />
-            verwendet <em>Cookies.</em>
-          </h3>
+          {settingsMode ? (
+            <h3 className={styles.titleSettings}>Cookie-Einstellungen</h3>
+          ) : (
+            <h3 className={styles.title}>
+              Diese Website
+              <br />
+              verwendet <em>Cookies.</em>
+            </h3>
+          )}
 
-          <p className={styles.copy}>
-            Wir verwenden Cookies, um dein Erlebnis auf unserer Website zu verbessern. {seeOurText}{" "}
-            <Link href={privacyHref}>{privacyText}</Link> {andText}{" "}
-            <Link href={termsHref}>{termsText}</Link>.
-          </p>
+          {!settingsMode && (
+            <p className={styles.copy}>
+              Wir verwenden Cookies, um dein Erlebnis auf unserer Website zu verbessern. {seeOurText}{" "}
+              <Link href={privacyHref}>{privacyText}</Link> {andText}{" "}
+              <Link href={termsHref}>{termsText}</Link>.
+            </p>
+          )}
+
+          {settingsMode && (
+            <p className={styles.copy}>
+              Passe deine Auswahl an. Details in der{" "}
+              <Link href={privacyHref}>{privacyText}</Link>.
+            </p>
+          )}
 
           <div
             id="cookie-preferences-inline"
@@ -258,8 +287,12 @@ const CookiePanel = (props: CookiePanelProps) => {
                 <PrefRow title={analyticsTitle} desc={analyticsDesc} field="analytics" />
                 <PrefRow title={marketingTitle} desc={marketingDesc} field="marketing" />
                 <div className={styles.prefsActions}>
-                  <button type="button" onClick={() => setShowPrefs(false)} className={styles.btnGhost}>
-                    {cancelText}
+                  <button
+                    type="button"
+                    onClick={() => (settingsMode ? closeWithExit() : setShowPrefs(false))}
+                    className={styles.btnGhost}
+                  >
+                    {settingsMode ? "Schließen" : cancelText}
                   </button>
                   <button type="button" onClick={savePreferences} className={styles.btnSave}>
                     {savePreferencesText}
@@ -269,40 +302,45 @@ const CookiePanel = (props: CookiePanelProps) => {
             )}
           </div>
 
-          <div className={styles.btns}>
-            <button
-              type="button"
-              onClick={() => setShowPrefs((p) => !p)}
-              className={styles.btnSecondary}
-              aria-expanded={showPrefs}
-              aria-controls="cookie-preferences-inline"
-            >
-              {customizeText}
-              {showPrefs ? (
-                <ChevronUp size={12} aria-hidden="true" />
-              ) : (
-                <ChevronDown size={12} aria-hidden="true" />
-              )}
-            </button>
+          {!(settingsMode && showPrefs) && (
+            <div className={styles.btns}>
+              <button
+                type="button"
+                onClick={() => setShowPrefs((p) => !p)}
+                className={styles.btnSecondary}
+                aria-expanded={showPrefs}
+                aria-controls="cookie-preferences-inline"
+              >
+                {customizeText}
+                {showPrefs ? (
+                  <ChevronUp size={12} aria-hidden="true" />
+                ) : (
+                  <ChevronDown size={12} aria-hidden="true" />
+                )}
+              </button>
 
-            <button
-              type="button"
-              onClick={() => {
-                onAcceptAll?.();
-                closeWithExit("true");
-              }}
-              className={styles.btnPrimary}
-            >
-              {acceptText}
-            </button>
-          </div>
+              <button
+                type="button"
+                onClick={() => {
+                  onAcceptAll?.();
+                  closeWithExit("true");
+                }}
+                className={styles.btnPrimary}
+              >
+                {acceptText}
+              </button>
+            </div>
+          )}
         </div>
 
-        <div className={styles.bannerFooter}>
-          <div className={styles.brandMark}>
-            EvG<span>lab</span>
+        {!settingsMode && (
+          <div className={styles.bannerFooter}>
+            <div className={styles.brandMark}>
+              EvG<span>lab</span>
+            </div>
+            <div className={styles.dsgvoTag}>Hosting · DE · V2.4</div>
           </div>
-          <div className={styles.dsgvoTag}>Hosting · DE · V2.4</div>
+        )}
         </div>
       </div>
     </div>
