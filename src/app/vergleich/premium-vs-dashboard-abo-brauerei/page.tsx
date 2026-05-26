@@ -6,7 +6,12 @@ export const metadata: Metadata = {
   title: "Premium vs. Dashboard-Abo: Was passt zu deiner Brauerei? | EvGlab",
   description:
     "Vergleich für Brauereien in DACH: fertig gelieferte Premium-Pakete vs. monatliches KI-Dashboard mit Tokens — Aufwand, Kosten, Geschwindigkeit und Qualität.",
-  alternates: { canonical: `${SITE.baseUrl}/vergleich/premium-vs-dashboard-abo-brauerei` },
+  robots: {
+    index: false,
+    follow: true,
+    googleBot: { index: false, follow: true },
+  },
+  alternates: { canonical: `${SITE.baseUrl}/#pakete-preise` },
   openGraph: {
     title: "Premium vs. Dashboard-Abo | EvGlab",
     description: "Entscheidungshilfe für Brauereien: Premium-Lieferung oder Self-Service mit Tokens.",

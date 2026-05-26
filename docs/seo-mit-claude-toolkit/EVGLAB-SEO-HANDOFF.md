@@ -12,12 +12,12 @@ Diese Punkte kann ich nicht vollautomatisch im Code fuer dich erledigen. Bitte i
 - Indexierung nach Deploy fuer alle Sitemap-URLs anstossen:
   - `/`
   - `/loesungen`, `/ratgeber`, `/ueber-uns`
-  - `/vergleich/premium-vs-dashboard-abo-brauerei`, `/preise/vergleich`
   - `/impressum`, `/datenschutz`, `/agb`
+  - Nicht indexieren: `/vergleich/*`, `/preise/vergleich` (noindex im Code)
 
 ## 2) Rich Results und Social Validatoren
 
-- Google Rich Results Test fuer Startseite, `/loesungen`, `/ratgeber`, `/vergleich/premium-vs-dashboard-abo-brauerei` laufen lassen.
+- Google Rich Results Test fuer Startseite, `/loesungen`, `/ratgeber` laufen lassen.
 - Search Console Bereich "Verbesserungen" auf neue Schema-Fehler pruefen.
 - Open Graph checken:
   - LinkedIn Post Inspector

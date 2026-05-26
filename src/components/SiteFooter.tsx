@@ -58,7 +58,6 @@ const FOOTER_COLS: { title: string; rows: FooterRow[] }[] = [
     rows: [
       { key: "Lösungen", value: "/loesungen", href: "/loesungen" },
       { key: "Wissens-Quiz", value: "/ratgeber", href: "/ratgeber" },
-      { key: "Premium vs. Abo", value: "/vergleich/premium-vs-dashboard-abo-brauerei", href: "/vergleich/premium-vs-dashboard-abo-brauerei" },
       { key: "Über uns", value: "/ueber-uns", href: "/ueber-uns" },
     ],
   },

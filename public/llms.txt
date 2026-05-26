@@ -8,8 +8,6 @@
 - https://www.evglab.com/loesungen — Branchen-Lösungen (Saisonkampagne, Gastro-Promotion, Biergarten-Event)
 - https://www.evglab.com/ratgeber — Interaktives Quiz (Wissenscheck) zu EvGlab, Paketen und Dashboard für Brauereien
 - https://www.evglab.com/ueber-uns — Über EvGlab, Zielgruppe DACH, Kontakt
-- https://www.evglab.com/vergleich/premium-vs-dashboard-abo-brauerei — Premium-Pakete vs. Dashboard-Abo (Entscheidungshilfe)
-- https://www.evglab.com/preise/vergleich — Alle 6 Pakete (Manufaktur & Werkstatt) im Tabellenvergleich
 
 ## Rechtliches
 

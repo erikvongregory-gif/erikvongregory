@@ -3,12 +3,17 @@ import Link from "next/link";
 import { MOBILE_PRICING_TRACKS, tierDisplayName } from "@/lib/mobilePricingTiers";
 import { SITE } from "@/lib/siteConfig";
 
-const canonical = `${SITE.baseUrl}/preise/vergleich`;
+const canonical = `${SITE.baseUrl}/#pakete-preise`;
 
 export const metadata: Metadata = {
   title: "Alle 6 Pakete im Vergleich | EvGlab",
   description:
     "Manufaktur und Werkstatt im Überblick: Brauerei Start, Wachstum und Premium — Preise, Leistungen und Highlights auf einen Blick.",
+  robots: {
+    index: false,
+    follow: true,
+    googleBot: { index: false, follow: true },
+  },
   alternates: { canonical },
   openGraph: {
     title: "Alle 6 Pakete im Vergleich | EvGlab",
