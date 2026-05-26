@@ -125,6 +125,15 @@ export function JsonLd() {
       { "@type": "SiteNavigationElement", position: 6, name: "Fragen", url: `${SITE.baseUrl}/#fragen` },
       { "@type": "SiteNavigationElement", position: 7, name: "Praxis", url: `${SITE.baseUrl}/#beispiele` },
       { "@type": "SiteNavigationElement", position: 8, name: "Kontakt", url: `${SITE.baseUrl}/#contact` },
+      { "@type": "SiteNavigationElement", position: 9, name: "Lösungen", url: `${SITE.baseUrl}/loesungen` },
+      { "@type": "SiteNavigationElement", position: 10, name: "Ratgeber", url: `${SITE.baseUrl}/ratgeber` },
+      { "@type": "SiteNavigationElement", position: 11, name: "Über uns", url: `${SITE.baseUrl}/ueber-uns` },
+      {
+        "@type": "SiteNavigationElement",
+        position: 12,
+        name: "Premium vs. Dashboard",
+        url: `${SITE.baseUrl}/vergleich/premium-vs-dashboard-abo-brauerei`,
+      },
     ],
   };
 

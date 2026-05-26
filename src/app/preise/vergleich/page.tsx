@@ -1,9 +1,29 @@
+import type { Metadata } from "next";
 import Link from "next/link";
 import { MOBILE_PRICING_TRACKS, tierDisplayName } from "@/lib/mobilePricingTiers";
+import { SITE } from "@/lib/siteConfig";
 
-export const metadata = {
+const canonical = `${SITE.baseUrl}/preise/vergleich`;
+
+export const metadata: Metadata = {
   title: "Alle 6 Pakete im Vergleich | EvGlab",
-  description: "Manufaktur und Werkstatt: Brauerei Start, Wachstum und Premium im Überblick.",
+  description:
+    "Manufaktur und Werkstatt im Überblick: Brauerei Start, Wachstum und Premium — Preise, Leistungen und Highlights auf einen Blick.",
+  alternates: { canonical },
+  openGraph: {
+    title: "Alle 6 Pakete im Vergleich | EvGlab",
+    description: "Manufaktur (einmalig) und Werkstatt (Abo) für Brauereien im direkten Vergleich.",
+    url: canonical,
+    type: "website",
+    locale: "de_DE",
+    images: SITE.ogImage ? [{ url: SITE.ogImage, width: 1200, height: 630, alt: "EvGlab Paketvergleich" }] : undefined,
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: "Alle 6 Pakete im Vergleich | EvGlab",
+    description: "Manufaktur und Werkstatt — Preise und Highlights für Brauereien.",
+    images: SITE.ogImage ? [SITE.ogImage] : undefined,
+  },
 };
 
 export default function PreiseVergleichPage() {
@@ -48,6 +68,13 @@ export default function PreiseVergleichPage() {
       <p className="mt-10 text-center">
         <Link href="/#pakete-preise" className="font-semibold text-ink underline-offset-2 hover:underline">
           Zurück zur Startseite
+        </Link>
+        {" · "}
+        <Link
+          href="/vergleich/premium-vs-dashboard-abo-brauerei"
+          className="font-semibold text-ink underline-offset-2 hover:underline"
+        >
+          Premium vs. Dashboard
         </Link>
       </p>
     </main>

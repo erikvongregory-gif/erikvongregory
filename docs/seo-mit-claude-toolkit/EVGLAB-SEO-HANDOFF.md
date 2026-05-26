@@ -9,14 +9,15 @@ Diese Punkte kann ich nicht vollautomatisch im Code fuer dich erledigen. Bitte i
   - Entweder DNS-TXT in deinem Domain-Provider, oder
   - HTML-Tag in `SITE.googleSiteVerification` eintragen.
 - Nur `https://www.evglab.com/sitemap.xml` in GSC eingereicht lassen.
-- Indexierung fuer diese Seiten manuell anstossen:
+- Indexierung nach Deploy fuer alle Sitemap-URLs anstossen:
   - `/`
-  - `/loesungen`
+  - `/loesungen`, `/ratgeber`, `/ueber-uns`
+  - `/vergleich/premium-vs-dashboard-abo-brauerei`, `/preise/vergleich`
   - `/impressum`, `/datenschutz`, `/agb`
 
 ## 2) Rich Results und Social Validatoren
 
-- Google Rich Results Test fuer Startseite + 3 Loesungsseiten laufen lassen.
+- Google Rich Results Test fuer Startseite, `/loesungen`, `/ratgeber`, `/vergleich/premium-vs-dashboard-abo-brauerei` laufen lassen.
 - Search Console Bereich "Verbesserungen" auf neue Schema-Fehler pruefen.
 - Open Graph checken:
   - LinkedIn Post Inspector

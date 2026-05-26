@@ -73,7 +73,6 @@ export const metadata: Metadata = {
     googleBot: { index: true, follow: true },
   },
   alternates: {
-    canonical: SITE.baseUrl,
     languages: {
       "de-DE": SITE.baseUrl,
       "x-default": SITE.baseUrl,
