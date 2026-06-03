@@ -3,7 +3,6 @@
 import { useSyncExternalStore } from "react";
 import dynamic from "next/dynamic";
 import { Hero } from "@/components/ui/animated-hero";
-import { useLoading } from "@/context/LoadingContext";
 import { importWithRetry } from "@/lib/importWithRetry";
 
 const DesktopLayout = dynamic(
@@ -39,7 +38,6 @@ function getDesktopMqServerSnapshot() {
 }
 
 export function ResponsiveHomeLayout() {
-  const { heroReady } = useLoading();
   const isDesktop = useSyncExternalStore(
     subscribeDesktopMq,
     getDesktopMqSnapshot,
@@ -57,7 +55,7 @@ export function ResponsiveHomeLayout() {
         {!isDesktop ? (
           <div
             id="start"
-            className={`section1-wrapper relative mx-auto w-full max-w-screen-2xl section1-wrapper--mobile-gallery ${heroReady ? "section1-ready" : ""}`}
+            className="section1-wrapper relative mx-auto w-full max-w-screen-2xl section1-wrapper--mobile-gallery"
           >
             <Hero />
           </div>

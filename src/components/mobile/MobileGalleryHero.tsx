@@ -2,7 +2,6 @@
 
 import Image from "next/image";
 import { useCallback, useEffect, useLayoutEffect, useMemo, useState } from "react";
-import { useLoading } from "@/context/LoadingContext";
 import { MOBILE_EDITORIAL_PX } from "@/lib/mobileEditorial";
 import { scheduleAfterPaint } from "@/lib/scheduleAfterPaint";
 import { cn } from "@/lib/utils";
@@ -140,13 +139,11 @@ export function MobileGalleryHero({
   ctaPending = false,
   onGalleryOpen,
 }: MobileGalleryHeroProps) {
-  const { heroReady } = useLoading();
   const defaultActive = MOBILE_HERO_POLAROIDS.findIndex((p) => p.id === "product");
   const [activeIndex, setActiveIndex] = useState(defaultActive >= 0 ? defaultActive : 0);
   const [reducedMotion, setReducedMotion] = useState(false);
-  /** Gestaffelte CSS-Keyframes — nach Layout/Paint, sonst oft kein Start bei Hydration. */
-  const [fadeReady, setFadeReady] = useState(false);
-  const revealReady = heroReady && fadeReady;
+  /** Gestaffelte Einblendung — nach Layout/Paint, sonst kein Transition-Start bei Hydration. */
+  const [revealReady, setRevealReady] = useState(false);
 
   const { motifLabel, categoryStats } = useMemo(() => {
     const today = new Date();
@@ -165,16 +162,13 @@ export function MobileGalleryHero({
   }, []);
 
   useLayoutEffect(() => {
-    if (!heroReady) {
-      setFadeReady(false);
-      return;
-    }
     if (reducedMotion) {
-      setFadeReady(true);
+      setRevealReady(true);
       return;
     }
-    return scheduleAfterPaint(() => setFadeReady(true));
-  }, [heroReady, reducedMotion]);
+    setRevealReady(false);
+    return scheduleAfterPaint(() => setRevealReady(true));
+  }, [reducedMotion]);
 
   const bringToFront = useCallback((index: number) => {
     setActiveIndex(index);
