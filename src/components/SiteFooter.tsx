@@ -1,7 +1,7 @@
 "use client";
 
 import Link from "next/link";
-import { navigateToAppDashboard } from "@/lib/appLoginUrl";
+import { useFreeTrialDemo } from "@/context/FreeTrialDemoContext";
 import { DesktopContainer } from "@/components/desktop/DesktopContainer";
 import { DesktopRevealItem, DesktopRevealStagger } from "@/components/desktop/DesktopReveal";
 import { WaveMark } from "@/components/desktop/WaveMark";
@@ -72,6 +72,8 @@ type SiteFooterProps = {
 };
 
 export function SiteFooter({ className, footerId = "site-footer" }: SiteFooterProps) {
+  const { open: openFreeTrialDemo } = useFreeTrialDemo();
+
   return (
     <>
       <div id="contact" className="scroll-mt-24" aria-hidden />
@@ -95,7 +97,7 @@ export function SiteFooter({ className, footerId = "site-footer" }: SiteFooterPr
               <div className="mt-6 flex flex-col gap-3 sm:mt-8 sm:flex-row sm:flex-wrap">
                 <button
                   type="button"
-                  onClick={() => navigateToAppDashboard()}
+                  onClick={() => openFreeTrialDemo()}
                   className="inline-flex w-full items-center justify-center gap-2 rounded-xl bg-amber px-6 py-3.5 font-sans-tight text-sm font-semibold text-[#15110C] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-[3px] focus-visible:outline-amber sm:w-auto"
                 >
                   3 Bilder kostenlos generieren →

@@ -15,7 +15,7 @@ import {
 } from "@/content/about";
 import { ScrollRevealStagger } from "@/components/ScrollRevealStagger";
 import { DarkGlowBg, DachMapSvg, FounderPortraitCard, HugoChatMockup } from "@/components/ueber-uns/AboutShared";
-import { navigateToAppDashboard } from "@/lib/appLoginUrl";
+import { useFreeTrialDemo } from "@/context/FreeTrialDemoContext";
 import { cn } from "@/lib/utils";
 
 function MobileEyebrow({ children }: { children: string }) {
@@ -28,6 +28,8 @@ function MobileEyebrow({ children }: { children: string }) {
 }
 
 export function AboutMobile() {
+  const { open: openFreeTrialDemo } = useFreeTrialDemo();
+
   return (
     <div className="about-root mobile-root bg-paper text-ink">
         <section id="about-hero" className="relative overflow-hidden bg-[#15110C] pb-10 pt-20 text-paper">
@@ -193,7 +195,7 @@ export function AboutMobile() {
             </div>
             <button
               type="button"
-              onClick={() => navigateToAppDashboard()}
+              onClick={() => openFreeTrialDemo()}
               className="mobile-scroll-reveal-item mt-6 w-full rounded-xl bg-amber py-3.5 font-sans-tight text-sm font-semibold text-[#15110C]"
             >
               Chat mit Hopfen Hugo öffnen →

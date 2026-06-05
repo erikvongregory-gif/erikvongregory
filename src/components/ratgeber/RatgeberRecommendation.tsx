@@ -2,7 +2,8 @@
 
 import Link from "next/link";
 import type { RatgeberResult, RatgeberScore } from "@/content/ratgeber";
-import { buildAppLoginUrl, navigateToAppDashboard } from "@/lib/appLoginUrl";
+import { buildAppLoginUrl } from "@/lib/appLoginUrl";
+import { useFreeTrialDemo } from "@/context/FreeTrialDemoContext";
 import { cn } from "@/lib/utils";
 
 type RatgeberRecommendationProps = {
@@ -14,11 +15,12 @@ type RatgeberRecommendationProps = {
 };
 
 export function RatgeberRecommendation({ result, score, onRestart, onPrev, compact }: RatgeberRecommendationProps) {
+  const { open: openFreeTrialDemo } = useFreeTrialDemo();
   const primaryIsDashboard = result.key === "dash";
 
   const handlePrimary = () => {
     if (primaryIsDashboard) {
-      navigateToAppDashboard();
+      openFreeTrialDemo();
       return;
     }
     window.location.href = "/#contact";
@@ -26,7 +28,7 @@ export function RatgeberRecommendation({ result, score, onRestart, onPrev, compa
 
   const handleSecondary = () => {
     if (result.key === "mixed" && result.secondaryHref === "/dashboard") {
-      navigateToAppDashboard();
+      openFreeTrialDemo();
       return;
     }
     if (result.secondaryHref.startsWith("/#")) {

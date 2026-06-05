@@ -1,7 +1,8 @@
 "use client";
 
 import Link from "next/link";
-import { APP_LOGIN_URL, navigateToAppDashboard } from "@/lib/appLoginUrl";
+import { APP_LOGIN_URL } from "@/lib/appLoginUrl";
+import { useFreeTrialDemo } from "@/context/FreeTrialDemoContext";
 import { useAboutNavTheme } from "@/components/ueber-uns/useAboutNavTheme";
 import { WaveMark } from "@/components/desktop/WaveMark";
 import { cn } from "@/lib/utils";
@@ -15,6 +16,7 @@ const NAV = [
 
 export function AboutDesktopNav() {
   const isDark = useAboutNavTheme();
+  const { open: openFreeTrialDemo } = useFreeTrialDemo();
 
   return (
     <header
@@ -70,7 +72,7 @@ export function AboutDesktopNav() {
           </a>
           <button
             type="button"
-            onClick={() => navigateToAppDashboard()}
+            onClick={() => openFreeTrialDemo()}
             className="inline-flex items-center gap-2 rounded-[10px] bg-amber px-4 py-2.5 font-sans-tight text-[13.5px] font-semibold text-[#15110C] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-[3px] focus-visible:outline-amber"
           >
             3 Bilder kostenlos →

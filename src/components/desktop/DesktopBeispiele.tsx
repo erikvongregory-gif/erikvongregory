@@ -3,7 +3,7 @@
 import Image from "next/image";
 import { useEffect, useMemo, useRef, useState } from "react";
 import { BEISPIELE_IMAGES, BEISPIELE_VIDEOS, type Beispiel } from "@/lib/mobileBeispiele";
-import { navigateToAppDashboard } from "@/lib/appLoginUrl";
+import { useFreeTrialDemo } from "@/context/FreeTrialDemoContext";
 import { DesktopContainer } from "@/components/desktop/DesktopContainer";
 import { DesktopRevealItem, DesktopRevealStagger } from "@/components/desktop/DesktopReveal";
 import { PlaceholderMedia } from "@/components/desktop/PlaceholderMedia";
@@ -168,6 +168,7 @@ function DesktopFeaturedVideo({ item }: { item: Beispiel }) {
 }
 
 export function DesktopBeispiele() {
+  const { open: openFreeTrialDemo } = useFreeTrialDemo();
   const [mode, setMode] = useState<BeispielMode>("photos");
   const items = useMemo(() => itemsForMode(mode), [mode]);
   const [featuredIndex, setFeaturedIndex] = useState(0);
@@ -261,7 +262,7 @@ export function DesktopBeispiele() {
           <DesktopRevealItem>
             <button
               type="button"
-              onClick={() => navigateToAppDashboard()}
+              onClick={() => openFreeTrialDemo()}
               className="inline-flex items-center gap-3 rounded-xl bg-amber px-6 py-4 font-sans-tight text-[15px] font-bold text-[#15110C] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-[3px] focus-visible:outline-amber"
             >
               Eigene Motive starten

@@ -22,6 +22,9 @@ export const APP_DISPLAY_HOST = (() => {
 /** Dashboard-Start — Hero-CTA „3 Bilder kostenlos generieren“ */
 export const APP_DASHBOARD_URL = `${APP_BASE_URL.replace(/\/$/, "")}/dashboard`;
 
+/** Registrierung mit Abo-Abschluss — Demo-Ergebnis-CTA */
+export const APP_REGISTER_URL = `${APP_BASE_URL.replace(/\/$/, "")}/registrieren?mode=register`;
+
 /**
  * Ziel der „Anmelden“-Links im Marketing (Dashboard-App).
  * Produktion: https://app.evglab.com/anmelden

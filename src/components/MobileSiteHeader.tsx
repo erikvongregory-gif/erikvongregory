@@ -5,7 +5,8 @@ import { createPortal } from "react-dom";
 import Link from "next/link";
 import { WaveMark } from "@/components/desktop/WaveMark";
 import { usePathname, useRouter } from "next/navigation";
-import { APP_LOGIN_URL, navigateToAppDashboard } from "@/lib/appLoginUrl";
+import { APP_LOGIN_URL } from "@/lib/appLoginUrl";
+import { useFreeTrialDemo } from "@/context/FreeTrialDemoContext";
 import { scrollToSection } from "@/lib/scrollToSection";
 import { openCookieSettings } from "@/lib/cookieConsent";
 import { SITE } from "@/lib/siteConfig";
@@ -31,6 +32,7 @@ const MOBILE_DRAWER_NAV = [
 ] as const;
 
 export function MobileSiteHeader() {
+  const { open: openFreeTrialDemo } = useFreeTrialDemo();
   const pathname = usePathname();
   const router = useRouter();
   const { isLoadComplete } = useLoading();
@@ -335,7 +337,7 @@ export function MobileSiteHeader() {
                     className={drawerStyles.ctaDrawer}
                     onClick={() => {
                       setDropdownOpen(false);
-                      navigateToAppDashboard();
+                      openFreeTrialDemo();
                     }}
                   >
                     3 Bilder kostenlos generieren

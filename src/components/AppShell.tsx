@@ -5,6 +5,7 @@ import { usePathname } from "next/navigation";
 import { SiteHeader } from "@/components/SiteHeader";
 import { LegalPageTheme } from "@/components/LegalPageTheme";
 import { SiteFooter } from "@/components/SiteFooter";
+import { FreeTrialDemoProvider } from "@/context/FreeTrialDemoContext";
 
 const CookieBanner = dynamic(() => import("@/components/CookieBanner").then((m) => m.CookieBanner), {
   ssr: false,
@@ -28,7 +29,7 @@ export function AppShell({ children }: AppShellProps) {
   }
 
   return (
-    <>
+    <FreeTrialDemoProvider>
       <a
         href="#main"
         className="sr-only focus:not-sr-only focus:fixed focus:left-4 focus:top-4 focus:z-[100] focus:rounded-lg focus:bg-[#14532d] focus:px-4 focus:py-2 focus:text-white focus:outline-none focus:ring-2 focus:ring-white"
@@ -41,6 +42,6 @@ export function AppShell({ children }: AppShellProps) {
       <SiteHeader />
       <div>{children}</div>
       <SiteFooter className="app-shell-site-footer relative z-[70]" />
-    </>
+    </FreeTrialDemoProvider>
   );
 }

@@ -1,6 +1,6 @@
 "use client";
 
-import { navigateToAppDashboard } from "@/lib/appLoginUrl";
+import { useFreeTrialDemo } from "@/context/FreeTrialDemoContext";
 import { KI_BEISPIEL_VIDEO_16X9, KI_BEISPIEL_VIDEOS_9X16, KI_CAROUSEL } from "@/lib/kiBeispiele";
 import { cn } from "@/lib/utils";
 import { ScrollRevealStagger } from "@/components/ScrollRevealStagger";
@@ -9,8 +9,9 @@ import { HeroSection } from "@/components/ui/feature-carousel";
 import { LiquidMetalButton } from "@/components/ui/liquid-metal-button";
 
 export function Section7AIDemo() {
+  const { open: openFreeTrialDemo } = useFreeTrialDemo();
   const openSignup = () => {
-    navigateToAppDashboard();
+    openFreeTrialDemo();
   };
 
   return (

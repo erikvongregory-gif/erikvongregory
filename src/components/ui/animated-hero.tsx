@@ -9,7 +9,7 @@ import { LiquidMetalButton } from "@/components/ui/liquid-metal-button";
 import Floating, { FloatingElement } from "@/components/ui/parallax-floating";
 import { MobileGalleryHero } from "@/components/mobile/MobileGalleryHero";
 import { useLoading } from "@/context/LoadingContext";
-import { navigateToAppDashboard } from "@/lib/appLoginUrl";
+import { useFreeTrialDemo } from "@/context/FreeTrialDemoContext";
 import { KI_BEISPIELE } from "@/lib/kiBeispiele";
 
 const HERO_FLOAT_LAYOUT = [
@@ -81,11 +81,13 @@ function Hero() {
 
   const primaryCtaLabel = "3 Bilder kostenlos generieren";
 
+  const { open: openFreeTrialDemo } = useFreeTrialDemo();
   const [ctaPending, setCtaPending] = useState(false);
 
   const onPrimaryCtaClick = () => {
     setCtaPending(true);
-    navigateToAppDashboard();
+    openFreeTrialDemo();
+    setCtaPending(false);
   };
 
   const onGalleryOpen = () => {

@@ -19,7 +19,7 @@ import {
 import { DarkGlowBg, DachMapSvg, FounderPortraitCard, HugoChatMockup } from "@/components/ueber-uns/AboutShared";
 import { DesktopContainer } from "@/components/desktop/DesktopContainer";
 import { DesktopRevealItem, DesktopRevealStagger, useDesktopHeroReady } from "@/components/desktop/DesktopReveal";
-import { navigateToAppDashboard } from "@/lib/appLoginUrl";
+import { useFreeTrialDemo } from "@/context/FreeTrialDemoContext";
 import { cn } from "@/lib/utils";
 
 function SectionEyebrow({ children, dark }: { children: ReactNode; dark?: boolean }) {
@@ -85,6 +85,7 @@ function KapitelCard({ ch }: { ch: Kapitel }) {
 
 export function AboutDesktop() {
   const heroReady = useDesktopHeroReady();
+  const { open: openFreeTrialDemo } = useFreeTrialDemo();
 
   return (
     <div className="about-root bg-paper text-ink">
@@ -328,7 +329,7 @@ export function AboutDesktop() {
                 </p>
                 <button
                   type="button"
-                  onClick={() => navigateToAppDashboard()}
+                  onClick={() => openFreeTrialDemo()}
                   className="mt-7 inline-flex items-center gap-2 rounded-xl bg-amber px-6 py-3.5 font-sans-tight text-sm font-semibold text-[#15110C] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-[3px] focus-visible:outline-amber"
                 >
                   Chat mit Hopfen Hugo öffnen →

@@ -1,0 +1,689 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>EvGlab · 3 Bilder kostenlos testen (Demo-Funnel)</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Newsreader:ital,opsz,wght@0,6..72,400;1,6..72,400&family=JetBrains+Mono:wght@500;600&display=swap" rel="stylesheet" />
+  <style>
+    *, *::before, *::after { box-sizing: border-box; }
+    html, body { margin: 0; padding: 0; }
+    body {
+      font-family: Inter, ui-sans-serif, system-ui, sans-serif;
+      background: #0a0f14;
+      color: #f4efe6;
+      min-height: 100dvh;
+    }
+
+    .page {
+      min-height: 100dvh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 1rem;
+      padding: 2rem;
+      text-align: center;
+    }
+    .page h1 {
+      font-family: Newsreader, Georgia, serif;
+      font-weight: 400;
+      font-size: clamp(1.75rem, 5vw, 2.5rem);
+      margin: 0;
+    }
+    .page p { color: rgba(255,255,255,.55); max-width: 32rem; line-height: 1.6; margin: 0; }
+    .page button.trigger {
+      margin-top: .5rem;
+      border: none;
+      border-radius: .75rem;
+      background: #e8772e;
+      color: #fff;
+      font: 600 .9rem/1 Inter, sans-serif;
+      padding: .85rem 1.5rem;
+      cursor: pointer;
+      min-height: 44px;
+    }
+    .page button.trigger:hover { background: #f08a42; }
+    .page .reset {
+      background: transparent;
+      border: 1px solid rgba(255,255,255,.18);
+      color: rgba(255,255,255,.7);
+      font-weight: 500;
+    }
+
+    /* Backdrop */
+    .backdrop {
+      position: fixed;
+      inset: 0;
+      z-index: 9999;
+      display: none;
+      align-items: flex-end;
+      justify-content: center;
+      padding: 0;
+      background: rgba(10,15,20,.78);
+      backdrop-filter: blur(12px);
+      animation: fadeIn .3s cubic-bezier(.33,1,.68,1) forwards;
+    }
+    .backdrop.open { display: flex; }
+    @media (min-width: 640px) {
+      .backdrop { align-items: center; padding: 1rem; }
+    }
+    @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+
+    /* Panel */
+    .panel {
+      position: relative;
+      width: 100%;
+      max-height: 100dvh;
+      display: flex;
+      flex-direction: column;
+      overflow: hidden;
+      background: #15110c;
+      border-radius: 1.5rem 1.5rem 0 0;
+      background: linear-gradient(165deg, rgba(255,255,255,.1) 0%, rgba(255,255,255,.025) 55%, rgba(10,15,20,.35) 100%);
+      border: 1px solid rgba(255,255,255,.1);
+      box-shadow: 0 24px 80px -20px rgba(0,0,0,.65), inset 0 1px 0 rgba(255,255,255,.08);
+      animation: panelIn .35s cubic-bezier(.34,1.2,.64,1) .05s both;
+    }
+    @media (min-width: 640px) {
+      .panel {
+        max-width: 720px;
+        max-height: min(92dvh, 860px);
+        border-radius: 1rem;
+      }
+    }
+    @keyframes panelIn {
+      from { opacity: 0; transform: scale(.95) translateY(10px); }
+      to { opacity: 1; transform: scale(1) translateY(0); }
+    }
+    .panel::before {
+      content: "";
+      position: absolute;
+      inset-inline: 0;
+      top: 0;
+      height: 1px;
+      background: linear-gradient(90deg, transparent, rgba(232,119,46,.55), transparent);
+    }
+
+    .close-btn {
+      position: absolute;
+      right: .75rem;
+      top: .75rem;
+      z-index: 20;
+      width: 44px;
+      height: 44px;
+      border: none;
+      border-radius: 999px;
+      background: transparent;
+      color: rgba(255,255,255,.55);
+      font-size: 1.35rem;
+      line-height: 1;
+      cursor: pointer;
+    }
+    .close-btn:hover { background: rgba(255,255,255,.08); color: #fff; }
+    .close-btn.hidden { display: none; }
+
+    .content {
+      position: relative;
+      z-index: 10;
+      flex: 1;
+      min-height: 0;
+      overflow-y: auto;
+      padding: 1.75rem 1.25rem 1.5rem;
+    }
+    @media (min-width: 640px) {
+      .content { padding: 2rem 1.75rem; }
+    }
+
+    .eyebrow {
+      font-family: "JetBrains Mono", monospace;
+      font-size: 11px;
+      font-weight: 600;
+      letter-spacing: .14em;
+      text-transform: uppercase;
+      color: rgba(232,119,46,.9);
+      margin: 0;
+    }
+    .title {
+      font-family: Newsreader, Georgia, serif;
+      font-weight: 400;
+      font-size: clamp(1.5rem, 5vw, 2rem);
+      line-height: 1.2;
+      color: #f4efe6;
+      margin: .25rem 0 0;
+    }
+    .subline {
+      margin: .5rem 0 0;
+      font-size: .875rem;
+      line-height: 1.6;
+      color: rgba(255,255,255,.6);
+    }
+    .counter {
+      margin: .75rem 0 0;
+      font-size: .75rem;
+      font-weight: 500;
+      color: rgba(255,255,255,.45);
+    }
+
+    .phase { display: none; }
+    .phase.active { display: block; }
+
+    /* Motif grid */
+    .motif-grid {
+      margin-top: 1.25rem;
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: .75rem;
+    }
+    @media (min-width: 640px) {
+      .motif-grid {
+        margin-top: 1.5rem;
+        grid-template-columns: 1fr 1fr;
+        gap: 1rem;
+      }
+    }
+
+    .motif-card {
+      display: flex;
+      align-items: center;
+      gap: .75rem;
+      width: 100%;
+      min-height: 44px;
+      padding: .75rem;
+      border: 1px solid rgba(255,255,255,.1);
+      border-radius: 1rem;
+      background: rgba(255,255,255,.04);
+      text-align: left;
+      cursor: pointer;
+      color: inherit;
+      transition: border-color .2s, background .2s;
+    }
+    @media (min-width: 640px) {
+      .motif-card {
+        flex-direction: column;
+        align-items: stretch;
+        padding: 0;
+        overflow: hidden;
+      }
+    }
+    .motif-card:hover {
+      border-color: rgba(232,119,46,.35);
+      background: rgba(255,255,255,.07);
+    }
+
+    .motif-thumb {
+      position: relative;
+      flex-shrink: 0;
+      width: 72px;
+      height: 72px;
+      border-radius: .75rem;
+      overflow: hidden;
+      background: #1a1410;
+    }
+    @media (min-width: 640px) {
+      .motif-thumb {
+        width: 100%;
+        height: auto;
+        aspect-ratio: 4/3;
+        border-radius: 0;
+      }
+    }
+    .motif-thumb img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      transform: scale(1.1);
+      filter: blur(10px) brightness(.75);
+      transition: transform .5s;
+    }
+    .motif-card:hover .motif-thumb img { transform: scale(1.14); }
+    .motif-thumb .overlay {
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(to top, rgba(21,17,12,.8), rgba(21,17,12,.25), transparent);
+    }
+    .motif-thumb .badge {
+      position: absolute;
+      bottom: 6px;
+      left: 6px;
+      padding: 2px 6px;
+      border-radius: 6px;
+      background: rgba(21,17,12,.7);
+      font-family: "JetBrains Mono", monospace;
+      font-size: 9px;
+      letter-spacing: .1em;
+      text-transform: uppercase;
+      color: rgba(255,255,255,.55);
+    }
+    @media (min-width: 640px) {
+      .motif-thumb .badge { bottom: 10px; left: 10px; }
+    }
+
+    .motif-body { min-width: 0; flex: 1; padding: 2px 0; }
+    @media (min-width: 640px) { .motif-body { padding: 1rem; } }
+    .motif-tag {
+      font-family: "JetBrains Mono", monospace;
+      font-size: 10px;
+      letter-spacing: .12em;
+      text-transform: uppercase;
+      color: #e8772e;
+    }
+    .motif-title {
+      display: block;
+      margin-top: .25rem;
+      font-family: Newsreader, Georgia, serif;
+      font-size: 15px;
+      line-height: 1.35;
+      color: #f4efe6;
+    }
+    @media (min-width: 640px) { .motif-title { font-size: 1rem; } }
+    .motif-desc {
+      display: block;
+      margin-top: .25rem;
+      font-size: .75rem;
+      line-height: 1.5;
+      color: rgba(255,255,255,.55);
+    }
+
+    /* Generating */
+    .generating-wrap {
+      min-height: min(70dvh, 520px);
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      padding: 1.5rem 0;
+    }
+    @media (min-width: 640px) { .generating-wrap { min-height: 420px; } }
+    .progress-track {
+      margin-top: 2rem;
+      height: 8px;
+      border-radius: 999px;
+      background: rgba(255,255,255,.1);
+      overflow: hidden;
+    }
+    .progress-bar {
+      height: 100%;
+      width: 0%;
+      border-radius: 999px;
+      background: linear-gradient(90deg, #c7691e, #e8772e);
+      transition: width .15s ease-out;
+    }
+    .progress-meta {
+      margin-top: .5rem;
+      display: flex;
+      justify-content: space-between;
+      font-size: .75rem;
+      color: rgba(255,255,255,.45);
+    }
+    .generating-hint {
+      margin-top: 2rem;
+      font-size: .875rem;
+      line-height: 1.6;
+      color: rgba(255,255,255,.5);
+    }
+
+    /* Result */
+    .result-image {
+      position: relative;
+      margin-top: 1.25rem;
+      aspect-ratio: 4/3;
+      width: 100%;
+      border-radius: 1rem;
+      overflow: hidden;
+      border: 1px solid rgba(255,255,255,.1);
+      background: #1a1410;
+    }
+    .result-image img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      display: block;
+    }
+    .result-caption {
+      margin-top: .75rem;
+      font-size: .75rem;
+      color: rgba(255,255,255,.45);
+    }
+
+    .actions {
+      margin-top: 1.5rem;
+      display: flex;
+      flex-direction: column;
+      gap: .75rem;
+    }
+    .btn-primary {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      min-height: 44px;
+      width: 100%;
+      border: none;
+      border-radius: .75rem;
+      background: #e8772e;
+      color: #fff;
+      font: 600 .875rem/1 Inter, sans-serif;
+      padding: .75rem 1.25rem;
+      cursor: pointer;
+      text-decoration: none;
+    }
+    .btn-primary:hover { background: #f08a42; box-shadow: 0 8px 28px rgba(232,119,46,.38); }
+    .btn-secondary {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      min-height: 44px;
+      width: 100%;
+      border: 1px solid rgba(255,255,255,.18);
+      border-radius: .75rem;
+      background: rgba(255,255,255,.04);
+      color: rgba(255,255,255,.9);
+      font: 500 .875rem/1 Inter, sans-serif;
+      padding: .75rem 1.25rem;
+      cursor: pointer;
+      text-decoration: none;
+    }
+    .btn-secondary:hover { border-color: rgba(255,255,255,.25); background: rgba(255,255,255,.08); }
+    .btn-tertiary {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      min-height: 44px;
+      font-size: .875rem;
+      font-weight: 500;
+      color: rgba(255,255,255,.45);
+      text-decoration: none;
+    }
+    .btn-tertiary:hover { color: rgba(255,255,255,.7); text-decoration: underline; }
+  </style>
+</head>
+<body>
+  <main class="page">
+    <h1>EvGlab Demo-Funnel</h1>
+    <p>Standalone-HTML-Version des „3 Bilder kostenlos testen“-Flows. Öffnet das Modal mit allen drei Phasen.</p>
+    <button type="button" class="trigger" id="open-demo">3 Bilder kostenlos testen</button>
+    <button type="button" class="trigger reset" id="reset-demo">Demo-Zähler zurücksetzen</button>
+  </main>
+
+  <div class="backdrop" id="backdrop" role="dialog" aria-modal="true" aria-labelledby="demo-title">
+    <div class="panel" id="panel">
+      <button type="button" class="close-btn" id="close-btn" aria-label="Schließen">×</button>
+
+      <div class="content">
+        <!-- Phase 1: Auswahl -->
+        <section class="phase active" id="phase-selection" data-phase="selection">
+          <p class="eyebrow">EvGlab · Demo</p>
+          <h2 class="title" id="demo-title">Wähle dein Motiv</h2>
+          <p class="subline">Bis zu 3 kostenlose Demo-Bilder — wähle eines der vorgegebenen Motive.</p>
+          <p class="counter" id="counter-text">Noch 3 von 3 Demo-Bildern</p>
+          <div class="motif-grid" id="motif-grid"></div>
+        </section>
+
+        <!-- Phase 2: Generierung -->
+        <section class="phase" id="phase-generating" data-phase="generating">
+          <p class="eyebrow">Generierung läuft</p>
+          <h2 class="title">Dein Motiv entsteht</h2>
+          <p class="subline" id="status-text">Szene wird vorbereitet …</p>
+          <div class="generating-wrap">
+            <div class="progress-track">
+              <div class="progress-bar" id="progress-bar" role="progressbar" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0"></div>
+            </div>
+            <div class="progress-meta">
+              <span id="progress-pct">0 %</span>
+              <span>wenige Sekunden</span>
+            </div>
+            <p class="generating-hint">In der echten App dauert das rund 40 Sekunden — hier geht die Demo schneller.</p>
+          </div>
+        </section>
+
+        <!-- Phase 3: Ergebnis -->
+        <section class="phase" id="phase-result" data-phase="result">
+          <p class="eyebrow">Fertig</p>
+          <h2 class="title">Dein Motiv ist da</h2>
+          <p class="subline">So könnte dein nächstes Bild aussehen — mit deinem Markenprofil noch präziser.</p>
+          <div class="result-image">
+            <img id="result-img" src="" alt="" />
+          </div>
+          <p class="result-caption" id="result-caption"></p>
+          <div class="actions">
+            <a class="btn-primary" id="cta-abo" href="https://app.evglab.com/registrieren?mode=register">Jetzt Abo abschließen</a>
+            <button type="button" class="btn-secondary" id="cta-another" hidden>Noch 2 Demo-Bilder testen</button>
+            <a class="btn-tertiary" href="https://app.evglab.com/anmelden">Später — zur App</a>
+          </div>
+        </section>
+
+        <!-- Exhausted -->
+        <section class="phase" id="phase-exhausted" data-phase="exhausted">
+          <p class="eyebrow">Demo abgeschlossen</p>
+          <h2 class="title">Alle Demo-Bilder genutzt</h2>
+          <p class="subline">Du hast alle drei Demo-Motive gesehen. Mit einem Abo generierst du unbegrenzt eigene Motive — in deinem Markenlook.</p>
+          <div class="actions">
+            <a class="btn-primary" href="https://app.evglab.com/registrieren?mode=register">Abo ansehen</a>
+            <a class="btn-secondary" href="/#preise">Preise auf der Website</a>
+            <a class="btn-tertiary" href="https://app.evglab.com/anmelden">Später — zur App</a>
+          </div>
+        </section>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    const STORAGE_KEY = "evglab_demo_sessions";
+    const MAX_DEMOS = 3;
+    const GENERATION_MS = 6000;
+    const STATUS_MESSAGES = [
+      "Szene wird vorbereitet …",
+      "Licht und Schatten werden gesetzt …",
+      "Markenlook wird angewendet …",
+      "Fast fertig …",
+    ];
+
+    const MOTIFS = [
+      {
+        id: "biergarten",
+        tag: "Hyperrealistisch",
+        title: "Biergarten · Goldene Stunde",
+        description: "Warmes Abendlicht, Glas & Schaum",
+        previewImage: "/ki-beispiel-biergarten.webp",
+        previewAlt: "Stimmungsvorschau: Biergarten bei Abendlicht",
+        resultImage: "/ki-real-1.png",
+        resultAlt: "Biergarten-Motiv bei goldener Stunde mit Glas und Schaumkrone",
+      },
+      {
+        id: "produkt-studio",
+        tag: "Produktfoto",
+        title: "Produkt-Studio · Flasche & Glas",
+        description: "Sauberer Studio-Look",
+        previewImage: "/ki-beispiel-praxis-7.webp",
+        previewAlt: "Stimmungsvorschau: Produktmotiv im Freien",
+        resultImage: "/product-studio-preview.png",
+        resultAlt: "Produktfoto einer Bierflasche und einem Glas im Studio-Look",
+      },
+      {
+        id: "kampagne",
+        tag: "Kampagne",
+        title: "Kampagne · Social-Post",
+        description: "Motiv mit Textfläche für Instagram",
+        previewImage: "/ki-beispiel-hafen.webp",
+        previewAlt: "Stimmungsvorschau: Kampagnenmotiv am Hafen",
+        resultImage: "/kampagnenbild-mit-text-preview.png",
+        resultAlt: "Kampagnenmotiv mit Textfläche für Social Media",
+      },
+      {
+        id: "wirtshaus",
+        tag: "Lifestyle",
+        title: "Wirtshaus · Abendstimmung",
+        description: "Stimmungsvolles Kampagnenmotiv",
+        previewImage: "/ki-beispiel-strand.webp",
+        previewAlt: "Stimmungsvorschau: Abendstimmung im Außenbereich",
+        resultImage: "/ki-real-2.png",
+        resultAlt: "Wirtshaus-Motiv mit warmer Abendstimmung",
+      },
+    ];
+
+    const backdrop = document.getElementById("backdrop");
+    const closeBtn = document.getElementById("close-btn");
+    const motifGrid = document.getElementById("motif-grid");
+    const counterText = document.getElementById("counter-text");
+    const progressBar = document.getElementById("progress-bar");
+    const progressPct = document.getElementById("progress-pct");
+    const statusText = document.getElementById("status-text");
+    const resultImg = document.getElementById("result-img");
+    const resultCaption = document.getElementById("result-caption");
+    const ctaAnother = document.getElementById("cta-another");
+
+    let phase = "selection";
+    let selectedMotif = null;
+    let rafId = null;
+    let generationStart = null;
+
+    function readStorage() {
+      try {
+        const raw = localStorage.getItem(STORAGE_KEY);
+        if (!raw) return { sessions: [] };
+        const parsed = JSON.parse(raw);
+        return Array.isArray(parsed.sessions) ? { sessions: parsed.sessions.slice(0, MAX_DEMOS) } : { sessions: [] };
+      } catch {
+        return { sessions: [] };
+      }
+    }
+
+    function getRemaining() {
+      return Math.max(0, MAX_DEMOS - readStorage().sessions.length);
+    }
+
+    function recordSession(motifId) {
+      const current = readStorage();
+      if (current.sessions.length >= MAX_DEMOS) return;
+      localStorage.setItem(STORAGE_KEY, JSON.stringify({
+        sessions: [...current.sessions, { motifId, timestamp: Date.now() }],
+      }));
+    }
+
+    function setPhase(next) {
+      phase = next;
+      document.querySelectorAll(".phase").forEach((el) => {
+        el.classList.toggle("active", el.dataset.phase === next);
+      });
+      const closable = next !== "generating";
+      closeBtn.classList.toggle("hidden", !closable);
+      document.body.style.overflow = backdrop.classList.contains("open") ? "hidden" : "";
+    }
+
+    function renderMotifs() {
+      motifGrid.innerHTML = "";
+      MOTIFS.forEach((motif) => {
+        const btn = document.createElement("button");
+        btn.type = "button";
+        btn.className = "motif-card";
+        btn.innerHTML = `
+          <div class="motif-thumb">
+            <img src="${motif.previewImage}" alt="${motif.previewAlt}" />
+            <div class="overlay" aria-hidden="true"></div>
+            <span class="badge">Stimmung</span>
+          </div>
+          <div class="motif-body">
+            <span class="motif-tag">${motif.tag}</span>
+            <span class="motif-title">${motif.title}</span>
+            <span class="motif-desc">${motif.description}</span>
+          </div>
+        `;
+        btn.addEventListener("click", () => startGeneration(motif));
+        motifGrid.appendChild(btn);
+      });
+      counterText.textContent = `Noch ${getRemaining()} von 3 Demo-Bildern`;
+    }
+
+    function openModal() {
+      const remaining = getRemaining();
+      backdrop.classList.add("open");
+      document.body.style.overflow = "hidden";
+      selectedMotif = null;
+      if (remaining <= 0) {
+        setPhase("exhausted");
+      } else {
+        renderMotifs();
+        setPhase("selection");
+      }
+    }
+
+    function closeModal() {
+      if (phase === "generating") return;
+      backdrop.classList.remove("open");
+      document.body.style.overflow = "";
+      if (rafId) cancelAnimationFrame(rafId);
+    }
+
+    function startGeneration(motif) {
+      selectedMotif = motif;
+      setPhase("generating");
+      generationStart = performance.now();
+      progressBar.style.width = "0%";
+      progressBar.setAttribute("aria-valuenow", "0");
+      progressPct.textContent = "0 %";
+      statusText.textContent = STATUS_MESSAGES[0];
+
+      const tick = (now) => {
+        const elapsed = now - generationStart;
+        const pct = Math.min(100, (elapsed / GENERATION_MS) * 100);
+        const statusIdx = Math.min(
+          STATUS_MESSAGES.length - 1,
+          Math.floor((elapsed / GENERATION_MS) * STATUS_MESSAGES.length),
+        );
+
+        progressBar.style.width = pct + "%";
+        progressBar.setAttribute("aria-valuenow", String(Math.round(pct)));
+        progressPct.textContent = Math.round(pct) + " %";
+        statusText.textContent = STATUS_MESSAGES[statusIdx];
+
+        if (elapsed >= GENERATION_MS) {
+          recordSession(motif.id);
+          showResult();
+          return;
+        }
+        rafId = requestAnimationFrame(tick);
+      };
+      rafId = requestAnimationFrame(tick);
+    }
+
+    function showResult() {
+      if (!selectedMotif) return;
+      resultImg.src = selectedMotif.resultImage;
+      resultImg.alt = selectedMotif.resultAlt;
+      resultCaption.textContent = `${selectedMotif.title} · ${selectedMotif.tag}`;
+
+      const remaining = getRemaining();
+      if (remaining > 0) {
+        ctaAnother.hidden = false;
+        ctaAnother.textContent = `Noch ${remaining} Demo-Bild${remaining === 1 ? "" : "er"} testen`;
+      } else {
+        ctaAnother.hidden = true;
+      }
+      setPhase("result");
+    }
+
+    document.getElementById("open-demo").addEventListener("click", openModal);
+    document.getElementById("reset-demo").addEventListener("click", () => {
+      localStorage.removeItem(STORAGE_KEY);
+      alert("Demo-Zähler zurückgesetzt.");
+    });
+    closeBtn.addEventListener("click", closeModal);
+    backdrop.addEventListener("click", (e) => {
+      if (e.target === backdrop && phase !== "generating") closeModal();
+    });
+    document.addEventListener("keydown", (e) => {
+      if (e.key === "Escape" && backdrop.classList.contains("open") && phase !== "generating") closeModal();
+    });
+    ctaAnother.addEventListener("click", () => {
+      const remaining = getRemaining();
+      if (remaining <= 0) {
+        setPhase("exhausted");
+        return;
+      }
+      renderMotifs();
+      setPhase("selection");
+    });
+  </script>
+</body>
+</html>

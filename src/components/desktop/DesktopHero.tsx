@@ -4,7 +4,8 @@
 
 import Image from "next/image";
 
-import { APP_DISPLAY_HOST, navigateToAppDashboard } from "@/lib/appLoginUrl";
+import { APP_DISPLAY_HOST } from "@/lib/appLoginUrl";
+import { useFreeTrialDemo } from "@/context/FreeTrialDemoContext";
 
 import { scrollToSection } from "@/lib/scrollToSection";
 
@@ -51,6 +52,7 @@ const TRUST_STATS = [
 export function DesktopHero() {
 
   const heroReady = useDesktopHeroReady();
+  const { open: openFreeTrialDemo } = useFreeTrialDemo();
 
 
 
@@ -172,7 +174,7 @@ export function DesktopHero() {
 
                   type="button"
 
-                  onClick={() => navigateToAppDashboard()}
+                  onClick={() => openFreeTrialDemo()}
 
                   className="inline-flex items-center gap-3 rounded-xl bg-amber px-6 py-[17px] text-[15.5px] font-bold text-[#15110C] shadow-[inset_0_1px_0_rgba(255,255,255,0.18),0_12px_28px_-10px_rgba(199,105,30,0.4)] transition hover:brightness-105 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-[3px] focus-visible:outline-amber focus-visible:rounded"
 

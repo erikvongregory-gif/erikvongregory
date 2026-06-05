@@ -10,7 +10,7 @@ import {
   type KeyboardEvent,
 } from "react";
 import { trackEvent } from "@/lib/analytics";
-import { navigateToAppDashboard } from "@/lib/appLoginUrl";
+import { useFreeTrialDemo } from "@/context/FreeTrialDemoContext";
 import {
   BEISPIELE_IMAGES,
   BEISPIELE_MODE_OPTIONS,
@@ -245,6 +245,7 @@ function ThumbnailButton({
 }
 
 export function MobileBeispieleSection() {
+  const { open: openFreeTrialDemo } = useFreeTrialDemo();
   const sectionRef = useRef<HTMLElement>(null);
   const tabRefs = useRef<(HTMLButtonElement | null)[]>([]);
   const thumbRefs = useRef<(HTMLButtonElement | null)[]>([]);
@@ -321,7 +322,7 @@ export function MobileBeispieleSection() {
 
   const handleCta = () => {
     trackEvent("beispiele_cta_clicked", { mode, id: active.id });
-    navigateToAppDashboard();
+    openFreeTrialDemo();
   };
 
   if (!active) return null;

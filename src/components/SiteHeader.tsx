@@ -6,7 +6,8 @@ import { MobileSiteHeader } from "@/components/MobileSiteHeader";
 import { WaveMark } from "@/components/desktop/WaveMark";
 import { useSiteNavTheme } from "@/components/useSiteNavTheme";
 import { SITE_NAV_LINKS } from "@/content/site-nav";
-import { APP_LOGIN_URL, navigateToAppDashboard } from "@/lib/appLoginUrl";
+import { APP_LOGIN_URL } from "@/lib/appLoginUrl";
+import { useFreeTrialDemo } from "@/context/FreeTrialDemoContext";
 import { scrollToSection } from "@/lib/scrollToSection";
 import { cn } from "@/lib/utils";
 
@@ -27,6 +28,7 @@ export function SiteHeader() {
   const pathname = usePathname();
   const router = useRouter();
   const isDark = useSiteNavTheme();
+  const { open: openFreeTrialDemo } = useFreeTrialDemo();
 
   if (pathname?.startsWith("/dashboard")) {
     return null;
@@ -145,7 +147,7 @@ export function SiteHeader() {
             </a>
             <button
               type="button"
-              onClick={() => navigateToAppDashboard()}
+              onClick={() => openFreeTrialDemo()}
               className="inline-flex items-center rounded-[10px] bg-amber px-4 py-2.5 font-sans-tight text-[13.5px] font-semibold text-[#15110C] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-[3px] focus-visible:outline-amber"
             >
               3 Bilder kostenlos
