@@ -36,7 +36,7 @@ function tierToDesktop(tier: Tier, track: "manufaktur" | "werkstatt"): PricingTi
 
   const deliverables = featuresToDeliverables(tier.features, extraFeatures);
 
-  if (tier.anchor) {
+  if (tier.anchor && track === "manufaktur") {
     deliverables.unshift(["statt", `${tier.anchor} €`]);
   }
 
@@ -49,6 +49,7 @@ function tierToDesktop(tier: Tier, track: "manufaktur" | "werkstatt"): PricingTi
     cta: tier.cta,
     highlight: tier.featured,
     checkoutPlanKey: tier.checkoutPlanKey,
+    anchor: track === "werkstatt" ? tier.anchor : undefined,
     contactPaket: track === "manufaktur" ? tierContactPaket(tier.tier) : undefined,
   };
 }

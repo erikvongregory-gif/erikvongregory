@@ -4,6 +4,7 @@ import { z } from "zod";
 import { createClient } from "@/lib/supabase/server";
 import { isSupabaseConfigured } from "@/lib/supabase/env";
 import { activatePlanForUser } from "@/lib/billing/store";
+import { mapStripePriceIdToPlan } from "@/lib/billing/stripePrices";
 import { type SubscriptionPlanKey } from "@/lib/billing/tokenState";
 import { enforceRateLimit, enforceSameOrigin } from "@/lib/security/requestGuards";
 
@@ -11,16 +12,6 @@ function getStripeClient() {
   const key = process.env.STRIPE_SECRET_KEY;
   if (!key) throw new Error("STRIPE_SECRET_KEY fehlt.");
   return new Stripe(key);
-}
-
-function mapPriceIdToPlan(priceId?: string | null): SubscriptionPlanKey | null {
-  const map: Record<SubscriptionPlanKey, string | undefined> = {
-    start: process.env.STRIPE_PRICE_START_MONTHLY,
-    growth: process.env.STRIPE_PRICE_GROWTH_MONTHLY,
-    pro: process.env.STRIPE_PRICE_PRO_MONTHLY,
-  };
-  const entry = Object.entries(map).find(([, id]) => id && id === priceId);
-  return (entry?.[0] as SubscriptionPlanKey | undefined) ?? null;
 }
 
 export async function POST(req: Request) {
@@ -72,7 +63,7 @@ export async function POST(req: Request) {
         ? await stripe.subscriptions.retrieve(session.subscription)
         : session.subscription;
     const planFromMeta = (session.metadata?.plan as SubscriptionPlanKey | undefined) ?? null;
-    const planFromPrice = mapPriceIdToPlan(subscription?.items.data[0]?.price?.id ?? null);
+    const planFromPrice = mapStripePriceIdToPlan(subscription?.items.data[0]?.price?.id ?? null);
     const plan = planFromMeta ?? planFromPrice;
     if (!plan || !customerId || !subscription?.id) {
       return NextResponse.json({ error: "Session-Metadaten unvollstaendig." }, { status: 400 });

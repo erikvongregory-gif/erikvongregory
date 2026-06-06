@@ -4,6 +4,8 @@ export type PricingTrack = "manufaktur" | "werkstatt";
 
 export type TierName = "Start" | "Wachstum" | "Premium";
 
+export const WERKSTATT_PROMO_BADGE = "Im Angebot";
+
 export type Tier = {
   tier: TierName;
   tagline: string;
@@ -70,6 +72,7 @@ export const MOBILE_PRICING_TRACKS: { manufaktur: Tier[]; werkstatt: Tier[] } = 
       tier: "Start",
       tagline: "Für kleine Teams, die regelmäßig posten.",
       price: "79",
+      anchor: "100",
       cadence: "pro Monat",
       features: [
         "1.200 Tokens / Monat",
@@ -85,6 +88,7 @@ export const MOBILE_PRICING_TRACKS: { manufaktur: Tier[]; werkstatt: Tier[] } = 
       tier: "Wachstum",
       tagline: "Für aktive Brauereien mit Saisonkampagnen.",
       price: "149",
+      anchor: "200",
       cadence: "pro Monat",
       features: [
         "3.000 Tokens / Monat",
@@ -101,6 +105,7 @@ export const MOBILE_PRICING_TRACKS: { manufaktur: Tier[]; werkstatt: Tier[] } = 
       tier: "Premium",
       tagline: "Für Marken mit hohem Content-Bedarf.",
       price: "299",
+      anchor: "400",
       cadence: "pro Monat",
       features: [
         "7.500 Tokens / Monat",
@@ -131,3 +136,27 @@ export function tierDisplayName(tier: TierName) {
 export function tierContactPaket(tier: TierName) {
   return tierDisplayName(tier);
 }
+
+function parseEuroAmount(value: string) {
+  return Number(value.replace(/\./g, "").replace(/\s/g, ""));
+}
+
+/** Ersparnis in Prozent (jährlicher Aktionspreis vs. Monatslistenpreis), gerundet. */
+export function getWerkstattTierSavingsPercent(tier: Pick<Tier, "price" | "anchor">) {
+  if (!tier.anchor) return 0;
+  const promo = parseEuroAmount(tier.price);
+  const list = parseEuroAmount(tier.anchor);
+  if (!promo || !list || list <= promo) return 0;
+  return Math.round((1 - promo / list) * 100);
+}
+
+export function werkstattSavingsLabel(tier: Pick<Tier, "price" | "anchor">) {
+  const percent = getWerkstattTierSavingsPercent(tier);
+  return percent > 0 ? `${percent} % Ersparnis` : "";
+}
+
+/** Höchste Ersparnis über alle Werkstatt-Pläne (für Toggle-Badge & Demo-Funnel). */
+export const WERKSTATT_MAX_SAVINGS_PERCENT = Math.max(
+  ...MOBILE_PRICING_TRACKS.werkstatt.map((tier) => getWerkstattTierSavingsPercent(tier)),
+);
+export const WERKSTATT_MAX_SAVINGS_LABEL = `bis zu ${WERKSTATT_MAX_SAVINGS_PERCENT} % Ersparnis`;

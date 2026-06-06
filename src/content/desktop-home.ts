@@ -44,6 +44,8 @@ export type PricingTier = {
   cta: string;
   highlight?: boolean;
   checkoutPlanKey?: "start" | "growth" | "pro";
+  /** Durchgestrichener Regulärpreis (Werkstatt-Aktion) */
+  anchor?: string;
   /** Kontakt-Funnel-Paketname (Manufaktur) */
   contactPaket?: string;
 };

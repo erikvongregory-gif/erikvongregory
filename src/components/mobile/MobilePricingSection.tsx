@@ -10,9 +10,17 @@ import {
   MOBILE_PRICING_TRACKS,
   tierContactPaket,
   tierDisplayName,
+  WERKSTATT_PROMO_BADGE,
   type PricingTrack,
   type Tier,
 } from "@/lib/mobilePricingTiers";
+import { WerkstattYearlyBillingToggle } from "@/components/pricing/WerkstattYearlyBillingToggle";
+import { usePricingDeepLink } from "@/hooks/usePricingDeepLink";
+import {
+  getWerkstattTierDisplay,
+  WERKSTATT_DEFAULT_BILLING_INTERVAL,
+  type WerkstattBillingInterval,
+} from "@/lib/werkstattBilling";
 import { cn } from "@/lib/utils";
 
 function FeatureCheckIcon() {
@@ -61,15 +69,17 @@ type TierCardProps = {
   tier: Tier;
   index: number;
   track: PricingTrack;
+  billingInterval: WerkstattBillingInterval;
   animate: boolean;
   checkoutBusyPlan: SubscriptionPlanKey | null;
-  onCheckoutPlan: (plan: SubscriptionPlanKey) => void;
+  onCheckoutPlan: (plan: SubscriptionPlanKey, interval: WerkstattBillingInterval) => void;
 };
 
 const TierCard = memo(function TierCard({
   tier,
   index,
   track,
+  billingInterval,
   animate,
   checkoutBusyPlan,
   onCheckoutPlan,
@@ -78,6 +88,7 @@ const TierCard = memo(function TierCard({
   const featured = Boolean(tier.featured);
   const nameId = `tier-${track}-${index}-name`;
   const busy = tier.checkoutPlanKey && checkoutBusyPlan === tier.checkoutPlanKey;
+  const display = track === "werkstatt" ? getWerkstattTierDisplay(tier, billingInterval) : null;
 
   const handleCta = () => {
     trackEvent("pricing_cta_clicked", {
@@ -91,7 +102,7 @@ const TierCard = memo(function TierCard({
         plan: tier.checkoutPlanKey,
         source: "mobile_pricing_stack",
       });
-      onCheckoutPlan(tier.checkoutPlanKey);
+      onCheckoutPlan(tier.checkoutPlanKey, billingInterval);
       return;
     }
     scrollToContactPaket(tierContactPaket(tier.tier));
@@ -130,17 +141,25 @@ const TierCard = memo(function TierCard({
       <p className="m-0 mb-4 pl-7 font-sans-tight text-[13px] leading-[1.4] text-ink2">{tier.tagline}</p>
 
       <div className="mb-4 border-b border-dashed border-ink/[0.12] pb-4 pl-7">
-        <div className="flex items-baseline gap-2.5">
+        {display?.showPromo ? (
+          <div className="mb-2 flex flex-wrap items-center gap-2">
+            <span className="rounded-sm bg-amber/12 px-2 py-0.5 font-mono-hero text-[9.5px] font-semibold tracking-[1px] text-amber uppercase">
+              {WERKSTATT_PROMO_BADGE}
+            </span>
+            <span className="font-sans-tight text-[11px] text-ink3">{display.savingsLabel} inklusive</span>
+          </div>
+        ) : null}
+        <div className="flex flex-wrap items-baseline gap-x-2.5 gap-y-1">
           <p className="m-0 font-serif-hero text-[38px] leading-none font-medium tracking-[-1.2px] text-ink">
-            {tier.price}
+            {display?.price ?? tier.price}
             {"\u00A0"}€
           </p>
-          {tier.anchor ? (
+          {display?.compareAtPrice ? (
             <p
-              className="m-0 font-sans-tight text-[13px] text-ink3 line-through decoration-ink3/40"
-              aria-label={`vorher ${tier.anchor} Euro`}
+              className="m-0 font-sans-tight text-[13px] text-ink3 line-through decoration-ink3/50"
+              aria-label={`Regulärpreis ${display.compareAtPrice} Euro`}
             >
-              statt {tier.anchor}
+              statt {display.compareAtPrice}
               {"\u00A0"}€
             </p>
           ) : null}
@@ -148,10 +167,10 @@ const TierCard = memo(function TierCard({
         <p
           className={cn(
             "mt-1.5 font-mono-hero text-[10.5px] font-medium tracking-[1.2px] uppercase",
-            tier.cadence === "pro Monat" ? "text-[#A85614]" : "text-ink",
+            (display?.cadenceLabel ?? tier.cadence) === "pro Monat" ? "text-[#A85614]" : "text-ink",
           )}
         >
-          {tier.cadence}
+          {display?.cadenceLabel ?? tier.cadence}
         </p>
       </div>
 
@@ -185,13 +204,14 @@ const TierCard = memo(function TierCard({
 
 type MobilePricingSectionProps = {
   checkoutBusyPlan: SubscriptionPlanKey | null;
-  onCheckoutPlan: (plan: SubscriptionPlanKey) => void;
+  onCheckoutPlan: (plan: SubscriptionPlanKey, interval?: WerkstattBillingInterval) => void;
 };
 
 export function MobilePricingSection({ checkoutBusyPlan, onCheckoutPlan }: MobilePricingSectionProps) {
   const sectionRef = useRef<HTMLElement>(null);
   const tabRefs = useRef<(HTMLButtonElement | null)[]>([]);
   const [track, setTrack] = useState<PricingTrack>("manufaktur");
+  const [billingInterval, setBillingInterval] = useState<WerkstattBillingInterval>(WERKSTATT_DEFAULT_BILLING_INTERVAL);
   const [reducedMotion, setReducedMotion] = useState(false);
   const [sectionViewed, setSectionViewed] = useState(false);
   const tiers = MOBILE_PRICING_TRACKS[track];
@@ -230,6 +250,15 @@ export function MobilePricingSection({ checkoutBusyPlan, onCheckoutPlan }: Mobil
     },
     [],
   );
+
+  const applyDeepLink = useCallback(
+    (deepTrack: "werkstatt" | "manufaktur") => {
+      setTrackWithAnalytics(deepTrack);
+    },
+    [setTrackWithAnalytics],
+  );
+
+  usePricingDeepLink(applyDeepLink);
 
   const handleTabKeyDown = (index: number, e: KeyboardEvent<HTMLButtonElement>) => {
     if (e.key !== "ArrowLeft" && e.key !== "ArrowRight") return;
@@ -309,6 +338,18 @@ export function MobilePricingSection({ checkoutBusyPlan, onCheckoutPlan }: Mobil
             );
           })}
         </div>
+        {track === "werkstatt" ? (
+          <div className="mt-4">
+            <WerkstattYearlyBillingToggle
+              active={billingInterval === "year"}
+              onChange={(active) => {
+                const next = active ? "year" : "month";
+                setBillingInterval(next);
+                trackEvent("pricing_billing_interval_toggled", { interval: next, track });
+              }}
+            />
+          </div>
+        ) : null}
       </div>
 
       <div id="preise-tiers" role="tabpanel" aria-labelledby={`preise-tab-${track}`} className="flex flex-col gap-3 px-4">
@@ -318,6 +359,7 @@ export function MobilePricingSection({ checkoutBusyPlan, onCheckoutPlan }: Mobil
             tier={tier}
             index={index}
             track={track}
+            billingInterval={billingInterval}
             animate={!reducedMotion}
             checkoutBusyPlan={checkoutBusyPlan}
             onCheckoutPlan={onCheckoutPlan}

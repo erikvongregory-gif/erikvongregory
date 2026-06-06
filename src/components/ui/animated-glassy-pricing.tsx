@@ -294,6 +294,10 @@ export interface PricingCardProps {
   currencyPrefix?: string;
   /** Kleiner Text neben dem Preis, z. B. "/mo" oder "einmalig" */
   priceSubtext?: string;
+  /** Durchgestrichener Regulärpreis (z. B. Werkstatt-Aktion) */
+  compareAtPrice?: string;
+  /** Badge über dem Preis (z. B. „Im Angebot“) */
+  promoBadge?: string;
   /** Text auf dem Popular-Badge */
   popularLabel?: string;
   onCtaClick?: () => void;
@@ -316,6 +320,8 @@ export const PricingCard = ({
   buttonVariant = "primary",
   currencyPrefix = "$",
   priceSubtext = "/mo",
+  compareAtPrice,
+  promoBadge,
   popularLabel = "Most Popular",
   onCtaClick,
   buttonLoading = false,
@@ -414,6 +420,20 @@ export const PricingCard = ({
           compact ? "my-4" : "my-6",
         )}
       >
+        {promoBadge || compareAtPrice ? (
+          <div className="mb-1.5 flex flex-wrap items-center gap-2">
+            {promoBadge ? (
+              <span className="rounded-md bg-[rgba(224,122,64,0.14)] px-2 py-0.5 text-[10px] font-semibold uppercase tracking-[0.08em] text-[#c65a20]">
+                {promoBadge}
+              </span>
+            ) : null}
+            {compareAtPrice ? (
+              <span className="font-sans text-[12px] text-zinc-500 line-through decoration-zinc-400/70">
+                statt {compareAtPrice}
+              </span>
+            ) : null}
+          </div>
+        ) : null}
         <span
           className={cn(
             "min-w-0 max-w-full break-words font-display font-normal text-zinc-900",

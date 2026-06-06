@@ -4,28 +4,19 @@ import { z } from "zod";
 import { createClient } from "@/lib/supabase/server";
 import { isSupabaseConfigured } from "@/lib/supabase/env";
 import { ensureBillingRow, getBillingRow, setStripeCustomerId } from "@/lib/billing/store";
+import { getStripePriceIdForPlan } from "@/lib/billing/stripePrices";
 import { type SubscriptionPlanKey } from "@/lib/billing/tokenState";
 import { enforceRateLimitPersistent, enforceSameOrigin } from "@/lib/security/requestGuards";
 
 const checkoutSchema = z.object({
   plan: z.enum(["start", "growth", "pro"]),
+  interval: z.enum(["month", "year"]).default("year"),
 });
 
 function getStripeClient() {
   const key = process.env.STRIPE_SECRET_KEY;
   if (!key) throw new Error("STRIPE_SECRET_KEY fehlt.");
   return new Stripe(key);
-}
-
-function getPriceIdForPlan(plan: SubscriptionPlanKey) {
-  const map: Record<SubscriptionPlanKey, string | undefined> = {
-    start: process.env.STRIPE_PRICE_START_MONTHLY,
-    growth: process.env.STRIPE_PRICE_GROWTH_MONTHLY,
-    pro: process.env.STRIPE_PRICE_PRO_MONTHLY,
-  };
-  const priceId = map[plan];
-  if (!priceId) throw new Error(`Stripe Price-ID für Plan "${plan}" fehlt.`);
-  return priceId;
 }
 
 export async function POST(req: Request) {
@@ -44,6 +35,7 @@ export async function POST(req: Request) {
       return NextResponse.json({ error: "Ungültige Anfrage." }, { status: 400 });
     }
     const plan: SubscriptionPlanKey = parsed.data.plan;
+    const interval = parsed.data.interval;
 
     const stripe = getStripeClient();
     let userId: string | null = null;
@@ -72,7 +64,7 @@ export async function POST(req: Request) {
       }
     }
 
-    const priceId = getPriceIdForPlan(plan);
+    const priceId = getStripePriceIdForPlan(plan, interval);
     const { origin } = new URL(req.url);
     const session = await stripe.checkout.sessions.create({
       mode: "subscription",
@@ -84,11 +76,13 @@ export async function POST(req: Request) {
       metadata: {
         ...(userId ? { user_id: userId } : {}),
         plan,
+        billing_interval: interval,
       },
       subscription_data: {
         metadata: {
           ...(userId ? { user_id: userId } : {}),
           plan,
+          billing_interval: interval,
         },
       },
     });

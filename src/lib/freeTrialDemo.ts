@@ -1,7 +1,13 @@
+import { WERKSTATT_MAX_SAVINGS_PERCENT } from "@/lib/mobilePricingTiers";
+
 export const FREE_TRIAL_DEMO_STORAGE_KEY = "evglab_demo_sessions";
 export const FREE_TRIAL_DEMO_MAX = 3;
 /** Demo-Dauer — schnell wie im Handoff-Prototyp (echte App: ~40s) */
 export const FREE_TRIAL_GENERATION_MS = 6_000;
+
+/** Hinweis am Abo-CTA: Listenpreise sind bereits rabattiert, kein Extra-Rabatt beim Klick. */
+export const DEMO_FUNNEL_SAVINGS_BADGE = `INKL. −${WERKSTATT_MAX_SAVINGS_PERCENT} %`;
+export const DEMO_FUNNEL_SAVINGS_HINT = `Die angezeigten Preise enthalten bereits bis zu ${WERKSTATT_MAX_SAVINGS_PERCENT} % Ersparnis — kein zusätzlicher Rabatt nötig.`;
 
 export const DEMO_FUNNEL_COLORS = {
   amber: "#D4A24C",

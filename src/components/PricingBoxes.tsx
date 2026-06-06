@@ -20,8 +20,16 @@ import {
 
 import { trackEvent } from "@/lib/analytics";
 import { scrollToContactPaket } from "@/lib/contactPaket";
+import { usePricingDeepLink } from "@/hooks/usePricingDeepLink";
 import { cn } from "@/lib/utils";
 import { MobilePricingSection } from "@/components/mobile/MobilePricingSection";
+import { WerkstattYearlyBillingToggle } from "@/components/pricing/WerkstattYearlyBillingToggle";
+import { MOBILE_PRICING_TRACKS, WERKSTATT_PROMO_BADGE } from "@/lib/mobilePricingTiers";
+import {
+  getWerkstattTierDisplay,
+  WERKSTATT_DEFAULT_BILLING_INTERVAL,
+  type WerkstattBillingInterval,
+} from "@/lib/werkstattBilling";
 
 import {
   CONTAINED_SHADER_BG,
@@ -61,11 +69,11 @@ type AddonRow = {
 };
 type OfferPath = "service" | "dashboard";
 
-async function startPlanCheckout(plan: SubscriptionPlanKey) {
+async function startPlanCheckout(plan: SubscriptionPlanKey, interval: WerkstattBillingInterval = WERKSTATT_DEFAULT_BILLING_INTERVAL) {
   const response = await fetch("/api/billing/checkout", {
     method: "POST",
     headers: { "content-type": "application/json" },
-    body: JSON.stringify({ plan }),
+    body: JSON.stringify({ plan, interval }),
     credentials: "include",
   });
   const payload = (await response.json().catch(() => null)) as { url?: string; error?: string } | null;
@@ -148,7 +156,6 @@ const DASHBOARD_SUBSCRIPTION_PACKAGES: PricingPackageDef[] = [
     startIn: "Sofort nach Checkout",
     description: "Für kleine Teams, die regelmäßig Content planen und posten.",
     price: "79 €",
-    priceSubtext: "pro Monat",
     cta: "Plan wählen",
     checkoutPlanKey: "start",
     features: [
@@ -167,7 +174,6 @@ const DASHBOARD_SUBSCRIPTION_PACKAGES: PricingPackageDef[] = [
     startIn: "Sofort nach Checkout",
     description: "Für aktive Brauereien mit regelmäßigen Kampagnen und Saisonaktionen.",
     price: "149 €",
-    priceSubtext: "pro Monat",
     cta: "Plan wählen",
     checkoutPlanKey: "growth",
     features: [
@@ -186,7 +192,6 @@ const DASHBOARD_SUBSCRIPTION_PACKAGES: PricingPackageDef[] = [
     startIn: "Sofort nach Checkout",
     description: "Für Marken mit hohem Content-Bedarf und mehreren Kanälen.",
     price: "299 €",
-    priceSubtext: "pro Monat",
     cta: "Plan wählen",
     checkoutPlanKey: "pro",
     highlight: true,
@@ -238,7 +243,9 @@ function toPricingCardProps(
   pkg: PricingPackageDef,
   options?: {
     checkoutBusyPlan?: SubscriptionPlanKey | null;
-    onCheckoutPlan?: (plan: SubscriptionPlanKey) => void;
+    onCheckoutPlan?: (plan: SubscriptionPlanKey, interval?: WerkstattBillingInterval) => void;
+    billingInterval?: WerkstattBillingInterval;
+    werkstattTierIndex?: number;
   },
 ): PricingCardProps {
   const isStarter = pkg.name === "Starter Paket";
@@ -246,15 +253,26 @@ function toPricingCardProps(
   const isDashboardPlan = Boolean(pkg.checkoutPlanKey);
   const isDashboardPro = pkg.checkoutPlanKey === "pro";
   const highlighted = !!pkg.highlight;
-  const basePriceSubtext = pkg.priceSubtext ?? (pkg.oldPrice ? "einmalig" : "pro Monat");
+  const werkstattTier =
+    options?.werkstattTierIndex !== undefined
+      ? MOBILE_PRICING_TRACKS.werkstatt[options.werkstattTierIndex]
+      : undefined;
+  const werkstattDisplay =
+    werkstattTier && options?.billingInterval
+      ? getWerkstattTierDisplay(werkstattTier, options.billingInterval)
+      : null;
+  const basePriceSubtext =
+    werkstattDisplay?.priceSubtext ?? pkg.priceSubtext ?? (pkg.oldPrice ? "einmalig" : "pro Monat");
   const vatSuffix = LEGAL.ustId.includes("§ 19 UStG")
     ? "gemäß § 19 UStG ohne Umsatzsteuer"
     : "+19% MwSt.";
   return {
     planName: pkg.name,
     planIcon: pkg.planIcon,
-    description: pkg.oldPrice ? `${pkg.description} (statt ${pkg.oldPrice})` : pkg.description,
-    price: pkg.price,
+    description: pkg.description,
+    price: werkstattDisplay ? `${werkstattDisplay.price} €` : pkg.price,
+    compareAtPrice: werkstattDisplay?.compareAtPrice ? `${werkstattDisplay.compareAtPrice} €` : pkg.oldPrice,
+    promoBadge: werkstattDisplay?.showPromo ? WERKSTATT_PROMO_BADGE : pkg.oldPrice ? "Im Angebot" : undefined,
     currencyPrefix: "",
     priceSubtext: `${basePriceSubtext} · ${vatSuffix}`,
     features: pkg.delivery ? [...pkg.features, `Lieferzeit: ${pkg.delivery}`] : [...pkg.features],
@@ -281,7 +299,7 @@ function toPricingCardProps(
           plan: pkg.checkoutPlanKey,
           source: "pricing_dashboard_abo",
         });
-        options?.onCheckoutPlan?.(pkg.checkoutPlanKey);
+        options?.onCheckoutPlan?.(pkg.checkoutPlanKey, options.billingInterval ?? WERKSTATT_DEFAULT_BILLING_INTERVAL);
         return;
       }
       scrollToContactPaket(pkg.name);
@@ -453,6 +471,7 @@ export function PricingBoxes() {
   const [selectedPath, setSelectedPath] = useState<OfferPath | null>(null);
   const [isDesktop, setIsDesktop] = useState<boolean | null>(null);
   const [checkoutBusyPlan, setCheckoutBusyPlan] = useState<SubscriptionPlanKey | null>(null);
+  const [billingInterval, setBillingInterval] = useState<WerkstattBillingInterval>(WERKSTATT_DEFAULT_BILLING_INTERVAL);
   const sharedGlassInfoBoxClass =
     "evg-clean-hover rounded-xl border border-black/12 bg-gradient-to-br from-black/5 to-black/0 text-left shadow-[0_10px_22px_-18px_rgba(24,24,27,0.28)] backdrop-blur-[14px] ring-1 ring-black/[0.04] transition-[border-color,box-shadow,ring-color] duration-200 hover:border-[#c65a20]/55 hover:ring-[#c65a20]/25 hover:shadow-[0_16px_34px_-20px_rgba(198,90,32,0.24)]";
 
@@ -498,9 +517,15 @@ export function PricingBoxes() {
     };
   }, [selectedPath]);
 
-  const handleCheckoutPlan = useCallback((plan: SubscriptionPlanKey) => {
+  const applyPricingDeepLink = useCallback((track: "werkstatt" | "manufaktur") => {
+    setSelectedPath(track === "werkstatt" ? "dashboard" : "service");
+  }, []);
+
+  usePricingDeepLink(applyPricingDeepLink);
+
+  const handleCheckoutPlan = useCallback((plan: SubscriptionPlanKey, interval: WerkstattBillingInterval = billingInterval) => {
     setCheckoutBusyPlan(plan);
-    void startPlanCheckout(plan).catch(() => {
+    void startPlanCheckout(plan, interval).catch(() => {
       setCheckoutBusyPlan(null);
       trackEvent("pricing_checkout_error", {
         plan,
@@ -508,7 +533,7 @@ export function PricingBoxes() {
       });
       window.alert("Checkout konnte gerade nicht gestartet werden. Bitte gleich erneut versuchen.");
     });
-  }, []);
+  }, [billingInterval]);
 
   return (
     <section ref={sectionRef} className={`max-md:mt-0 md:mt-10 ${inView ? "pricing-in-view" : ""}`}>
@@ -723,6 +748,18 @@ export function PricingBoxes() {
                 </div>
               </div>
 
+              <div className="mx-auto mb-6 max-w-2xl">
+                <WerkstattYearlyBillingToggle
+                  variant="dark"
+                  active={billingInterval === "year"}
+                  onChange={(active) => {
+                    const next = active ? "year" : "month";
+                    setBillingInterval(next);
+                    trackEvent("pricing_billing_interval_toggled", { interval: next, track: "werkstatt" });
+                  }}
+                />
+              </div>
+
               {isDesktop === null || isDesktop === false ? (
                 <div className="md:hidden">
                   <MobilePricingSnapCarousel
@@ -736,6 +773,8 @@ export function PricingBoxes() {
                           {...toPricingCardProps(pkg, {
                             checkoutBusyPlan,
                             onCheckoutPlan: handleCheckoutPlan,
+                            billingInterval,
+                            werkstattTierIndex: index,
                           })}
                           className={`pricing-card-slide-sub-${index} relative z-[2] w-full max-w-sm`}
                         />
@@ -755,6 +794,8 @@ export function PricingBoxes() {
                         {...toPricingCardProps(pkg, {
                           checkoutBusyPlan,
                           onCheckoutPlan: handleCheckoutPlan,
+                          billingInterval,
+                          werkstattTierIndex: pkgIndex,
                         })}
                         className={`pricing-card-slide-sub-${index} relative z-[2] h-full md:h-[42rem] md:w-[21rem] md:scale-100`}
                       />

@@ -3,6 +3,7 @@ import Stripe from "stripe";
 import { createClient } from "@/lib/supabase/server";
 import { isSupabaseConfigured } from "@/lib/supabase/env";
 import { activatePlanForUser, ensureBillingRow, getBillingRow, setStripeCustomerId } from "@/lib/billing/store";
+import { mapStripePriceIdToPlan } from "@/lib/billing/stripePrices";
 import { type SubscriptionPlanKey } from "@/lib/billing/tokenState";
 import { enforceRateLimit, enforceSameOrigin } from "@/lib/security/requestGuards";
 
@@ -10,16 +11,6 @@ function getStripeClient() {
   const key = process.env.STRIPE_SECRET_KEY;
   if (!key) throw new Error("STRIPE_SECRET_KEY fehlt.");
   return new Stripe(key);
-}
-
-function mapPriceIdToPlan(priceId?: string | null): SubscriptionPlanKey | null {
-  const map: Record<SubscriptionPlanKey, string | undefined> = {
-    start: process.env.STRIPE_PRICE_START_MONTHLY,
-    growth: process.env.STRIPE_PRICE_GROWTH_MONTHLY,
-    pro: process.env.STRIPE_PRICE_PRO_MONTHLY,
-  };
-  const entry = Object.entries(map).find(([, id]) => id && id === priceId);
-  return (entry?.[0] as SubscriptionPlanKey | undefined) ?? null;
 }
 
 function toIsoFromUnix(seconds?: number | null) {
@@ -98,7 +89,7 @@ export async function POST(req: Request) {
     }
 
     const planFromMeta = (preferred.metadata?.plan as SubscriptionPlanKey | undefined) ?? null;
-    const planFromPrice = mapPriceIdToPlan(preferred.items.data[0]?.price?.id ?? null);
+    const planFromPrice = mapStripePriceIdToPlan(preferred.items.data[0]?.price?.id ?? null);
     const plan = planFromMeta ?? planFromPrice;
     if (!plan) {
       return NextResponse.json({ ok: true, synced: false, reason: "Price-ID konnte keinem Plan zugeordnet werden." });

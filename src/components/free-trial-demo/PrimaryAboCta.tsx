@@ -4,10 +4,12 @@ import { useState } from "react";
 import styles from "@/components/free-trial-demo/free-trial-demo.module.css";
 import { useFreeTrialDemo } from "@/context/FreeTrialDemoContext";
 import { APP_REGISTER_URL } from "@/lib/appLoginUrl";
-import { DEMO_FUNNEL_COLORS } from "@/lib/freeTrialDemo";
+import { DEMO_FUNNEL_COLORS, DEMO_FUNNEL_SAVINGS_BADGE, DEMO_FUNNEL_SAVINGS_HINT } from "@/lib/freeTrialDemo";
+import { navigateToPricingWerkstatt } from "@/lib/pricingDeepLink";
 
 type PrimaryAboCtaProps = {
   label?: string;
+  destination?: "register" | "pricing-werkstatt";
 };
 
 function leaveForRegister(close: () => void) {
@@ -18,9 +20,20 @@ function leaveForRegister(close: () => void) {
   });
 }
 
-export function PrimaryAboCta({ label = "Jetzt Abo abschließen" }: PrimaryAboCtaProps) {
+export function PrimaryAboCta({
+  label = "Jetzt Abo abschließen",
+  destination = "register",
+}: PrimaryAboCtaProps) {
   const { close } = useFreeTrialDemo();
   const [hovered, setHovered] = useState(false);
+
+  const handleClick = () => {
+    if (destination === "pricing-werkstatt") {
+      navigateToPricingWerkstatt(close);
+      return;
+    }
+    leaveForRegister(close);
+  };
 
   return (
     <button
@@ -28,7 +41,7 @@ export function PrimaryAboCta({ label = "Jetzt Abo abschließen" }: PrimaryAboCt
       className={styles.primaryCta}
       onMouseEnter={() => setHovered(true)}
       onMouseLeave={() => setHovered(false)}
-      onClick={() => leaveForRegister(close)}
+      onClick={handleClick}
       style={{
         background: DEMO_FUNNEL_COLORS.orange,
         border: "none",
@@ -54,6 +67,7 @@ export function PrimaryAboCta({ label = "Jetzt Abo abschließen" }: PrimaryAboCt
         →
       </span>
       <span
+        title={DEMO_FUNNEL_SAVINGS_HINT}
         style={{
           display: "inline-flex",
           alignItems: "center",
@@ -64,13 +78,13 @@ export function PrimaryAboCta({ label = "Jetzt Abo abschließen" }: PrimaryAboCt
           color: DEMO_FUNNEL_COLORS.amber,
           fontSize: 10,
           fontWeight: 700,
-          letterSpacing: "0.12em",
+          letterSpacing: "0.1em",
           textTransform: "uppercase",
           lineHeight: 1,
           boxShadow: "inset 0 1px 0 rgba(255,255,255,0.06)",
         }}
       >
-        30&nbsp;% OFF
+        {DEMO_FUNNEL_SAVINGS_BADGE}
       </span>
     </button>
   );

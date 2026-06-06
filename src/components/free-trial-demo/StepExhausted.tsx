@@ -55,28 +55,7 @@ export function StepExhausted({ onClose }: StepExhaustedProps) {
       </div>
 
       <div style={{ display: "flex", flexDirection: "column", gap: 10, marginTop: 24 }}>
-        <PrimaryAboCta label="Abo ansehen" />
-        <a
-          href="/#preise"
-          onClick={onClose}
-          style={{
-            background: "rgba(244,240,232,0.05)",
-            border: `1px solid ${DEMO_FUNNEL_COLORS.border}`,
-            color: DEMO_FUNNEL_COLORS.text,
-            padding: "13px 24px",
-            borderRadius: 11,
-            fontSize: 14,
-            fontWeight: 500,
-            textAlign: "center",
-            textDecoration: "none",
-            minHeight: 44,
-            display: "inline-flex",
-            alignItems: "center",
-            justifyContent: "center",
-          }}
-        >
-          Preise auf der Website
-        </a>
+        <PrimaryAboCta label="Abo ansehen" destination="pricing-werkstatt" />
         <a
           href={APP_LOGIN_URL}
           style={{
