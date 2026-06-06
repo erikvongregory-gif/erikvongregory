@@ -50,6 +50,11 @@ function slotForIndex(index: number, activeIndex: number): PolaroidSlot {
 const PLACEHOLDER_BG =
   "repeating-linear-gradient(135deg, #EAE3D5 0 10px, #D8CFBC 10px 11px)";
 
+/** Polaroid ~150–180px breit — sizes für 2×/3× Retina hoch genug ansetzen. */
+const POLAROID_IMAGE_QUALITY = 92;
+const POLAROID_IMAGE_SIZES_FULL = "(max-width: 768px) 240px, 280px";
+const POLAROID_IMAGE_SIZES_HALF = "(max-width: 768px) 160px, 200px";
+
 function PolaroidMedia({
   card,
   reducedMotion = false,
@@ -66,17 +71,30 @@ function PolaroidMedia({
       style={hasMedia ? undefined : { background: PLACEHOLDER_BG }}
     >
       {card.videoSrc ? (
-        <video
-          className="absolute inset-0 h-full w-full object-cover object-center"
-          src={card.videoSrc}
-          poster={card.videoPoster}
-          autoPlay={!reducedMotion}
-          muted
-          loop={!reducedMotion}
-          playsInline
-          preload="metadata"
-          aria-label={alt}
-        />
+        <>
+          {card.videoPoster ? (
+            <Image
+              src={card.videoPoster}
+              alt=""
+              fill
+              sizes={POLAROID_IMAGE_SIZES_FULL}
+              quality={POLAROID_IMAGE_QUALITY}
+              className="polaroid-media__img object-cover object-center"
+              aria-hidden
+              priority
+            />
+          ) : null}
+          <video
+            className="polaroid-media__video absolute inset-0 h-full w-full object-cover object-center"
+            src={card.videoSrc}
+            autoPlay={!reducedMotion}
+            muted
+            loop={!reducedMotion}
+            playsInline
+            preload={reducedMotion ? "metadata" : "auto"}
+            aria-label={alt}
+          />
+        </>
       ) : null}
       {!card.videoSrc && card.imageSrcs ? (
         <div className="absolute inset-0 grid grid-cols-2 gap-px">
@@ -86,16 +104,25 @@ function PolaroidMedia({
                 src={src}
                 alt={i === 0 ? alt : `${alt} (Motiv ${i + 1})`}
                 fill
-                className="object-cover"
-                sizes="90px"
-                priority={i === 0}
+                className="polaroid-media__img object-cover"
+                sizes={POLAROID_IMAGE_SIZES_HALF}
+                quality={POLAROID_IMAGE_QUALITY}
+                priority
               />
             </div>
           ))}
         </div>
       ) : null}
       {!card.videoSrc && !card.imageSrcs && card.imageSrc ? (
-        <Image src={card.imageSrc} alt={alt} fill className="object-cover" sizes="180px" priority />
+        <Image
+          src={card.imageSrc}
+          alt={alt}
+          fill
+          className="polaroid-media__img object-cover"
+          sizes={POLAROID_IMAGE_SIZES_FULL}
+          quality={POLAROID_IMAGE_QUALITY}
+          priority
+        />
       ) : null}
       {!hasMedia ? (
         <span className="px-2 text-center font-mono-hero text-[9px] uppercase tracking-[0.5px] text-ink3">
@@ -152,6 +179,7 @@ export function MobileGalleryHero({
       categoryStats: getDailyCategoryStats(today),
     };
   }, []);
+  const ctaTitle = primaryCtaLabel.replace(/^3\s+/, "").trim() || primaryCtaLabel;
 
   useEffect(() => {
     const mq = window.matchMedia("(prefers-reduced-motion: reduce)");
@@ -252,14 +280,41 @@ export function MobileGalleryHero({
       </p>
 
       <div className={cn("mobile-hero-fade mobile-hero-fade-4", MOBILE_EDITORIAL_PX)}>
-        <button
-          type="button"
-          disabled={ctaPending}
-          onClick={onPrimaryCtaClick}
-          className="flex min-h-12 w-full items-center justify-center rounded-full bg-amber px-5 py-4 text-[15px] font-semibold text-paper transition active:scale-[0.99] hover:bg-[#B65A12] disabled:opacity-80"
-        >
-          {ctaPending ? "Generiere …" : primaryCtaLabel}
-        </button>
+        <div className="mobile-hero-primary-cta flex w-full flex-col items-center">
+          <span
+            className="mobile-hero-primary-cta__hook pointer-events-none relative z-[2] -mb-3 whitespace-nowrap rounded-full border border-amber/25 bg-paper px-3 py-1 text-center font-mono-hero text-[9.5px] font-semibold uppercase tracking-[0.08em] text-amber shadow-[0_4px_14px_-8px_rgba(199,105,30,0.45)]"
+            aria-hidden
+          >
+            Kostenlos · Keine Kreditkarte
+          </span>
+          <button
+            type="button"
+            disabled={ctaPending}
+            onClick={onPrimaryCtaClick}
+            className="hero-cta-btn mobile-cta-animate mobile-hero-primary-cta__btn relative z-[1] flex min-h-[58px] w-full items-center gap-3 rounded-2xl px-3.5 py-3.5 text-paper transition active:scale-[0.98] disabled:opacity-80"
+          >
+            <span
+              className="flex h-11 w-11 shrink-0 items-center justify-center rounded-xl border border-white/20 bg-white/12 font-serif-hero text-[26px] font-medium leading-none tracking-[-0.5px] shadow-[inset_0_1px_0_rgba(255,255,255,0.18)]"
+              aria-hidden
+            >
+              3
+            </span>
+            <span className="flex min-w-0 flex-1 flex-col items-start gap-0.5 text-left">
+              <span className="font-sans-tight text-[15px] font-semibold leading-[1.15] tracking-[-0.2px]">
+                {ctaPending ? "Demo startet …" : ctaTitle}
+              </span>
+              <span className="font-mono-hero text-[10px] font-medium uppercase tracking-[0.06em] text-white/75">
+                {ctaPending ? "Einen Moment" : "Sofort testen · ~6 Sek."}
+              </span>
+            </span>
+            <span
+              className="mobile-hero-primary-cta__arrow flex h-9 w-9 shrink-0 items-center justify-center rounded-full bg-white/14 text-lg font-semibold leading-none"
+              aria-hidden
+            >
+              →
+            </span>
+          </button>
+        </div>
       </div>
 
       <p className={cn("mobile-hero-fade mobile-hero-fade-5 mt-3 flex items-center justify-center gap-2 font-mono-hero text-[10.5px] tracking-[0.6px] text-ink3", MOBILE_EDITORIAL_PX)}>

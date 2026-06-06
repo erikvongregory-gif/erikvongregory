@@ -1045,6 +1045,32 @@ body[data-legal-page="true"] {
   animation: mobile-hero-wavy-fade-in 0.35s ease 0.95s forwards;
 }
 
+/* Mobile Hero – primärer Demo-CTA (Badge + Puls) */
+@keyframes mobile-hero-cta-arrow-nudge {
+  0%, 100% { transform: translateX(0); }
+  50% { transform: translateX(2px); }
+}
+
+@keyframes mobile-hero-cta-hook-float {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-2px); }
+}
+
+.mobile-gallery-hero .mobile-hero-primary-cta__hook {
+  animation: mobile-hero-cta-hook-float 3.2s ease-in-out infinite;
+}
+
+.mobile-gallery-hero .mobile-hero-primary-cta__arrow {
+  animation: mobile-hero-cta-arrow-nudge 2.2s ease-in-out infinite;
+}
+
+/* Polaroid-Vorschau: schärfere Skalierung auf Retina */
+.mobile-gallery-hero .polaroid-media__img,
+.mobile-gallery-hero .polaroid-media__video {
+  transform: translateZ(0);
+  backface-visibility: hidden;
+}
+
 @keyframes mobile-hero-wavy-draw {
   to {
     stroke-dashoffset: 0;
@@ -1092,6 +1118,11 @@ body[data-legal-page="true"] {
 
   .mobile-hero-wavy-underline__path {
     stroke-dashoffset: 0;
+    animation: none;
+  }
+
+  .mobile-gallery-hero .mobile-hero-primary-cta__hook,
+  .mobile-gallery-hero .mobile-hero-primary-cta__arrow {
     animation: none;
   }
 }

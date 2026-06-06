@@ -79,7 +79,8 @@ export const MOBILE_HERO_POLAROIDS: MobileHeroPolaroid[] = [
     stamp: "REELS · 9:16",
     placeholderCaption: "Social · Reels",
     videoSrc: REEL_VIDEO.src,
-    videoPoster: REEL_VIDEO.poster,
+    /** Hochauflösendes Standbild — kleine Video-Poster wirken in der Polaroid-Vorschau unscharf. */
+    videoPoster: "/ki-beispiel-biergarten.webp",
     imageAlt: REEL_VIDEO.title,
   },
   {
