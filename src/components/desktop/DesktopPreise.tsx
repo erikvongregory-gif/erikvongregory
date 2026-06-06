@@ -2,6 +2,7 @@
 
 import { useCallback, useState } from "react";
 import { usePricingDeepLink } from "@/hooks/usePricingDeepLink";
+import { pricingPlanElementId, type PricingDeepLinkPayload } from "@/lib/pricingDeepLink";
 import type { SubscriptionPlanKey } from "@/lib/billing/tokenState";
 import { PREIS_MODE_COPY, PREIS_PLAENE, type PricingTier } from "@/content/desktop-home";
 import { MOBILE_PRICING_TRACKS, WERKSTATT_PROMO_BADGE } from "@/lib/mobilePricingTiers";
@@ -48,6 +49,7 @@ function TierCard({
 
   return (
     <article
+      id={tier.checkoutPlanKey ? pricingPlanElementId(tier.checkoutPlanKey) : undefined}
       className={cn(
         "relative flex flex-col rounded-[18px] p-8",
         highlight
@@ -139,8 +141,8 @@ export function DesktopPreise() {
     }
   }, []);
 
-  const applyDeepLink = useCallback((track: "werkstatt" | "manufaktur") => {
-    setMode(track === "werkstatt" ? "self" : "premium");
+  const applyDeepLink = useCallback((payload: PricingDeepLinkPayload) => {
+    setMode(payload.track === "werkstatt" ? "self" : "premium");
   }, []);
 
   usePricingDeepLink(applyDeepLink);

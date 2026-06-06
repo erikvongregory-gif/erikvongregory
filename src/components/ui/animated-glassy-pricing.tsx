@@ -304,6 +304,7 @@ export interface PricingCardProps {
   buttonLoading?: boolean;
   buttonDisabled?: boolean;
   "data-paket"?: string;
+  id?: string;
   className?: string;
   /** Kleinere Typo & Padding – z. B. Add-ons unter den Hauptpaketen. */
   compact?: boolean;
@@ -327,6 +328,7 @@ export const PricingCard = ({
   buttonLoading = false,
   buttonDisabled = false,
   "data-paket": dataPaket,
+  id,
   className,
   compact = false,
 }: PricingCardProps) => {
@@ -353,7 +355,7 @@ export const PricingCard = ({
   );
 
   return (
-    <div className={cardClasses}>
+    <div id={id} className={cardClasses}>
       {isPopular && (
         <div className="absolute -top-4 right-4 rounded-full bg-[#c65a20] px-3 py-1 text-[12px] font-semibold text-white shadow-md shadow-orange-900/25">
           {popularLabel}

@@ -16,6 +16,7 @@ import {
 } from "@/lib/mobilePricingTiers";
 import { WerkstattYearlyBillingToggle } from "@/components/pricing/WerkstattYearlyBillingToggle";
 import { usePricingDeepLink } from "@/hooks/usePricingDeepLink";
+import { pricingPlanElementId, type PricingDeepLinkPayload } from "@/lib/pricingDeepLink";
 import {
   getWerkstattTierDisplay,
   WERKSTATT_DEFAULT_BILLING_INTERVAL,
@@ -111,6 +112,7 @@ const TierCard = memo(function TierCard({
   return (
     <article
       key={`${track}-${index}`}
+      id={tier.checkoutPlanKey ? pricingPlanElementId(tier.checkoutPlanKey) : undefined}
       aria-labelledby={nameId}
       className={cn(
         "mobile-pricing-tier-card relative rounded-[14px] bg-white p-5 pb-5",
@@ -252,8 +254,8 @@ export function MobilePricingSection({ checkoutBusyPlan, onCheckoutPlan }: Mobil
   );
 
   const applyDeepLink = useCallback(
-    (deepTrack: "werkstatt" | "manufaktur") => {
-      setTrackWithAnalytics(deepTrack);
+    (payload: PricingDeepLinkPayload) => {
+      setTrackWithAnalytics(payload.track);
     },
     [setTrackWithAnalytics],
   );

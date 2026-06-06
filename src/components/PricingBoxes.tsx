@@ -21,6 +21,7 @@ import {
 import { trackEvent } from "@/lib/analytics";
 import { scrollToContactPaket } from "@/lib/contactPaket";
 import { usePricingDeepLink } from "@/hooks/usePricingDeepLink";
+import { pricingPlanElementId, type PricingDeepLinkPayload } from "@/lib/pricingDeepLink";
 import { cn } from "@/lib/utils";
 import { MobilePricingSection } from "@/components/mobile/MobilePricingSection";
 import { WerkstattYearlyBillingToggle } from "@/components/pricing/WerkstattYearlyBillingToggle";
@@ -210,6 +211,12 @@ const PRICING_DESKTOP_ORDER = [0, 1, 2] as const;
 /** Desktop: von günstig nach teuer (teuerste Karte rechts) — Mobile: Reihenfolge im Array. */
 const DASHBOARD_DESKTOP_ORDER = [0, 1, 2] as const;
 
+const DASHBOARD_PLAN_SLIDE_INDEX: Record<SubscriptionPlanKey, number> = {
+  start: 0,
+  growth: 1,
+  pro: 2,
+};
+
 const ADDONS: AddonRow[] = [
   {
     planIcon: MessageSquareText,
@@ -305,6 +312,7 @@ function toPricingCardProps(
       scrollToContactPaket(pkg.name);
     },
     "data-paket": pkg.name,
+    id: pkg.checkoutPlanKey ? pricingPlanElementId(pkg.checkoutPlanKey) : undefined,
   };
 }
 
@@ -314,12 +322,15 @@ function MobilePricingSnapCarousel({
   dotsNavLabel,
   slideKeys,
   renderSlide,
+  focusSlideIndex,
 }: {
   ariaLabel: string;
   /** Kurzbeschreibung für die Punkt-Navigation (Screenreader). */
   dotsNavLabel?: string;
   slideKeys: readonly string[];
   renderSlide: (index: number) => ReactNode;
+  /** Karussell auf diese Folie zentrieren (z. B. Deep-Link aus Demo-Funnel). */
+  focusSlideIndex?: number | null;
 }) {
   const trackRef = useRef<HTMLDivElement>(null);
   const [active, setActive] = useState(0);
@@ -374,6 +385,13 @@ function MobilePricingSnapCarousel({
 
   const prev = () => goTo(Math.max(0, active - 1));
   const next = () => goTo(Math.min(n - 1, active + 1));
+
+  useEffect(() => {
+    if (focusSlideIndex === undefined || focusSlideIndex === null) return;
+    const clamped = Math.max(0, Math.min(n - 1, focusSlideIndex));
+    const timer = window.setTimeout(() => goTo(clamped), 120);
+    return () => window.clearTimeout(timer);
+  }, [focusSlideIndex, goTo, n]);
 
   if (n === 0) return null;
 
@@ -472,6 +490,7 @@ export function PricingBoxes() {
   const [isDesktop, setIsDesktop] = useState<boolean | null>(null);
   const [checkoutBusyPlan, setCheckoutBusyPlan] = useState<SubscriptionPlanKey | null>(null);
   const [billingInterval, setBillingInterval] = useState<WerkstattBillingInterval>(WERKSTATT_DEFAULT_BILLING_INTERVAL);
+  const [dashboardCarouselFocus, setDashboardCarouselFocus] = useState<number | null>(null);
   const sharedGlassInfoBoxClass =
     "evg-clean-hover rounded-xl border border-black/12 bg-gradient-to-br from-black/5 to-black/0 text-left shadow-[0_10px_22px_-18px_rgba(24,24,27,0.28)] backdrop-blur-[14px] ring-1 ring-black/[0.04] transition-[border-color,box-shadow,ring-color] duration-200 hover:border-[#c65a20]/55 hover:ring-[#c65a20]/25 hover:shadow-[0_16px_34px_-20px_rgba(198,90,32,0.24)]";
 
@@ -517,8 +536,11 @@ export function PricingBoxes() {
     };
   }, [selectedPath]);
 
-  const applyPricingDeepLink = useCallback((track: "werkstatt" | "manufaktur") => {
-    setSelectedPath(track === "werkstatt" ? "dashboard" : "service");
+  const applyPricingDeepLink = useCallback((payload: PricingDeepLinkPayload) => {
+    setSelectedPath(payload.track === "werkstatt" ? "dashboard" : "service");
+    if (payload.plan) {
+      setDashboardCarouselFocus(DASHBOARD_PLAN_SLIDE_INDEX[payload.plan]);
+    }
   }, []);
 
   usePricingDeepLink(applyPricingDeepLink);
@@ -766,6 +788,7 @@ export function PricingBoxes() {
                     ariaLabel="Dashboard-Abos durchblättern"
                     dotsNavLabel="Abo wählen"
                     slideKeys={DASHBOARD_SUBSCRIPTION_PACKAGES.map((p) => p.name)}
+                    focusSlideIndex={dashboardCarouselFocus}
                     renderSlide={(index) => {
                       const pkg = DASHBOARD_SUBSCRIPTION_PACKAGES[index]!;
                       return (

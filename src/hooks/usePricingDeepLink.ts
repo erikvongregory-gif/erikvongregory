@@ -2,21 +2,30 @@
 
 import { useEffect } from "react";
 import {
+  focusPricingPlan,
   PRICING_DEEP_LINK_EVENT,
-  readPricingDeepLinkTrack,
-  type PricingDeepLinkTrack,
+  readPricingDeepLinkPayload,
+  type PricingDeepLinkPayload,
 } from "@/lib/pricingDeepLink";
 
-export function usePricingDeepLink(onTrack: (track: PricingDeepLinkTrack) => void): void {
+export function usePricingDeepLink(onDeepLink: (payload: PricingDeepLinkPayload) => void): void {
   useEffect(() => {
     const applyFromLocation = () => {
-      const track = readPricingDeepLinkTrack();
-      if (track) onTrack(track);
+      const payload = readPricingDeepLinkPayload();
+      if (!payload) return;
+      onDeepLink(payload);
+      if (payload.plan) {
+        window.requestAnimationFrame(() => focusPricingPlan(payload.plan!));
+      }
     };
 
     const onCustom = (event: Event) => {
-      const track = (event as CustomEvent<{ track: PricingDeepLinkTrack }>).detail?.track;
-      if (track) onTrack(track);
+      const payload = (event as CustomEvent<PricingDeepLinkPayload>).detail;
+      if (!payload?.track) return;
+      onDeepLink(payload);
+      if (payload.plan) {
+        window.requestAnimationFrame(() => focusPricingPlan(payload.plan!));
+      }
     };
 
     applyFromLocation();
@@ -28,5 +37,5 @@ export function usePricingDeepLink(onTrack: (track: PricingDeepLinkTrack) => voi
       window.removeEventListener("popstate", applyFromLocation);
       window.removeEventListener(PRICING_DEEP_LINK_EVENT, onCustom);
     };
-  }, [onTrack]);
+  }, [onDeepLink]);
 }

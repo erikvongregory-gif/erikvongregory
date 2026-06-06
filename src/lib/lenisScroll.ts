@@ -40,3 +40,20 @@ export function scrollToElement(target: HTMLElement, hash: string) {
     /* noop */
   }
 }
+
+/** Scrollt ein Element in die vertikale Mitte des Viewports (z. B. Preiskarte). */
+export function scrollToElementCentered(target: HTMLElement) {
+  const lenis = getLenisInstance();
+
+  if (lenis) {
+    const rect = target.getBoundingClientRect();
+    const scrollTop = window.scrollY || document.documentElement.scrollTop;
+    const elementTop = rect.top + scrollTop;
+    const centeredTop =
+      elementTop - window.innerHeight / 2 + rect.height / 2 + SITE_HEADER_SCROLL_OFFSET / 2;
+    lenis.scrollTo(centeredTop, { duration: 1.15 });
+    return;
+  }
+
+  target.scrollIntoView({ behavior: "smooth", block: "center" });
+}
