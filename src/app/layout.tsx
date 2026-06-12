@@ -47,7 +47,7 @@ const jetbrainsMono = JetBrains_Mono({
   weight: ["400", "500"],
 });
 
-const ICON_VERSION = "20260519b";
+const ICON_VERSION = "20260612a";
 
 export const viewport = {
   width: "device-width",

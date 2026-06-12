@@ -2,7 +2,7 @@
 
 import { useEffect } from "react";
 
-const ICON_VERSION = "20260519b";
+const ICON_VERSION = "20260612a";
 const NORMAL_ICON = `/favicon.ico?v=${ICON_VERSION}`;
 const REMINDER_ICON = `/icon-reminder.svg?v=${ICON_VERSION}`;
 const REMINDER_TITLE = "EvGlab wartet auf dich";

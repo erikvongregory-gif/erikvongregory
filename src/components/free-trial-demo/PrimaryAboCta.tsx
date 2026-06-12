@@ -22,7 +22,7 @@ function leaveForRegister(close: () => void) {
 
 export function PrimaryAboCta({
   label = "Jetzt Abo abschließen",
-  destination = "register",
+  destination = "pricing-werkstatt",
 }: PrimaryAboCtaProps) {
   const { close } = useFreeTrialDemo();
   const [hovered, setHovered] = useState(false);

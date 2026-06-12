@@ -347,7 +347,7 @@ export function ScrollHeader() {
 
   const logoSizes = "h-10 w-auto sm:h-11 md:h-[3.25rem]";
 
-  /** Dunkles Wellen-Logo — bleibt auch über dem Hero dunkel; nur die Nav-Pille wechselt (overMedia). */
+  /** Wellen-Logo mit transparentem Hintergrund; Nav-Pille wechselt bei overMedia. */
   const headerLogo = (
     <div className="flex flex-col items-start gap-px">
       <Link
