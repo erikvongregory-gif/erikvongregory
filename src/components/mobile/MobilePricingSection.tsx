@@ -90,6 +90,8 @@ const TierCard = memo(function TierCard({
   const nameId = `tier-${track}-${index}-name`;
   const busy = tier.checkoutPlanKey && checkoutBusyPlan === tier.checkoutPlanKey;
   const display = track === "werkstatt" ? getWerkstattTierDisplay(tier, billingInterval) : null;
+  const compareAtPrice = display?.compareAtPrice ?? (track === "manufaktur" ? tier.anchor : undefined);
+  const showPromo = display?.showPromo ?? (track === "manufaktur" && Boolean(tier.anchor));
 
   const handleCta = () => {
     trackEvent("pricing_cta_clicked", {
@@ -143,12 +145,14 @@ const TierCard = memo(function TierCard({
       <p className="m-0 mb-4 pl-7 font-sans-tight text-[13px] leading-[1.4] text-ink2">{tier.tagline}</p>
 
       <div className="mb-4 border-b border-dashed border-ink/[0.12] pb-4 pl-7">
-        {display?.showPromo ? (
+        {showPromo ? (
           <div className="mb-2 flex flex-wrap items-center gap-2">
             <span className="rounded-sm bg-amber/12 px-2 py-0.5 font-mono-hero text-[9.5px] font-semibold tracking-[1px] text-amber uppercase">
               {WERKSTATT_PROMO_BADGE}
             </span>
-            <span className="font-sans-tight text-[11px] text-ink3">{display.savingsLabel} inklusive</span>
+            {display?.savingsLabel ? (
+              <span className="font-sans-tight text-[11px] text-ink3">{display.savingsLabel} inklusive</span>
+            ) : null}
           </div>
         ) : null}
         <div className="flex flex-wrap items-baseline gap-x-2.5 gap-y-1">
@@ -156,12 +160,12 @@ const TierCard = memo(function TierCard({
             {display?.price ?? tier.price}
             {"\u00A0"}€
           </p>
-          {display?.compareAtPrice ? (
+          {compareAtPrice ? (
             <p
-              className="m-0 font-sans-tight text-[13px] text-ink3 line-through decoration-ink3/50"
-              aria-label={`Regulärpreis ${display.compareAtPrice} Euro`}
+              className="m-0 font-sans-tight text-[13px] text-red-600 line-through decoration-red-600"
+              aria-label={`Regulärpreis ${compareAtPrice} Euro`}
             >
-              statt {display.compareAtPrice}
+              statt {compareAtPrice}
               {"\u00A0"}€
             </p>
           ) : null}

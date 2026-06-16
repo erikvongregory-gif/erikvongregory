@@ -98,8 +98,8 @@ const PRICING_PACKAGES: PricingPackageDef[] = [
     delivery: "3-5 Tage",
     cta: "👉 Angebot anfragen",
     features: [
-      "5 KI-Produktbilder (Flasche / Glas / Biergarten)",
-      "5 Social-Media-Posts inkl. Text",
+      "15 KI-Produktbilder (Flasche / Glas / Biergarten)",
+      "12 Social-Media-Posts inkl. Text",
       "optimiert für Instagram & Facebook",
       "kommerzielle Nutzungsrechte",
     ],
@@ -117,8 +117,8 @@ const PRICING_PACKAGES: PricingPackageDef[] = [
     delivery: "5-7 Tage",
     cta: "👉 Angebot anfragen",
     features: [
-      "10 KI-Produktbilder",
-      "10 Social-Media-Posts inkl. Text",
+      "30 KI-Produktbilder",
+      "20 Social-Media-Posts inkl. Text",
       "Bildposts für Instagram & Ads",
       "Content für Instagram, Facebook & Ads",
       "kommerzielle Nutzungsrechte",
@@ -138,8 +138,9 @@ const PRICING_PACKAGES: PricingPackageDef[] = [
     highlight: true,
     features: [
       "Website-Setup (Onepager oder kompakte Seite)",
-      "10 KI-Produktbilder",
-      "Social-Media-Content Setup",
+      "40 KI-Produktbilder",
+      "20 Social-Media-Posts inkl. Text",
+      "3-Monats-Content-Plan für Instagram & Facebook",
       "Texte & Struktur für die Website",
       "KI-Bewertungsmanagement (Google)",
       "Komplexe Webprojekte im erweiterten Preissegment",
@@ -269,7 +270,7 @@ function toPricingCardProps(
       ? getWerkstattTierDisplay(werkstattTier, options.billingInterval)
       : null;
   const basePriceSubtext =
-    werkstattDisplay?.priceSubtext ?? pkg.priceSubtext ?? (pkg.oldPrice ? "einmalig" : "pro Monat");
+    werkstattDisplay?.priceSubtext ?? pkg.priceSubtext ?? (pkg.oldPrice || pkg.delivery ? "einmalig" : "pro Monat");
   const vatSuffix = LEGAL.ustId.includes("§ 19 UStG")
     ? "gemäß § 19 UStG ohne Umsatzsteuer"
     : "+19% MwSt.";
@@ -278,8 +279,10 @@ function toPricingCardProps(
     planIcon: pkg.planIcon,
     description: pkg.description,
     price: werkstattDisplay ? `${werkstattDisplay.price} €` : pkg.price,
-    compareAtPrice: werkstattDisplay?.compareAtPrice ? `${werkstattDisplay.compareAtPrice} €` : pkg.oldPrice,
-    promoBadge: werkstattDisplay?.showPromo ? WERKSTATT_PROMO_BADGE : pkg.oldPrice ? "Im Angebot" : undefined,
+    compareAtPrice: werkstattDisplay?.compareAtPrice
+      ? `${werkstattDisplay.compareAtPrice} €`
+      : pkg.oldPrice,
+    promoBadge: werkstattDisplay?.showPromo ? WERKSTATT_PROMO_BADGE : pkg.oldPrice ? WERKSTATT_PROMO_BADGE : undefined,
     currencyPrefix: "",
     priceSubtext: `${basePriceSubtext} · ${vatSuffix}`,
     features: pkg.delivery ? [...pkg.features, `Lieferzeit: ${pkg.delivery}`] : [...pkg.features],

@@ -27,8 +27,8 @@ export const MOBILE_PRICING_TRACKS: { manufaktur: Tier[]; werkstatt: Tier[] } = 
       cadence: "einmalig",
       anchor: "1.290",
       features: [
-        "5 KI-Produktbilder",
-        "5 Social-Media-Posts inkl. Text",
+        "15 KI-Produktbilder",
+        "12 Social-Media-Posts inkl. Text",
         "Optimiert für Instagram & Facebook",
         "Lieferzeit 3–5 Tage",
       ],
@@ -41,8 +41,8 @@ export const MOBILE_PRICING_TRACKS: { manufaktur: Tier[]; werkstatt: Tier[] } = 
       cadence: "einmalig",
       anchor: "2.490",
       features: [
-        "10 KI-Produktbilder",
-        "10 Social-Media-Posts inkl. Text",
+        "30 KI-Produktbilder",
+        "20 Social-Media-Posts inkl. Text",
         "Bildposts für Instagram & Ads",
         "Content für IG, FB & Ads",
         "Lieferzeit 5–7 Tage",
@@ -58,8 +58,9 @@ export const MOBILE_PRICING_TRACKS: { manufaktur: Tier[]; werkstatt: Tier[] } = 
       anchor: "5.490",
       features: [
         "Website-Setup (Onepager)",
-        "10 KI-Produktbilder",
-        "Social-Media-Content-Setup",
+        "40 KI-Produktbilder",
+        "20 Social-Media-Posts inkl. Text",
+        "3-Monats-Content-Plan für IG & FB",
         "Texte & Struktur für die Website",
         "KI-Bewertungsmanagement (Google)",
         "Lieferzeit 2–3 Wochen",

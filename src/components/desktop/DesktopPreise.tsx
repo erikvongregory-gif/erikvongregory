@@ -37,6 +37,8 @@ function TierCard({
   const werkstattSource = MOBILE_PRICING_TRACKS.werkstatt.find((t) => t.checkoutPlanKey === tier.checkoutPlanKey);
   const display =
     mode === "self" && werkstattSource ? getWerkstattTierDisplay(werkstattSource, billingInterval) : null;
+  const compareAtPrice = display?.compareAtPrice ?? (mode === "premium" ? tier.anchor : undefined);
+  const showPromo = display?.showPromo ?? (mode === "premium" && Boolean(tier.anchor));
 
   const handleCta = () => {
     if (tier.checkoutPlanKey) {
@@ -66,12 +68,14 @@ function TierCard({
         {tier.forLabel}
       </p>
       <h3 className="mt-2 font-serif-hero text-[28px] font-medium">{tier.name}</h3>
-      {display?.showPromo ? (
+      {showPromo ? (
         <div className="mt-3 flex flex-wrap items-center gap-2">
           <span className="rounded-md bg-amber/15 px-2 py-0.5 font-mono-hero text-[10px] font-semibold uppercase tracking-wider text-amber">
             {WERKSTATT_PROMO_BADGE}
           </span>
-          <span className="font-sans-tight text-[12px] text-ink3">{display.savingsLabel} inklusive</span>
+          {display?.savingsLabel ? (
+            <span className="font-sans-tight text-[12px] text-ink3">{display.savingsLabel} inklusive</span>
+          ) : null}
         </div>
       ) : null}
       <div className="mt-4 flex flex-wrap items-end gap-x-3 gap-y-1 border-b border-current/15 pb-4">
@@ -79,15 +83,15 @@ function TierCard({
           <span className="font-serif-hero text-[64px] font-medium leading-none tracking-[-2px]">{display?.price ?? tier.price}</span>
           <span className="mb-2 text-[28px]">€</span>
         </div>
-        {display?.compareAtPrice ? (
+        {compareAtPrice ? (
           <span
             className={cn(
-              "mb-3 font-sans-tight text-[18px] line-through decoration-current/35",
-              highlight ? "text-[#E8DFCB]/55" : "text-ink3",
+              "mb-3 font-sans-tight text-[18px] line-through",
+              highlight ? "text-red-400 decoration-red-400" : "text-red-600 decoration-red-600",
             )}
-            aria-label={`Regulärpreis ${display.compareAtPrice} Euro`}
+            aria-label={`Regulärpreis ${compareAtPrice} Euro`}
           >
-            statt {display.compareAtPrice}&nbsp;€
+            statt {compareAtPrice}&nbsp;€
           </span>
         ) : null}
         <span className="mb-2 ml-auto font-mono-hero text-[10px] uppercase tracking-wider opacity-70">

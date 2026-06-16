@@ -430,7 +430,7 @@ export const PricingCard = ({
               </span>
             ) : null}
             {compareAtPrice ? (
-              <span className="font-sans text-[12px] text-zinc-500 line-through decoration-zinc-400/70">
+              <span className="font-sans text-[12px] text-red-600 line-through decoration-red-600">
                 statt {compareAtPrice}
               </span>
             ) : null}
