@@ -16,6 +16,7 @@ import {
 import { DesktopContainer } from "@/components/desktop/DesktopContainer";
 import { DesktopRevealItem, DesktopRevealStagger } from "@/components/desktop/DesktopReveal";
 import { scrollToContactPaket } from "@/lib/contactPaket";
+import { startMarketingPlanCheckout } from "@/lib/marketingPlanCheckout";
 import { cn } from "@/lib/utils";
 
 type PriceMode = "premium" | "self";
@@ -128,20 +129,13 @@ export function DesktopPreise() {
   const copy = PREIS_MODE_COPY[mode];
   const tiers = PREIS_PLAENE[mode];
 
-  const onCheckout = useCallback(async (plan: SubscriptionPlanKey, interval: WerkstattBillingInterval) => {
+  const onCheckout = useCallback((plan: SubscriptionPlanKey, interval: WerkstattBillingInterval) => {
     setCheckoutBusy(plan);
     try {
-      const response = await fetch("/api/billing/checkout", {
-        method: "POST",
-        headers: { "content-type": "application/json" },
-        body: JSON.stringify({ plan, interval }),
-        credentials: "include",
-      });
-      const payload = (await response.json().catch(() => null)) as { url?: string; error?: string } | null;
-      if (!response.ok || !payload?.url) throw new Error(payload?.error || "Checkout konnte nicht gestartet werden.");
-      window.location.assign(payload.url);
+      startMarketingPlanCheckout(plan, interval);
     } catch {
       setCheckoutBusy(null);
+      window.alert("Checkout konnte gerade nicht gestartet werden. Bitte gleich erneut versuchen.");
     }
   }, []);
 

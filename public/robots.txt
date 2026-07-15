@@ -1,4 +1,4 @@
-# https://www.evglab.com/robots.txt — bei Vercel wird i. d. R. /robots aus app/robots.ts generiert;
+# https://ki.evglab.com/robots.txt — bei Vercel wird i. d. R. /robots aus app/robots.ts generiert;
 # diese Datei dient als Fallback und für lokale Tools.
 
 User-agent: *
@@ -89,4 +89,4 @@ Disallow: /anmelden
 Disallow: /registrieren
 Disallow: /auth/
 
-Sitemap: https://www.evglab.com/sitemap.xml
+Sitemap: https://ki.evglab.com/sitemap.xml

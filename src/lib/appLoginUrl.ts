@@ -59,3 +59,41 @@ export function buildAppLoginUrl(params?: Record<string, string>): string {
     return `${base}?${q.toString()}`;
   }
 }
+
+export type AppCheckoutPlanKey = "start" | "growth" | "pro";
+
+const HOMEPAGE_CHECKOUT_SOURCE = "homepage_pricing";
+
+/** Nach Login/Registrierung in der App direkt in den Stripe-Checkout für einen Plan. */
+export function buildAppHomepageCheckoutUrl(plan: AppCheckoutPlanKey): string {
+  return buildAppLoginUrl({
+    plan,
+    checkout: "1",
+    source: HOMEPAGE_CHECKOUT_SOURCE,
+  });
+}
+
+/** Registrierung mit anschließendem Checkout in der App (Demo-Funnel, Pricing-CTAs). */
+export function buildAppRegisterCheckoutUrl(plan: AppCheckoutPlanKey): string {
+  try {
+    const u = new URL(APP_REGISTER_URL);
+    u.searchParams.set("plan", plan);
+    u.searchParams.set("checkout", "1");
+    u.searchParams.set("source", HOMEPAGE_CHECKOUT_SOURCE);
+    return u.toString();
+  } catch {
+    const q = new URLSearchParams({
+      mode: "register",
+      plan,
+      checkout: "1",
+      source: HOMEPAGE_CHECKOUT_SOURCE,
+    });
+    return `${APP_BASE_URL.replace(/\/$/, "")}/registrieren?${q.toString()}`;
+  }
+}
+
+/** Browser-Navigation zur App-Checkout-Einstieg (ersetzt fehleranfälligen Marketing-/api/billing/checkout). */
+export function navigateToAppPlanCheckout(plan: AppCheckoutPlanKey): void {
+  if (typeof window === "undefined") return;
+  window.location.assign(buildAppHomepageCheckoutUrl(plan));
+}

@@ -70,20 +70,7 @@ type AddonRow = {
 };
 type OfferPath = "service" | "dashboard";
 
-async function startPlanCheckout(plan: SubscriptionPlanKey, interval: WerkstattBillingInterval = WERKSTATT_DEFAULT_BILLING_INTERVAL) {
-  const response = await fetch("/api/billing/checkout", {
-    method: "POST",
-    headers: { "content-type": "application/json" },
-    body: JSON.stringify({ plan, interval }),
-    credentials: "include",
-  });
-  const payload = (await response.json().catch(() => null)) as { url?: string; error?: string } | null;
-  if (!response.ok || !payload?.url) {
-    throw new Error(payload?.error || "Checkout konnte nicht gestartet werden.");
-  }
-  window.location.assign(payload.url);
-}
-
+import { startMarketingPlanCheckout } from "@/lib/marketingPlanCheckout";
 const PRICING_PACKAGES: PricingPackageDef[] = [
   {
     planIcon: Sparkles,
@@ -550,14 +537,16 @@ export function PricingBoxes() {
 
   const handleCheckoutPlan = useCallback((plan: SubscriptionPlanKey, interval: WerkstattBillingInterval = billingInterval) => {
     setCheckoutBusyPlan(plan);
-    void startPlanCheckout(plan, interval).catch(() => {
+    try {
+      startMarketingPlanCheckout(plan, interval);
+    } catch {
       setCheckoutBusyPlan(null);
       trackEvent("pricing_checkout_error", {
         plan,
         source: "homepage_pricing",
       });
       window.alert("Checkout konnte gerade nicht gestartet werden. Bitte gleich erneut versuchen.");
-    });
+    }
   }, [billingInterval]);
 
   return (

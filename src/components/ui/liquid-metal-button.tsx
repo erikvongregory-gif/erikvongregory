@@ -5,6 +5,24 @@ import { Sparkles } from "lucide-react";
 import type React from "react";
 import { useEffect, useMemo, useRef, useState } from "react";
 
+function isWebGLAvailable() {
+  if (typeof window === "undefined") return false;
+
+  try {
+    const canvas = document.createElement("canvas");
+    return Boolean(canvas.getContext("webgl") ?? canvas.getContext("experimental-webgl"));
+  } catch {
+    return false;
+  }
+}
+
+const LIQUID_METAL_FALLBACK_STYLE: React.CSSProperties = {
+  background:
+    "linear-gradient(125deg, #3a3a3a 0%, #9a9a9a 22%, #505050 44%, #c8c8c8 58%, #404040 78%, #888888 100%)",
+  backgroundSize: "220% 220%",
+  animation: "liquid-metal-fallback-shift 4.5s ease-in-out infinite",
+};
+
 interface LiquidMetalButtonProps {
   label?: string;
   onClick?: () => void;
@@ -23,6 +41,7 @@ export function LiquidMetalButton({
 }: LiquidMetalButtonProps) {
   const [isHovered, setIsHovered] = useState(false);
   const [isPressed, setIsPressed] = useState(false);
+  const [useShaderFallback, setUseShaderFallback] = useState(false);
   const [ripples, setRipples] = useState<Array<{ x: number; y: number; id: number }>>([]);
   const shaderRef = useRef<HTMLDivElement>(null);
   // biome-ignore lint/suspicious/noExplicitAny: External library without types
@@ -81,8 +100,21 @@ export function LiquidMetalButton({
             opacity: 0;
           }
         }
+        @keyframes liquid-metal-fallback-shift {
+          0%, 100% {
+            background-position: 0% 50%;
+          }
+          50% {
+            background-position: 100% 50%;
+          }
+        }
       `;
       document.head.appendChild(style);
+    }
+
+    if (!isWebGLAvailable()) {
+      setUseShaderFallback(true);
+      return;
     }
 
     const loadShader = async () => {
@@ -112,8 +144,8 @@ export function LiquidMetalButton({
             0.6,
           );
         }
-      } catch (error) {
-        console.error("[evglab] Failed to load shader:", error);
+      } catch {
+        setUseShaderFallback(true);
       }
     };
 
@@ -305,6 +337,7 @@ export function LiquidMetalButton({
                   maxWidth: `${dimensions.shaderWidth}px`,
                   height: `${dimensions.shaderHeight}px`,
                   transition: "width 0.4s ease, height 0.4s ease",
+                  ...(useShaderFallback ? LIQUID_METAL_FALLBACK_STYLE : undefined),
                 }}
               />
             </div>

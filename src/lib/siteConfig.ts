@@ -4,9 +4,9 @@
  */
 export const SITE = {
   name: "EvGlab",
-  baseUrl: "https://www.evglab.com",
+  baseUrl: "https://ki.evglab.com",
   /** Absolut-URL des Markenlogos (JSON-LD, Rich Results) */
-  brandLogoUrl: "https://www.evglab.com/evglab-logo.svg" as const,
+  brandLogoUrl: "https://ki.evglab.com/evglab-logo.svg" as const,
   /** Zwei terrakotta Wellen, transparenter Hintergrund */
   brandLogoPath: "/evglab-logo.svg" as const,
   brandLogoAlt: "EvGlab Wellen-Mark" as const,

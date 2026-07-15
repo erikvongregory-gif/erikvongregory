@@ -4,16 +4,16 @@
 
 ## Öffentliche Einstiegsseiten
 
-- https://www.evglab.com/ — Startseite, Pakete, Abo-Pläne, FAQ, Kontakt
-- https://www.evglab.com/loesungen — Branchen-Lösungen (Saisonkampagne, Gastro-Promotion, Biergarten-Event)
-- https://www.evglab.com/ratgeber — Interaktives Quiz (Wissenscheck) zu EvGlab, Paketen und Dashboard für Brauereien
-- https://www.evglab.com/ueber-uns — Über EvGlab, Zielgruppe DACH, Kontakt
+- https://ki.evglab.com/ — Startseite, Pakete, Abo-Pläne, FAQ, Kontakt
+- https://ki.evglab.com/loesungen — Branchen-Lösungen (Saisonkampagne, Gastro-Promotion, Biergarten-Event)
+- https://ki.evglab.com/ratgeber — Interaktives Quiz (Wissenscheck) zu EvGlab, Paketen und Dashboard für Brauereien
+- https://ki.evglab.com/ueber-uns — Über EvGlab, Zielgruppe DACH, Kontakt
 
 ## Rechtliches
 
-- https://www.evglab.com/impressum
-- https://www.evglab.com/datenschutz
-- https://www.evglab.com/agb
+- https://ki.evglab.com/impressum
+- https://ki.evglab.com/datenschutz
+- https://ki.evglab.com/agb
 
 ## Dashboard-Login (App, nicht indexiert)
 

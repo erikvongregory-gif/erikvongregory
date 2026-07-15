@@ -4,11 +4,11 @@ Diese Punkte kann ich nicht vollautomatisch im Code fuer dich erledigen. Bitte i
 
 ## 1) Google Search Console (Pflicht)
 
-- Domain Property fuer `evglab.com` oder alternativ URL-Prefix fuer `https://www.evglab.com` nutzen.
+- Domain Property fuer `ki.evglab.com` oder alternativ URL-Prefix fuer `https://ki.evglab.com` nutzen.
 - Verifizierung setzen:
   - Entweder DNS-TXT in deinem Domain-Provider, oder
   - HTML-Tag in `SITE.googleSiteVerification` eintragen.
-- Nur `https://www.evglab.com/sitemap.xml` in GSC eingereicht lassen.
+- Nur `https://ki.evglab.com/sitemap.xml` in GSC eingereicht lassen.
 - Indexierung nach Deploy fuer alle Sitemap-URLs anstossen:
   - `/`
   - `/loesungen`, `/ratgeber`, `/ueber-uns`

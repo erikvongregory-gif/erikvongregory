@@ -3,36 +3,32 @@
 import { useState } from "react";
 import styles from "@/components/free-trial-demo/free-trial-demo.module.css";
 import { useFreeTrialDemo } from "@/context/FreeTrialDemoContext";
-import { APP_REGISTER_URL } from "@/lib/appLoginUrl";
+import { buildAppRegisterCheckoutUrl } from "@/lib/appLoginUrl";
 import { DEMO_FUNNEL_COLORS, DEMO_FUNNEL_SAVINGS_BADGE, DEMO_FUNNEL_SAVINGS_HINT } from "@/lib/freeTrialDemo";
-import { navigateToPricingWerkstatt } from "@/lib/pricingDeepLink";
+import { PRICING_FUNNEL_HIGHLIGHT_PLAN } from "@/lib/pricingDeepLink";
 
 type PrimaryAboCtaProps = {
   label?: string;
-  destination?: "register" | "pricing-werkstatt";
+  plan?: typeof PRICING_FUNNEL_HIGHLIGHT_PLAN;
 };
 
-function leaveForRegister(close: () => void) {
+function leaveForRegisterCheckout(close: () => void, plan: typeof PRICING_FUNNEL_HIGHLIGHT_PLAN) {
   close();
   document.body.style.overflow = "";
   window.requestAnimationFrame(() => {
-    window.location.assign(APP_REGISTER_URL);
+    window.location.assign(buildAppRegisterCheckoutUrl(plan));
   });
 }
 
 export function PrimaryAboCta({
   label = "Jetzt Abo abschließen",
-  destination = "pricing-werkstatt",
+  plan = PRICING_FUNNEL_HIGHLIGHT_PLAN,
 }: PrimaryAboCtaProps) {
   const { close } = useFreeTrialDemo();
   const [hovered, setHovered] = useState(false);
 
   const handleClick = () => {
-    if (destination === "pricing-werkstatt") {
-      navigateToPricingWerkstatt(close);
-      return;
-    }
-    leaveForRegister(close);
+    leaveForRegisterCheckout(close, plan);
   };
 
   return (

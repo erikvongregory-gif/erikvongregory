@@ -15,7 +15,7 @@ export async function middleware(request: NextRequest) {
   if (canonicalTarget) {
     const redirectUrl = request.nextUrl.clone();
     redirectUrl.protocol = "https:";
-    redirectUrl.hostname = "www.evglab.com";
+    redirectUrl.hostname = "ki.evglab.com";
     redirectUrl.port = "";
     redirectUrl.pathname = canonicalTarget;
     redirectUrl.search = "";
@@ -23,11 +23,10 @@ export async function middleware(request: NextRequest) {
   }
 
   const isLegacyHost = host === "erikvongregory.com" || host === "www.erikvongregory.com";
-  const isApexEvglab = host === "evglab.com";
-  if (isLegacyHost || isApexEvglab) {
+  if (isLegacyHost) {
     const redirectUrl = request.nextUrl.clone();
     redirectUrl.protocol = "https:";
-    redirectUrl.hostname = "www.evglab.com";
+    redirectUrl.hostname = "ki.evglab.com";
     redirectUrl.port = "";
     return NextResponse.redirect(redirectUrl, 308);
   }
