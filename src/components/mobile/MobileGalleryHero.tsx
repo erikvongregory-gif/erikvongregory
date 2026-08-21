@@ -67,25 +67,68 @@ function PolaroidMedia({
   const hasMedia = Boolean(card.videoSrc || card.imageSrc || card.imageSrcs?.length);
   const alt = card.imageAlt ?? card.placeholderCaption;
   const [videoReady, setVideoReady] = useState(false);
+  const [videoPlaying, setVideoPlaying] = useState(false);
   const mediaRef = useRef<HTMLDivElement | null>(null);
+  const videoRef = useRef<HTMLVideoElement | null>(null);
 
-  /** Video erst laden/abspielen wenn Front-Polaroid und im Viewport — kein 3–4 MB LCP-Kill. */
+  /**
+   * Autoplay ja, aber LCP-sicher:
+   * 1) Poster sofort (LCP)
+   * 2) nach Sichtbarkeit + Idle/~1.2s Video laden
+   * 3) muted autoplay, weich über Poster einblenden
+   */
   useEffect(() => {
     if (!card.videoSrc || reducedMotion || !isFront) {
       setVideoReady(false);
+      setVideoPlaying(false);
       return;
     }
     const el = mediaRef.current;
     if (!el) return;
+
+    let cancelled = false;
+    let idleId: number | null = null;
+    let timeoutId: ReturnType<typeof setTimeout> | null = null;
+
+    const armLoad = () => {
+      if (cancelled) return;
+      const start = () => {
+        if (!cancelled) setVideoReady(true);
+      };
+      if ("requestIdleCallback" in window) {
+        idleId = window.requestIdleCallback(start, { timeout: 1400 });
+      } else {
+        timeoutId = setTimeout(start, 900);
+      }
+    };
+
     const io = new IntersectionObserver(
       ([entry]) => {
-        if (entry?.isIntersecting) setVideoReady(true);
+        if (entry?.isIntersecting) armLoad();
       },
-      { rootMargin: "80px", threshold: 0.15 },
+      { rootMargin: "40px", threshold: 0.2 },
     );
     io.observe(el);
-    return () => io.disconnect();
+
+    return () => {
+      cancelled = true;
+      io.disconnect();
+      if (idleId !== null) window.cancelIdleCallback?.(idleId);
+      if (timeoutId !== null) clearTimeout(timeoutId);
+    };
   }, [card.videoSrc, isFront, reducedMotion]);
+
+  useEffect(() => {
+    if (!videoReady) return;
+    const v = videoRef.current;
+    if (!v) return;
+    const onPlaying = () => setVideoPlaying(true);
+    v.addEventListener("playing", onPlaying);
+    void v.play().catch(() => {
+      /* Autoplay blockiert → Poster bleibt sichtbar */
+    });
+    return () => v.removeEventListener("playing", onPlaying);
+  }, [videoReady]);
 
   return (
     <div
@@ -102,7 +145,10 @@ function PolaroidMedia({
               fill
               sizes={POLAROID_IMAGE_SIZES_FULL}
               quality={POLAROID_IMAGE_QUALITY}
-              className="polaroid-media__img object-cover object-center"
+              className={cn(
+                "polaroid-media__img object-cover object-center transition-opacity duration-500",
+                videoPlaying ? "opacity-0" : "opacity-100",
+              )}
               aria-hidden
               priority={isFront}
               loading={isFront ? "eager" : "lazy"}
@@ -110,13 +156,16 @@ function PolaroidMedia({
           ) : null}
           {videoReady ? (
             <video
-              className="polaroid-media__video absolute inset-0 h-full w-full object-cover object-center"
+              ref={videoRef}
+              className={cn(
+                "polaroid-media__video absolute inset-0 h-full w-full object-cover object-center transition-opacity duration-500",
+                videoPlaying ? "opacity-100" : "opacity-0",
+              )}
               src={card.videoSrc}
-              autoPlay
               muted
               loop
               playsInline
-              preload="metadata"
+              preload="none"
               aria-label={alt}
             />
           ) : null}

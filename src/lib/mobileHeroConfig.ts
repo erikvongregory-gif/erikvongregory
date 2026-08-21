@@ -78,9 +78,8 @@ export const MOBILE_HERO_POLAROIDS: MobileHeroPolaroid[] = [
     id: "social",
     stamp: "REELS · 9:16",
     placeholderCaption: "Social · Reels",
-    videoSrc: REEL_VIDEO.src,
-    /** Hochauflösendes Standbild — kleine Video-Poster wirken in der Polaroid-Vorschau unscharf. */
-    /** Kleines Biergarten-Poster (wie vorher), nicht das Video-Frame — Look bleibt. */
+    /** ~1 MB / 3.5s Loop statt 3.8 MB Vollvideo — Autoplay nach Poster-LCP. */
+    videoSrc: "/optimized/hero-reel-mobile.mp4",
     videoPoster: "/optimized/hero-poster-biergarten.jpg",
     imageAlt: REEL_VIDEO.title,
   },
