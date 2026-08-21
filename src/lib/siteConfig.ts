@@ -39,21 +39,23 @@ function rootDomainOf(hostname: string): string {
   return hostname;
 }
 
-/** Defaults — BrewAI auf brewai.de */
+/** Defaults — BrewAI (Canonical = www, wie in Vercel als Primary Domain) */
 const DEFAULTS = {
   siteName: "BrewAI",
   productName: "BrewAI",
-  marketingBaseUrl: "https://brewai.de",
-  /** Dashboard bleibt vorerst auf app.evglab.com, bis app.brewai.de live ist */
-  appBaseUrl: "https://app.evglab.com",
+  /** Muss zur Vercel-Primary-Domain passen (aktuell www → sonst Redirect-Loop) */
+  marketingBaseUrl: "https://www.brewai.de",
+  /** Dashboard-App */
+  appBaseUrl: "https://app.brewai.de",
   agencyBaseUrl: "https://evglab.com",
   contactEmail: "kontakt@brewai.de",
+  /** Nur alte Hosts — niemals die Canonical-/Primary-Domain selbst */
   legacyHosts: [
     "erikvongregory.com",
     "www.erikvongregory.com",
     "ki.evglab.com",
     "www.ki.evglab.com",
-    "www.brewai.de",
+    "brewai.de",
   ] as const,
 } as const;
 
@@ -67,15 +69,16 @@ const agencyBaseUrl = stripTrailingSlash(
   trimEnv("NEXT_PUBLIC_AGENCY_URL") ?? DEFAULTS.agencyBaseUrl,
 );
 
-const marketingHost = hostnameOf(marketingBaseUrl, "brewai.de");
-const appHost = hostnameOf(appBaseUrl, "app.evglab.com");
+const marketingHost = hostnameOf(marketingBaseUrl, "www.brewai.de");
+const appHost = hostnameOf(appBaseUrl, "app.brewai.de");
 const cookieDomain =
   trimEnv("NEXT_PUBLIC_COOKIE_DOMAIN") ?? rootDomainOf(marketingHost);
 
+/** Legacy-Hosts ohne Canonical — verhindert Redirect-Loops (www ↔ apex). */
 const legacyHosts = (
   trimEnv("NEXT_PUBLIC_LEGACY_HOSTS")?.split(",").map((h) => h.trim().toLowerCase()).filter(Boolean) ??
   [...DEFAULTS.legacyHosts]
-) as string[];
+).filter((host) => host !== marketingHost);
 
 const siteName = trimEnv("NEXT_PUBLIC_SITE_NAME") ?? DEFAULTS.siteName;
 const productName =

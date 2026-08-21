@@ -24,7 +24,8 @@ export async function middleware(request: NextRequest) {
   }
 
   const isLegacyHost = SITE.legacyHosts.includes(host);
-  if (isLegacyHost) {
+  /** Nie auf sich selbst umleiten (Loop mit Vercel www↔apex). */
+  if (isLegacyHost && host !== SITE.marketingHost) {
     const redirectUrl = request.nextUrl.clone();
     redirectUrl.protocol = "https:";
     redirectUrl.hostname = SITE.marketingHost;
