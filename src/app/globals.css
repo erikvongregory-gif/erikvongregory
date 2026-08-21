@@ -42,7 +42,8 @@
 /* Tailwind: Sans = Inter, Display = Playfair (next/font-Variablen auf <html>) */
 @theme {
   --font-sans: var(--font-inter), ui-sans-serif, system-ui, sans-serif;
-  --font-display: var(--font-serif), Georgia, "Times New Roman", serif;
+  --font-display: var(--font-newsreader), Georgia, "Times New Roman", serif;
+  --font-serif: var(--font-newsreader), Georgia, "Times New Roman", serif;
   --font-serif-hero: var(--font-newsreader), "Source Serif 4", Georgia, serif;
   --font-sans-tight: var(--font-inter-tight), -apple-system, system-ui, sans-serif;
   --font-mono-hero: var(--font-jetbrains), ui-monospace, Menlo, monospace;
@@ -293,8 +294,8 @@ svg {
   --akq-green: #14532d;
   --font-main: var(--font-inter), ui-sans-serif, system-ui, sans-serif;
   --font-insurance: var(--font-inter), ui-sans-serif, system-ui, sans-serif;
-  --font-austera: var(--font-serif), Georgia, "Times New Roman", serif;
-  --font-playfair: var(--font-serif), Georgia, "Times New Roman", serif;
+  --font-austera: var(--font-newsreader), Georgia, "Times New Roman", serif;
+  --font-playfair: var(--font-newsreader), Georgia, "Times New Roman", serif;
   --font-almarena: var(--font-main);
   --akq-green-hover: #166534;
   --akq-green-light: #dcfce7;

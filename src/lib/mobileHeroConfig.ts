@@ -96,7 +96,7 @@ export const MOBILE_HERO_POLAROIDS: MobileHeroPolaroid[] = [
     stamp: "✦ AUSGEWÄHLT · 1:1",
     stampClassName: "text-amber",
     placeholderCaption: "Produktfoto · Hero",
-    imageSrcs: ["/hero-brauerei-live-bg.png", "/ki-beispiel-praxis-7.webp"],
+    imageSrcs: ["/optimized/hero-product-left.jpg", "/optimized/hero-product-right.jpg"],
     imageAlt: "KI-Produktfotos: Bier mit Hopfen und Flasche am Bergfluss",
   },
 ];

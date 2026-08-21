@@ -292,7 +292,7 @@
 }
 
 .title {
-  font-family: var(--font-serif), "Playfair Display", Georgia, serif;
+  font-family: var(--font-newsreader), Georgia, serif;
   font-size: 22px;
   font-weight: 700;
   color: #ece0cc;
@@ -413,7 +413,7 @@
 }
 
 .brandMark span {
-  font-family: var(--font-serif), "Playfair Display", serif;
+  font-family: var(--font-newsreader), Georgia, serif;
   font-style: italic;
   font-size: 12px;
 }

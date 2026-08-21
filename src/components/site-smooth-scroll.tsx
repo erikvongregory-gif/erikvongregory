@@ -4,7 +4,6 @@ import { usePathname } from "next/navigation";
 import { useEffect, useLayoutEffect } from "react";
 import { applyHomeScrollReset } from "@/lib/homeScrollReset";
 import { setLenisInstance, type LenisLike } from "@/lib/lenisScroll";
-import "lenis/dist/lenis.css";
 
 const DESKTOP_MIN = "(min-width: 1024px)";
 
@@ -23,7 +22,7 @@ function shouldUseLenis() {
 
 /**
  * Weiches Scrollen (Lenis). Startseite Desktop + alle Unterseiten.
- * Auf „/“ Mobile: natives Scroll; Scroll-Reset weiterhin vor dem Paint.
+ * CSS/JS nur laden wenn Lenis wirklich aktiv — spart Mobile-Home TBT.
  */
 export function SiteSmoothScroll() {
   const pathname = usePathname();
@@ -38,7 +37,7 @@ export function SiteSmoothScroll() {
     let active = true;
     let lenis: LenisLike | null = null;
 
-    void import("lenis").then(({ default: Lenis }) => {
+    void Promise.all([import("lenis"), import("lenis/dist/lenis.css")]).then(([{ default: Lenis }]) => {
       if (!active) return;
 
       lenis = new Lenis({

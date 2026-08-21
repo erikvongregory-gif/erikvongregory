@@ -1,10 +1,22 @@
 "use client";
 
+import dynamic from "next/dynamic";
 import { cn } from "@/lib/utils";
 import { MOBILE_EDITORIAL_PX } from "@/lib/mobileEditorial";
-import { WarumBrewAISection } from "@/components/mobile/WarumBrewAISection";
-import { ProcessDeliverySlipSection } from "@/components/mobile/ProcessDeliverySlipSection";
-import { TapWallSection } from "@/components/mobile/TapWallSection";
+
+const WarumBrewAISection = dynamic(
+  () => import("@/components/mobile/WarumBrewAISection").then((m) => m.WarumBrewAISection),
+  { ssr: false },
+);
+const ProcessDeliverySlipSection = dynamic(
+  () =>
+    import("@/components/mobile/ProcessDeliverySlipSection").then((m) => m.ProcessDeliverySlipSection),
+  { ssr: false },
+);
+const TapWallSection = dynamic(
+  () => import("@/components/mobile/TapWallSection").then((m) => m.TapWallSection),
+  { ssr: false },
+);
 
 export function MobileLayout() {
   return (

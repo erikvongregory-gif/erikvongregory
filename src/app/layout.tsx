@@ -1,14 +1,25 @@
 import type { Metadata } from "next";
-import { Inter, Inter_Tight, JetBrains_Mono, Newsreader, Playfair_Display } from "next/font/google";
-import { Analytics } from "@vercel/analytics/react";
-import { SpeedInsights } from "@vercel/speed-insights/next";
+import { Inter, Inter_Tight, JetBrains_Mono, Newsreader } from "next/font/google";
+import dynamic from "next/dynamic";
 import { AppShell } from "@/components/AppShell";
 import { SiteSmoothScroll } from "@/components/site-smooth-scroll";
 import { LoadingProvider } from "@/context/LoadingContext";
 import { JsonLd } from "@/components/JsonLd";
-import { FaviconReminder } from "@/components/FaviconReminder";
 import { SITE } from "@/lib/siteConfig";
 import "./globals.css";
+
+const Analytics = dynamic(
+  () => import("@vercel/analytics/react").then((m) => m.Analytics),
+  { ssr: false },
+);
+const SpeedInsights = dynamic(
+  () => import("@vercel/speed-insights/next").then((m) => m.SpeedInsights),
+  { ssr: false },
+);
+const FaviconReminder = dynamic(
+  () => import("@/components/FaviconReminder").then((m) => m.FaviconReminder),
+  { ssr: false },
+);
 
 const inter = Inter({
   subsets: ["latin"],
@@ -17,14 +28,7 @@ const inter = Inter({
   weight: ["400", "500", "600", "700"],
 });
 
-const playfair = Playfair_Display({
-  subsets: ["latin"],
-  display: "swap",
-  variable: "--font-serif",
-  weight: ["400", "600", "700"],
-  style: ["normal", "italic"],
-});
-
+/** Playfair entfällt — austera/display nutzt Newsreader (weniger Font-Requests). */
 const newsreader = Newsreader({
   subsets: ["latin"],
   display: "swap",
@@ -130,7 +134,7 @@ export default function RootLayout({
   return (
     <html
       lang="de"
-      className={`${inter.variable} ${playfair.variable} ${newsreader.variable} ${interTight.variable} ${jetbrainsMono.variable}`}
+      className={`${inter.variable} ${newsreader.variable} ${interTight.variable} ${jetbrainsMono.variable}`}
     >
       <body className="bg-paper text-neutral-900 antialiased">
         <SiteSmoothScroll />

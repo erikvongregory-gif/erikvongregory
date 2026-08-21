@@ -1,6 +1,7 @@
 "use client";
 
 import dynamic from "next/dynamic";
+import { useEffect, useState } from "react";
 import { usePathname } from "next/navigation";
 import { SiteHeader } from "@/components/SiteHeader";
 import { LegalPageTheme } from "@/components/LegalPageTheme";
@@ -18,8 +19,28 @@ type AppShellProps = {
   children: React.ReactNode;
 };
 
+function useDeferNonCritical(ms = 1800) {
+  const [ready, setReady] = useState(false);
+  useEffect(() => {
+    let idleId: number | null = null;
+    let timeoutId: ReturnType<typeof setTimeout> | null = null;
+    const go = () => setReady(true);
+    if ("requestIdleCallback" in window) {
+      idleId = window.requestIdleCallback(go, { timeout: ms });
+    } else {
+      timeoutId = setTimeout(go, Math.min(ms, 1200));
+    }
+    return () => {
+      if (idleId !== null) window.cancelIdleCallback?.(idleId);
+      if (timeoutId !== null) clearTimeout(timeoutId);
+    };
+  }, [ms]);
+  return ready;
+}
+
 export function AppShell({ children }: AppShellProps) {
   const pathname = usePathname();
+  const deferChrome = useDeferNonCritical(2000);
   const isDashboardRoute = pathname?.startsWith("/dashboard") ?? false;
   const isAdminRoute = pathname?.startsWith("/admin") ?? false;
   const skipShell = isDashboardRoute || isAdminRoute;
@@ -36,8 +57,8 @@ export function AppShell({ children }: AppShellProps) {
       >
         Zum Inhalt springen
       </a>
-      <ContactFunnel />
-      <CookieBanner />
+      {deferChrome ? <ContactFunnel /> : null}
+      {deferChrome ? <CookieBanner /> : null}
       <LegalPageTheme />
       <SiteHeader />
       <div>{children}</div>
