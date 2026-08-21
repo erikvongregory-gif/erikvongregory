@@ -139,6 +139,19 @@ export default function Home() {
 
   return (
     <>
+      {/* LCP früh anstoßen — Front-Polaroid (Produkt) */}
+      <link
+        rel="preload"
+        as="image"
+        href="/optimized/hero-product-left.jpg"
+        fetchPriority="high"
+      />
+      <link
+        rel="preload"
+        as="image"
+        href="/optimized/hero-product-right.jpg"
+        fetchPriority="high"
+      />
       <h1 className="sr-only">
         KI-Marketing für Brauereien in Deutschland, Österreich und der Schweiz — Werbebilder, Social Media und
         Bewertungen mit {SITE.name}

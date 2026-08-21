@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import { Inter, Inter_Tight, JetBrains_Mono, Newsreader } from "next/font/google";
+import { Inter_Tight, JetBrains_Mono, Newsreader } from "next/font/google";
 import { AppShell } from "@/components/AppShell";
 import { DeferredClientChrome } from "@/components/DeferredClientChrome";
 import { SiteSmoothScroll } from "@/components/site-smooth-scroll";
@@ -8,20 +8,14 @@ import { JsonLd } from "@/components/JsonLd";
 import { SITE } from "@/lib/siteConfig";
 import "./globals.css";
 
-const inter = Inter({
-  subsets: ["latin"],
-  display: "swap",
-  variable: "--font-inter",
-  weight: ["400", "500", "600", "700"],
-});
-
-/** Playfair entfällt — austera/display nutzt Newsreader (weniger Font-Requests). */
+/** Inter entfällt — Sans über Inter Tight (weniger Render-Blocking). */
 const newsreader = Newsreader({
   subsets: ["latin"],
   display: "swap",
   variable: "--font-newsreader",
   weight: ["400", "500", "600"],
   style: ["normal", "italic"],
+  preload: true,
 });
 
 const interTight = Inter_Tight({
@@ -29,6 +23,7 @@ const interTight = Inter_Tight({
   display: "swap",
   variable: "--font-inter-tight",
   weight: ["400", "500", "600", "700"],
+  preload: true,
 });
 
 const jetbrainsMono = JetBrains_Mono({
@@ -36,6 +31,7 @@ const jetbrainsMono = JetBrains_Mono({
   display: "swap",
   variable: "--font-jetbrains",
   weight: ["400", "500"],
+  preload: false,
 });
 
 const ICON_VERSION = "20260612a";
@@ -121,7 +117,7 @@ export default function RootLayout({
   return (
     <html
       lang="de"
-      className={`${inter.variable} ${newsreader.variable} ${interTight.variable} ${jetbrainsMono.variable}`}
+      className={`${newsreader.variable} ${interTight.variable} ${jetbrainsMono.variable}`}
     >
       <body className="bg-paper text-neutral-900 antialiased">
         <SiteSmoothScroll />

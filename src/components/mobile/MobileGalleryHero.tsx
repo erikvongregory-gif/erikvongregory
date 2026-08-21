@@ -330,7 +330,7 @@ export function MobileGalleryHero({
               className={cn(
                 "absolute bg-white p-2 pb-[30px] text-left rounded-[4px] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-amber/50 focus-visible:ring-offset-2 focus-visible:ring-offset-paper",
                 layout.className,
-                !reducedMotion && "transition-[transform,box-shadow,top,left,right] duration-300 ease-out",
+                !reducedMotion && "transition-[transform,box-shadow] duration-300 ease-out",
               )}
               style={{
                 zIndex: layout.z,
