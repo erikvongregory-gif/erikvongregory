@@ -3,51 +3,31 @@ import { SITE } from "@/lib/siteConfig";
 
 export const dynamic = "force-static";
 
+type Entry = {
+  path: string;
+  changeFrequency: NonNullable<MetadataRoute.Sitemap[number]["changeFrequency"]>;
+  priority: number;
+};
+
+/** Öffentliche Index-Seiten — keine noindex-URLs (/vergleich/*, /preise/vergleich, App). */
+const PAGES: Entry[] = [
+  { path: "", changeFrequency: "weekly", priority: 1 },
+  { path: "/loesungen", changeFrequency: "weekly", priority: 0.9 },
+  { path: "/ueber-uns", changeFrequency: "monthly", priority: 0.85 },
+  { path: "/ratgeber", changeFrequency: "weekly", priority: 0.8 },
+  { path: "/impressum", changeFrequency: "yearly", priority: 0.2 },
+  { path: "/datenschutz", changeFrequency: "yearly", priority: 0.2 },
+  { path: "/agb", changeFrequency: "yearly", priority: 0.2 },
+];
+
 export default function sitemap(): MetadataRoute.Sitemap {
   const base = SITE.baseUrl;
+  const lastModified = new Date();
 
-  return [
-    {
-      url: base,
-      lastModified: new Date(),
-      changeFrequency: "weekly" as const,
-      priority: 1,
-    },
-    {
-      url: `${base}/impressum`,
-      lastModified: new Date(),
-      changeFrequency: "monthly" as const,
-      priority: 0.3,
-    },
-    {
-      url: `${base}/datenschutz`,
-      lastModified: new Date(),
-      changeFrequency: "monthly" as const,
-      priority: 0.3,
-    },
-    {
-      url: `${base}/agb`,
-      lastModified: new Date(),
-      changeFrequency: "monthly" as const,
-      priority: 0.3,
-    },
-    {
-      url: `${base}/loesungen`,
-      lastModified: new Date(),
-      changeFrequency: "weekly" as const,
-      priority: 0.9,
-    },
-    {
-      url: `${base}/ratgeber`,
-      lastModified: new Date(),
-      changeFrequency: "weekly" as const,
-      priority: 0.8,
-    },
-    {
-      url: `${base}/ueber-uns`,
-      lastModified: new Date(),
-      changeFrequency: "monthly" as const,
-      priority: 0.85,
-    },
-  ];
+  return PAGES.map(({ path, changeFrequency, priority }) => ({
+    url: path ? `${base}${path}` : base,
+    lastModified,
+    changeFrequency,
+    priority,
+  }));
 }

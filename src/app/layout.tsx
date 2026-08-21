@@ -70,7 +70,13 @@ export const metadata: Metadata = {
   robots: {
     index: true,
     follow: true,
-    googleBot: { index: true, follow: true },
+    googleBot: {
+      index: true,
+      follow: true,
+      "max-image-preview": "large",
+      "max-snippet": -1,
+      "max-video-preview": -1,
+    },
   },
   alternates: {
     languages: {
@@ -80,12 +86,14 @@ export const metadata: Metadata = {
   },
   openGraph: {
     type: "website",
-    locale: "de_DE",
+    locale: SITE.locale,
     url: SITE.baseUrl,
     siteName: SITE.name,
     title: SITE.defaultTitle,
     description: SITE.defaultDescription,
-    images: SITE.ogImage ? [{ url: SITE.ogImage, width: 1200, height: 630, alt: SITE.name }] : undefined,
+    images: SITE.ogImage
+      ? [{ url: SITE.ogImage, width: 1200, height: 630, alt: SITE.name }]
+      : undefined,
   },
   twitter: {
     card: "summary_large_image",
@@ -106,6 +114,11 @@ export const metadata: Metadata = {
   manifest: `/manifest.json?v=${ICON_VERSION}`,
   ...(SITE.googleSiteVerification?.trim() && {
     verification: { google: SITE.googleSiteVerification.trim() },
+  }),
+  ...(SITE.bingSiteVerification?.trim() && {
+    other: {
+      "msvalidate.01": SITE.bingSiteVerification.trim(),
+    },
   }),
 };
 

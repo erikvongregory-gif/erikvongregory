@@ -38,7 +38,7 @@ export function RatgeberDesktop({ ratgeber: r }: RatgeberDesktopProps) {
 
           <div className="border-t border-ink/[0.06] py-6">
             <DesktopContainer className="flex items-center justify-between font-mono-hero text-[11px] uppercase tracking-[1.1px] text-ink3">
-              <span>EvGlab · Ratgeber</span>
+              <span>BrewAI · Ratgeber</span>
               <span>
                 Frage {r.idx + 1} von {r.total}
               </span>

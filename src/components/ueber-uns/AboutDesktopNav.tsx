@@ -2,6 +2,7 @@
 
 import Link from "next/link";
 import { APP_LOGIN_URL } from "@/lib/appLoginUrl";
+import { SITE } from "@/lib/siteConfig";
 import { useFreeTrialDemo } from "@/context/FreeTrialDemoContext";
 import { useAboutNavTheme } from "@/components/ueber-uns/useAboutNavTheme";
 import { WaveMark } from "@/components/desktop/WaveMark";
@@ -37,7 +38,7 @@ export function AboutDesktopNav() {
           )}
         >
           <WaveMark />
-          <span className="font-serif-hero text-[22px] font-medium tracking-[-0.4px]">EvGlab</span>
+          <span className="font-serif-hero text-[22px] font-medium tracking-[-0.4px]">{SITE.name}</span>
         </Link>
         <nav className="flex items-center gap-1">
           {NAV.map((item) => (

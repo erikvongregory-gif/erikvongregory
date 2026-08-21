@@ -6,7 +6,7 @@ import { SITE } from "@/lib/siteConfig";
 const canonical = `${SITE.baseUrl}/#pakete-preise`;
 
 export const metadata: Metadata = {
-  title: "Alle 6 Pakete im Vergleich | EvGlab",
+  title: "Alle 6 Pakete im Vergleich | BrewAI",
   description:
     "Manufaktur und Werkstatt im Überblick: Brauerei Start, Wachstum und Premium — Preise, Leistungen und Highlights auf einen Blick.",
   robots: {
@@ -16,16 +16,16 @@ export const metadata: Metadata = {
   },
   alternates: { canonical },
   openGraph: {
-    title: "Alle 6 Pakete im Vergleich | EvGlab",
+    title: "Alle 6 Pakete im Vergleich | BrewAI",
     description: "Manufaktur (einmalig) und Werkstatt (Abo) für Brauereien im direkten Vergleich.",
     url: canonical,
     type: "website",
     locale: "de_DE",
-    images: SITE.ogImage ? [{ url: SITE.ogImage, width: 1200, height: 630, alt: "EvGlab Paketvergleich" }] : undefined,
+    images: SITE.ogImage ? [{ url: SITE.ogImage, width: 1200, height: 630, alt: "BrewAI Paketvergleich" }] : undefined,
   },
   twitter: {
     card: "summary_large_image",
-    title: "Alle 6 Pakete im Vergleich | EvGlab",
+    title: "Alle 6 Pakete im Vergleich | BrewAI",
     description: "Manufaktur und Werkstatt — Preise und Highlights für Brauereien.",
     images: SITE.ogImage ? [SITE.ogImage] : undefined,
   },

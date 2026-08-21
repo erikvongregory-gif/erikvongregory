@@ -1,6 +1,8 @@
+import { SITE } from "@/lib/siteConfig";
+
 /**
  * Basis-URL der Dashboard-App (getrennt von der Marketing-Site).
- * Produktion: https://app.evglab.com
+ * Override: NEXT_PUBLIC_APP_BASE_URL (siehe siteConfig Defaults).
  *
  * Lokal: in `.env.local`, z. B. `NEXT_PUBLIC_APP_BASE_URL=http://localhost:3001`
  */
@@ -8,14 +10,14 @@ export const APP_BASE_URL =
   process.env.NEXT_PUBLIC_APP_BASE_URL?.trim() ||
   (process.env.NODE_ENV === "development"
     ? "http://localhost:3001"
-    : "https://app.evglab.com");
+    : SITE.appBaseUrl);
 
 /** Hostname für UI-Mockups (Browser-Leiste, Studio-Demo) — folgt NEXT_PUBLIC_APP_BASE_URL. */
 export const APP_DISPLAY_HOST = (() => {
   try {
     return new URL(APP_BASE_URL).host;
   } catch {
-    return "app.evglab.com";
+    return SITE.appHost;
   }
 })();
 
@@ -27,10 +29,7 @@ export const APP_REGISTER_URL = `${APP_BASE_URL.replace(/\/$/, "")}/registrieren
 
 /**
  * Ziel der „Anmelden“-Links im Marketing (Dashboard-App).
- * Produktion: https://app.evglab.com/anmelden
- *
- * Lokal: in `.env.local` setzen, z. B. wenn die App auf Port 3001 läuft:
- * NEXT_PUBLIC_APP_LOGIN_URL=http://localhost:3001/anmelden
+ * Override: NEXT_PUBLIC_APP_LOGIN_URL
  */
 export const APP_LOGIN_URL =
   process.env.NEXT_PUBLIC_APP_LOGIN_URL?.trim() ||

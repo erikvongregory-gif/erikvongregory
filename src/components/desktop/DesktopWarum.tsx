@@ -80,7 +80,7 @@ export function DesktopWarum() {
         <DesktopRevealStagger className="grid grid-cols-2 items-end gap-16 border-b border-ink/10 pb-20" softEntrance>
           <DesktopRevealItem>
             <div>
-              <p className="mb-4 font-mono-hero text-[11px] uppercase tracking-[1.4px] text-ink3">Warum EvGlab · 03 Punkte</p>
+              <p className="mb-4 font-mono-hero text-[11px] uppercase tracking-[1.4px] text-ink3">Warum BrewAI · 03 Punkte</p>
               <h2 id="desktop-warum-heading" className="font-serif-hero text-[80px] font-normal leading-[0.98] tracking-[-2.4px] text-ink">
                 Drei Sachen
                 <br />

@@ -86,7 +86,7 @@ export function DesktopHero() {
 
           <div className="grid grid-cols-3 gap-4 border-b border-[rgba(244,239,230,0.08)] py-6 pb-14 font-mono-hero text-[11px] uppercase tracking-[1.4px] text-[#8C7E68]">
 
-            <span>EvGlab · Ausgabe №07</span>
+            <span>BrewAI · Ausgabe №07</span>
 
             <span className="text-center">Für Brauereien · Gastro · Getränke · Mai 26</span>
 

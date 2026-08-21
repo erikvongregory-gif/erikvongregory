@@ -2,11 +2,11 @@ import { Check, X } from "lucide-react";
 import { WARUM_COMPARISON_ROWS } from "@/lib/warumComparisonRows";
 import { cn } from "@/lib/utils";
 
-type WarumEvGlabComparisonTableProps = {
+type WarumBrewAIComparisonTableProps = {
   className?: string;
 };
 
-export function WarumEvGlabComparisonTable({ className }: WarumEvGlabComparisonTableProps) {
+export function WarumBrewAIComparisonTable({ className }: WarumBrewAIComparisonTableProps) {
   return (
     <div className={cn("min-w-0", className)}>
       <ul role="list" className="m-0 flex list-none flex-col gap-0 p-0">
@@ -34,7 +34,7 @@ export function WarumEvGlabComparisonTable({ className }: WarumEvGlabComparisonT
                 <div className="mt-2 flex items-start gap-2">
                   <X className="mt-0.5 h-3.5 w-3.5 shrink-0 text-ink3/80" strokeWidth={2.5} aria-hidden />
                   <p className="m-0 font-sans-tight text-[13px] leading-[1.35] text-ink3 line-through decoration-ink3/35">
-                    <span className="sr-only">Ohne EvGlab: </span>
+                    <span className="sr-only">Ohne BrewAI: </span>
                     {row.withoutShort}
                   </p>
                 </div>
@@ -42,13 +42,13 @@ export function WarumEvGlabComparisonTable({ className }: WarumEvGlabComparisonT
                 <div className="mt-1.5 flex items-start gap-2">
                   <Check className="mt-0.5 h-3.5 w-3.5 shrink-0 text-amber" strokeWidth={2.5} aria-hidden />
                   <p className="m-0 font-sans-tight text-[13.5px] font-medium leading-[1.35] text-ink">
-                    <span className="sr-only">Mit EvGlab: </span>
-                    {row.withEvGlabShort}
+                    <span className="sr-only">Mit BrewAI: </span>
+                    {row.withBrewAIShort}
                   </p>
                 </div>
 
                 <p className="sr-only">
-                  {row.without} — Mit EvGlab: {row.withEvGlab}
+                  {row.without} — Mit BrewAI: {row.withBrewAI}
                 </p>
               </div>
             </li>

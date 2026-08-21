@@ -1,5 +1,6 @@
 import { NextResponse, type NextRequest } from "next/server";
 import { updateSession } from "@/lib/supabase/middleware";
+import { SITE } from "@/lib/siteConfig";
 
 const DIRECT_CANONICAL_REDIRECTS: Record<string, string> = {
   "/loesungen/saisonkampagne-brauerei": "/loesungen",
@@ -15,18 +16,18 @@ export async function middleware(request: NextRequest) {
   if (canonicalTarget) {
     const redirectUrl = request.nextUrl.clone();
     redirectUrl.protocol = "https:";
-    redirectUrl.hostname = "ki.evglab.com";
+    redirectUrl.hostname = SITE.marketingHost;
     redirectUrl.port = "";
     redirectUrl.pathname = canonicalTarget;
     redirectUrl.search = "";
     return NextResponse.redirect(redirectUrl, 308);
   }
 
-  const isLegacyHost = host === "erikvongregory.com" || host === "www.erikvongregory.com";
+  const isLegacyHost = SITE.legacyHosts.includes(host);
   if (isLegacyHost) {
     const redirectUrl = request.nextUrl.clone();
     redirectUrl.protocol = "https:";
-    redirectUrl.hostname = "ki.evglab.com";
+    redirectUrl.hostname = SITE.marketingHost;
     redirectUrl.port = "";
     return NextResponse.redirect(redirectUrl, 308);
   }
@@ -38,14 +39,16 @@ export async function middleware(request: NextRequest) {
     pathname === "/anmelden" ||
     pathname === "/registrieren";
   if (authAppPaths) {
-    const appBase = process.env.NEXT_PUBLIC_APP_BASE_URL?.trim() || "https://app.evglab.com";
     try {
-      const target = new URL(appBase);
+      const target = new URL(SITE.appBaseUrl);
       target.pathname = pathname;
       target.search = request.nextUrl.search;
       return NextResponse.redirect(target, 308);
     } catch {
-      return NextResponse.redirect(new URL(`https://app.evglab.com${pathname}${request.nextUrl.search}`), 308);
+      return NextResponse.redirect(
+        new URL(`${SITE.appBaseUrl}${pathname}${request.nextUrl.search}`),
+        308,
+      );
     }
   }
 

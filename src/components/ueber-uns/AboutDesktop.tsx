@@ -20,6 +20,7 @@ import { DarkGlowBg, DachMapSvg, FounderPortraitCard, HugoChatMockup } from "@/c
 import { DesktopContainer } from "@/components/desktop/DesktopContainer";
 import { DesktopRevealItem, DesktopRevealStagger, useDesktopHeroReady } from "@/components/desktop/DesktopReveal";
 import { useFreeTrialDemo } from "@/context/FreeTrialDemoContext";
+import { SITE } from "@/lib/siteConfig";
 import { cn } from "@/lib/utils";
 
 function SectionEyebrow({ children, dark }: { children: ReactNode; dark?: boolean }) {
@@ -103,7 +104,7 @@ export function AboutDesktop() {
           <DesktopContainer>
             <DesktopRevealItem delay={0}>
               <div className="grid grid-cols-3 gap-4 border-b border-[rgba(244,239,230,0.08)] py-6 pb-14 font-mono-hero text-[11px] uppercase tracking-[1.4px] text-[#8C7E68]">
-                <span>EvGlab · Über uns · №07</span>
+                <span>BrewAI · Über uns · №07</span>
                 <span className="text-center">Brauereien · Gastro · Getränke · DACH</span>
                 <span className="flex items-center justify-end gap-2">
                   <span className="evg-live-dot h-1.5 w-1.5 rounded-full bg-amber2" aria-hidden />
@@ -175,7 +176,7 @@ export function AboutDesktop() {
                   <h2 id="about-hintergrund-h2" className="font-serif-hero text-[80px] font-normal leading-[0.98] tracking-[-2.4px]">
                     Was steckt
                     <br />
-                    hinter <em className="italic text-amber">EvGlab</em>?
+                    hinter <em className="italic text-amber">BrewAI</em>?
                   </h2>
                 </div>
               </DesktopRevealItem>
@@ -200,7 +201,7 @@ export function AboutDesktop() {
                 <div>
                   <p className="text-[16.5px] leading-[1.65] text-ink2">
                     KI ist dafür das Werkzeug — aber nur, wenn Briefing, Markenprofil und Freigaben sauber sitzen. Daraus
-                    entstand EvGlab: kein generischer KI-Wrapper, kein Agentur-Baukasten.
+                    entstand BrewAI: kein generischer KI-Wrapper, kein Agentur-Baukasten.
                   </p>
                   <p className="mt-5 text-[16.5px] leading-[1.65] text-ink2">
                     Heute bündeln wir genau das: fertige Assets, nachvollziehbare Pakete — und für Teams mit laufendem
@@ -209,7 +210,7 @@ export function AboutDesktop() {
                   </p>
                   <div className="mt-8 rounded-[14px] border border-ink/10 bg-white p-[20px_22px]">
                     <p className="mb-4 font-mono-hero text-[10px] uppercase tracking-wider text-ink3">
-                      Wie EvGlab heute liefert
+                      Wie BrewAI heute liefert
                     </p>
                     <ul className="space-y-3">
                       {DELIVERY_ROWS.map(([k, v]) => (
@@ -242,7 +243,7 @@ export function AboutDesktop() {
               </DesktopRevealItem>
               <DesktopRevealItem>
                 <p className="max-w-[520px] text-[17px] leading-[1.55] text-ink2">
-                  Haltung, Klientel, Richtung — ohne Marketing-Lyrik. Wer das liest, soll in 90 Sekunden wissen, ob EvGlab
+                  Haltung, Klientel, Richtung — ohne Marketing-Lyrik. Wer das liest, soll in 90 Sekunden wissen, ob BrewAI
                   zur eigenen Brauerei passt.
                 </p>
               </DesktopRevealItem>
@@ -277,7 +278,7 @@ export function AboutDesktop() {
               </DesktopRevealItem>
               <DesktopRevealItem>
                 <p className="max-w-[420px] text-[15px] leading-[1.6] text-[#C8BFAD]">
-                  Speziell für KI-Bildgenerierung im EvGlab-Dashboard — Prompts, Motive, Stil, Varianten, Formate und
+                  Speziell für KI-Bildgenerierung im BrewAI-Dashboard — Prompts, Motive, Stil, Varianten, Formate und
                   Tokens. Keine Rezepte, kein Sudhaus-Wissen.{" "}
                   <em className="italic text-[#E8DFCB]">Bleibt fokussiert</em> auf das, was wir liefern.
                 </p>
@@ -324,7 +325,7 @@ export function AboutDesktop() {
                   </div>
                 </div>
                 <p className="mt-6 text-[15.5px] leading-[1.6] text-[#C8BFAD]">
-                  So bleibt der Fokus auf dem, was EvGlab liefert — schnell nutzbare Bilder für Social, Kampagne und
+                  So bleibt der Fokus auf dem, was BrewAI liefert — schnell nutzbare Bilder für Social, Kampagne und
                   Außenauftritt.
                 </p>
                 <button
@@ -349,7 +350,7 @@ export function AboutDesktop() {
               <DesktopRevealItem>
                 <p className="mb-8 flex items-center justify-center gap-3.5 font-mono-hero text-[11px] uppercase tracking-[1.4px] text-amber">
                   <span className="h-px w-12 bg-amber/40" aria-hidden />
-                  EvGlab in einem Satz
+                  BrewAI in einem Satz
                   <span className="h-px w-12 bg-amber/40" aria-hidden />
                 </p>
               </DesktopRevealItem>
@@ -404,7 +405,7 @@ export function AboutDesktop() {
               </DesktopRevealItem>
               <DesktopRevealItem>
                 <p className="text-[17px] leading-[1.55] text-ink2">
-                  EvGlab unterstützt Brauereien und Getränkemarken in Deutschland, Österreich und der Schweiz — mit
+                  BrewAI unterstützt Brauereien und Getränkemarken in Deutschland, Österreich und der Schweiz — mit
                   KI-Werbebildern, die zu Flasche, Gastro und Saison passen.
                 </p>
               </DesktopRevealItem>
@@ -518,7 +519,7 @@ export function AboutDesktop() {
                       Ratgeber-Quiz starten →
                     </Link>
                     <a
-                      href="mailto:kontakt@evglab.com"
+                      href={SITE.contactMailto}
                       className="inline-flex items-center rounded-xl border border-[rgba(244,239,230,0.18)] px-6 py-3.5 font-sans-tight text-sm font-medium text-paper focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-[3px] focus-visible:outline-amber"
                     >
                       Kontakt aufnehmen
@@ -548,7 +549,7 @@ export function AboutDesktop() {
             </DesktopRevealStagger>
             <DesktopRevealStagger className="flex justify-between pt-8 font-mono-hero text-[11px] uppercase tracking-wider text-[#8C7E68]" staggerMs={70}>
               <DesktopRevealItem>
-                <span className="text-[#C8BFAD]">EvGlab · KI-Marketing für Brauereien · Hosting · DE</span>
+                <span className="text-[#C8BFAD]">BrewAI · KI-Marketing für Brauereien · Hosting · DE</span>
               </DesktopRevealItem>
               <DesktopRevealItem>
                 <span>© 2026 · Alle Rechte vorbehalten</span>

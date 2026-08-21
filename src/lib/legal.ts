@@ -1,3 +1,5 @@
+import { SITE } from "@/lib/siteConfig";
+
 /**
  * Rechtliche Angaben – Impressum und Datenschutz
  */
@@ -6,7 +8,7 @@ export const LEGAL = {
   street: "Hauptstraße 18",
   city: "86925 Fuchstal",
   legalForm: "Einzelunternehmen",
-  email: "kontakt@evglab.com",
+  email: SITE.contactEmail,
   phone: "[Ihre Telefonnummer – optional]",
   ustId: "Kleinunternehmer gemäß § 19 UStG",
 } as const;

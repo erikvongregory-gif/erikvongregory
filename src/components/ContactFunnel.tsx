@@ -226,7 +226,7 @@ export function ContactFunnel() {
           ) : (
             <>
               <p className="text-[11px] font-semibold uppercase tracking-[0.14em] text-[#e07a40]/85">
-                EvGlab · Kontakt
+                BrewAI · Kontakt
               </p>
               <h2
                 id="contact-funnel-title"

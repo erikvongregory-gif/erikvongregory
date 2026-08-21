@@ -5,7 +5,7 @@ import { useEffect } from "react";
 const ICON_VERSION = "20260612a";
 const NORMAL_ICON = `/favicon.ico?v=${ICON_VERSION}`;
 const REMINDER_ICON = `/icon-reminder.svg?v=${ICON_VERSION}`;
-const REMINDER_TITLE = "EvGlab wartet auf dich";
+const REMINDER_TITLE = "BrewAI wartet auf dich";
 
 function getFaviconType(href: string) {
   if (href.endsWith(".svg") || href.includes(".svg?")) return "image/svg+xml";

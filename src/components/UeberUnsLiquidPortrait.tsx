@@ -20,7 +20,7 @@ export function UeberUnsLiquidPortrait({ className }: { className?: string }) {
       role="img"
       aria-labelledby="ueber-uns-portrait-svg-title"
     >
-      <title id="ueber-uns-portrait-svg-title">Portrait – Gespräch und Einordnung zu EvGlab</title>
+      <title id="ueber-uns-portrait-svg-title">Portrait – Gespräch und Einordnung zu BrewAI</title>
       <defs>
         <clipPath id={clipId} clipPathUnits="userSpaceOnUse">
           <path

@@ -2,7 +2,7 @@
 
 import { cn } from "@/lib/utils";
 import { MOBILE_EDITORIAL_PX } from "@/lib/mobileEditorial";
-import { WarumEvGlabSection } from "@/components/mobile/WarumEvGlabSection";
+import { WarumBrewAISection } from "@/components/mobile/WarumBrewAISection";
 import { ProcessDeliverySlipSection } from "@/components/mobile/ProcessDeliverySlipSection";
 import { TapWallSection } from "@/components/mobile/TapWallSection";
 
@@ -19,7 +19,7 @@ export function MobileLayout() {
             "mobile-editorial-flow relative z-30 border-t border-ink/[0.06] pt-8 pb-10",
           )}
         >
-          <WarumEvGlabSection />
+          <WarumBrewAISection />
         </section>
 
         <div id="prozess" className="scroll-mt-24" aria-hidden />

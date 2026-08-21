@@ -1,18 +1,18 @@
 "use client";
 
 import { MobileEditorialEyebrow } from "@/components/mobile/MobileEditorialEyebrow";
-import { WarumEvGlabComparisonTable } from "@/components/mobile/WarumEvGlabComparisonTable";
-import { WarumEvGlabPullQuote } from "@/components/mobile/WarumEvGlabPullQuote";
+import { WarumBrewAIComparisonTable } from "@/components/mobile/WarumBrewAIComparisonTable";
+import { WarumBrewAIPullQuote } from "@/components/mobile/WarumBrewAIPullQuote";
 import { ScrollRevealStagger } from "@/components/ScrollRevealStagger";
 
 const PULL_QUOTE =
   "Klarheit vor Komplexität. Qualität vor Hype. Umsetzung vor Theorie.";
 
-export function WarumEvGlabSection() {
+export function WarumBrewAISection() {
   return (
     <ScrollRevealStagger softEntrance staggerMs={75}>
       <div className="mobile-scroll-reveal-item">
-        <MobileEditorialEyebrow>Warum EvGlab</MobileEditorialEyebrow>
+        <MobileEditorialEyebrow>Warum BrewAI</MobileEditorialEyebrow>
       </div>
 
       <h2
@@ -28,10 +28,10 @@ export function WarumEvGlabSection() {
         Fünf Punkte — kurz der Unterschied.
       </p>
 
-      <WarumEvGlabComparisonTable className="mobile-scroll-reveal-item mt-[22px]" />
+      <WarumBrewAIComparisonTable className="mobile-scroll-reveal-item mt-[22px]" />
 
       <div className="mobile-scroll-reveal-item">
-        <WarumEvGlabPullQuote quote={PULL_QUOTE} caption="Wofür ich stehe" />
+        <WarumBrewAIPullQuote quote={PULL_QUOTE} caption="Wofür ich stehe" />
       </div>
     </ScrollRevealStagger>
   );

@@ -28,7 +28,7 @@ function oauthErrorMessage(error: string | undefined) {
 
 export const metadata: Metadata = {
   title: {
-    absolute: "EvGlab - Einladung",
+    absolute: "BrewAI - Einladung",
   },
   robots: {
     index: false,

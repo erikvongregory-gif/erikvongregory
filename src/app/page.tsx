@@ -5,7 +5,7 @@ import { SITE } from "@/lib/siteConfig";
 import { TRESENGESPRAECH_FAQS } from "@/lib/tresengespraechFaqs";
 
 export const metadata: Metadata = {
-  title: "KI-Marketing für Brauereien: Bilder, Posts & Bewertungen | EvGlab",
+  title: "KI-Marketing für Brauereien: Bilder, Posts & Bewertungen | BrewAI",
   description:
     "KI-generierte Werbebilder, Social-Media-Posts und Google-Bewertungen für Brauereien — selbst im Dashboard oder fertig geliefert. Ab 79 €/Monat. Jetzt testen.",
   keywords: [
@@ -20,7 +20,7 @@ export const metadata: Metadata = {
   ],
   alternates: { canonical: SITE.baseUrl },
   openGraph: {
-    title: "KI-Marketing für Brauereien | EvGlab",
+    title: "KI-Marketing für Brauereien | BrewAI",
     description:
       "KI-Bilder, Posts und Bewertungen für Brauereien — ab 79 €/Monat. Selbst im Dashboard oder fertig geliefert.",
     url: SITE.baseUrl,
@@ -31,13 +31,13 @@ export const metadata: Metadata = {
         url: `${SITE.baseUrl}${SITE.ogImage}`,
         width: 1200,
         height: 630,
-        alt: "KI-Marketing für Brauereien | EvGlab",
+        alt: "KI-Marketing für Brauereien | BrewAI",
       },
     ],
   },
   twitter: {
     card: "summary_large_image",
-    title: "KI-Marketing für Brauereien | EvGlab",
+    title: "KI-Marketing für Brauereien | BrewAI",
     description: "KI-Bilder, Posts und Bewertungen für Brauereien — ab 79 €/Monat.",
     images: [`${SITE.baseUrl}${SITE.ogImage}`],
   },
@@ -47,7 +47,7 @@ export default function Home() {
   const organizationJsonLd = {
     "@context": "https://schema.org",
     "@type": "ProfessionalService",
-    name: "EvGlab",
+    name: SITE.name,
     url: SITE.baseUrl,
     logo: SITE.brandLogoUrl,
     description:
@@ -141,7 +141,7 @@ export default function Home() {
     <>
       <h1 className="sr-only">
         KI-Marketing für Brauereien in Deutschland, Österreich und der Schweiz — Werbebilder, Social Media und
-        Bewertungen mit EvGlab
+        Bewertungen mit {SITE.name}
       </h1>
       <script
         type="application/ld+json"

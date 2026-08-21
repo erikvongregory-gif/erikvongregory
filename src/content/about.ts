@@ -8,7 +8,7 @@ export const FOUNDER = {
   fokus: "Brauerei-Marketing",
   seit: "2026",
   portraitSrc: "/ueber-uns-portrait.webp",
-  portraitAlt: "Erik Freiherr von Gregory — Gründer EvGlab",
+  portraitAlt: "Erik Freiherr von Gregory — Gründer BrewAI",
 } as const;
 
 export const HERO_TAGS = [
@@ -118,7 +118,7 @@ export const HUGO_MESSAGES_DESKTOP: HugoMessage[] = [
   { who: "user", text: "Kannst du mir auch ein Rezept für mein Märzen empfehlen?" },
   {
     who: "hugo",
-    text: "Nein — Sudhaus-Wissen ist nicht meins. Ich helfe nur bei Bildgenerierung im EvGlab-Dashboard: Prompts, Motive, Markenlook, Varianten, Formate, Mediathek und Tokens.",
+    text: "Nein — Sudhaus-Wissen ist nicht meins. Ich helfe nur bei Bildgenerierung im BrewAI-Dashboard: Prompts, Motive, Markenlook, Varianten, Formate, Mediathek und Tokens.",
     meta: "Außerhalb · Bild-Funktionen",
     offTopic: true,
   },
@@ -180,17 +180,17 @@ export const KONTAKT_KANAALE: {
 }[] = [
   {
     kanal: "E-Mail",
-    wert: "kontakt@evglab.com",
+    wert: SITE.contactEmail,
     meta: "Antwort meist in 4h",
-    href: "mailto:kontakt@evglab.com",
-    ariaLabel: "E-Mail an kontakt@evglab.com",
+    href: SITE.contactMailto,
+    ariaLabel: `E-Mail an ${SITE.contactEmail}`,
   },
   {
     kanal: "LinkedIn",
     wert: "evglab",
     meta: "Schnell · unkompliziert",
     href: SITE.linkedinUrl,
-    ariaLabel: "EvGlab auf LinkedIn",
+    ariaLabel: "BrewAI auf LinkedIn",
   },
   {
     kanal: "WhatsApp",

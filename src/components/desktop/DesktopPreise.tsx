@@ -154,7 +154,7 @@ export function DesktopPreise() {
           <DesktopRevealItem>
             <p className="mb-6 flex items-center justify-center gap-4 font-mono-hero text-[11px] uppercase tracking-[1.4px] text-amber">
               <span className="h-px w-12 bg-amber/40" aria-hidden />
-              Zwei Wege mit EvGlab
+              Zwei Wege mit BrewAI
               <span className="h-px w-12 bg-amber/40" aria-hidden />
             </p>
           </DesktopRevealItem>

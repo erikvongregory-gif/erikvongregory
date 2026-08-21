@@ -7,7 +7,7 @@ import { Layers, Search, Zap } from "lucide-react";
 import type React from "react";
 
 interface HowItWorksProps extends React.HTMLAttributes<HTMLDivElement> {
-  /** Optional: eigene Schritte (z. B. für Tests); Standard = EvGlab-Ablauf */
+  /** Optional: eigene Schritte (z. B. für Tests); Standard = BrewAI-Ablauf */
   steps?: StepData[];
   /** Editorial-Stil für Mobile Startseite (Paper, weiße Karten) */
   variant?: "default" | "editorial";
@@ -28,7 +28,7 @@ interface StepCardProps {
   variant?: "default" | "editorial";
 }
 
-/** Gleiches Liquid-/Glass-Pattern wie „Zwei Wege mit EvGlab“ in `PricingBoxes` (`sharedGlassInfoBoxClass`). */
+/** Gleiches Liquid-/Glass-Pattern wie „Zwei Wege mit BrewAI“ in `PricingBoxes` (`sharedGlassInfoBoxClass`). */
 const glassStepCardClass =
   "evg-clean-hover relative rounded-2xl border border-black/12 bg-gradient-to-br from-black/5 to-black/0 p-6 text-left text-zinc-900 shadow-[0_10px_22px_-18px_rgba(24,24,27,0.28)] backdrop-blur-[14px] ring-1 ring-black/[0.04] transition-[border-color,box-shadow,ring-color] duration-200 hover:border-[#c65a20]/55 hover:ring-[#c65a20]/25 hover:shadow-[0_16px_34px_-20px_rgba(198,90,32,0.24)]";
 
@@ -130,7 +130,7 @@ const DEFAULT_STEPS_DE: StepData[] = [
 ];
 
 /**
- * Drei-Schritte-Karten — ohne eigene Sektionsüberschrift; gedacht unter „Warum EvGlab“.
+ * Drei-Schritte-Karten — ohne eigene Sektionsüberschrift; gedacht unter „Warum BrewAI“.
  */
 export function HowItWorks({
   className,

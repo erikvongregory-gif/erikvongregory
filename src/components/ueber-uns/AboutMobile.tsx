@@ -16,6 +16,7 @@ import {
 import { ScrollRevealStagger } from "@/components/ScrollRevealStagger";
 import { DarkGlowBg, DachMapSvg, FounderPortraitCard, HugoChatMockup } from "@/components/ueber-uns/AboutShared";
 import { useFreeTrialDemo } from "@/context/FreeTrialDemoContext";
+import { SITE } from "@/lib/siteConfig";
 import { cn } from "@/lib/utils";
 
 function MobileEyebrow({ children }: { children: string }) {
@@ -37,7 +38,7 @@ export function AboutMobile() {
           <DarkGlowBg />
           <ScrollRevealStagger className="relative px-[22px] pt-4" softEntrance staggerMs={75}>
             <div className="mobile-scroll-reveal-item border-b border-[rgba(244,239,230,0.08)] pb-6 font-mono-hero text-[9.5px] uppercase tracking-[1.2px] text-[#8C7E68]">
-              <p>EvGlab · Über uns · №07</p>
+              <p>BrewAI · Über uns · №07</p>
               <p className="mt-1">Brauereien · DACH · Mai 26</p>
             </div>
             <p className="mobile-scroll-reveal-item mt-6 flex items-center gap-2 font-mono-hero text-[10px] uppercase text-[#8C7E68]">
@@ -84,7 +85,7 @@ export function AboutMobile() {
             <div className="mobile-scroll-reveal-item">
               <MobileEyebrow>Hintergrund</MobileEyebrow>
               <h2 className="font-serif-hero text-[36px] leading-[0.98] tracking-[-1px]">
-                Was steckt hinter <em className="italic text-amber">EvGlab</em>?
+                Was steckt hinter <em className="italic text-amber">BrewAI</em>?
               </h2>
             </div>
             <blockquote className="mobile-scroll-reveal-item mt-6 border-l-[3px] border-amber pl-4 font-serif-hero text-[21px] italic leading-snug text-ink">
@@ -92,13 +93,13 @@ export function AboutMobile() {
               interner Kapazität?
             </blockquote>
             <p className="mobile-scroll-reveal-item mt-5 text-[14.5px] leading-[1.65] text-ink2">
-              KI ist das Werkzeug — wenn Briefing, Markenprofil und Freigaben sitzen. Daraus entstand EvGlab.
+              KI ist das Werkzeug — wenn Briefing, Markenprofil und Freigaben sitzen. Daraus entstand BrewAI.
             </p>
             <p className="mobile-scroll-reveal-item mt-4 text-[14.5px] leading-[1.65] text-ink2">
               Heute: fertige Assets, Pakete und ein Dashboard mit Token-Abo für laufenden Bedarf.
             </p>
             <div className="mobile-scroll-reveal-item mt-6 rounded-[14px] border border-ink/10 bg-white p-4">
-              <p className="mb-3 font-mono-hero text-[9px] uppercase text-ink3">Wie EvGlab heute liefert</p>
+              <p className="mb-3 font-mono-hero text-[9px] uppercase text-ink3">Wie BrewAI heute liefert</p>
               <ul className="space-y-2">
                 {DELIVERY_ROWS.map(([k, v]) => (
                   <li key={k} className="flex justify-between gap-2 text-sm">
@@ -206,7 +207,7 @@ export function AboutMobile() {
         <section className="px-[22px] py-10 text-center">
           <ScrollRevealStagger softEntrance staggerMs={85}>
             <p className="mobile-scroll-reveal-item font-mono-hero text-[10px] uppercase tracking-wider text-amber">
-              EvGlab in einem Satz
+              BrewAI in einem Satz
             </p>
             <blockquote className="mobile-scroll-reveal-item mt-5 font-serif-hero text-[30px] leading-snug tracking-tight">
               Wir übersetzen eure Marke in{" "}
@@ -269,7 +270,7 @@ export function AboutMobile() {
                 Ratgeber-Quiz →
               </Link>
               <a
-                href="mailto:kontakt@evglab.com"
+                href={SITE.contactMailto}
                 className="w-full rounded-xl border border-[rgba(244,239,230,0.18)] py-3.5 text-center text-sm text-paper"
               >
                 Kontakt
@@ -291,7 +292,7 @@ export function AboutMobile() {
             ))}
           </ScrollRevealStagger>
           <p className="mt-8 text-center font-mono-hero text-[10px] uppercase text-[#8C7E68]">
-            © 2026 EvGlab · Hosting · DE
+            © 2026 BrewAI · Hosting · DE
           </p>
         </section>
     </div>

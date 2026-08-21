@@ -49,7 +49,7 @@ export type FeatureCardProps = FeatureCardPillarProps | FeatureCardIconProps;
 
 const easeOut = [0.22, 1, 0.36, 1] as const;
 
-/** Liquid/Glass wie „Zwei Wege mit EvGlab“ / HowItWorks (`sharedGlassInfoBoxClass`). */
+/** Liquid/Glass wie „Zwei Wege mit BrewAI“ / HowItWorks (`sharedGlassInfoBoxClass`). */
 const glassPillarCardClass =
   "evg-clean-hover border border-black/12 bg-gradient-to-br from-black/5 to-black/0 shadow-[0_10px_22px_-18px_rgba(24,24,27,0.28)] backdrop-blur-[14px] ring-1 ring-black/[0.04] transition-[border-color,box-shadow,ring-color] duration-200 hover:border-[#c65a20]/55 hover:ring-[#c65a20]/25 hover:shadow-[0_16px_34px_-20px_rgba(198,90,32,0.24)]";
 

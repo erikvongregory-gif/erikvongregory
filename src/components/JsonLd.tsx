@@ -1,31 +1,47 @@
 import { LEGAL } from "@/lib/legal";
 import { SITE } from "@/lib/siteConfig";
 
-/** JSON-LD Structured Data für bessere Google-Snippets */
+/** JSON-LD Structured Data für bessere Google-Snippets (BrewAI / brewai.de) */
 export function JsonLd() {
   const businessId = `${SITE.baseUrl}/#business`;
   const websiteId = `${SITE.baseUrl}/#website`;
   const serviceId = `${SITE.baseUrl}/#service`;
+  const softwareId = `${SITE.baseUrl}/#software`;
 
   const person = {
     "@context": "https://schema.org",
     "@type": "Person",
     name: LEGAL.name,
-    url: SITE.baseUrl,
+    url: `${SITE.baseUrl}/ueber-uns`,
     email: LEGAL.email,
-    jobTitle: "KI-Berater für Brauereien & Gastronomie",
+    jobTitle: `Gründer ${SITE.name}`,
     description: SITE.defaultDescription,
-    knowsAbout: ["KI Marketing", "Brauerei Marketing", "Content Marketing", "Automatisierung"],
+    worksFor: { "@id": businessId },
+    sameAs: [SITE.linkedinUrl],
+    knowsAbout: [
+      "KI Marketing",
+      "Brauerei Marketing",
+      "Content Marketing",
+      "KI Bildgenerierung",
+      "Automatisierung",
+    ],
   };
 
-  const localBusiness = {
+  const organization = {
     "@context": "https://schema.org",
-    "@type": "LocalBusiness",
+    "@type": "Organization",
     "@id": businessId,
     name: SITE.name,
+    legalName: LEGAL.name,
     description: SITE.defaultDescription,
     url: SITE.baseUrl,
+    logo: {
+      "@type": "ImageObject",
+      url: SITE.brandLogoUrl,
+    },
+    image: SITE.brandLogoUrl,
     email: LEGAL.email,
+    telephone: SITE.contactPhoneDisplay,
     address: {
       "@type": "PostalAddress",
       streetAddress: LEGAL.street,
@@ -33,9 +49,20 @@ export function JsonLd() {
       postalCode: "86925",
       addressCountry: "DE",
     },
-    priceRange: "€€",
-    areaServed: ["Deutschland", "Österreich", "Schweiz"],
-    image: `${SITE.baseUrl}/hero-portrait.svg`,
+    areaServed: [
+      { "@type": "Country", name: "Deutschland" },
+      { "@type": "Country", name: "Österreich" },
+      { "@type": "Country", name: "Schweiz" },
+    ],
+    sameAs: [SITE.linkedinUrl],
+    contactPoint: {
+      "@type": "ContactPoint",
+      contactType: "customer service",
+      email: LEGAL.email,
+      telephone: SITE.contactPhoneDisplay,
+      availableLanguage: ["German"],
+      areaServed: ["DE", "AT", "CH"],
+    },
   };
 
   const website = {
@@ -43,26 +70,37 @@ export function JsonLd() {
     "@type": "WebSite",
     "@id": websiteId,
     name: SITE.name,
+    alternateName: SITE.productName,
     description: SITE.defaultDescription,
     url: SITE.baseUrl,
     publisher: { "@id": businessId },
     inLanguage: "de-DE",
-    potentialAction: [
-      {
-        "@type": "ContactAction",
-        target: { "@type": "EntryPoint", url: `${SITE.baseUrl}/#contact` },
-        contactPoint: {
-          "@type": "ContactPoint",
-          email: LEGAL.email,
-          contactType: "customer service",
-          availableLanguage: "German",
-        },
-      },
-      {
-        "@type": "SearchAction",
-        target: `${SITE.baseUrl}/?q={search_term_string}`,
-        "query-input": "required name=search_term_string",
-      },
+  };
+
+  const software = {
+    "@context": "https://schema.org",
+    "@type": "SoftwareApplication",
+    "@id": softwareId,
+    name: SITE.productName,
+    applicationCategory: "BusinessApplication",
+    applicationSubCategory: "Marketing Automation",
+    operatingSystem: "Web",
+    url: SITE.baseUrl,
+    description: SITE.defaultDescription,
+    offers: {
+      "@type": "Offer",
+      priceCurrency: "EUR",
+      price: "79",
+      priceValidUntil: "2027-12-31",
+      availability: "https://schema.org/InStock",
+      url: `${SITE.baseUrl}/#pakete`,
+    },
+    provider: { "@id": businessId },
+    featureList: [
+      "KI-Produktfotos für Bier und Getränke",
+      "Social-Media-Content für Brauereien",
+      "Token-basiertes Dashboard-Abo",
+      "Premium-Einmallieferung",
     ],
   };
 
@@ -70,6 +108,7 @@ export function JsonLd() {
     "@context": "https://schema.org",
     "@type": "Service",
     "@id": serviceId,
+    name: `KI-Marketing für Brauereien | ${SITE.productName}`,
     serviceType: "KI Marketing für Brauereien",
     provider: { "@id": businessId },
     areaServed: ["DE", "AT", "CH"],
@@ -92,10 +131,6 @@ export function JsonLd() {
         {
           "@type": "Offer",
           itemOffered: { "@type": "Service", name: "Automatisiertes Social-Media-Marketing" },
-        },
-        {
-          "@type": "Offer",
-          itemOffered: { "@type": "Service", name: "Moderne Websites mit Storytelling" },
         },
         {
           "@type": "Offer",
@@ -136,26 +171,12 @@ export function JsonLd() {
 
   return (
     <>
-      <script
-        type="application/ld+json"
-        dangerouslySetInnerHTML={{ __html: safeJson(person) }}
-      />
-      <script
-        type="application/ld+json"
-        dangerouslySetInnerHTML={{ __html: safeJson(localBusiness) }}
-      />
-      <script
-        type="application/ld+json"
-        dangerouslySetInnerHTML={{ __html: safeJson(website) }}
-      />
-      <script
-        type="application/ld+json"
-        dangerouslySetInnerHTML={{ __html: safeJson(service) }}
-      />
-      <script
-        type="application/ld+json"
-        dangerouslySetInnerHTML={{ __html: safeJson(siteNavigation) }}
-      />
+      <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: safeJson(person) }} />
+      <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: safeJson(organization) }} />
+      <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: safeJson(website) }} />
+      <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: safeJson(software) }} />
+      <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: safeJson(service) }} />
+      <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: safeJson(siteNavigation) }} />
     </>
   );
 }

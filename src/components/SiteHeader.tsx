@@ -7,6 +7,7 @@ import { WaveMark } from "@/components/desktop/WaveMark";
 import { useSiteNavTheme } from "@/components/useSiteNavTheme";
 import { SITE_NAV_LINKS } from "@/content/site-nav";
 import { APP_LOGIN_URL } from "@/lib/appLoginUrl";
+import { SITE } from "@/lib/siteConfig";
 import { useFreeTrialDemo } from "@/context/FreeTrialDemoContext";
 import { scrollToSection } from "@/lib/scrollToSection";
 import { cn } from "@/lib/utils";
@@ -106,7 +107,7 @@ export function SiteHeader() {
             )}
           >
             <WaveMark className="h-6 w-6 shrink-0" />
-            <span className="font-serif-hero text-[20px] font-medium tracking-[-0.4px] sm:text-[22px]">EvGlab</span>
+            <span className="font-serif-hero text-[20px] font-medium tracking-[-0.4px] sm:text-[22px]">{SITE.name}</span>
           </Link>
 
           <nav className="flex items-center" aria-label="Seitenbereiche">

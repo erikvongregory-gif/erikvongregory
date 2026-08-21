@@ -1,5 +1,6 @@
 import { NextResponse } from "next/server";
 import { withRequestHeaders } from "@/lib/security/authObservability";
+import { SITE, isSiteOwnedHost } from "@/lib/siteConfig";
 
 const DEFAULT_REDIRECT_PATH = "/dashboard";
 
@@ -38,9 +39,7 @@ export function secureCookieOptions(request: Request): {
   const url = new URL(request.url);
   const secure = process.env.NODE_ENV === "production";
   const domain =
-    secure && (url.hostname === "evglab.com" || url.hostname.endsWith(".evglab.com"))
-      ? "evglab.com"
-      : undefined;
+    secure && isSiteOwnedHost(url.hostname) ? SITE.cookieDomain : undefined;
   return {
     secure,
     ...(domain ? { domain } : {}),

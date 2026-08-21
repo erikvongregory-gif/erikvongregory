@@ -20,7 +20,7 @@ const FOOTER_COLS: { title: string; rows: FooterRow[] }[] = [
   {
     title: "Direkt",
     rows: [
-      { key: "E-Mail", value: "kontakt@evglab.com", href: "mailto:kontakt@evglab.com" },
+      { key: "E-Mail", value: SITE.contactEmail, href: SITE.contactMailto },
       {
         key: "Anruf",
         value: SITE.contactPhoneDisplay,
@@ -103,7 +103,7 @@ export function SiteFooter({ className, footerId = "site-footer" }: SiteFooterPr
                   3 Bilder kostenlos generieren →
                 </button>
                 <a
-                  href="mailto:kontakt@evglab.com"
+                  href={SITE.contactMailto}
                   className="inline-flex w-full items-center justify-center rounded-xl border border-[rgba(244,239,230,0.18)] px-6 py-3.5 font-sans-tight text-sm font-medium text-paper transition hover:bg-[rgba(244,239,230,0.06)] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-[3px] focus-visible:outline-amber sm:w-auto"
                 >
                   E-Mail schreiben
@@ -159,17 +159,17 @@ export function SiteFooter({ className, footerId = "site-footer" }: SiteFooterPr
             <DesktopRevealItem>
             <p className="flex flex-wrap items-center gap-x-3 gap-y-1 text-[#C8BFAD]">
               <WaveMark className="h-5 w-5 shrink-0" />
-              <span>© 2026 EvGlab · Alle Rechte vorbehalten</span>
+              <span>© 2026 BrewAI · Alle Rechte vorbehalten</span>
               <span className="text-[#8C7E68]" aria-hidden>
                 ·
               </span>
               <a
-                href="https://evglab.com"
+                href={SITE.agencyBaseUrl}
                 target="_blank"
                 rel="noopener noreferrer"
                 className="text-[#8C7E68] transition hover:text-amber2 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-amber"
               >
-                EvGlab Webdesign → evglab.com
+                EvGlab Webdesign → {SITE.agencyHost}
               </a>
             </p>
             </DesktopRevealItem>

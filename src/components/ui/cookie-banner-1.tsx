@@ -3,6 +3,7 @@
 import Link from "next/link";
 import { useEffect, useRef, useState } from "react";
 import { Check, ChevronDown, ChevronUp, X } from "lucide-react";
+import { SITE } from "@/lib/siteConfig";
 import { cn } from "@/lib/utils";
 import styles from "./cookie-banner-v2.module.css";
 
@@ -232,7 +233,7 @@ const CookiePanel = (props: CookiePanelProps) => {
           )}
         >
         <div className={styles.ticker}>
-          <span className={styles.tickerLeft}>EVGLAB · DATENSCHUTZ</span>
+          <span className={styles.tickerLeft}>{SITE.name.toUpperCase()} · DATENSCHUTZ</span>
           <span className={styles.tickerRight}>
             <span className={styles.liveDot} aria-hidden="true" />
             DSGVO · DE

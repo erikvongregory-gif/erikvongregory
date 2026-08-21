@@ -1,46 +1,62 @@
-# EVGLAB SEO Handoff (manuell durchzufuehren)
+# BrewAI SEO Handoff (manuell nach Deploy)
 
-Diese Punkte kann ich nicht vollautomatisch im Code fuer dich erledigen. Bitte in dieser Reihenfolge abarbeiten.
+Technisches SEO ist im Code auf **https://brewai.de** vorbereitet.
+Diese Schritte musst du einmalig in den Webmaster-Tools erledigen.
 
 ## 1) Google Search Console (Pflicht)
 
-- Domain Property fuer `ki.evglab.com` oder alternativ URL-Prefix fuer `https://ki.evglab.com` nutzen.
-- Verifizierung setzen:
-  - Entweder DNS-TXT in deinem Domain-Provider, oder
-  - HTML-Tag in `SITE.googleSiteVerification` eintragen.
-- Nur `https://ki.evglab.com/sitemap.xml` in GSC eingereicht lassen.
-- Indexierung nach Deploy fuer alle Sitemap-URLs anstossen:
-  - `/`
-  - `/loesungen`, `/ratgeber`, `/ueber-uns`
-  - `/impressum`, `/datenschutz`, `/agb`
-  - Nicht indexieren: `/vergleich/*`, `/preise/vergleich` (noindex im Code)
+1. Eigentum hinzufügen:
+   - **Domain-Property** `brewai.de` (empfohlen, deckt www + Apex ab), oder
+   - **URL-Präfix** `https://brewai.de`
+2. Verifizierung:
+   - DNS-TXT beim Domain-Provider, **oder**
+   - HTML-Tag → Wert in `src/lib/siteConfig.ts` bei `googleSiteVerification` eintragen → Redeploy
+3. Sitemap einreichen: `https://brewai.de/sitemap.xml`
+4. Alte Property (`ki.evglab.com` / `erikvongregory.com`) in GSC:
+   - Adresseänderung / Umzug nutzen, falls angeboten
+   - Sonst Sitemap der alten Domain entfernen; 308-Redirects greifen über Middleware
+5. Indexierung anstoßen (URL-Prüfung):
+   - `https://brewai.de/`
+   - `https://brewai.de/loesungen`
+   - `https://brewai.de/ratgeber`
+   - `https://brewai.de/ueber-uns`
+6. **Nicht** indexieren (bereits noindex im Code): `/vergleich/*`, `/preise/vergleich`, App-Pfade
 
-## 2) Rich Results und Social Validatoren
+## 2) Bing Webmaster Tools (empfohlen)
 
-- Google Rich Results Test fuer Startseite, `/loesungen`, `/ratgeber` laufen lassen.
-- Search Console Bereich "Verbesserungen" auf neue Schema-Fehler pruefen.
-- Open Graph checken:
-  - LinkedIn Post Inspector
-  - Facebook Sharing Debugger
+1. `https://www.bing.com/webmasters` → Site `https://brewai.de`
+2. Sitemap: `https://brewai.de/sitemap.xml`
+3. Optional: `bingSiteVerification` in `siteConfig.ts` setzen
 
-## 3) PageSpeed / Core Web Vitals (extern)
+## 3) Live-Checks nach Deploy
 
-- PageSpeed Insights auf Mobile und Desktop fuer die 4 Hauptseiten pruefen.
-- Zielwerte:
-  - LCP < 2.5s
-  - CLS < 0.1
-  - INP < 200ms
-- Falls rot/gelb: Screenshot oder Bericht exportieren, dann kann ich die Performance-Fixes direkt einbauen.
+| URL | Erwartung |
+|-----|-----------|
+| https://brewai.de/robots.txt | Allow `/`, Disallow App/Auth, Sitemap + Host `brewai.de` |
+| https://brewai.de/sitemap.xml | 7 Canonical-URLs unter brewai.de |
+| https://brewai.de/llms.txt | Marke BrewAI, Canonical-Links |
 
-## 4) CTR-Optimierung nach 2-4 Wochen
+Validatoren:
 
-- In GSC "Suchergebnisse" nach Seiten filtern.
-- Wenn CTR < 2% bei Impressionen > 100:
-  - Title und Meta Description variieren (A/B in Zeitfenstern).
-- Ich kann dir dann datenbasiert neue Meta-Sets pro Seite schreiben.
+- [Google Rich Results Test](https://search.google.com/test/rich-results) — Start, `/loesungen`, `/ratgeber`
+- [Google Mobile-Friendly](https://search.google.com/test/mobile-friendly)
+- LinkedIn Post Inspector / Facebook Sharing Debugger — OG-Bild
 
-## 5) Assets und Medien (optional, hoher Hebel)
+## 4) Core Web Vitals
 
-- Eigene OG-Bilder pro Landingpage erstellen (1200x630, <1 MB).
-- Dateinamen sprechend halten (z. B. `ki-saisonkampagne-brauerei-evglab.png`).
-- Danach koennen wir pro Seite dedizierte OG-Images statt globalem Default setzen.
+PageSpeed Insights für die 4 Hauptseiten (Mobile + Desktop).
+
+Ziele: LCP &lt; 2.5s · CLS &lt; 0.1 · INP &lt; 200ms
+
+## 5) CTR nach 2–4 Wochen
+
+In GSC „Suchergebnisse“: bei CTR &lt; 2% und Impressionen &gt; 100 Title/Description anpassen.
+
+## Code-Referenzen
+
+- Canonical / Meta: `src/lib/siteConfig.ts`, `src/app/layout.tsx`
+- robots: `src/app/robots.ts`
+- sitemap: `src/app/sitemap.ts`
+- llms.txt: `src/app/llms.txt/route.ts`
+- JSON-LD: `src/components/JsonLd.tsx`
+- Legacy-Hosts → brewai.de: `middleware.ts` + `SITE.legacyHosts`

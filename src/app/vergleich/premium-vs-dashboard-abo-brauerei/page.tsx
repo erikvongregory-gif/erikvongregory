@@ -3,7 +3,7 @@ import Link from "next/link";
 import { SITE } from "@/lib/siteConfig";
 
 export const metadata: Metadata = {
-  title: "Premium vs. Dashboard-Abo: Was passt zu deiner Brauerei? | EvGlab",
+  title: "Premium vs. Dashboard-Abo: Was passt zu deiner Brauerei? | BrewAI",
   description:
     "Vergleich für Brauereien in DACH: fertig gelieferte Premium-Pakete vs. monatliches KI-Dashboard mit Tokens — Aufwand, Kosten, Geschwindigkeit und Qualität.",
   robots: {
@@ -13,7 +13,7 @@ export const metadata: Metadata = {
   },
   alternates: { canonical: `${SITE.baseUrl}/#pakete-preise` },
   openGraph: {
-    title: "Premium vs. Dashboard-Abo | EvGlab",
+    title: "Premium vs. Dashboard-Abo | BrewAI",
     description: "Entscheidungshilfe für Brauereien: Premium-Lieferung oder Self-Service mit Tokens.",
     url: `${SITE.baseUrl}/vergleich/premium-vs-dashboard-abo-brauerei`,
     locale: "de_DE",
@@ -43,10 +43,10 @@ const faqJsonLd = {
     },
     {
       "@type": "Question",
-      name: "Für welche Region ist EvGlab gedacht?",
+      name: "Für welche Region ist BrewAI gedacht?",
       acceptedAnswer: {
         "@type": "Answer",
-        text: "EvGlab richtet sich an Brauereien und Getränkemarken in Deutschland, Österreich und der Schweiz (DACH). Inhalte und Angebote sind auf diese Märkte und deutschsprachige Kommunikation ausgelegt.",
+        text: "BrewAI richtet sich an Brauereien und Getränkemarken in Deutschland, Österreich und der Schweiz (DACH). Inhalte und Angebote sind auf diese Märkte und deutschsprachige Kommunikation ausgelegt.",
       },
     },
   ],

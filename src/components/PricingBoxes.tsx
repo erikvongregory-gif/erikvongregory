@@ -564,7 +564,7 @@ export function PricingBoxes() {
             <div className="mb-4 flex flex-col items-center gap-2 text-center">
               <span className="inline-flex items-center gap-2 rounded-full border border-[rgba(224,122,64,0.35)] bg-[rgba(224,122,64,0.14)] px-4 py-1.5 text-sm font-medium text-[#c65a20]">
                 <span aria-hidden>✦</span>
-                Zwei Wege mit EvGlab
+                Zwei Wege mit BrewAI
               </span>
               <h3 className="text-xl font-bold tracking-tight text-zinc-900 sm:text-2xl">
                 Du entscheidest: Premium-Umsetzung oder Selbstbedienung

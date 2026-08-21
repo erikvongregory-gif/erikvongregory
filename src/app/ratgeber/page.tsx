@@ -3,12 +3,12 @@ import { RatgeberPage } from "@/components/ratgeber/RatgeberPage";
 import { SITE } from "@/lib/siteConfig";
 
 export const metadata: Metadata = {
-  title: "Ratgeber: EvGlab-Wissenscheck für Brauereien",
+  title: "Ratgeber: BrewAI-Wissenscheck für Brauereien",
   description:
     "Interaktiver Ratgeber-Quiz für Brauereien: finde in fünf Fragen heraus, ob Dashboard oder Premium-Umsetzung besser zu deinem Team passt.",
   alternates: { canonical: `${SITE.baseUrl}/ratgeber` },
   openGraph: {
-    title: "Ratgeber: EvGlab-Wissenscheck",
+    title: "Ratgeber: BrewAI-Wissenscheck",
     description:
       "Klickbarer Entscheidungs-Quiz für Brauereien in DACH mit direkter Empfehlung: Dashboard, Mixed oder Premium.",
     url: `${SITE.baseUrl}/ratgeber`,
@@ -20,11 +20,11 @@ export const metadata: Metadata = {
 const ratgeberJsonLd = {
   "@context": "https://schema.org",
   "@type": "WebPage",
-  name: "EvGlab Ratgeber — Wissenscheck",
+  name: "BrewAI Ratgeber — Wissenscheck",
   description:
     "Fünf Fragen zu Zeit, Workflow und Zielbild — mit Empfehlung für Dashboard oder Premium-Umsetzung.",
   url: `${SITE.baseUrl}/ratgeber`,
-  isPartOf: { "@type": "WebSite", name: "EvGlab", url: SITE.baseUrl },
+  isPartOf: { "@type": "WebSite", name: SITE.name, url: SITE.baseUrl },
 };
 
 export default function RatgeberIndexPage() {

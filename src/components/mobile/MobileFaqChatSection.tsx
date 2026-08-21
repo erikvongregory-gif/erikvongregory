@@ -218,7 +218,7 @@ export function MobileFaqChatSection() {
             E
           </span>
           <div className="min-w-0 flex-1">
-            <p className="m-0 font-sans-tight text-[13.5px] font-semibold text-ink">EvGlab</p>
+            <p className="m-0 font-sans-tight text-[13.5px] font-semibold text-ink">BrewAI</p>
             <p className="m-0 flex items-center gap-1.5 font-mono-hero text-[9.5px] tracking-[0.8px] text-ink3">
               <span className="h-1.5 w-1.5 shrink-0 rounded-full bg-[#4CAF50]" aria-hidden />
               Online · antwortet meist in 24 h
@@ -294,7 +294,7 @@ export function MobileFaqChatSection() {
                 }
                 if (entry.kind === "typing") {
                   return (
-                    <div key={entry.id} className="mb-1.5" aria-busy="true" aria-label="EvGlab schreibt">
+                    <div key={entry.id} className="mb-1.5" aria-busy="true" aria-label="BrewAI schreibt">
                       <TypingBubble />
                     </div>
                   );

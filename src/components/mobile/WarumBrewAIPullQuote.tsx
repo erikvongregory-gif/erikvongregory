@@ -1,12 +1,12 @@
 import { cn } from "@/lib/utils";
 
-type WarumEvGlabPullQuoteProps = {
+type WarumBrewAIPullQuoteProps = {
   quote: string;
   caption: string;
   className?: string;
 };
 
-export function WarumEvGlabPullQuote({ quote, caption, className }: WarumEvGlabPullQuoteProps) {
+export function WarumBrewAIPullQuote({ quote, caption, className }: WarumBrewAIPullQuoteProps) {
   return (
     <blockquote
       className={cn(

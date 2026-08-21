@@ -5,6 +5,7 @@ import { CloseBtn } from "@/components/free-trial-demo/CloseBtn";
 import { MotifIcon } from "@/components/free-trial-demo/MotifIcon";
 import styles from "@/components/free-trial-demo/free-trial-demo.module.css";
 import { DEMO_FUNNEL_COLORS, DEMO_MOTIFS, type DemoMotif, type DemoMotifId } from "@/lib/freeTrialDemo";
+import { SITE } from "@/lib/siteConfig";
 
 type StepPickProps = {
   remaining: number;
@@ -39,7 +40,7 @@ export function StepPick({ remaining, total, onSelect, onClose }: StepPickProps)
                 marginBottom: 10,
               }}
             >
-              EVGLAB · DEMO
+              {SITE.name.toUpperCase()} · DEMO
             </div>
             <h2
               className={styles.heading}

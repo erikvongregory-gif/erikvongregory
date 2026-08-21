@@ -29,7 +29,7 @@ function nextId() {
 }
 
 const WELCOME_TEXT =
-  "Hallo, ich bin Hopfen Hugo. Ich helfe nur bei KI-Bildern in EvGlab: Prompts, Stil, Markenlook, Formate, Mediathek und Token fürs Generieren. Fragt mich hier testweise zu eurem nächsten Motiv — Rezepte oder allgemeines Brauwissen gehören nicht dazu.";
+  "Hallo, ich bin Hopfen Hugo. Ich helfe nur bei KI-Bildern in BrewAI: Prompts, Stil, Markenlook, Formate, Mediathek und Token fürs Generieren. Fragt mich hier testweise zu eurem nächsten Motiv — Rezepte oder allgemeines Brauwissen gehören nicht dazu.";
 
 export function HopfenHugoDemoAsk({ className }: { className?: string }) {
   const titleId = useId();

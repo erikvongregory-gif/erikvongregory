@@ -121,7 +121,7 @@ export type HoverPreviewProps = {
 };
 
 /**
- * Erzählblock mit Hover-Vorschaukarten — EvGlab-Stil, nur Tailwind.
+ * Erzählblock mit Hover-Vorschaukarten — BrewAI-Stil, nur Tailwind.
  */
 export function HoverPreview({
   className,
@@ -227,7 +227,7 @@ export function HoverPreview({
           )}
         >
           <motion.p {...pMotion} transition={{ duration: 0.55, delay: 0.08 }} className="mb-8">
-            EvGlab unterstützt{" "}
+            BrewAI unterstützt{" "}
             <strong className={cn("font-medium", light ? "text-zinc-900" : "text-zinc-200")}>
               Brauereien und Getränkemarken
             </strong>{" "}

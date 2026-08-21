@@ -2,23 +2,23 @@ import type { Metadata } from "next";
 import { SITE } from "@/lib/siteConfig";
 
 export const metadata: Metadata = {
-  title: "Lösungen für Brauereien | EvGlab",
+  title: "Lösungen für Brauereien | BrewAI",
   description:
-    "Alle EvGlab Lösungen für Brauereien: Saisonkampagnen, Biergarten- und Event-Marketing sowie Händler- und Gastro-Promotion.",
+    "Alle BrewAI Lösungen für Brauereien: Saisonkampagnen, Biergarten- und Event-Marketing sowie Händler- und Gastro-Promotion.",
   alternates: {
     canonical: `${SITE.baseUrl}/loesungen`,
   },
   openGraph: {
-    title: "Lösungen für Brauereien | EvGlab",
+    title: "Lösungen für Brauereien | BrewAI",
     description:
-      "Entdecke die wichtigsten EvGlab-Lösungen für Brauereien und finde das passende Szenario für deine Kampagnen.",
+      "Entdecke die wichtigsten BrewAI-Lösungen für Brauereien und finde das passende Szenario für deine Kampagnen.",
     url: `${SITE.baseUrl}/loesungen`,
     type: "website",
-    images: SITE.ogImage ? [{ url: SITE.ogImage, width: 1200, height: 630, alt: "EvGlab Lösungen für Brauereien" }] : undefined,
+    images: SITE.ogImage ? [{ url: SITE.ogImage, width: 1200, height: 630, alt: "BrewAI Lösungen für Brauereien" }] : undefined,
   },
   twitter: {
     card: "summary_large_image",
-    title: "Lösungen für Brauereien | EvGlab",
+    title: "Lösungen für Brauereien | BrewAI",
     description: "Saisonkampagnen, Event-Marketing und Händler-Promotion für Brauereien.",
     images: SITE.ogImage ? [SITE.ogImage] : undefined,
   },
@@ -44,7 +44,7 @@ export default function LoesungenPage() {
     <main className="relative z-20 mx-auto max-w-5xl px-4 pb-16 pt-[calc(68px+3rem)] text-zinc-900">
       <h1 className="text-3xl font-bold sm:text-4xl">Lösungen für Brauereien</h1>
       <p className="mt-4 max-w-3xl text-zinc-700">
-        Diese Seite bündelt die wichtigsten EvGlab-Szenarien für Brauereien auf einer einzigen Seite.
+        Diese Seite bündelt die wichtigsten BrewAI-Szenarien für Brauereien auf einer einzigen Seite.
       </p>
       <div className="mt-8 grid gap-4 md:grid-cols-3">
         {pages.map((page) => (

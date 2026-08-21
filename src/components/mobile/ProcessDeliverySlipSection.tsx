@@ -145,7 +145,7 @@ export function ProcessDeliverySlipSection() {
             <div>
               <p className="mb-0.5 font-mono-hero text-[9px] uppercase tracking-[1.4px] text-ink3">LIEFERSCHEIN</p>
               <p className="m-0 font-serif-hero text-[22px] font-medium tracking-[-0.5px] text-ink">
-                EvGlab · KW {weekOfYear}
+                BrewAI · KW {weekOfYear}
               </p>
             </div>
             <div className="text-right">

@@ -3,6 +3,7 @@ import { SITE } from "@/lib/siteConfig";
 
 export const dynamic = "force-static";
 
+/** Pfade, die nicht indexiert werden sollen (App, Auth, intern). */
 const disallow = [
   "/api/",
   "/_next/",
@@ -12,14 +13,17 @@ const disallow = [
   "/anmelden",
   "/registrieren",
   "/auth/",
-];
+] as const;
 
 const defaultRule = {
   allow: "/" as const,
-  disallow,
+  disallow: [...disallow],
 };
 
-/** Explizite Regeln für gängige KI-Crawler (AEO / Zitierbarkeit). */
+/**
+ * Explizite Regeln für KI-Crawler (AEO).
+ * Zusätzlich: /llms.txt für LLM-Übersicht.
+ */
 const aiUserAgents = [
   "GPTBot",
   "ChatGPT-User",
@@ -28,12 +32,18 @@ const aiUserAgents = [
   "ClaudeBot",
   "Claude-Web",
   "anthropic-ai",
+  "Applebot-Extended",
+  "Bytespider",
 ] as const;
 
 export default function robots(): MetadataRoute.Robots {
   return {
-    rules: [{ userAgent: "*", ...defaultRule }, ...aiUserAgents.map((userAgent) => ({ userAgent, ...defaultRule }))],
+    rules: [
+      { userAgent: "*", ...defaultRule },
+      ...aiUserAgents.map((userAgent) => ({ userAgent, ...defaultRule })),
+    ],
     sitemap: `${SITE.baseUrl}/sitemap.xml`,
-    host: SITE.baseUrl,
+    /** Host-Direktive: nur Hostname, ohne Protokoll */
+    host: SITE.marketingHost,
   };
 }

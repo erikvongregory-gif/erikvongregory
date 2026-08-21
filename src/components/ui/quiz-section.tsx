@@ -20,7 +20,7 @@ export interface QuizSectionQuestion {
   correctAnswer: number;
 }
 
-/** Standard: EvGlab-Brauerei-Wissen (DACH). Über `questions` überschreibbar. */
+/** Standard: BrewAI-Brauerei-Wissen (DACH). Über `questions` überschreibbar. */
 export const DEFAULT_BREWERY_QUIZ_DATA: QuizSectionQuestion[] = [
   {
     id: 1,
@@ -35,7 +35,7 @@ export const DEFAULT_BREWERY_QUIZ_DATA: QuizSectionQuestion[] = [
   },
   {
     id: 2,
-    question: "Wofür stehen „Tokens“ im EvGlab-Dashboard?",
+    question: "Wofür stehen „Tokens“ im BrewAI-Dashboard?",
     options: [
       "Kontingent für KI-Bildgenerierung im Monat",
       "Zahl der Google-Business-Profile",
@@ -46,7 +46,7 @@ export const DEFAULT_BREWERY_QUIZ_DATA: QuizSectionQuestion[] = [
   },
   {
     id: 3,
-    question: "Welche Zielgruppe beschreibt EvGlab am treffendsten?",
+    question: "Welche Zielgruppe beschreibt BrewAI am treffendsten?",
     options: [
       "Brauereien und Getränkemarken in DACH",
       "Internationale Rohstoffbörsen",
@@ -174,7 +174,7 @@ export function QuizSection({ questions, embedded = false, className }: QuizSect
               Quiz geschafft
             </h2>
             <p className="text-lg text-slate-600 dark:text-slate-300">
-              Kurzer Wissenscheck zu EvGlab, Paketen und Dashboard — ausgewertet.
+              Kurzer Wissenscheck zu BrewAI, Paketen und Dashboard — ausgewertet.
             </p>
           </div>
           <div className="space-y-8 p-6">

@@ -18,7 +18,7 @@ const DEFAULT_LINKS: ConnectLink[] = [
   {
     href: SITE.linkedinUrl,
     label: "LinkedIn",
-    description: "EvGlab auf LinkedIn — Updates und Kontakt",
+    description: "BrewAI auf LinkedIn — Updates und Kontakt",
     icon: "linkedin",
   },
   {
@@ -28,9 +28,9 @@ const DEFAULT_LINKS: ConnectLink[] = [
     icon: "whatsapp",
   },
   {
-    href: "mailto:kontakt@evglab.com",
+    href: SITE.contactMailto,
     label: "E-Mail",
-    description: "E-Mail an kontakt@evglab.com",
+    description: `E-Mail an ${SITE.contactEmail}`,
     icon: "mail",
   },
 ];
@@ -44,7 +44,7 @@ function NetworkIcon({ icon, className }: { icon: ConnectLink["icon"]; className
 
 export type ConnectWithUsProps = {
   className?: string;
-  /** Wenn leer, werden die EvGlab-Standardlinks genutzt */
+  /** Wenn leer, werden die BrewAI-Standardlinks genutzt */
   links?: ConnectLink[];
   /** Überschrift (Deutsch) */
   title?: ReactNode;
@@ -58,7 +58,7 @@ export type ConnectWithUsProps = {
 };
 
 /**
- * Social-/Kontakt-Kacheln im EvGlab-Stil (ohne styled-jsx, nur Tailwind).
+ * Social-/Kontakt-Kacheln im BrewAI-Stil (ohne styled-jsx, nur Tailwind).
  * Für „Über uns“, Footer-Bereich oder Landing-Sektionen.
  */
 export function ConnectWithUs({
