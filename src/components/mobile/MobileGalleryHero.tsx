@@ -72,10 +72,8 @@ function PolaroidMedia({
   const videoRef = useRef<HTMLVideoElement | null>(null);
 
   /**
-   * Autoplay ja, aber LCP-sicher:
-   * 1) Poster sofort (LCP)
-   * 2) nach Sichtbarkeit + Idle/~1.2s Video laden
-   * 3) muted autoplay, weich über Poster einblenden
+   * Autoplay wenn Front: Poster sofort (LCP), Video nach kurzer Pause starten.
+   * Kein Warten auf Intersection — beim Öffnen ist das Front-Polaroid schon sichtbar.
    */
   useEffect(() => {
     if (!card.videoSrc || reducedMotion || !isFront) {
@@ -83,36 +81,24 @@ function PolaroidMedia({
       setVideoPlaying(false);
       return;
     }
-    const el = mediaRef.current;
-    if (!el) return;
 
     let cancelled = false;
     let idleId: number | null = null;
     let timeoutId: ReturnType<typeof setTimeout> | null = null;
 
-    const armLoad = () => {
-      if (cancelled) return;
-      const start = () => {
-        if (!cancelled) setVideoReady(true);
-      };
-      if ("requestIdleCallback" in window) {
-        idleId = window.requestIdleCallback(start, { timeout: 1400 });
-      } else {
-        timeoutId = setTimeout(start, 900);
-      }
+    const start = () => {
+      if (!cancelled) setVideoReady(true);
     };
 
-    const io = new IntersectionObserver(
-      ([entry]) => {
-        if (entry?.isIntersecting) armLoad();
-      },
-      { rootMargin: "40px", threshold: 0.2 },
-    );
-    io.observe(el);
+    /* Kurz warten damit Poster als LCP zählt, dann Autoplay — wirkt „sofort“. */
+    if ("requestIdleCallback" in window) {
+      idleId = window.requestIdleCallback(start, { timeout: 450 });
+    } else {
+      timeoutId = setTimeout(start, 280);
+    }
 
     return () => {
       cancelled = true;
-      io.disconnect();
       if (idleId !== null) window.cancelIdleCallback?.(idleId);
       if (timeoutId !== null) clearTimeout(timeoutId);
     };
@@ -124,8 +110,9 @@ function PolaroidMedia({
     if (!v) return;
     const onPlaying = () => setVideoPlaying(true);
     v.addEventListener("playing", onPlaying);
+    v.muted = true;
     void v.play().catch(() => {
-      /* Autoplay blockiert → Poster bleibt sichtbar */
+      /* Autoplay blockiert → Poster bleibt */
     });
     return () => v.removeEventListener("playing", onPlaying);
   }, [videoReady]);
@@ -165,7 +152,8 @@ function PolaroidMedia({
               muted
               loop
               playsInline
-              preload="none"
+              autoPlay
+              preload="auto"
               aria-label={alt}
             />
           ) : null}
@@ -243,7 +231,7 @@ export function MobileGalleryHero({
   ctaPending = false,
   onGalleryOpen,
 }: MobileGalleryHeroProps) {
-  const defaultActive = MOBILE_HERO_POLAROIDS.findIndex((p) => p.id === "product");
+  const defaultActive = MOBILE_HERO_POLAROIDS.findIndex((p) => p.id === "social");
   const [activeIndex, setActiveIndex] = useState(defaultActive >= 0 ? defaultActive : 0);
   const [reducedMotion, setReducedMotion] = useState(false);
   /** Gestaffelte Einblendung — nach Layout/Paint, sonst kein Transition-Start bei Hydration. */

@@ -76,9 +76,10 @@ const REEL_VIDEO = KI_BEISPIEL_VIDEOS_9X16[0]!;
 export const MOBILE_HERO_POLAROIDS: MobileHeroPolaroid[] = [
   {
     id: "social",
-    stamp: "REELS · 9:16",
+    stamp: "✦ AUSGEWÄHLT · REELS",
+    stampClassName: "text-amber",
     placeholderCaption: "Social · Reels",
-    /** ~1 MB / 3.5s Loop statt 3.8 MB Vollvideo — Autoplay nach Poster-LCP. */
+    /** ~1 MB / 3.5s Loop — Front-Polaroid, Autoplay nach kurzem Poster. */
     videoSrc: "/optimized/hero-reel-mobile.mp4",
     videoPoster: "/optimized/hero-poster-biergarten.jpg",
     imageAlt: REEL_VIDEO.title,
@@ -92,8 +93,7 @@ export const MOBILE_HERO_POLAROIDS: MobileHeroPolaroid[] = [
   },
   {
     id: "product",
-    stamp: "✦ AUSGEWÄHLT · 1:1",
-    stampClassName: "text-amber",
+    stamp: "PRODUKT · 1:1",
     placeholderCaption: "Produktfoto · Hero",
     imageSrcs: ["/optimized/hero-product-left.jpg", "/optimized/hero-product-right.jpg"],
     imageAlt: "KI-Produktfotos: Bier mit Hopfen und Flasche am Bergfluss",

@@ -139,17 +139,11 @@ export default function Home() {
 
   return (
     <>
-      {/* LCP früh anstoßen — Front-Polaroid (Produkt) */}
+      {/* LCP: Front-Polaroid = Reel-Poster */}
       <link
         rel="preload"
         as="image"
-        href="/optimized/hero-product-left.jpg"
-        fetchPriority="high"
-      />
-      <link
-        rel="preload"
-        as="image"
-        href="/optimized/hero-product-right.jpg"
+        href="/optimized/hero-poster-biergarten.jpg"
         fetchPriority="high"
       />
       <h1 className="sr-only">
