@@ -1,7 +1,7 @@
 "use client";
 
 import Image from "next/image";
-import { useCallback, useEffect, useLayoutEffect, useMemo, useState } from "react";
+import { useCallback, useEffect, useLayoutEffect, useMemo, useRef, useState } from "react";
 import { MOBILE_EDITORIAL_PX } from "@/lib/mobileEditorial";
 import { scheduleAfterPaint } from "@/lib/scheduleAfterPaint";
 import { cn } from "@/lib/utils";
@@ -50,23 +50,46 @@ function slotForIndex(index: number, activeIndex: number): PolaroidSlot {
 const PLACEHOLDER_BG =
   "repeating-linear-gradient(135deg, #EAE3D5 0 10px, #D8CFBC 10px 11px)";
 
-/** Polaroid ~150–180px breit — sizes für 2×/3× Retina hoch genug ansetzen. */
-const POLAROID_IMAGE_QUALITY = 92;
+/** Polaroid ~150–180px breit — sizes für Retina; Qualität bewusst niedrig für LCP. */
+const POLAROID_IMAGE_QUALITY = 75;
 const POLAROID_IMAGE_SIZES_FULL = "(max-width: 768px) 240px, 280px";
 const POLAROID_IMAGE_SIZES_HALF = "(max-width: 768px) 160px, 200px";
 
 function PolaroidMedia({
   card,
   reducedMotion = false,
+  isFront = false,
 }: {
   card: MobileHeroPolaroid;
   reducedMotion?: boolean;
+  isFront?: boolean;
 }) {
   const hasMedia = Boolean(card.videoSrc || card.imageSrc || card.imageSrcs?.length);
   const alt = card.imageAlt ?? card.placeholderCaption;
+  const [videoReady, setVideoReady] = useState(false);
+  const mediaRef = useRef<HTMLDivElement | null>(null);
+
+  /** Video erst laden/abspielen wenn Front-Polaroid und im Viewport — kein 3–4 MB LCP-Kill. */
+  useEffect(() => {
+    if (!card.videoSrc || reducedMotion || !isFront) {
+      setVideoReady(false);
+      return;
+    }
+    const el = mediaRef.current;
+    if (!el) return;
+    const io = new IntersectionObserver(
+      ([entry]) => {
+        if (entry?.isIntersecting) setVideoReady(true);
+      },
+      { rootMargin: "80px", threshold: 0.15 },
+    );
+    io.observe(el);
+    return () => io.disconnect();
+  }, [card.videoSrc, isFront, reducedMotion]);
 
   return (
     <div
+      ref={mediaRef}
       className="relative flex h-[calc(100%-22px)] w-full flex-col items-center justify-center overflow-hidden rounded-[2px] bg-paper2"
       style={hasMedia ? undefined : { background: PLACEHOLDER_BG }}
     >
@@ -81,19 +104,22 @@ function PolaroidMedia({
               quality={POLAROID_IMAGE_QUALITY}
               className="polaroid-media__img object-cover object-center"
               aria-hidden
-              priority
+              priority={isFront}
+              loading={isFront ? "eager" : "lazy"}
             />
           ) : null}
-          <video
-            className="polaroid-media__video absolute inset-0 h-full w-full object-cover object-center"
-            src={card.videoSrc}
-            autoPlay={!reducedMotion}
-            muted
-            loop={!reducedMotion}
-            playsInline
-            preload={reducedMotion ? "metadata" : "auto"}
-            aria-label={alt}
-          />
+          {videoReady ? (
+            <video
+              className="polaroid-media__video absolute inset-0 h-full w-full object-cover object-center"
+              src={card.videoSrc}
+              autoPlay
+              muted
+              loop
+              playsInline
+              preload="metadata"
+              aria-label={alt}
+            />
+          ) : null}
         </>
       ) : null}
       {!card.videoSrc && card.imageSrcs ? (
@@ -107,7 +133,8 @@ function PolaroidMedia({
                 className="polaroid-media__img object-cover"
                 sizes={POLAROID_IMAGE_SIZES_HALF}
                 quality={POLAROID_IMAGE_QUALITY}
-                priority
+                priority={isFront}
+                loading={isFront ? "eager" : "lazy"}
               />
             </div>
           ))}
@@ -121,7 +148,8 @@ function PolaroidMedia({
           className="polaroid-media__img object-cover"
           sizes={POLAROID_IMAGE_SIZES_FULL}
           quality={POLAROID_IMAGE_QUALITY}
-          priority
+          priority={isFront}
+          loading={isFront ? "eager" : "lazy"}
         />
       ) : null}
       {!hasMedia ? (
@@ -260,7 +288,7 @@ export function MobileGalleryHero({
                 boxShadow: layout.shadow,
               }}
             >
-              <PolaroidMedia card={card} reducedMotion={reducedMotion} />
+              <PolaroidMedia card={card} reducedMotion={reducedMotion} isFront={isFront} />
               <span
                 className={cn(
                   "mt-1.5 block text-center font-mono-hero text-[9px] uppercase tracking-[0.6px] text-ink3",

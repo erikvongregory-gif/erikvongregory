@@ -2,19 +2,19 @@
 
 import { useSyncExternalStore } from "react";
 import dynamic from "next/dynamic";
-import { Hero } from "@/components/ui/animated-hero";
+import { MobileHomeEntry } from "@/components/MobileHomeEntry";
 import { importWithRetry } from "@/lib/importWithRetry";
 
 const DesktopLayout = dynamic(
   importWithRetry(
-    () => import(/* webpackPrefetch: true */ "@/components/DesktopLayout").then((m) => m.DesktopLayout),
+    () => import("@/components/DesktopLayout").then((m) => m.DesktopLayout),
     "DesktopLayout",
   ),
   { ssr: false },
 );
 const MobileLayout = dynamic(
   importWithRetry(
-    () => import(/* webpackPrefetch: true */ "@/components/MobileLayout").then((m) => m.MobileLayout),
+    () => import("@/components/MobileLayout").then((m) => m.MobileLayout),
     "MobileLayout",
   ),
   { ssr: false },
@@ -57,7 +57,7 @@ export function ResponsiveHomeLayout() {
             id="start"
             className="section1-wrapper relative mx-auto w-full max-w-screen-2xl section1-wrapper--mobile-gallery"
           >
-            <Hero />
+            <MobileHomeEntry />
           </div>
         ) : null}
 

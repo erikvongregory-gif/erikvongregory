@@ -9,8 +9,14 @@ import {
   useState,
   type ReactNode,
 } from "react";
-import { FreeTrialDemoModal } from "@/components/free-trial-demo/FreeTrialDemoModal";
+import dynamic from "next/dynamic";
 import { getRemainingDemos, isDemoExhausted, readDemoStorage } from "@/lib/freeTrialDemo";
+
+const FreeTrialDemoModal = dynamic(
+  () =>
+    import("@/components/free-trial-demo/FreeTrialDemoModal").then((m) => m.FreeTrialDemoModal),
+  { ssr: false },
+);
 
 type FreeTrialDemoContextValue = {
   open: () => void;
@@ -97,13 +103,15 @@ export function FreeTrialDemoProvider({ children }: { children: ReactNode }) {
   return (
     <FreeTrialDemoContext.Provider value={value}>
       {children}
-      <FreeTrialDemoModal
-        isOpen={isOpen}
-        onClose={close}
-        remaining={remaining}
-        isExhausted={isExhausted}
-        onSessionRecorded={refresh}
-      />
+      {isOpen ? (
+        <FreeTrialDemoModal
+          isOpen={isOpen}
+          onClose={close}
+          remaining={remaining}
+          isExhausted={isExhausted}
+          onSessionRecorded={refresh}
+        />
+      ) : null}
     </FreeTrialDemoContext.Provider>
   );
 }

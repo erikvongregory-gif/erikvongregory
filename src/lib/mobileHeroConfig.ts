@@ -80,14 +80,15 @@ export const MOBILE_HERO_POLAROIDS: MobileHeroPolaroid[] = [
     placeholderCaption: "Social · Reels",
     videoSrc: REEL_VIDEO.src,
     /** Hochauflösendes Standbild — kleine Video-Poster wirken in der Polaroid-Vorschau unscharf. */
-    videoPoster: "/ki-beispiel-biergarten.webp",
+    /** Kleines Biergarten-Poster (wie vorher), nicht das Video-Frame — Look bleibt. */
+    videoPoster: "/optimized/hero-poster-biergarten.jpg",
     imageAlt: REEL_VIDEO.title,
   },
   {
     id: "campaign",
     stamp: "KAMPAGNE · 4:5",
     placeholderCaption: "Kampagne · Plakat",
-    imageSrc: "/ki-beispiel-hafen.webp",
+    imageSrc: "/optimized/hero-polaroid-hafen.jpg",
     imageAlt: "Lünebräu – Lifestyle-Foto am Hafen Lübeck",
   },
   {
