@@ -47,7 +47,8 @@
   --font-serif: var(--font-newsreader), Georgia, "Times New Roman", serif;
   --font-serif-hero: var(--font-newsreader), "Source Serif 4", Georgia, serif;
   --font-sans-tight: var(--font-inter-tight), -apple-system, system-ui, sans-serif;
-  --font-mono-hero: var(--font-jetbrains), ui-monospace, Menlo, monospace;
+  --font-mono-hero: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+  --font-jetbrains: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
   --color-background: #ffffff;
   --color-foreground: #0f172a;
   --color-paper: #f4efe6;

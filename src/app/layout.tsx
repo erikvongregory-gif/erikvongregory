@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import { Inter_Tight, JetBrains_Mono, Newsreader } from "next/font/google";
+import { Inter_Tight, Newsreader } from "next/font/google";
 import { AppShell } from "@/components/AppShell";
 import { DeferredClientChrome } from "@/components/DeferredClientChrome";
 import { SiteSmoothScroll } from "@/components/site-smooth-scroll";
@@ -8,7 +8,7 @@ import { JsonLd } from "@/components/JsonLd";
 import { SITE } from "@/lib/siteConfig";
 import "./globals.css";
 
-/** Inter entfällt — Sans über Inter Tight (weniger Render-Blocking). */
+/** Weniger Fonts = weniger Render-Blocking (PSI). Mono → System-Stack. */
 const newsreader = Newsreader({
   subsets: ["latin"],
   display: "swap",
@@ -24,14 +24,6 @@ const interTight = Inter_Tight({
   variable: "--font-inter-tight",
   weight: ["400", "500", "600", "700"],
   preload: true,
-});
-
-const jetbrainsMono = JetBrains_Mono({
-  subsets: ["latin"],
-  display: "swap",
-  variable: "--font-jetbrains",
-  weight: ["400", "500"],
-  preload: false,
 });
 
 const ICON_VERSION = "20260612a";
@@ -117,7 +109,7 @@ export default function RootLayout({
   return (
     <html
       lang="de"
-      className={`${newsreader.variable} ${interTight.variable} ${jetbrainsMono.variable}`}
+      className={`${newsreader.variable} ${interTight.variable}`}
     >
       <body className="bg-paper text-neutral-900 antialiased">
         <SiteSmoothScroll />

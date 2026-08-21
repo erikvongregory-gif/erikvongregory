@@ -72,8 +72,7 @@ function PolaroidMedia({
   const videoRef = useRef<HTMLVideoElement | null>(null);
 
   /**
-   * Autoplay wenn Front: Poster sofort (LCP), Video nach kurzer Pause starten.
-   * Kein Warten auf Intersection — beim Öffnen ist das Front-Polaroid schon sichtbar.
+   * Video nur im Front-Polaroid. Start verzögert, damit Poster/Produkt-LCP zuerst zählt.
    */
   useEffect(() => {
     if (!card.videoSrc || reducedMotion || !isFront) {
@@ -83,24 +82,13 @@ function PolaroidMedia({
     }
 
     let cancelled = false;
-    let idleId: number | null = null;
-    let timeoutId: ReturnType<typeof setTimeout> | null = null;
-
-    const start = () => {
+    const timeoutId = setTimeout(() => {
       if (!cancelled) setVideoReady(true);
-    };
-
-    /* Kurz warten damit Poster als LCP zählt, dann Autoplay — wirkt „sofort“. */
-    if ("requestIdleCallback" in window) {
-      idleId = window.requestIdleCallback(start, { timeout: 450 });
-    } else {
-      timeoutId = setTimeout(start, 280);
-    }
+    }, 200);
 
     return () => {
       cancelled = true;
-      if (idleId !== null) window.cancelIdleCallback?.(idleId);
-      if (timeoutId !== null) clearTimeout(timeoutId);
+      clearTimeout(timeoutId);
     };
   }, [card.videoSrc, isFront, reducedMotion]);
 
@@ -111,9 +99,7 @@ function PolaroidMedia({
     const onPlaying = () => setVideoPlaying(true);
     v.addEventListener("playing", onPlaying);
     v.muted = true;
-    void v.play().catch(() => {
-      /* Autoplay blockiert → Poster bleibt */
-    });
+    void v.play().catch(() => {});
     return () => v.removeEventListener("playing", onPlaying);
   }, [videoReady]);
 
@@ -153,7 +139,7 @@ function PolaroidMedia({
               loop
               playsInline
               autoPlay
-              preload="auto"
+              preload="metadata"
               aria-label={alt}
             />
           ) : null}
@@ -231,8 +217,10 @@ export function MobileGalleryHero({
   ctaPending = false,
   onGalleryOpen,
 }: MobileGalleryHeroProps) {
-  const defaultActive = MOBILE_HERO_POLAROIDS.findIndex((p) => p.id === "social");
-  const [activeIndex, setActiveIndex] = useState(defaultActive >= 0 ? defaultActive : 0);
+  const socialIndex = MOBILE_HERO_POLAROIDS.findIndex((p) => p.id === "social");
+  const productIndex = MOBILE_HERO_POLAROIDS.findIndex((p) => p.id === "product");
+  /** Produkt zuerst = schneller LCP; nach kurzer Zeit Reel nach vorne + Autoplay. */
+  const [activeIndex, setActiveIndex] = useState(productIndex >= 0 ? productIndex : 0);
   const [reducedMotion, setReducedMotion] = useState(false);
   /** Gestaffelte Einblendung — nach Layout/Paint, sonst kein Transition-Start bei Hydration. */
   const [revealReady, setRevealReady] = useState(false);
@@ -253,6 +241,15 @@ export function MobileGalleryHero({
     mq.addEventListener("change", apply);
     return () => mq.removeEventListener("change", apply);
   }, []);
+
+  /** Nach LCP-Fenster: Reel nach vorne holen → Video-Autoplay ohne LCP zu killen. */
+  useEffect(() => {
+    if (reducedMotion || socialIndex < 0) return;
+    const id = window.setTimeout(() => {
+      setActiveIndex(socialIndex);
+    }, 1600);
+    return () => window.clearTimeout(id);
+  }, [reducedMotion, socialIndex]);
 
   useLayoutEffect(() => {
     if (reducedMotion) {

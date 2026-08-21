@@ -7,6 +7,9 @@ const nextConfig: NextConfig = {
   images: {
     qualities: [75, 85, 92, 95],
   },
+  experimental: {
+    optimizePackageImports: ["lucide-react", "framer-motion", "motion", "react-icons"],
+  },
 };
 
 export default nextConfig;
