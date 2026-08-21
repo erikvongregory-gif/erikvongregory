@@ -8,12 +8,12 @@ import { JsonLd } from "@/components/JsonLd";
 import { SITE } from "@/lib/siteConfig";
 import "./globals.css";
 
-/** Weniger Fonts = weniger Render-Blocking (PSI). Mono → System-Stack. */
+/** Kritische Faces preloaden; Rest swap ohne Preload. Mono → System. */
 const newsreader = Newsreader({
   subsets: ["latin"],
   display: "swap",
   variable: "--font-newsreader",
-  weight: ["400", "500", "600"],
+  weight: ["400", "500"],
   style: ["normal", "italic"],
   preload: true,
 });
@@ -22,8 +22,8 @@ const interTight = Inter_Tight({
   subsets: ["latin"],
   display: "swap",
   variable: "--font-inter-tight",
-  weight: ["400", "500", "600", "700"],
-  preload: true,
+  weight: ["400", "500", "600"],
+  preload: false,
 });
 
 const ICON_VERSION = "20260612a";

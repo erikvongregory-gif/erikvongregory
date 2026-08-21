@@ -1,6 +1,6 @@
 "use client";
 
-import { useSyncExternalStore } from "react";
+import { useEffect, useState, useSyncExternalStore } from "react";
 import dynamic from "next/dynamic";
 import { MobileHomeEntry } from "@/components/MobileHomeEntry";
 import { importWithRetry } from "@/lib/importWithRetry";
@@ -43,6 +43,34 @@ export function ResponsiveHomeLayout() {
     getDesktopMqSnapshot,
     getDesktopMqServerSnapshot,
   );
+  const [loadBelowFold, setLoadBelowFold] = useState(false);
+
+  useEffect(() => {
+    if (isDesktop) {
+      setLoadBelowFold(true);
+      return;
+    }
+    let cancelled = false;
+    let idleId: number | null = null;
+    let timeoutId: ReturnType<typeof setTimeout> | null = null;
+    const go = () => {
+      if (!cancelled) setLoadBelowFold(true);
+    };
+    /* Below-fold erst nach Hero/LCP — Lab misst sonst TBT durch Warum/Prozess-Chunks */
+    if ("requestIdleCallback" in window) {
+      idleId = window.requestIdleCallback(go, { timeout: 4500 });
+    } else {
+      timeoutId = setTimeout(go, 3000);
+    }
+    const onScroll = () => go();
+    window.addEventListener("scroll", onScroll, { passive: true, once: true });
+    return () => {
+      cancelled = true;
+      if (idleId !== null) window.cancelIdleCallback?.(idleId);
+      if (timeoutId !== null) clearTimeout(timeoutId);
+      window.removeEventListener("scroll", onScroll);
+    };
+  }, [isDesktop]);
 
   return (
     <div
@@ -67,7 +95,7 @@ export function ResponsiveHomeLayout() {
           </div>
         ) : null}
 
-        {!isDesktop ? (
+        {!isDesktop && loadBelowFold ? (
           <div
             id="mobile-content"
             className="mobile-root mobile-root-home flex w-full flex-col overflow-x-hidden bg-paper text-ink"

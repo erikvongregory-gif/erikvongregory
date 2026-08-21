@@ -1,20 +1,23 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import confetti from "canvas-confetti";
 import { Check, X } from "lucide-react";
 import { LEGAL } from "@/lib/legal";
 import { RippleButton } from "@/components/ui/multi-type-ripple-buttons";
 
 const fireConfetti = () => {
-  const count = 80;
-  const defaults = {
-    origin: { y: 0.6 },
-    colors: ["#e07a40", "#c65a20", "#ffd4a8", "#d46830", "#ffffff"],
-  };
-  confetti({ ...defaults, particleCount: count * 0.5, spread: 60 });
-  confetti({ ...defaults, particleCount: count * 0.4, spread: 100, scalar: 0.9 });
-  confetti({ ...defaults, particleCount: count * 0.3, spread: 120, scalar: 0.8 });
+  void import("canvas-confetti").then(({ default: confetti }) => {
+    const count = 80;
+    const defaults = {
+      origin: { y: 0.6 },
+      colors: ["#e07a40", "#c65a20", "#ffd4a8", "#d46830", "#ffffff"],
+    };
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    const fire = confetti as (opts: Record<string, unknown>) => void;
+    fire({ ...defaults, particleCount: count * 0.5, spread: 60 });
+    fire({ ...defaults, particleCount: count * 0.4, speed: 100, scalar: 0.9 });
+    fire({ ...defaults, particleCount: count * 0.3, speed: 120, scalar: 0.8 });
+  });
 };
 
 const STEPS = [

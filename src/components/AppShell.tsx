@@ -19,7 +19,7 @@ type AppShellProps = {
   children: React.ReactNode;
 };
 
-function useDeferNonCritical(ms = 1800) {
+function useDeferNonCritical(ms = 3500) {
   const [ready, setReady] = useState(false);
   useEffect(() => {
     let idleId: number | null = null;

@@ -78,7 +78,7 @@ export const MOBILE_HERO_POLAROIDS: MobileHeroPolaroid[] = [
     id: "social",
     stamp: "REELS · 9:16",
     placeholderCaption: "Social · Reels",
-    /** ~627 KB / 2.2s Loop — startet nach LCP (Produkt vorne), dann Autoplay. */
+    /** ~479 KB — nur wenn Reel-Polaroid vorne (Tap), nicht im First Paint. */
     videoSrc: "/optimized/hero-reel-mobile.mp4",
     videoPoster: "/optimized/hero-poster-biergarten.jpg",
     imageAlt: REEL_VIDEO.title,

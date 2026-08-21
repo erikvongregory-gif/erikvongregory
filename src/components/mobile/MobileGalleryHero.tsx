@@ -217,9 +217,8 @@ export function MobileGalleryHero({
   ctaPending = false,
   onGalleryOpen,
 }: MobileGalleryHeroProps) {
-  const socialIndex = MOBILE_HERO_POLAROIDS.findIndex((p) => p.id === "social");
   const productIndex = MOBILE_HERO_POLAROIDS.findIndex((p) => p.id === "product");
-  /** Produkt zuerst = schneller LCP; nach kurzer Zeit Reel nach vorne + Autoplay. */
+  /** Produkt vorne = LCP. Video nur bei Tap aufs Reel-Polaroid (kein Lab-Netzwerk). */
   const [activeIndex, setActiveIndex] = useState(productIndex >= 0 ? productIndex : 0);
   const [reducedMotion, setReducedMotion] = useState(false);
   /** Gestaffelte Einblendung — nach Layout/Paint, sonst kein Transition-Start bei Hydration. */
@@ -241,15 +240,6 @@ export function MobileGalleryHero({
     mq.addEventListener("change", apply);
     return () => mq.removeEventListener("change", apply);
   }, []);
-
-  /** Nach LCP-Fenster: Reel nach vorne holen → Video-Autoplay ohne LCP zu killen. */
-  useEffect(() => {
-    if (reducedMotion || socialIndex < 0) return;
-    const id = window.setTimeout(() => {
-      setActiveIndex(socialIndex);
-    }, 1600);
-    return () => window.clearTimeout(id);
-  }, [reducedMotion, socialIndex]);
 
   useLayoutEffect(() => {
     if (reducedMotion) {
