@@ -1,25 +1,12 @@
 import type { Metadata } from "next";
 import { Inter, Inter_Tight, JetBrains_Mono, Newsreader } from "next/font/google";
-import dynamic from "next/dynamic";
 import { AppShell } from "@/components/AppShell";
+import { DeferredClientChrome } from "@/components/DeferredClientChrome";
 import { SiteSmoothScroll } from "@/components/site-smooth-scroll";
 import { LoadingProvider } from "@/context/LoadingContext";
 import { JsonLd } from "@/components/JsonLd";
 import { SITE } from "@/lib/siteConfig";
 import "./globals.css";
-
-const Analytics = dynamic(
-  () => import("@vercel/analytics/react").then((m) => m.Analytics),
-  { ssr: false },
-);
-const SpeedInsights = dynamic(
-  () => import("@vercel/speed-insights/next").then((m) => m.SpeedInsights),
-  { ssr: false },
-);
-const FaviconReminder = dynamic(
-  () => import("@/components/FaviconReminder").then((m) => m.FaviconReminder),
-  { ssr: false },
-);
 
 const inter = Inter({
   subsets: ["latin"],
@@ -139,12 +126,10 @@ export default function RootLayout({
       <body className="bg-paper text-neutral-900 antialiased">
         <SiteSmoothScroll />
         <JsonLd />
-        <FaviconReminder />
         <LoadingProvider>
           <AppShell>{children}</AppShell>
         </LoadingProvider>
-        <Analytics />
-        <SpeedInsights />
+        <DeferredClientChrome />
       </body>
     </html>
   );
