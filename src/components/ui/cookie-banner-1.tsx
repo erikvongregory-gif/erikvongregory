@@ -336,9 +336,7 @@ const CookiePanel = (props: CookiePanelProps) => {
 
         {!settingsMode && (
           <div className={styles.bannerFooter}>
-            <div className={styles.brandMark}>
-              EvG<span>lab</span>
-            </div>
+            <div className={styles.brandMark}>{SITE.name}</div>
             <div className={styles.dsgvoTag}>Hosting · DE · V2.4</div>
           </div>
         )}

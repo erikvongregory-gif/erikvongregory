@@ -78,16 +78,16 @@ export const MOBILE_HERO_POLAROIDS: MobileHeroPolaroid[] = [
     id: "social",
     stamp: "REELS · 9:16",
     placeholderCaption: "Social · Reels",
-    /** ~479 KB — nur wenn Reel-Polaroid vorne (Tap), nicht im First Paint. */
-    videoSrc: "/optimized/hero-reel-mobile.mp4",
-    videoPoster: "/optimized/hero-poster-biergarten.jpg",
+    /** ~370 KB / 12s, stumm — Download erst nach LCP. */
+    videoSrc: "/optimized/hero-reel-12s.mp4",
+    videoPoster: "/optimized/hero-poster-reel.webp",
     imageAlt: REEL_VIDEO.title,
   },
   {
     id: "campaign",
     stamp: "KAMPAGNE · 4:5",
     placeholderCaption: "Kampagne · Plakat",
-    imageSrc: "/optimized/hero-polaroid-hafen.jpg",
+    imageSrc: "/optimized/hero-polaroid-hafen.webp",
     imageAlt: "Lünebräu – Lifestyle-Foto am Hafen Lübeck",
   },
   {
@@ -95,7 +95,7 @@ export const MOBILE_HERO_POLAROIDS: MobileHeroPolaroid[] = [
     stamp: "✦ AUSGEWÄHLT · 1:1",
     stampClassName: "text-amber",
     placeholderCaption: "Produktfoto · Hero",
-    imageSrcs: ["/optimized/hero-product-left.jpg", "/optimized/hero-product-right.jpg"],
+    imageSrcs: ["/optimized/hero-product-left.webp", "/optimized/hero-product-right.webp"],
     imageAlt: "KI-Produktfotos: Bier mit Hopfen und Flasche am Bergfluss",
   },
 ];

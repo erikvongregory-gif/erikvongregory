@@ -3,7 +3,7 @@
 import Image from "next/image";
 import { useCallback, useEffect, useLayoutEffect, useMemo, useRef, useState } from "react";
 import { MOBILE_EDITORIAL_PX } from "@/lib/mobileEditorial";
-import { scheduleAfterPaint } from "@/lib/scheduleAfterPaint";
+import { scheduleAfterLcp, scheduleAfterPaint } from "@/lib/scheduleAfterPaint";
 import { cn } from "@/lib/utils";
 import {
   getDailyCategoryStats,
@@ -55,81 +55,113 @@ const POLAROID_IMAGE_QUALITY = 75;
 const POLAROID_IMAGE_SIZES_FULL = "(max-width: 768px) 240px, 280px";
 const POLAROID_IMAGE_SIZES_HALF = "(max-width: 768px) 160px, 200px";
 
+function prefersSaveData(): boolean {
+  const conn = (navigator as Navigator & { connection?: { saveData?: boolean; effectiveType?: string } }).connection;
+  if (!conn) return false;
+  if (conn.saveData) return true;
+  return conn.effectiveType === "slow-2g" || conn.effectiveType === "2g";
+}
+
 function PolaroidMedia({
   card,
   reducedMotion = false,
   isFront = false,
+  lcpSettled = false,
 }: {
   card: MobileHeroPolaroid;
   reducedMotion?: boolean;
   isFront?: boolean;
+  lcpSettled?: boolean;
 }) {
   const hasMedia = Boolean(card.videoSrc || card.imageSrc || card.imageSrcs?.length);
   const alt = card.imageAlt ?? card.placeholderCaption;
-  const [videoReady, setVideoReady] = useState(false);
   const [videoPlaying, setVideoPlaying] = useState(false);
-  const mediaRef = useRef<HTMLDivElement | null>(null);
+  const [saveData, setSaveData] = useState(false);
   const videoRef = useRef<HTMLVideoElement | null>(null);
 
-  /**
-   * Video nur im Front-Polaroid. Start verzögert, damit Poster/Produkt-LCP zuerst zählt.
-   */
+  const loadStill = isFront || lcpSettled;
+  const loadVideo =
+    Boolean(card.videoSrc) && isFront && lcpSettled && !reducedMotion && !saveData;
+
   useEffect(() => {
-    if (!card.videoSrc || reducedMotion || !isFront) {
-      setVideoReady(false);
+    setSaveData(prefersSaveData());
+  }, []);
+
+  useEffect(() => {
+    if (!loadVideo) {
       setVideoPlaying(false);
       return;
     }
-
-    let cancelled = false;
-    const timeoutId = setTimeout(() => {
-      if (!cancelled) setVideoReady(true);
-    }, 200);
-
-    return () => {
-      cancelled = true;
-      clearTimeout(timeoutId);
-    };
-  }, [card.videoSrc, isFront, reducedMotion]);
-
-  useEffect(() => {
-    if (!videoReady) return;
     const v = videoRef.current;
     if (!v) return;
-    const onPlaying = () => setVideoPlaying(true);
-    v.addEventListener("playing", onPlaying);
+
     v.muted = true;
-    void v.play().catch(() => {});
-    return () => v.removeEventListener("playing", onPlaying);
-  }, [videoReady]);
+    v.defaultMuted = true;
+    v.playsInline = true;
+
+    const tryPlay = () => {
+      v.muted = true;
+      void v.play().catch(() => {});
+    };
+    const onPlaying = () => setVideoPlaying(true);
+
+    v.addEventListener("playing", onPlaying);
+    v.addEventListener("canplay", tryPlay);
+    tryPlay();
+
+    const io = new IntersectionObserver(
+      ([entry]) => {
+        if (!entry) return;
+        if (entry.isIntersecting) tryPlay();
+        else v.pause();
+      },
+      { threshold: 0.15 },
+    );
+    io.observe(v);
+
+    const onVis = () => {
+      if (!document.hidden) tryPlay();
+    };
+    document.addEventListener("visibilitychange", onVis);
+
+    return () => {
+      v.removeEventListener("playing", onPlaying);
+      v.removeEventListener("canplay", tryPlay);
+      io.disconnect();
+      document.removeEventListener("visibilitychange", onVis);
+      v.pause();
+    };
+  }, [loadVideo]);
 
   return (
     <div
-      ref={mediaRef}
       className="relative flex h-[calc(100%-22px)] w-full flex-col items-center justify-center overflow-hidden rounded-[2px] bg-paper2"
       style={hasMedia ? undefined : { background: PLACEHOLDER_BG }}
     >
       {card.videoSrc ? (
         <>
-          {card.videoPoster ? (
+          {card.videoPoster && loadStill ? (
             <Image
               src={card.videoPoster}
               alt=""
               fill
+              unoptimized
               sizes={POLAROID_IMAGE_SIZES_FULL}
-              quality={POLAROID_IMAGE_QUALITY}
               className={cn(
                 "polaroid-media__img object-cover object-center transition-opacity duration-500",
                 videoPlaying ? "opacity-0" : "opacity-100",
               )}
               aria-hidden
               priority={isFront}
+              fetchPriority={isFront ? "high" : "auto"}
               loading={isFront ? "eager" : "lazy"}
+              decoding={isFront ? "sync" : "async"}
             />
           ) : null}
-          {videoReady ? (
+          {loadVideo ? (
             <video
               ref={videoRef}
+              key={card.videoSrc}
               className={cn(
                 "polaroid-media__video absolute inset-0 h-full w-full object-cover object-center transition-opacity duration-500",
                 videoPlaying ? "opacity-100" : "opacity-0",
@@ -139,13 +171,14 @@ function PolaroidMedia({
               loop
               playsInline
               autoPlay
-              preload="metadata"
+              preload="auto"
+              disablePictureInPicture
               aria-label={alt}
             />
           ) : null}
         </>
       ) : null}
-      {!card.videoSrc && card.imageSrcs ? (
+      {!card.videoSrc && card.imageSrcs && loadStill ? (
         <div className="absolute inset-0 grid grid-cols-2 gap-px">
           {card.imageSrcs.map((src, i) => (
             <div key={src} className="relative min-h-0 min-w-0">
@@ -163,7 +196,7 @@ function PolaroidMedia({
           ))}
         </div>
       ) : null}
-      {!card.videoSrc && !card.imageSrcs && card.imageSrc ? (
+      {!card.videoSrc && !card.imageSrcs && card.imageSrc && loadStill ? (
         <Image
           src={card.imageSrc}
           alt={alt}
@@ -217,12 +250,12 @@ export function MobileGalleryHero({
   ctaPending = false,
   onGalleryOpen,
 }: MobileGalleryHeroProps) {
-  const productIndex = MOBILE_HERO_POLAROIDS.findIndex((p) => p.id === "product");
-  /** Produkt vorne = LCP. Video nur bei Tap aufs Reel-Polaroid (kein Lab-Netzwerk). */
-  const [activeIndex, setActiveIndex] = useState(productIndex >= 0 ? productIndex : 0);
+  const socialIndex = MOBILE_HERO_POLAROIDS.findIndex((p) => p.id === "social");
+  const [activeIndex, setActiveIndex] = useState(socialIndex >= 0 ? socialIndex : 0);
   const [reducedMotion, setReducedMotion] = useState(false);
   /** Gestaffelte Einblendung — nach Layout/Paint, sonst kein Transition-Start bei Hydration. */
   const [revealReady, setRevealReady] = useState(false);
+  const [lcpSettled, setLcpSettled] = useState(false);
 
   const { motifLabel, categoryStats } = useMemo(() => {
     const today = new Date();
@@ -249,6 +282,10 @@ export function MobileGalleryHero({
     setRevealReady(false);
     return scheduleAfterPaint(() => setRevealReady(true));
   }, [reducedMotion]);
+
+  useEffect(() => {
+    return scheduleAfterLcp(() => setLcpSettled(true));
+  }, []);
 
   const bringToFront = useCallback((index: number) => {
     setActiveIndex(index);
@@ -312,7 +349,12 @@ export function MobileGalleryHero({
                 boxShadow: layout.shadow,
               }}
             >
-              <PolaroidMedia card={card} reducedMotion={reducedMotion} isFront={isFront} />
+              <PolaroidMedia
+                card={card}
+                reducedMotion={reducedMotion}
+                isFront={isFront}
+                lcpSettled={lcpSettled}
+              />
               <span
                 className={cn(
                   "mt-1.5 block text-center font-mono-hero text-[9px] uppercase tracking-[0.6px] text-ink3",

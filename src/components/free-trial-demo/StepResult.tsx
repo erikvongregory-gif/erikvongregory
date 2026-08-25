@@ -6,18 +6,27 @@ import { CloseBtn } from "@/components/free-trial-demo/CloseBtn";
 import { PrimaryAboCta } from "@/components/free-trial-demo/PrimaryAboCta";
 import styles from "@/components/free-trial-demo/free-trial-demo.module.css";
 import { APP_LOGIN_URL } from "@/lib/appLoginUrl";
-import { DEMO_FUNNEL_COLORS, type DemoMotif } from "@/lib/freeTrialDemo";
+import {
+  DEMO_FUNNEL_COLORS,
+  demoVariantCode,
+  getBeerStyle,
+  type DemoMotif,
+  type DemoProfile,
+} from "@/lib/freeTrialDemo";
 
 type StepResultProps = {
   motif: DemoMotif;
+  profile: DemoProfile;
   remaining: number;
   onTryAgain: () => void;
   onClose: () => void;
 };
 
-export function StepResult({ motif, remaining, onTryAgain, onClose }: StepResultProps) {
+export function StepResult({ motif, profile, remaining, onTryAgain, onClose }: StepResultProps) {
   const [revealed, setRevealed] = useState(false);
   const [secondaryHovered, setSecondaryHovered] = useState(false);
+  const style = getBeerStyle(profile.beerStyleId);
+  const variant = demoVariantCode(profile, motif.id);
 
   useEffect(() => {
     const timer = window.setTimeout(() => setRevealed(true), 80);
@@ -29,7 +38,7 @@ export function StepResult({ motif, remaining, onTryAgain, onClose }: StepResult
       <div style={{ position: "relative", overflow: "hidden" }}>
         <Image
           src={motif.resultImage}
-          alt={motif.resultAlt}
+          alt={`${profile.breweryName} · ${motif.resultAlt}`}
           width={952}
           height={714}
           className={`${styles.resultImage} block h-auto w-full object-cover ${revealed ? styles.resultImageRevealed : ""}`}
@@ -82,19 +91,11 @@ export function StepResult({ motif, remaining, onTryAgain, onClose }: StepResult
           <CloseBtn onClick={onClose} dark />
         </div>
 
-        <div
-          style={{
-            position: "absolute",
-            bottom: 0,
-            left: 0,
-            right: 0,
-            background:
-              "linear-gradient(to top, rgba(23,22,14,1) 0%, rgba(23,22,14,0.5) 50%, transparent 100%)",
-            padding: "40px 20px 16px",
-          }}
-        >
-          <div style={{ fontSize: 11, color: DEMO_FUNNEL_COLORS.dim }}>
-            {motif.tag} · {motif.description}
+        <div className={`${styles.resultBrand} ${revealed ? styles.resultBrandRevealed : ""}`}>
+          <div className={styles.resultBrandKicker}>Erstellt für</div>
+          <div className={`${styles.heading} ${styles.resultBrandName}`}>{profile.breweryName}</div>
+          <div className={styles.resultBrandMeta}>
+            {style.label} · {motif.tag} · Variante {variant}
           </div>
         </div>
       </div>
@@ -109,7 +110,7 @@ export function StepResult({ motif, remaining, onTryAgain, onClose }: StepResult
             marginBottom: 7,
           }}
         >
-          Dein Motiv ist da
+          {profile.breweryName} · {motif.title.split("·")[0].trim()}
         </h2>
         <p
           style={{
@@ -119,8 +120,8 @@ export function StepResult({ motif, remaining, onTryAgain, onClose }: StepResult
             marginBottom: 22,
           }}
         >
-          So könnten deine Bilder aussehen — mit deinem Markenprofil noch präziser auf deine Brauerei
-          zugeschnitten.
+          Dein {style.label}-Look auf diesem Motiv. Mit Markenprofil sitzt als Nächstes dein echtes
+          Etikett auf der Flasche.
         </p>
 
         <div style={{ display: "flex", flexDirection: "column", gap: 10 }}>
@@ -145,7 +146,7 @@ export function StepResult({ motif, remaining, onTryAgain, onClose }: StepResult
                 minHeight: 44,
               }}
             >
-              Noch {remaining} Demo-Bild{remaining !== 1 ? "er" : ""} testen
+              Noch {remaining} Demo-Bild{remaining !== 1 ? "er" : ""} für {profile.breweryName} testen
             </button>
           ) : null}
 

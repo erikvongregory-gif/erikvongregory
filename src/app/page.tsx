@@ -139,18 +139,14 @@ export default function Home() {
 
   return (
     <>
-      {/* LCP: Produkt-Polaroid zuerst */}
+      {/* LCP: Mobile-Hero-Poster (Video folgt nach LCP). Desktop lädt DesktopHero. */}
       <link
         rel="preload"
         as="image"
-        href="/optimized/hero-product-left.jpg"
+        href="/optimized/hero-poster-reel.webp"
+        type="image/webp"
         fetchPriority="high"
-      />
-      <link
-        rel="preload"
-        as="image"
-        href="/optimized/hero-product-right.jpg"
-        fetchPriority="high"
+        media="(max-width: 1023px)"
       />
       <h1 className="sr-only">
         KI-Marketing für Brauereien in Deutschland, Österreich und der Schweiz — Werbebilder, Social Media und

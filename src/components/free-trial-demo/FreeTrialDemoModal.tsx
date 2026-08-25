@@ -6,6 +6,7 @@ import styles from "@/components/free-trial-demo/free-trial-demo.module.css";
 import { StepExhausted } from "@/components/free-trial-demo/StepExhausted";
 import { StepLoading } from "@/components/free-trial-demo/StepLoading";
 import { StepPick } from "@/components/free-trial-demo/StepPick";
+import { StepProfile } from "@/components/free-trial-demo/StepProfile";
 import { StepResult } from "@/components/free-trial-demo/StepResult";
 import {
   DEMO_FUNNEL_COLORS,
@@ -14,12 +15,16 @@ import {
   GENERATION_STATUS_MESSAGES,
   getDemoMotif,
   getRemainingDemos,
+  getUsedMotifIds,
+  readDemoProfile,
   readDemoStorage,
   recordDemoSession,
+  saveDemoProfile,
   type DemoMotifId,
+  type DemoProfile,
 } from "@/lib/freeTrialDemo";
 
-type DemoPhase = "selection" | "generating" | "result" | "exhausted";
+type DemoPhase = "profile" | "selection" | "generating" | "result" | "exhausted";
 
 type FreeTrialDemoModalProps = {
   isOpen: boolean;
@@ -36,7 +41,8 @@ export function FreeTrialDemoModal({
   isExhausted,
   onSessionRecorded,
 }: FreeTrialDemoModalProps) {
-  const [phase, setPhase] = useState<DemoPhase>("selection");
+  const [phase, setPhase] = useState<DemoPhase>("profile");
+  const [profile, setProfile] = useState<DemoProfile | null>(null);
   const [selectedMotifId, setSelectedMotifId] = useState<DemoMotifId | null>(null);
   const [progress, setProgress] = useState(0);
   const [statusIndex, setStatusIndex] = useState(0);
@@ -46,7 +52,7 @@ export function FreeTrialDemoModal({
   const wasOpenRef = useRef(false);
 
   const resetState = useCallback(() => {
-    setPhase("selection");
+    setPhase("profile");
     setSelectedMotifId(null);
     setProgress(0);
     setStatusIndex(0);
@@ -60,7 +66,9 @@ export function FreeTrialDemoModal({
 
   useEffect(() => {
     if (isOpen && !wasOpenRef.current) {
-      setPhase(isExhausted ? "exhausted" : "selection");
+      const storedProfile = readDemoProfile();
+      setProfile(storedProfile);
+      setPhase(isExhausted ? "exhausted" : storedProfile ? "selection" : "profile");
       setSelectedMotifId(null);
       setProgress(0);
       setStatusIndex(0);
@@ -137,8 +145,13 @@ export function FreeTrialDemoModal({
     };
   }, [phase, selectedMotifId, sessionRecorded, onSessionRecorded]);
 
+  const handleProfile = (next: DemoProfile) => {
+    setProfile(saveDemoProfile(next));
+    setPhase("selection");
+  };
+
   const handleSelectMotif = (motifId: DemoMotifId) => {
-    if (isExhausted) return;
+    if (isExhausted || getUsedMotifIds().includes(motifId)) return;
     setSelectedMotifId(motifId);
     window.setTimeout(() => setPhase("generating"), 60);
   };
@@ -196,22 +209,34 @@ export function FreeTrialDemoModal({
           boxShadow: "0 36px 80px rgba(0,0,0,0.75), 0 0 0 1px rgba(244,240,232,0.03)",
         }}
       >
-        {phase === "selection" ? (
+        {phase === "profile" ? (
+          <StepProfile initial={profile} onSubmit={handleProfile} onClose={onClose} />
+        ) : null}
+
+        {phase === "selection" && profile ? (
           <StepPick
             remaining={remaining}
             total={FREE_TRIAL_DEMO_MAX}
+            usedIds={getUsedMotifIds()}
+            breweryName={profile.breweryName}
             onSelect={handleSelectMotif}
             onClose={onClose}
           />
         ) : null}
 
-        {phase === "generating" && selectedMotif ? (
-          <StepLoading progress={progress} statusIndex={statusIndex} motif={selectedMotif} />
+        {phase === "generating" && selectedMotif && profile ? (
+          <StepLoading
+            progress={progress}
+            statusIndex={statusIndex}
+            motif={selectedMotif}
+            profile={profile}
+          />
         ) : null}
 
-        {phase === "result" && selectedMotif ? (
+        {phase === "result" && selectedMotif && profile ? (
           <StepResult
             motif={selectedMotif}
+            profile={profile}
             remaining={remainingAfterResult}
             onTryAgain={handleTryAnother}
             onClose={onClose}

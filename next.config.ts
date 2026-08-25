@@ -6,6 +6,7 @@ const nextConfig: NextConfig = {
   transpilePackages: ["@paper-design/shaders-react", "@paper-design/shaders"],
   images: {
     qualities: [75, 85, 92, 95],
+    formats: ["image/avif", "image/webp"],
   },
   experimental: {
     optimizePackageImports: ["lucide-react", "framer-motion", "motion", "react-icons"],

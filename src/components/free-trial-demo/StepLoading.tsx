@@ -1,29 +1,41 @@
 "use client";
 
 import styles from "@/components/free-trial-demo/free-trial-demo.module.css";
-import { DEMO_FUNNEL_COLORS, GENERATION_STATUS_MESSAGES, type DemoMotif } from "@/lib/freeTrialDemo";
+import {
+  DEMO_FUNNEL_COLORS,
+  buildDemoPrompt,
+  generationStatusFor,
+  getBeerStyle,
+  type DemoMotif,
+  type DemoProfile,
+} from "@/lib/freeTrialDemo";
 
 type StepLoadingProps = {
   progress: number;
   statusIndex: number;
   motif: DemoMotif;
+  profile: DemoProfile;
 };
 
-export function StepLoading({ progress, statusIndex, motif }: StepLoadingProps) {
+export function StepLoading({ progress, statusIndex, motif, profile }: StepLoadingProps) {
   const pct = Math.round(progress);
-  const message = GENERATION_STATUS_MESSAGES[statusIndex % GENERATION_STATUS_MESSAGES.length];
+  const messages = generationStatusFor(profile, motif);
+  const message = messages[statusIndex % messages.length];
+  const prompt = buildDemoPrompt(profile, motif);
+  const typed = prompt.slice(0, Math.max(1, Math.floor((progress / 100) * prompt.length)));
+  const style = getBeerStyle(profile.beerStyleId);
 
   return (
     <div
       className={styles.stepWrap}
       style={{
-        padding: "50px 32px 40px",
+        padding: "44px 28px 36px",
         minHeight: 380,
         display: "flex",
         flexDirection: "column",
         alignItems: "center",
         justifyContent: "center",
-        gap: 32,
+        gap: 26,
         textAlign: "center",
       }}
     >
@@ -38,7 +50,7 @@ export function StepLoading({ progress, statusIndex, motif }: StepLoadingProps) 
             marginBottom: 14,
           }}
         >
-          GENERIERUNG LÄUFT
+          GENERIERUNG FÜR {profile.breweryName.toUpperCase()}
         </div>
         <div
           className={styles.heading}
@@ -89,26 +101,18 @@ export function StepLoading({ progress, statusIndex, motif }: StepLoadingProps) 
             }}
           />
         </div>
-        <div style={{ fontSize: 12, color: DEMO_FUNNEL_COLORS.dim }}>
-          {motif.tag} · {motif.title}
+        <div style={{ fontSize: 12, color: DEMO_FUNNEL_COLORS.dim, marginBottom: 14 }}>
+          {style.label} · {motif.title}
         </div>
-      </div>
-
-      <div
-        style={{
-          fontSize: 12,
-          color: "rgba(244,240,232,0.3)",
-          lineHeight: 1.7,
-          padding: "14px 20px",
-          background: "rgba(244,240,232,0.04)",
-          borderRadius: 10,
-          border: `1px solid ${DEMO_FUNNEL_COLORS.border}`,
-          width: "100%",
-        }}
-      >
-        In der echten App dauert das rund 40 Sekunden —
-        <br />
-        genauso realistisch wie eine echte Generierung.
+        <div className={styles.promptBox}>
+          <div className={styles.promptLabel}>Prompt</div>
+          <div className={styles.promptText}>
+            {typed}
+            <span className={styles.promptCaret} aria-hidden>
+              |
+            </span>
+          </div>
+        </div>
       </div>
     </div>
   );

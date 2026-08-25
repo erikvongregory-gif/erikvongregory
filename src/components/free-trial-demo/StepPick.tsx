@@ -10,11 +10,13 @@ import { SITE } from "@/lib/siteConfig";
 type StepPickProps = {
   remaining: number;
   total: number;
+  usedIds: readonly DemoMotifId[];
+  breweryName: string;
   onSelect: (id: DemoMotifId) => void;
   onClose: () => void;
 };
 
-export function StepPick({ remaining, total, onSelect, onClose }: StepPickProps) {
+export function StepPick({ remaining, total, usedIds, breweryName, onSelect, onClose }: StepPickProps) {
   const [hoveredId, setHoveredId] = useState<DemoMotifId | null>(null);
   const used = total - remaining;
 
@@ -43,6 +45,7 @@ export function StepPick({ remaining, total, onSelect, onClose }: StepPickProps)
               {SITE.name.toUpperCase()} · DEMO
             </div>
             <h2
+              id="free-trial-demo-title"
               className={styles.heading}
               style={{
                 fontWeight: 800,
@@ -52,10 +55,10 @@ export function StepPick({ remaining, total, onSelect, onClose }: StepPickProps)
                 marginBottom: 8,
               }}
             >
-              Wähle dein Motiv
+              Motiv für {breweryName}
             </h2>
             <p style={{ fontSize: 14, color: DEMO_FUNNEL_COLORS.muted, lineHeight: 1.5 }}>
-              Klick auf eine Szene — wir generieren sie direkt für dich.
+              Klick auf eine Szene — wir generieren sie in deinem Look.
             </p>
           </div>
           <CloseBtn onClick={onClose} />
@@ -92,6 +95,7 @@ export function StepPick({ remaining, total, onSelect, onClose }: StepPickProps)
           <MotifCard
             key={motif.id}
             motif={motif}
+            used={usedIds.includes(motif.id)}
             hovered={hoveredId === motif.id}
             onHover={setHoveredId}
             onSelect={onSelect}
@@ -104,33 +108,40 @@ export function StepPick({ remaining, total, onSelect, onClose }: StepPickProps)
 
 function MotifCard({
   motif,
+  used,
   hovered,
   onHover,
   onSelect,
 }: {
   motif: DemoMotif;
+  used: boolean;
   hovered: boolean;
   onHover: (id: DemoMotifId | null) => void;
   onSelect: (id: DemoMotifId) => void;
 }) {
+  const lift = hovered && !used;
   return (
     <button
       type="button"
-      onClick={() => onSelect(motif.id)}
+      disabled={used}
+      onClick={() => {
+        if (!used) onSelect(motif.id);
+      }}
       onMouseEnter={() => onHover(motif.id)}
       onMouseLeave={() => onHover(null)}
       style={{
-        background: hovered ? DEMO_FUNNEL_COLORS.surfaceHover : DEMO_FUNNEL_COLORS.surface,
-        border: `1px solid ${hovered ? DEMO_FUNNEL_COLORS.borderHover : DEMO_FUNNEL_COLORS.border}`,
+        background: lift ? DEMO_FUNNEL_COLORS.surfaceHover : DEMO_FUNNEL_COLORS.surface,
+        border: `1px solid ${lift ? DEMO_FUNNEL_COLORS.borderHover : DEMO_FUNNEL_COLORS.border}`,
         borderRadius: 13,
         padding: 0,
-        cursor: "pointer",
+        cursor: used ? "default" : "pointer",
         overflow: "hidden",
         textAlign: "left",
+        opacity: used ? 0.48 : 1,
         transition:
           "transform 0.15s ease, border-color 0.15s ease, box-shadow 0.15s ease, background 0.15s ease",
-        transform: hovered ? "translateY(-3px)" : "none",
-        boxShadow: hovered ? "0 10px 28px rgba(0,0,0,0.45)" : "0 2px 6px rgba(0,0,0,0.2)",
+        transform: lift ? "translateY(-3px)" : "none",
+        boxShadow: lift ? "0 10px 28px rgba(0,0,0,0.45)" : "0 2px 6px rgba(0,0,0,0.2)",
         minHeight: 44,
       }}
     >
@@ -157,7 +168,7 @@ function MotifCard({
             justifyContent: "center",
             opacity: 0.3,
             color: DEMO_FUNNEL_COLORS.text,
-            transform: hovered ? "scale(1.1)" : "scale(1)",
+            transform: lift ? "scale(1.1)" : "scale(1)",
             transition: "transform 0.35s ease",
           }}
         >
@@ -171,6 +182,25 @@ function MotifCard({
           }}
           aria-hidden
         />
+        {used ? (
+          <div
+            style={{
+              position: "absolute",
+              inset: 0,
+              display: "flex",
+              alignItems: "center",
+              justifyContent: "center",
+              background: "rgba(23,22,14,0.45)",
+              fontSize: 10,
+              fontWeight: 600,
+              letterSpacing: "1.6px",
+              textTransform: "uppercase",
+              color: DEMO_FUNNEL_COLORS.amber,
+            }}
+          >
+            Bereits generiert
+          </div>
+        ) : null}
       </div>
 
       <div style={{ padding: "11px 13px 14px" }}>

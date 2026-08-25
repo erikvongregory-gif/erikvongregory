@@ -4,9 +4,9 @@
 export const KI_BEISPIELE = [
   { src: "/ki-beispiel-3.svg", alt: "Lünebräu KI-Werbemotiv: Markenauftritt mit KI erstellt" },
   { src: "/hero-brauerei-live-bg.png", alt: "Lünebräu – Produktfoto mit Zitrone und Hopfen" },
-  { src: "/optimized/hero-polaroid-hafen.jpg", alt: "Lünebräu – Lifestyle-Foto am Hafen Lübeck" },
-  { src: "/optimized/hero-thumb-strand.jpg", alt: "Lünebräu – Lifestyle-Foto am Strand" },
-  { src: "/optimized/hero-poster-biergarten.jpg", alt: "Lünebräu – Lifestyle-Foto im Biergarten" },
+  { src: "/optimized/hero-polaroid-hafen.webp", alt: "Lünebräu – Lifestyle-Foto am Hafen Lübeck" },
+  { src: "/optimized/hero-thumb-strand.webp", alt: "Lünebräu – Lifestyle-Foto am Strand" },
+  { src: "/optimized/hero-poster-biergarten.webp", alt: "Lünebräu – Lifestyle-Foto im Biergarten" },
 ] as const;
 
 /** Desktop-Hero-Studio-Mockup: zwei fertige 9:16-Varianten + Rendering-Slot. */

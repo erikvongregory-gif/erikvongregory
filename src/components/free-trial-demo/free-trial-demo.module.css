@@ -83,3 +83,81 @@
   mix-blend-mode: overlay;
   pointer-events: none;
 }
+
+.promptBox {
+  text-align: left;
+  padding: 12px 14px;
+  background: rgba(244, 240, 232, 0.04);
+  border: 1px solid rgba(244, 240, 232, 0.08);
+  border-radius: 10px;
+  min-height: 72px;
+}
+
+.promptLabel {
+  font-size: 9px;
+  font-weight: 600;
+  letter-spacing: 1.8px;
+  text-transform: uppercase;
+  color: #e5621e;
+  margin-bottom: 6px;
+}
+
+.promptText {
+  font-size: 12px;
+  line-height: 1.55;
+  color: rgba(244, 240, 232, 0.72);
+  font-family: ui-monospace, "Cascadia Code", "SF Mono", Consolas, monospace;
+  word-break: break-word;
+}
+
+.promptCaret {
+  display: inline-block;
+  margin-left: 1px;
+  color: #d4a24c;
+  animation: demoFadeMsg 0.9s ease infinite;
+}
+
+.resultBrand {
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  padding: 48px 20px 16px;
+  background: linear-gradient(
+    to top,
+    rgba(23, 22, 14, 0.96) 0%,
+    rgba(23, 22, 14, 0.55) 55%,
+    transparent 100%
+  );
+  opacity: 0;
+  transform: translateY(8px);
+  transition: opacity 0.45s ease 0.35s, transform 0.45s ease 0.35s;
+}
+
+.resultBrandRevealed {
+  opacity: 1;
+  transform: none;
+}
+
+.resultBrandKicker {
+  font-size: 10px;
+  font-weight: 600;
+  letter-spacing: 2.2px;
+  text-transform: uppercase;
+  color: #d4a24c;
+  margin-bottom: 4px;
+}
+
+.resultBrandName {
+  font-weight: 800;
+  font-size: 26px;
+  line-height: 1.1;
+  color: #f4f0e8;
+  margin-bottom: 6px;
+  word-break: break-word;
+}
+
+.resultBrandMeta {
+  font-size: 11px;
+  color: rgba(244, 240, 232, 0.46);
+}
