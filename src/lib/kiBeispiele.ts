@@ -10,7 +10,13 @@ export const KI_BEISPIELE = [
 ] as const;
 
 /** Desktop-Hero-Studio-Mockup: zwei fertige 9:16-Varianten + Rendering-Slot. */
-export const KI_HERO_MOCKUP_THUMBS = [KI_BEISPIELE[3], KI_BEISPIELE[1]] as const;
+export const KI_HERO_MOCKUP_THUMBS = [
+  {
+    src: "/optimized/hero-thumb-kampagne.webp",
+    alt: "Kampagnenmotiv am Hafen — Mann mit Flasche, goldene Stunde",
+  },
+  KI_BEISPIELE[1],
+] as const;
 
 /** Karussell „Echte Beispiele“ – lokale Assets, gemischte Formate. */
 export const KI_CAROUSEL = [

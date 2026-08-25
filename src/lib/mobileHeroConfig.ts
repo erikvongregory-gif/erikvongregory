@@ -87,8 +87,8 @@ export const MOBILE_HERO_POLAROIDS: MobileHeroPolaroid[] = [
     id: "campaign",
     stamp: "KAMPAGNE · 4:5",
     placeholderCaption: "Kampagne · Plakat",
-    imageSrc: "/optimized/hero-polaroid-hafen.webp",
-    imageAlt: "Lünebräu – Lifestyle-Foto am Hafen Lübeck",
+    imageSrc: "/optimized/hero-thumb-kampagne.webp",
+    imageAlt: "Kampagnenmotiv am Hafen — Mann mit Flasche, goldene Stunde",
   },
   {
     id: "product",

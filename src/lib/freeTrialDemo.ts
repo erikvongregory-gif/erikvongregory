@@ -65,7 +65,7 @@ export const DEMO_MOTIFS: readonly DemoMotif[] = [
     description: "Warmes Abendlicht, Glas & Schaum",
     gradient: "linear-gradient(145deg,#3D1F00 0%,#7C4A10 40%,#C89228 70%,#6B3A0A 100%)",
     icon: "beer",
-    resultImage: "/ki-real-1.png",
+    resultImage: "/demo-funnel/biergarten.webp",
     resultAlt: "Biergarten-Motiv bei goldener Stunde mit Glas und Schaumkrone",
   },
   {
@@ -75,7 +75,7 @@ export const DEMO_MOTIFS: readonly DemoMotif[] = [
     description: "Sauberer Studio-Look, weißer Hintergrund",
     gradient: "linear-gradient(145deg,#1A1A18 0%,#2E2D28 45%,#3C3A32 70%,#22211C 100%)",
     icon: "studio",
-    resultImage: "/product-studio-preview.png",
+    resultImage: "/demo-funnel/studio.webp",
     resultAlt: "Produktfoto einer Bierflasche und einem Glas im Studio-Look",
   },
   {
@@ -85,18 +85,18 @@ export const DEMO_MOTIFS: readonly DemoMotif[] = [
     description: "Motiv mit Freifläche für Instagram",
     gradient: "linear-gradient(145deg,#3D0E00 0%,#A03010 45%,#E5621E 75%,#7A2000 100%)",
     icon: "social",
-    resultImage: "/ki-beispiel-hafen.webp",
+    resultImage: "/demo-funnel/kampagne.webp",
     resultAlt: "Kampagnenmotiv am Hafen mit Freifläche für Social Media",
   },
   {
     id: "wirtshaus",
     tag: "Lifestyle",
-    title: "Wirtshaus · Abendstimmung",
-    description: "Stimmungsvolles Kerzenlicht",
+    title: "Lifestyle · Sommergarten",
+    description: "Leichtes Outdoor-Motiv für Social",
     gradient: "linear-gradient(145deg,#0D0805 0%,#2A1508 40%,#4A2810 65%,#180C04 100%)",
     icon: "candle",
-    resultImage: "/ki-real-2.png",
-    resultAlt: "Lifestyle-Motiv mit warmer Abendstimmung",
+    resultImage: "/demo-funnel/lifestyle.webp",
+    resultAlt: "Lifestyle-Motiv im Biergarten bei Sonnenschein",
   },
 ] as const;
 
