@@ -1,0 +1,6 @@
+# Local / non-site assets that break Next production builds if uploaded
+evglab-apple-promo/
+remotion-ad/
+.tmp-evglab-zip/
+ad.mp4
+*.zip
