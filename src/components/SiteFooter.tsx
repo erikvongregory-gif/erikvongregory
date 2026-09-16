@@ -187,6 +187,9 @@ export function SiteFooter({ className, footerId = "site-footer" }: SiteFooterPr
               <Link href="/agb" className={LEGAL_NAV_LINK}>
                 AGB
               </Link>
+              <Link href="/widerruf" className={LEGAL_NAV_LINK}>
+                Widerruf
+              </Link>
               <button type="button" onClick={() => openCookieSettings()} className={LEGAL_NAV_LINK}>
                 Cookies
               </button>

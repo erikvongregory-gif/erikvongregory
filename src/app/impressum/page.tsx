@@ -93,7 +93,7 @@ export default function ImpressumPage() {
 
           <section>
             <h2 className="mb-3 text-lg font-semibold text-white md:text-zinc-900">
-              Verantwortlich für den Inhalt nach § 5 Abs. 2 DDG
+              Verantwortlich für den Inhalt nach § 5 Abs. 1 DDG
             </h2>
             <p>
               {LEGAL.name}
@@ -105,24 +105,22 @@ export default function ImpressumPage() {
           </section>
 
           <section>
-            <h2 className="mb-3 text-lg font-semibold text-white md:text-zinc-900">EU-Streitschlichtung</h2>
+            <h2 className="mb-3 text-lg font-semibold text-white md:text-zinc-900">Verbraucherschlichtung</h2>
             <p>
-              Die Europäische Kommission stellt eine Plattform zur Online-Streitbeilegung (OS)
-              bereit:{" "}
-              <a
-                href="https://ec.europa.eu/consumers/odr/"
-                target="_blank"
-                rel="noopener noreferrer"
-                className={linkAccent}
-              >
-                https://ec.europa.eu/consumers/odr/
-              </a>
-              <br />
-              Unsere E-Mail-Adresse finden Sie oben im Impressum.
+              Die frühere EU-Online-Streitbeilegungsplattform (OS) ist seit dem 20. Juli 2025 eingestellt.
+              Wir sind nicht verpflichtet und nicht bereit, an Streitbeilegungsverfahren vor einer
+              Verbraucherschlichtungsstelle teilzunehmen.
             </p>
             <p className="mt-3">
-              Wir sind nicht bereit oder verpflichtet, an Streitbeilegungsverfahren vor einer
-              Verbraucherschlichtungsstelle teilzunehmen.
+              Bei Fragen oder Beschwerden erreichen Sie uns unter{" "}
+              <a href={`mailto:${LEGAL.email}`} className={linkAccent}>
+                {LEGAL.email}
+              </a>
+              . Informationen zum Widerruf:{" "}
+              <Link href="/widerruf" className={linkAccent}>
+                /widerruf
+              </Link>
+              .
             </p>
           </section>
 
@@ -131,11 +129,11 @@ export default function ImpressumPage() {
 
             <h3 className="mb-2 mt-5 text-base font-medium text-white md:text-zinc-900">Haftung für Inhalte</h3>
             <p>
-              Als Diensteanbieter sind wir gemäß § 6 Abs. 1 DDG für eigene Inhalte auf diesen Seiten
-              nach den allgemeinen Gesetzen verantwortlich. Nach §§ 6 bis 10 DDG sind wir als
-              Diensteanbieter jedoch nicht verpflichtet, übermittelte oder gespeicherte fremde
-              Informationen zu überwachen oder nach Umständen zu forschen, die auf eine rechtswidrige
-              Tätigkeit hinweisen.
+              Als Diensteanbieter sind wir gemäß § 7 Abs. 1 TMG bzw. den allgemeinen Gesetzen für eigene
+              Inhalte auf diesen Seiten verantwortlich. Nach den §§ 8 bis 10 TMG (bzw. den
+              entsprechenden Nachfolgeregelungen) sind wir als Diensteanbieter nicht verpflichtet,
+              übermittelte oder gespeicherte fremde Informationen zu überwachen oder nach Umständen zu
+              forschen, die auf eine rechtswidrige Tätigkeit hinweisen.
             </p>
             <p className="mt-3">
               Verpflichtungen zur Entfernung oder Sperrung der Nutzung von Informationen nach den

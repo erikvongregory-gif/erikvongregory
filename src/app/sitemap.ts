@@ -18,6 +18,7 @@ const PAGES: Entry[] = [
   { path: "/impressum", changeFrequency: "yearly", priority: 0.2 },
   { path: "/datenschutz", changeFrequency: "yearly", priority: 0.2 },
   { path: "/agb", changeFrequency: "yearly", priority: 0.2 },
+  { path: "/widerruf", changeFrequency: "yearly", priority: 0.2 },
 ];
 
 export default function sitemap(): MetadataRoute.Sitemap {

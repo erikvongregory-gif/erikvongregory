@@ -220,9 +220,29 @@ export default function DatenschutzPage() {
             <h2 className="mb-3 text-lg font-semibold text-white md:text-zinc-900">7. Konto, Login und Dashboard (Supabase)</h2>
             <p>
               Für Registrierung, Anmeldung, Sitzungsverwaltung und den Zugriff auf das Dashboard
-              nutzen wir Supabase als Auftragsverarbeiter. Dabei verarbeiten wir insbesondere
+              (app.brewai.de) nutzen wir Supabase als Auftragsverarbeiter. Dabei verarbeiten wir insbesondere
               Kontaktdaten (z. B. E-Mail), Authentifizierungsdaten, technische Session-Daten sowie
-              nutzungsbezogene Kontodaten.
+              nutzungsbezogene Kontodaten (z. B. Brauereiname, Onboarding-Status).
+            </p>
+            <p className="mt-3">
+              <strong>Google-Login:</strong> Wenn Sie „Mit Google anmelden“ nutzen, werden Sie zu Google
+              weitergeleitet. Google übermittelt uns nach Ihrer Freigabe insbesondere Ihre E-Mail-Adresse
+              und grundlegende Profilangaben. Die Anmeldung erfolgt über unsere Auth-Domain
+              (auth.brewai.de) bzw. Supabase. Details zur Datenverarbeitung durch Google finden Sie unter{" "}
+              <a
+                href="https://policies.google.com/privacy"
+                target="_blank"
+                rel="noopener noreferrer"
+                className={linkAccent}
+              >
+                policies.google.com/privacy
+              </a>
+              .
+            </p>
+            <p className="mt-3">
+              <strong>Team-Einladungen:</strong> Wenn Sie Teammitglieder einladen, verarbeiten wir die
+              eingeladene E-Mail-Adresse, Einladungstoken, Status und Zeitstempel, um den Zugang zum
+              gemeinsamen Workspace freizuschalten.
             </p>
             <p className="mt-3">
               <strong>Rechtsgrundlage:</strong> Art. 6 Abs. 1 lit. b DSGVO (Vertragserfüllung bzw.
@@ -252,12 +272,35 @@ export default function DatenschutzPage() {
           </section>
 
           <section>
-            <h2 className="mb-3 text-lg font-semibold text-white md:text-zinc-900">9. KI-Services für Prompt- und Bildgenerierung</h2>
+            <h2 className="mb-3 text-lg font-semibold text-white md:text-zinc-900">9. KI-Services, Medien und Integrationen</h2>
             <p>
-              Für die Erstellung von Prompts und Bildern nutzen wir externe KI-Dienste
-              (Anthropic sowie Kie.ai/Nano Banana). Dabei werden Eingaben aus dem Briefing,
-              Prompt-Inhalte sowie optional hochgeladene Referenzbilder an die jeweiligen
-              Dienstleister übermittelt, soweit dies zur Leistungserbringung erforderlich ist.
+              Für die Erstellung von Prompts, Texten und Bildern nutzen wir externe KI- und
+              Mediendienste. Dabei werden Eingaben aus dem Briefing, Prompt-Inhalte sowie optional
+              hochgeladene oder gescannte Referenzbilder an die jeweiligen Dienstleister übermittelt,
+              soweit dies zur Leistungserbringung erforderlich ist. Derzeit eingesetzte Anbieter
+              umfassen insbesondere:
+            </p>
+            <ul className="mt-3 list-inside list-disc space-y-1">
+              <li>
+                <strong>OpenAI</strong> – Bild- und Textgenerierung / Modellaufrufe
+              </li>
+              <li>
+                <strong>Anthropic</strong> – Prompt-/Textunterstützung
+              </li>
+              <li>
+                <strong>Kie.ai</strong> (u. a. Nano Banana, Seedance) – Bild- und Videogenerierung
+              </li>
+            </ul>
+            <p className="mt-3">
+              <strong>Instagram-Anbindung:</strong> Wenn Sie Instagram verbinden, verarbeiten wir
+              Verbindungsdaten (z. B. Account-Kennungen, Tokens, Scanzeiten) und öffentlich abrufbare
+              Profil-/Medienmetadaten, soweit Sie die Funktion aktiv nutzen. Tokens können erneuert
+              oder widerrufen werden; bei Ablauf bitten wir um erneute Verbindung.
+            </p>
+            <p className="mt-3">
+              <strong>E-Mail-Versand (Resend):</strong> Transaktionsmails (z. B. Sicherheitscodes,
+              Passwort-Reset, Team-Einladungen) versenden wir über Resend. Dabei werden Empfängeradresse,
+              Betreff und erforderliche Metadaten verarbeitet.
             </p>
             <p className="mt-3">
               Bitte laden Sie keine unnötigen sensiblen personenbezogenen Daten in Prompts oder
@@ -274,19 +317,33 @@ export default function DatenschutzPage() {
           <section>
             <h2 className="mb-3 text-lg font-semibold text-white md:text-zinc-900">10. Empfänger, Drittlandtransfer und Speicherdauer</h2>
             <p>
-              Empfänger bzw. Auftragsverarbeiter können insbesondere Hosting-Anbieter, Supabase,
-              Stripe, Anthropic, Kie.ai sowie E-Mail-/Form-Dienstleister sein. Eine Verarbeitung
-              kann dabei auch außerhalb der EU/des EWR stattfinden.
+              Empfänger bzw. Auftragsverarbeiter können insbesondere Hosting-Anbieter (z. B. Vercel),
+              Supabase, Stripe, OpenAI, Anthropic, Kie.ai, Google (Login/Fonts), Resend sowie
+              Form-/Support-Dienstleister sein. Eine Verarbeitung kann dabei auch in den USA oder
+              anderen Drittländern außerhalb der EU/des EWR stattfinden.
             </p>
             <p className="mt-3">
-              Soweit Drittlandübermittlungen erfolgen, achten wir auf geeignete Garantien
-              (z. B. Standardvertragsklauseln) sowie ergänzende Schutzmaßnahmen gemäß DSGVO.
+              Soweit Drittlandübermittlungen erfolgen, stützen wir uns – abhängig vom jeweiligen
+              Anbieter – insbesondere auf{" "}
+              <strong>Standardvertragsklauseln (SCC) der Europäischen Kommission</strong> gemäß
+              Art. 46 Abs. 2 lit. c DSGVO und ergänzende technische/organisatorische Maßnahmen. Eine
+              Kopie der maßgeblichen Garantien können Sie unter{" "}
+              <a href={`mailto:${LEGAL.email}`} className={linkAccent}>
+                {LEGAL.email}
+              </a>{" "}
+              anfordern. Einzelne Anbieter können zusätzlich Zertifizierungen bzw. Rahmenwerke
+              (soweit anerkannt) nutzen; der konkrete Mechanismus richtet sich nach dem jeweils
+              aktuellen Anbietervertrag.
             </p>
             <p className="mt-3">
-              Speicherdauer: Kontodaten speichern wir grundsätzlich für die Dauer der
-              Vertragsbeziehung. Abrechnungs- und steuerrelevante Daten speichern wir entsprechend
-              gesetzlicher Aufbewahrungsfristen. Technische Logs und Support-/Anfragedaten werden
-              gelöscht, sobald der Zweck entfällt und keine gesetzlichen Pflichten entgegenstehen.
+              <strong>Speicherdauer:</strong> Kontodaten speichern wir grundsätzlich für die Dauer der
+              Vertragsbeziehung und danach nur, soweit gesetzliche Aufbewahrungspflichten bestehen.
+              Abrechnungs- und steuerrelevante Daten speichern wir entsprechend gesetzlicher Fristen
+              (regelmäßig bis zu 10 Jahre). Prompts, Referenzbilder und KI-Ergebnisse speichern wir in
+              Ihrem Workspace/Mediathek, solange Ihr Konto aktiv ist bzw. Sie die Inhalte nicht
+              löschen; nach Kontolöschung entfernen wir diese Daten, soweit keine gesetzlichen
+              Pflichten oder berechtigten Interessen (z. B. Abwehr von Rechtsansprüchen) entgegenstehen.
+              Technische Logs und Support-/Anfragedaten werden gelöscht, sobald der Zweck entfällt.
             </p>
           </section>
 

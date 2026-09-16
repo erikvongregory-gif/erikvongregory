@@ -46,7 +46,7 @@ export default function AgbPage() {
         </h1>
 
         <p className="mb-10 text-sm text-white/70 md:text-zinc-600">
-          Stand: April 2026 · Anbieter: {LEGAL.name}, {LEGAL.street}, {LEGAL.city} (
+          Stand: September 2026 · Anbieter: {LEGAL.name}, {LEGAL.street}, {LEGAL.city} (
           <a
             href={`mailto:${LEGAL.email}`}
             className={linkAccent}
@@ -61,9 +61,11 @@ export default function AgbPage() {
             <h2 className="mb-3 text-lg font-semibold text-white">§ 1 Geltungsbereich</h2>
             <p className="text-white/90">
               (1) Diese Allgemeinen Geschäftsbedingungen (nachfolgend „AGB“) gelten für alle Verträge zwischen{" "}
-              {LEGAL.name} (nachfolgend „Anbieter“) und seinen Kunden über die Erbringung von Leistungen im Bereich
+              {LEGAL.name} (nachfolgend „Anbieter“) und seinen Kunden – einschließlich Verbrauchern im Sinne von
+              § 13 BGB und Unternehmern im Sinne von § 14 BGB – über die Erbringung von Leistungen im Bereich
               digitales Marketing, Web, Beratung sowie die Erstellung und Aufbereitung von Inhalten (Texte, Bilder,
-              Videos), einschließlich der Nutzung von KI-gestützten Werkzeugen, soweit vereinbart.
+              Videos), einschließlich der Nutzung von KI-gestützten Werkzeugen und des BrewAI-Dashboards
+              (SaaS), soweit vereinbart.
             </p>
             <p className="mt-3">
               (2) Abweichende, entgegenstehende oder ergänzende Allgemeine Geschäftsbedingungen des Kunden werden nicht
@@ -141,16 +143,22 @@ export default function AgbPage() {
             <h2 className="mb-3 text-lg font-semibold text-white">§ 5a SaaS-Abo, Laufzeit und Kündigung</h2>
             <p className="text-white/90">
               (1) Soweit ein Dashboard-Abo vereinbart ist, erfolgt die Abrechnung als wiederkehrendes
-              Abonnement (monatlich), sofern im konkreten Angebot nichts Abweichendes geregelt ist.
+              Abonnement monatlich oder jährlich, je nach bei Vertragsschluss gewählter Option.
             </p>
             <p className="mt-3">
-              (2) Das Abo verlängert sich jeweils um die vereinbarte Laufzeit, wenn es nicht vor
-              Beginn des nächsten Abrechnungszeitraums gekündigt wird. Die Kündigung kann über das
-              bereitgestellte Kundenportal oder in Textform erfolgen.
+              (2) Das Abo verlängert sich jeweils um die vereinbarte Laufzeit (Monat bzw. Jahr), wenn es nicht
+              rechtzeitig zum Ende des laufenden Abrechnungszeitraums gekündigt wird. Die Kündigung kann über das
+              Stripe-Kundenportal im Dashboard (Bereich Abonnement), per E-Mail an {LEGAL.email} oder – für
+              Verbraucher – zusätzlich über die Widerrufswege unter{" "}
+              <Link href="/widerruf" className={linkAccent}>
+                /widerruf
+              </Link>{" "}
+              erklärt werden.
             </p>
             <p className="mt-3">
               (3) Bereits gezahlte Entgelte für laufende Abrechnungszeiträume werden grundsätzlich
-              nicht anteilig erstattet, soweit keine zwingenden gesetzlichen Regelungen entgegenstehen.
+              nicht anteilig erstattet, soweit keine zwingenden gesetzlichen Regelungen (insbesondere
+              Widerrufsrecht) entgegenstehen.
             </p>
           </section>
 
@@ -162,12 +170,15 @@ export default function AgbPage() {
             </p>
             <p className="mt-3">
               (2) Token-Verbrauch entsteht insbesondere bei der Nutzung von KI-Funktionen
-              (z. B. Prompt-/Bildgenerierung). Zusatzkontingente können als einmalige Token-Pakete
+              (z. B. Prompt-/Bild-/Videogenerierung). Zusatzkontingente können als einmalige Token-Pakete
               erworben werden.
             </p>
             <p className="mt-3">
-              (3) Nicht genutzte Tokens sind nur im ausdrücklich kommunizierten Umfang übertragbar.
-              Nach Ablauf der jeweiligen Übertragungsfrist verfallen sie.
+              (3) Nicht genutzte Abo-Tokens sind nur im ausdrücklich kommunizierten Umfang übertragbar.
+              Nach Ablauf der jeweiligen Übertragungsfrist verfallen sie. Separat gekaufte Token-Pakete
+              bleiben nach Kündigung des Abos nutzbar, solange das Nutzerkonto besteht, und verfallen
+              spätestens 12 Monate nach Kauf, sofern nicht anders ausgewiesen. Ein Anspruch auf
+              Auszahlung oder Übertragung auf Dritte besteht nicht.
             </p>
           </section>
 
@@ -175,12 +186,13 @@ export default function AgbPage() {
             <h2 className="mb-3 text-lg font-semibold text-white">§ 5c Preis- und Leistungsänderungen</h2>
             <p className="text-white/90">
               (1) Der Anbieter kann Preise und Leistungsumfang für zukünftige Abrechnungszeiträume
-              mit angemessener Vorankündigung anpassen, soweit dies aus sachlichen Gründen erforderlich ist
-              (z. B. Kostensteigerungen bei Infrastruktur-/Drittanbietern).
+              mit einer Vorankündigung von mindestens 30 Tagen anpassen, soweit dies aus sachlichen Gründen
+              erforderlich ist (z. B. Kostensteigerungen bei Infrastruktur-/Drittanbietern).
             </p>
             <p className="mt-3">
-              (2) Bei wesentlichen Änderungen wird der Kunde rechtzeitig informiert. Sofern ein
-              Sonderkündigungsrecht gesetzlich oder vertraglich besteht, bleibt dieses unberührt.
+              (2) Bei wesentlichen Änderungen wird der Kunde rechtzeitig informiert und kann das Abo
+              zum Wirksamkeitszeitpunkt der Änderung außerordentlich kündigen. Zwingende
+              Verbraucherrechte bei Produktänderungen bleiben unberührt.
             </p>
           </section>
 
@@ -198,14 +210,26 @@ export default function AgbPage() {
           <section>
             <h2 className="mb-3 text-lg font-semibold text-white">§ 7 Nutzungsrechte</h2>
             <p className="text-white/90">
-              (1) Soweit nichts Abweichendes vereinbart ist, räumt der Anbieter dem Kunden an den geschaffenen
-              Arbeitsergebnissen ein einfaches, zeitlich und räumlich auf den vereinbarten Nutzungszweck beschränktes
-              Nutzungsrecht ein. Eine Weitergabe an Dritte außerhalb des Vereinbarten bedarf der vorherigen
-              Zustimmung.
+              (1) An Ergebnissen aus individuellen Projektleistungen (Agentur-/Beratungsaufträge)
+              räumt der Anbieter dem Kunden – soweit nichts Abweichendes vereinbart ist – ein einfaches,
+              zeitlich und räumlich auf den vereinbarten Nutzungszweck beschränktes Nutzungsrecht ein.
+              Eine Weitergabe an Dritte außerhalb des Vereinbarten bedarf der vorherigen Zustimmung.
             </p>
             <p className="mt-3">
-              (2) Quell- und Entwurfsdateien werden nur geliefert, wenn dies vertraglich vereinbart ist. Der Anbieter
-              behält sich vor, nicht vereinbarte Arbeitsschritte und Zwischenprodukte nicht herauszugeben.
+              (2) Für Inhalte, die der Kunde selbst über das BrewAI-Dashboard (SaaS) erzeugt
+              (z. B. Marketingbilder, Texte, Videos), räumt der Anbieter dem Kunden mit vollständiger
+              Zahlung der hierfür erforderlichen Entgelte/Token ein einfaches, zeitlich unbefristetes,
+              weltweit geltendes Nutzungsrecht für eigene kommerzielle Marketingzwecke ein. Das umfasst
+              insbesondere Bearbeitung, Nutzung in bezahlten Anzeigen sowie Weitergabe an Agenturen,
+              Händler, Druckereien und Plattformen, soweit dies der Vermarktung eigener Produkte/Marken
+              des Kunden dient. Das Recht bleibt nach Abo-Ende für bereits erzeugte und rechtmäßig
+              heruntergeladene Inhalte bestehen; ein Anspruch auf weitere Generierung ohne gültiges
+              Entgelt/Token besteht nicht.
+            </p>
+            <p className="mt-3">
+              (3) Rechte Dritter (z. B. Marken, Personenrechte, Musik) sowie Plattformregeln bleiben
+              unberührt. Quell- und Entwurfsdateien aus Projektleistungen werden nur geliefert, wenn
+              dies vertraglich vereinbart ist.
             </p>
           </section>
 
@@ -239,18 +263,54 @@ export default function AgbPage() {
           </section>
 
           <section>
-            <h2 className="mb-3 text-lg font-semibold text-white">§ 10 Widerruf für Verbraucher</h2>
+            <h2 className="mb-3 text-lg font-semibold text-white">§ 10 Widerrufsbelehrung für Verbraucher</h2>
             <p className="text-white/90">
-              Erfolgt ein Auftrag ausschließlich gegenüber Unternehmern im Sinne von § 14 BGB, besteht kein
-              gesetzliches Widerrufsrecht nach den Fernabsatzvorschriften. Handelt der Kunde als Verbraucher, gilt ein
-              etwaiges Widerrufsrecht nur im gesetzlich vorgesehenen Umfang; insbesondere kann es bei digitalen Inhalten
-              vorzeitig erlöschen, wenn der Kunde zugestimmt hat, dass mit der Ausführung vor Ende der Widerrufsfrist
-              begonnen wird. Ein separates Widerrufsinformationsblatt wird auf Anfrage zur Verfügung gestellt.
+              Verbrauchern steht ein gesetzliches Widerrufsrecht zu. Unternehmer im Sinne von § 14 BGB haben kein
+              Widerrufsrecht nach den Fernabsatzvorschriften.
+            </p>
+            <h3 className="mb-2 mt-5 text-base font-medium text-white">Widerrufsrecht</h3>
+            <p className="text-white/90">
+              Sie haben das Recht, binnen vierzehn Tagen ohne Angabe von Gründen diesen Vertrag zu widerrufen.
+              Die Widerrufsfrist beträgt vierzehn Tage ab dem Tag des Vertragsschlusses. Um Ihr Widerrufsrecht
+              auszuüben, müssen Sie uns ({LEGAL.name}, {LEGAL.street}, {LEGAL.city}, E-Mail: {LEGAL.email}) mittels
+              einer eindeutigen Erklärung (z. B. per E-Mail oder über{" "}
+              <Link href="/widerruf" className={linkAccent}>
+                brewai.de/widerruf
+              </Link>
+              ) über Ihren Entschluss, diesen Vertrag zu widerrufen, informieren. Zur Wahrung der Widerrufsfrist
+              reicht es aus, dass Sie die Mitteilung über die Ausübung des Widerrufsrechts vor Ablauf der
+              Widerrufsfrist absenden.
+            </p>
+            <h3 className="mb-2 mt-5 text-base font-medium text-white">Folgen des Widerrufs</h3>
+            <p className="text-white/90">
+              Wenn Sie diesen Vertrag widerrufen, haben wir Ihnen alle Zahlungen, die wir von Ihnen erhalten haben,
+              unverzüglich und spätestens binnen vierzehn Tagen ab dem Tag zurückzuzahlen, an dem die Mitteilung
+              über Ihren Widerruf dieses Vertrags bei uns eingegangen ist. Für diese Rückzahlung verwenden wir
+              dasselbe Zahlungsmittel, das Sie bei der ursprünglichen Transaktion eingesetzt haben, es sei denn,
+              mit Ihnen wurde ausdrücklich etwas anderes vereinbart.
+            </p>
+            <h3 className="mb-2 mt-5 text-base font-medium text-white">Vorzeitiges Erlöschen</h3>
+            <p className="text-white/90">
+              Das Widerrufsrecht erlischt bei einem Vertrag zur Lieferung von nicht auf einem körperlichen
+              Datenträger befindlichen digitalen Inhalten vorzeitig, wenn wir mit der Ausführung des Vertrags
+              begonnen haben, nachdem Sie ausdrücklich zugestimmt haben, dass wir mit der Ausführung vor Ende
+              der Widerrufsfrist beginnen, und Sie Ihre Kenntnis davon bestätigt haben, dass Sie durch Ihre
+              Zustimmung mit Beginn der Ausführung des Vertrags Ihr Widerrufsrecht verlieren (§ 356 Abs. 5 BGB).
             </p>
             <p className="mt-3">
-              Bei abonnementbasierten digitalen Leistungen bleibt die Zahlungspflicht für bereits
-              erbrachte Leistungszeiträume bestehen. Gesetzliche Verbraucherrechte bleiben hiervon
-              unberührt.
+              Bei Verträgen über die Erbringung von Dienstleistungen erlischt das Widerrufsrecht, wenn wir die
+              Dienstleistung vollständig erbracht haben und mit der Ausführung erst begonnen haben, nachdem Sie
+              dazu Ihre ausdrückliche Zustimmung gegeben und zugleich Ihre Kenntnis bestätigt haben, dass Sie Ihr
+              Widerrufsrecht bei vollständiger Vertragserfüllung durch uns verlieren (§ 356 Abs. 4 BGB). Bei
+              laufenden Abonnements bleibt die Zahlungspflicht für bereits erbrachte Leistungszeiträume nach
+              Maßgabe der gesetzlichen Regeln bestehen.
+            </p>
+            <p className="mt-3">
+              Ein Muster-Widerrufsformular finden Sie unter{" "}
+              <Link href="/widerruf" className={linkAccent}>
+                /widerruf
+              </Link>
+              .
             </p>
           </section>
 
