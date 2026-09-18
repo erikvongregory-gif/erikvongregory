@@ -15,10 +15,8 @@ import {
   BEISPIELE_IMAGES,
   BEISPIELE_MODE_OPTIONS,
   BEISPIELE_VIDEOS,
-  aspectClassForFormat,
   durationToSeconds,
   type Beispiel,
-  type BeispielFormat,
 } from "@/lib/mobileBeispiele";
 import { cn } from "@/lib/utils";
 
@@ -192,6 +190,11 @@ function FeaturedImage({ item }: { item: Beispiel }) {
       priority={item.id === BEISPIELE_IMAGES[0]!.id}
     />
   );
+}
+
+/** Feste Frame-Größe pro Modus — kein Layout-Jump beim Thumbnail-Wechsel. */
+function featuredAspectForMode(mode: BeispielMode): string {
+  return mode === "videos" ? "aspect-[9/16] max-h-[460px] w-full" : "aspect-[4/5] w-full";
 }
 
 function ThumbnailButton({
@@ -410,12 +413,13 @@ export function MobileBeispieleSection() {
           className={cn(
             "relative w-full overflow-hidden rounded-[14px] border border-ink/10 bg-white",
             "shadow-[0_1px_0_#fff_inset,_0_14px_30px_-16px_rgba(40,28,12,0.16)]",
-            aspectClassForFormat(active.format),
-            !reducedMotion && "mobile-beispiele-featured--fade",
+            featuredAspectForMode(mode),
           )}
-          key={active.id}
         >
-          <div className="absolute inset-0">
+          <div
+            key={active.id}
+            className={cn("absolute inset-0", !reducedMotion && "mobile-beispiele-featured--fade")}
+          >
             {mode === "videos" ? (
               <FeaturedVideo item={active} inView={inView} reducedMotion={reducedMotion} />
             ) : (
@@ -424,7 +428,7 @@ export function MobileBeispieleSection() {
           </div>
 
           <span
-            className="absolute top-3 right-3 rounded-sm bg-white/90 px-2 py-1 font-mono-hero text-[10px] font-medium tracking-[1px] text-ink uppercase backdrop-blur-md"
+            className="absolute top-3 right-3 z-[1] rounded-sm bg-white/90 px-2 py-1 font-mono-hero text-[10px] font-medium tracking-[1px] text-ink uppercase backdrop-blur-md"
             aria-hidden
           >
             {active.format}

@@ -23,11 +23,7 @@ function itemsForMode(mode: BeispielMode): Beispiel[] {
   return BEISPIELE_VIDEOS.filter((v) => v.format === "16:9");
 }
 
-function featuredHeight(mode: BeispielMode) {
-  if (mode === "reels") return "h-[720px]";
-  if (mode === "wide") return "h-[480px]";
-  return "h-[600px]";
-}
+const FEATURED_HEIGHT = "h-[600px]";
 
 function PlayTriangle({ className }: { className?: string }) {
   return (
@@ -228,7 +224,7 @@ export function DesktopBeispiele() {
         {featured ? (
           <DesktopRevealStagger className="grid grid-cols-[1.6fr_1fr] gap-8 pt-4" staggerMs={120}>
             <DesktopRevealItem from="right">
-            <FeaturedPanel item={featured} mode={mode} heightClass={featuredHeight(mode)} />
+            <FeaturedPanel item={featured} mode={mode} heightClass={FEATURED_HEIGHT} />
             </DesktopRevealItem>
             <DesktopRevealItem>
             <div>

@@ -115,9 +115,9 @@ export const SITE = {
   legacyHosts,
 
   /** Absolut-URL des Markenlogos (JSON-LD, Rich Results) */
-  brandLogoUrl: `${marketingBaseUrl}/evglab-logo.svg` as const,
+  brandLogoUrl: `${marketingBaseUrl}/brewai-logo.svg` as const,
   /** Zwei terrakotta Wellen, transparenter Hintergrund */
-  brandLogoPath: "/evglab-logo.svg" as const,
+  brandLogoPath: "/brewai-logo.svg" as const,
   brandLogoAlt: `${siteName} Wellen-Mark` as const,
   defaultTitle: `Das KI-Content-System für Brauereien | ${productName}`,
   defaultDescription: `${productName} ist das KI-Content-System für Brauereien: planbare Produktbilder, Kampagnen und Social-Content für mehr Sichtbarkeit, Wiedererkennung und Anfragen.`,

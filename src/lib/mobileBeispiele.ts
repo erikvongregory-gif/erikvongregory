@@ -103,18 +103,3 @@ export function durationToSeconds(duration?: string): number {
   if (parts.length === 1) return parts[0] ?? 12;
   return 12;
 }
-
-export function aspectClassForFormat(format: BeispielFormat): string {
-  switch (format) {
-    case "1:1":
-      return "aspect-square";
-    case "4:5":
-      return "aspect-[4/5]";
-    case "9:16":
-      return "aspect-[9/16] max-h-[460px] w-full";
-    case "16:9":
-      return "aspect-[16/9] w-full";
-    default:
-      return "aspect-square";
-  }
-}
