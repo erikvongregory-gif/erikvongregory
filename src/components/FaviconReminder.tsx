@@ -2,8 +2,8 @@
 
 import { useEffect } from "react";
 
-const ICON_VERSION = "20260918a";
-const NORMAL_ICON = `/favicon.ico?v=${ICON_VERSION}`;
+const ICON_VERSION = "20260918b";
+const NORMAL_ICON = `/icon.png?v=${ICON_VERSION}`;
 const REMINDER_ICON = `/icon-reminder.svg?v=${ICON_VERSION}`;
 const REMINDER_TITLE = "BrewAI wartet auf dich";
 

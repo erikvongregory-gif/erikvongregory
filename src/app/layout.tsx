@@ -26,7 +26,7 @@ const interTight = Inter_Tight({
   preload: false,
 });
 
-const ICON_VERSION = "20260918a";
+const ICON_VERSION = "20260918b";
 
 export const viewport = {
   width: "device-width",
@@ -84,7 +84,6 @@ export const metadata: Metadata = {
   icons: {
     icon: [
       { url: `/favicon.ico?v=${ICON_VERSION}`, sizes: "any" },
-      { url: `/icon.svg?v=${ICON_VERSION}`, type: "image/svg+xml" },
       { url: `/icon.png?v=${ICON_VERSION}`, sizes: "512x512", type: "image/png" },
     ],
     shortcut: [`/favicon.ico?v=${ICON_VERSION}`],
