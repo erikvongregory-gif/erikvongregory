@@ -21,12 +21,6 @@ const STAGGER_PER_WORD = 0.02;
 const STAGGER_EXP_WEIGHT = 0.16;
 const STAGGER_MICRO = 0.004;
 
-/** Gleiche Strings wie nach Browser-Normalisierung — vermeidet Hydration-Mismatches bei textShadow. */
-const SHADOW_LIGHT_INACTIVE = "rgba(15, 23, 42, 0.12) 0px 0px 28px";
-const SHADOW_LIGHT_ACTIVE = "none";
-const SHADOW_DARK_INACTIVE = "rgba(255, 255, 255, 0.4) 0px 0px 40px";
-const SHADOW_DARK_ACTIVE = "0px 2px 8px rgba(255, 255, 255, 0.1)";
-
 /** SSR und Browser können bei sin/cos minimal abweichen — runden für identische style-Strings. */
 function stableFloat(n: number, decimals = 4): number {
   const p = 10 ** decimals;
@@ -48,7 +42,8 @@ function usePrefersReducedMotion(): boolean {
 }
 
 function buildWordsFromText(text: string, startIndex: number, tone: Tone): BlurTextWordData[] {
-  const splitWords = text.trim().split(/\s+/).filter(Boolean);
+  // Nur normale Spaces — NBSP hält Wortpaare zusammen (z. B. „jedes Bild.“)
+  const splitWords = text.trim().split(/ +/).filter(Boolean);
   const estimatedTotal = startIndex + splitWords.length;
 
   return splitWords.map((word, localIndex) => {
@@ -73,10 +68,10 @@ function buildWordsFromText(text: string, startIndex: number, tone: Tone): BlurT
 function buildWordsFromParts(parts: Array<{ text: string; className?: string }>, tone: Tone): BlurTextWordData[] {
   const flat: BlurTextWordData[] = [];
   let globalIndex = 0;
-  const totalWords = parts.reduce((acc, p) => acc + p.text.trim().split(/\s+/).filter(Boolean).length, 0);
+  const totalWords = parts.reduce((acc, p) => acc + p.text.trim().split(/ +/).filter(Boolean).length, 0);
 
   for (const part of parts) {
-    const splitWords = part.text.trim().split(/\s+/).filter(Boolean);
+    const splitWords = part.text.trim().split(/ +/).filter(Boolean);
     for (let i = 0; i < splitWords.length; i++) {
       const index = globalIndex++;
       const progress = index / Math.max(totalWords, 1);
@@ -179,15 +174,6 @@ export function BlurText({
     };
   }, [inView, prefersReducedMotion]);
 
-  const inactiveShadow =
-    tone === "onDark" ? "0 0 40px rgba(255,255,255,0.4)" : "0 0 28px rgba(15,23,42,0.12)";
-  const activeShadow = tone === "onDark" ? "0 2px 8px rgba(255,255,255,0.1)" : "none";
-
-  const inactiveFilter =
-    tone === "onDark"
-      ? (blur: number) => `blur(${blur}px) brightness(0.65)`
-      : (blur: number) => `blur(${blur}px)`;
-
   if (prefersReducedMotion) {
     const plain = parts?.length ? parts.map((p) => p.text).join(" ") : text;
     return (
@@ -198,12 +184,12 @@ export function BlurText({
   }
 
   return (
-    <span ref={rootRef} className={cn("blur-text inline", className)}>
+    <span ref={rootRef} className={cn("blur-text inline leading-[inherit]", className)}>
       {textWords.map((word, index) => (
         <span
           key={`${word.text}-${index}`}
           className={cn(
-            "inline-block transition-all",
+            "inline-block align-baseline transition-[opacity,filter,transform]",
             revealed ? "opacity-100" : "opacity-0",
             word.wordClassName,
           )}
@@ -211,15 +197,10 @@ export function BlurText({
             transitionDuration: `${stableFloat(word.duration, 3)}s`,
             transitionDelay: `${stableFloat(word.delay, 3)}s`,
             transitionTimingFunction: "cubic-bezier(0.2, 0.85, 0.3, 1)",
-            filter: revealed ? "blur(0px) brightness(1)" : inactiveFilter(word.blur),
-            transform: revealed
-              ? "translateY(0) scale(1) rotateX(0deg)"
-              : `translateY(12px) scale(${stableFloat(word.scale ?? 1, 3)}) rotateX(-12deg)`,
-            marginRight: "0.35em",
-            willChange: "filter, transform, opacity",
-            transformStyle: "preserve-3d",
-            backfaceVisibility: "hidden",
-            textShadow: revealed ? activeShadow : inactiveShadow,
+            filter: revealed ? "blur(0px)" : `blur(${word.blur}px)`,
+            transform: revealed ? "translate3d(0,0,0)" : "translate3d(0,0.4em,0)",
+            marginRight: index === textWords.length - 1 ? 0 : "0.28em",
+            lineHeight: "inherit",
           }}
         >
           {word.text}

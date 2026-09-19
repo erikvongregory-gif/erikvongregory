@@ -13,6 +13,10 @@ const disallow = [
   "/anmelden",
   "/registrieren",
   "/auth/",
+  "/alt",
+  "/alt/",
+  "/neu",
+  "/neu/",
 ] as const;
 
 const defaultRule = {

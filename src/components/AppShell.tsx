@@ -43,7 +43,14 @@ export function AppShell({ children }: AppShellProps) {
   const deferChrome = useDeferNonCritical(2000);
   const isDashboardRoute = pathname?.startsWith("/dashboard") ?? false;
   const isAdminRoute = pathname?.startsWith("/admin") ?? false;
+  // Neue Startseite (/) + /neu-* nutzen NeuShell — kein Live-Header/Footer
+  const isNeuMarketing =
+    pathname === "/" || (pathname?.startsWith("/neu") ?? false);
   const skipShell = isDashboardRoute || isAdminRoute;
+
+  if (isNeuMarketing) {
+    return <FreeTrialDemoProvider>{children}</FreeTrialDemoProvider>;
+  }
 
   if (skipShell) {
     return <main id="main" className="relative min-h-[100dvh] bg-gray-50">{children}</main>;
