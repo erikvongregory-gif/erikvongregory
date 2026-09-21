@@ -6,11 +6,11 @@ import { inter, instrumentSerif } from "@/components/neu/fonts";
 
 export const metadata: Metadata = {
   title: "BrewAI",
-  description: "Weiterleitung zur Startseite.",
-  robots: { index: false, follow: true },
+  description: "Neu-Marketing Preview.",
+  robots: { index: false, follow: false },
 };
 
-/** Layout für /neu/* Unterseiten (Impressum etc.) — Startseite redirected. */
+/** Layout für /neu Preview und Unterseiten. */
 export default function NeuLayout({ children }: { children: React.ReactNode }) {
   return (
     <div

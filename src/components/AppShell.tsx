@@ -43,9 +43,10 @@ export function AppShell({ children }: AppShellProps) {
   const deferChrome = useDeferNonCritical(2000);
   const isDashboardRoute = pathname?.startsWith("/dashboard") ?? false;
   const isAdminRoute = pathname?.startsWith("/admin") ?? false;
-  // Neue Startseite (/) + /neu-* nutzen NeuShell — kein Live-Header/Footer
+  // /neu Preview und /neuv2 — kein Live-Header/Footer (Root = alte Home)
   const isNeuMarketing =
-    pathname === "/" || (pathname?.startsWith("/neu") ?? false);
+    (pathname?.startsWith("/neu") ?? false) ||
+    (pathname?.startsWith("/neuv2") ?? false);
   const skipShell = isDashboardRoute || isAdminRoute;
 
   if (isNeuMarketing) {

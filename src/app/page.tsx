@@ -5,16 +5,25 @@ import { SITE } from "@/lib/siteConfig";
 import { TRESENGESPRAECH_FAQS } from "@/lib/tresengespraechFaqs";
 
 export const metadata: Metadata = {
-  title: "KI-Marketing für Brauereien: Bilder, Posts & Bewertungen | BrewAI (Archiv)",
+  title: "KI-Marketing für Brauereien: Bilder, Posts & Bewertungen | BrewAI",
   description:
-    "Archiv der bisherigen BrewAI-Startseite. Die aktuelle Seite findest du unter brewai.de.",
-  robots: { index: false, follow: false },
+    "KI-generierte Werbebilder, Social-Media-Posts und Google-Bewertungen für Brauereien — selbst im Dashboard oder fertig geliefert. Ab 79 €/Monat. Jetzt testen.",
+  keywords: [
+    "KI Marketing für Brauereien",
+    "KI Marketing Agentur",
+    "KI Content für Brauereien",
+    "Brauerei Marketing",
+    "Social Media Marketing Brauerei",
+    "KI Produktfotos Bier",
+    "KI Bilder für Brauerei Werbung",
+    "Marketing Automatisierung Brauerei",
+  ],
   alternates: { canonical: SITE.baseUrl },
   openGraph: {
-    title: "KI-Marketing für Brauereien | BrewAI (Archiv)",
+    title: "KI-Marketing für Brauereien | BrewAI",
     description:
-      "Archiv der bisherigen BrewAI-Startseite.",
-    url: `${SITE.baseUrl}/alt`,
+      "KI-Bilder, Posts und Bewertungen für Brauereien — ab 79 €/Monat. Selbst im Dashboard oder fertig geliefert.",
+    url: SITE.baseUrl,
     type: "website",
     locale: "de_DE",
     images: [
@@ -28,8 +37,8 @@ export const metadata: Metadata = {
   },
   twitter: {
     card: "summary_large_image",
-    title: "KI-Marketing für Brauereien | BrewAI (Archiv)",
-    description: "Archiv der bisherigen BrewAI-Startseite.",
+    title: "KI-Marketing für Brauereien | BrewAI",
+    description: "KI-Bilder, Posts und Bewertungen für Brauereien — ab 79 €/Monat.",
     images: [`${SITE.baseUrl}${SITE.ogImage}`],
   },
 };

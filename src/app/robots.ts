@@ -17,6 +17,8 @@ const disallow = [
   "/alt/",
   "/neu",
   "/neu/",
+  "/neuv2",
+  "/neuv2/",
 ] as const;
 
 const defaultRule = {

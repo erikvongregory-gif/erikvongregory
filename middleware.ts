@@ -13,7 +13,7 @@ export async function middleware(request: NextRequest) {
   const { pathname } = request.nextUrl;
   const canonicalTarget = DIRECT_CANONICAL_REDIRECTS[pathname];
 
-  if (pathname === "/neu" || pathname === "/neu/") {
+  if (pathname === "/alt" || pathname === "/alt/") {
     const redirectUrl = request.nextUrl.clone();
     redirectUrl.pathname = "/";
     return NextResponse.redirect(redirectUrl, 308);
