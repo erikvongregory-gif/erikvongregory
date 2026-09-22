@@ -129,7 +129,7 @@ const PRICING_PACKAGES: PricingPackageDef[] = [
       "20 Social-Media-Posts inkl. Text",
       "3-Monats-Content-Plan für Instagram & Facebook",
       "Texte & Struktur für die Website",
-      "KI-Bewertungsmanagement (Google)",
+      "Markenprofil-Setup im Dashboard",
       "Komplexe Webprojekte im erweiterten Preissegment",
       "kommerzielle Nutzungsrechte",
     ],
@@ -208,11 +208,11 @@ const DASHBOARD_PLAN_SLIDE_INDEX: Record<SubscriptionPlanKey, number> = {
 const ADDONS: AddonRow[] = [
   {
     planIcon: MessageSquareText,
-    name: "KI-Bewertungsmanagement",
-    tagline: "Google-Bewertungen markengetreu beantworten.",
-    features: ["Automatische Antworten", "Weniger Aufwand im Alltag"],
+    name: "Markenprofil Intensiv",
+    tagline: "Farben, Tonalität und Bildregeln einmal sauber aufsetzen.",
+    features: ["Website-Scan & Feinschliff", "Sofort nutzbar im Studio"],
     price: "ab 149 €",
-    priceSubtext: "pro Monat",
+    priceSubtext: "einmalig",
   },
   {
     planIcon: Sparkles,

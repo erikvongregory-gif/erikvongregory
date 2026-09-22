@@ -5,9 +5,9 @@ import { SITE } from "@/lib/siteConfig";
 import { TRESENGESPRAECH_FAQS } from "@/lib/tresengespraechFaqs";
 
 export const metadata: Metadata = {
-  title: "KI-Marketing für Brauereien: Bilder, Posts & Bewertungen | BrewAI",
+  title: "KI-Marketing für Brauereien: Bilder & Social-Content | BrewAI",
   description:
-    "KI-generierte Werbebilder, Social-Media-Posts und Google-Bewertungen für Brauereien — selbst im Dashboard oder fertig geliefert. Ab 79 €/Monat. Jetzt testen.",
+    "KI-generierte Werbebilder und Social-Content für Brauereien — selbst im Dashboard oder fertig geliefert. Ab 79 €/Monat. Jetzt testen.",
   keywords: [
     "KI Marketing für Brauereien",
     "KI Marketing Agentur",
@@ -22,7 +22,7 @@ export const metadata: Metadata = {
   openGraph: {
     title: "KI-Marketing für Brauereien | BrewAI",
     description:
-      "KI-Bilder, Posts und Bewertungen für Brauereien — ab 79 €/Monat. Selbst im Dashboard oder fertig geliefert.",
+      "KI-Bilder und Social-Content für Brauereien — ab 79 €/Monat. Selbst im Dashboard oder fertig geliefert.",
     url: SITE.baseUrl,
     type: "website",
     locale: "de_DE",
@@ -38,7 +38,7 @@ export const metadata: Metadata = {
   twitter: {
     card: "summary_large_image",
     title: "KI-Marketing für Brauereien | BrewAI",
-    description: "KI-Bilder, Posts und Bewertungen für Brauereien — ab 79 €/Monat.",
+    description: "KI-Bilder und Social-Content für Brauereien — ab 79 €/Monat.",
     images: [`${SITE.baseUrl}${SITE.ogImage}`],
   },
 };
@@ -51,12 +51,12 @@ export default function Home() {
     url: SITE.baseUrl,
     logo: SITE.brandLogoUrl,
     description:
-      "KI-Marketing für Brauereien: Werbebilder, Social-Media-Posts und Google-Bewertungsmanagement.",
+      "KI-Marketing für Brauereien: Werbebilder, Social-Content und Markenprofil im Dashboard.",
     areaServed: ["DE", "AT", "CH"],
     knowsAbout: [
       "KI Marketing für Brauereien",
       "Social Media Marketing Brauerei",
-      "Google Bewertungen Brauerei",
+      "KI Produktfotos Bier",
       "Produktfotos Bier und Getränke",
       "DACH Brauereimarketing",
     ],
@@ -149,8 +149,8 @@ export default function Home() {
         media="(max-width: 1023px)"
       />
       <h1 className="sr-only">
-        KI-Marketing für Brauereien in Deutschland, Österreich und der Schweiz — Werbebilder, Social Media und
-        Bewertungen mit {SITE.name}
+        KI-Marketing für Brauereien in Deutschland, Österreich und der Schweiz — Werbebilder und Social-Content
+        mit {SITE.name}
       </h1>
       <script
         type="application/ld+json"

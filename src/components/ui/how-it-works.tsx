@@ -120,7 +120,7 @@ const DEFAULT_STEPS_DE: StepData[] = [
     icon: <Zap className="h-6 w-6" aria-hidden />,
     title: "Freigabe & Veröffentlichung",
     description:
-      "Du gibst frei — dann gehen Motive in Feed, Ads oder auf die Website. Optional: Unterstützung bei Google-Bewertungen.",
+      "Du gibst frei — dann gehen Motive in Feed, Ads oder auf die Website. Alles markenkonform aus dem Dashboard.",
     benefits: [
       "Schnelle Iteration bis zur Freigabe",
       "Klare Dateiformate für Meta & Co.",

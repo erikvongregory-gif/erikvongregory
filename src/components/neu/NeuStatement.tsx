@@ -41,7 +41,7 @@ export function NeuStatement() {
           <NeuRevealText
             tone="onDark"
             wordOffset={8}
-            text="Ein Ort für Motive, Posts und Bewertungen. Plane Kampagnen, halte deine Marke scharf und lass BrewAI die Routine übernehmen — damit du wieder am Sudhaus bist, nicht im Tool-Chaos."
+            text="Ein Ort für Motive, Social-Content und deine Marke. Setze das Profil einmal, erzeuge Bilder im Dashboard und lass BrewAI die Routine übernehmen — damit du wieder am Sudhaus bist, nicht im Tool-Chaos."
           />
         </p>
 

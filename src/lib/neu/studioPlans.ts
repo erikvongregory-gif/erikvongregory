@@ -41,7 +41,7 @@ function buildFeatures(
   return [
     `${tokens.toLocaleString("de-DE")} Tokens / Monat`,
     `${formatPlanImageEstimate(tokens)} · ${formatPlanVideoEstimate(tokens)}`,
-    "Videos Erstellen (Seedance 2)",
+    "Videos Erstellen (in Vorbereitung)",
     teamLine,
     supportLine,
     carryDays,

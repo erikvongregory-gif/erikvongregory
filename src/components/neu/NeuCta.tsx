@@ -47,7 +47,7 @@ export function NeuCta() {
           <NeuRevealText
             tone="onDark"
             wordOffset={6}
-            text="Starte mit BrewAI — planbare Motive, Posts und Bewertungen ab dem ersten Tag. Marke einmal setzen, danach wächst der Feed mit."
+            text="Starte mit BrewAI — planbare Motive und Social-Content ab dem ersten Tag. Marke einmal setzen, danach wächst der Feed mit."
           />
         </p>
 

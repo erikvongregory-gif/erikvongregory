@@ -62,7 +62,7 @@ export const MOBILE_PRICING_TRACKS: { manufaktur: Tier[]; werkstatt: Tier[] } = 
         "20 Social-Media-Posts inkl. Text",
         "3-Monats-Content-Plan für IG & FB",
         "Texte & Struktur für die Website",
-        "KI-Bewertungsmanagement (Google)",
+        "Markenprofil-Setup im Dashboard",
         "Lieferzeit 2–3 Wochen",
       ],
       cta: "Angebot anfragen",

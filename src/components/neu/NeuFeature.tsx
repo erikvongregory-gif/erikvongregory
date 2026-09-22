@@ -22,17 +22,17 @@ const FEATURE_TABS = [
   {
     id: "posts",
     label: "Social Posts",
-    heading: "Content, der postet",
+    heading: "Content, bereit zum Posten",
     description:
-      "Texte und Visuals für Instagram, Facebook und Co. — planbar, wiedererkennbar, brauereitauglich.",
+      "Visuals und Textvorschläge für Instagram & Co. — im Markenstil, fertig für deinen Feed.",
     progress: 60,
   },
   {
-    id: "reviews",
-    label: "Bewertungen",
-    heading: "Google unter Kontrolle",
+    id: "assistent",
+    label: "Assistent",
+    heading: "Ideen auf Abruf",
     description:
-      "Antworten auf Bewertungen, die zu deiner Marke passen — schneller, freundlicher, konsistenter.",
+      "Kampagnenideen, Bild-Prompts und Marketing-Tipps im Chat — direkt im Dashboard neben dem Studio.",
     progress: 78,
   },
   {
@@ -40,7 +40,7 @@ const FEATURE_TABS = [
     label: "Dashboard",
     heading: "Alles an einem Ort",
     description:
-      "Medienbibliothek, Workflow und Tokens — vom Motiv bis zum fertigen Post ohne Tool-Chaos.",
+      "Mediathek, Tokens und Team — vom Motiv in die Ablage, ohne Tool-Chaos.",
     progress: 52,
   },
   {
@@ -48,7 +48,7 @@ const FEATURE_TABS = [
     label: "Kampagnen",
     heading: "Saison & Events",
     description:
-      "Frühlingsbock, Biergarten-Opening, Händleraktion — Serien, die zusammengehören und wirken.",
+      "Frühlingsbock, Biergarten, Händleraktion — als Bildserien im Studio-Modus Kampagne · Feed.",
     progress: 90,
   },
 ] as const;

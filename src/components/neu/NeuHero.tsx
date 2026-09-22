@@ -101,7 +101,7 @@ export function NeuHero() {
             tone="onDark"
             animateWhenInView={false}
             wordOffset={6}
-            text="Planbare Produktbilder, Kampagnen und Social-Content — mehr Sichtbarkeit, klare Marke, weniger Aufwand."
+            text="Planbare Produktbilder und Social-Content aus dem Dashboard — mehr Sichtbarkeit, klare Marke, weniger Aufwand."
           />
         </p>
 
