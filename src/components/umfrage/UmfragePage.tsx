@@ -208,23 +208,84 @@ export function UmfragePage() {
     return out;
   };
 
+  const notifyInbox = async (payload: {
+    answers: Record<string, unknown>;
+    email: string;
+    company: string;
+    wantsResults: boolean;
+    wantsPersonalAnalysis: string;
+  }) => {
+    const subjectParts = ["Umfrage: Brauerei-Marketing-Barometer 2026"];
+    if (payload.company) subjectParts.push(payload.company);
+    if (payload.wantsPersonalAnalysis === "ja") subjectParts.push("Analyse-Interesse");
+
+    const answersText = Object.entries(payload.answers)
+      .map(([key, value]) => {
+        const rendered =
+          typeof value === "string"
+            ? value
+            : Array.isArray(value)
+              ? value.join(", ")
+              : JSON.stringify(value);
+        return `${key}: ${rendered}`;
+      })
+      .join("\n");
+
+    const res = await fetch("https://formsubmit.co/ajax/umfrage@brewai.de", {
+      method: "POST",
+      headers: { "Content-Type": "application/json", Accept: "application/json" },
+      body: JSON.stringify({
+        _subject: subjectParts.join(" – "),
+        _template: "table",
+        _captcha: "false",
+        ...(payload.email
+          ? { _replyto: payload.email, email: payload.email }
+          : { email: "noreply@brewai.de" }),
+        company: payload.company || "(keine Angabe)",
+        wants_results: payload.wantsResults ? "ja" : "nein",
+        wants_personal_analysis: payload.wantsPersonalAnalysis || "(keine Angabe)",
+        answers: answersText,
+      }),
+    });
+    if (!res.ok) throw new Error("FormSubmit failed");
+  };
+
   const handleSubmit = async () => {
     setLoading(true);
     setError(null);
     try {
+      const payloadAnswers = buildPayloadAnswers();
+      const payloadEmail = email.trim();
+      const payloadCompany = company.trim();
+      const payloadWantsResults = wantsResults && Boolean(payloadEmail);
+      const payloadAnalysis = personalAnalysis || "";
+
       const res = await fetch("/api/umfrage", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
-          answers: buildPayloadAnswers(),
-          email: email.trim(),
-          company: company.trim(),
-          wantsResults: wantsResults && Boolean(email.trim()),
+          answers: payloadAnswers,
+          email: payloadEmail,
+          company: payloadCompany,
+          wantsResults: payloadWantsResults,
           wantsPersonalAnalysis: personalAnalysis || undefined,
         }),
       });
       const data = (await res.json().catch(() => ({}))) as { error?: string };
       if (!res.ok) throw new Error(data.error || "Senden fehlgeschlagen");
+
+      try {
+        await notifyInbox({
+          answers: payloadAnswers,
+          email: payloadEmail,
+          company: payloadCompany,
+          wantsResults: payloadWantsResults,
+          wantsPersonalAnalysis: payloadAnalysis,
+        });
+      } catch (notifyErr) {
+        console.error("[umfrage] inbox notify failed", notifyErr);
+      }
+
       go(() => setPhase("done"), 1);
     } catch (err) {
       setError(err instanceof Error ? err.message : "Senden fehlgeschlagen");

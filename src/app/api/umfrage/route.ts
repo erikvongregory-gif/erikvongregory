@@ -4,9 +4,6 @@ import { UMFRAGE_SURVEY_ID } from "@/content/umfrage";
 import { enforceRateLimitPersistent, enforceSameOrigin } from "@/lib/security/requestGuards";
 import { createAdminClient } from "@/lib/supabase/admin";
 
-/** Empfänger für Umfrage-Benachrichtigungen */
-const UMFRAGE_NOTIFY_EMAIL = "umfrage@brewai.de";
-
 const payloadSchema = z.object({
   answers: z.record(z.string(), z.unknown()),
   email: z.string().trim().max(254).optional(),
@@ -14,69 +11,6 @@ const payloadSchema = z.object({
   wantsResults: z.boolean().optional(),
   wantsPersonalAnalysis: z.enum(["ja", "spaeter", "nein"]).optional(),
 });
-
-function formatAnswersForEmail(answers: Record<string, unknown>): string {
-  return Object.entries(answers)
-    .map(([key, value]) => {
-      const rendered =
-        typeof value === "string"
-          ? value
-          : Array.isArray(value)
-            ? value.join(", ")
-            : JSON.stringify(value);
-      return `${key}: ${rendered}`;
-    })
-    .join("\n");
-}
-
-async function notifyUmfrageInbox(input: {
-  email?: string;
-  company?: string;
-  wantsResults: boolean;
-  wantsPersonalAnalysis?: string;
-  answers: Record<string, unknown>;
-}) {
-  const apiKey = process.env.RESEND_API_KEY?.trim();
-  const from = (process.env.RESEND_FROM_EMAIL || process.env.ADMIN_2FA_FROM_EMAIL)?.trim();
-  if (!apiKey || !from) {
-    throw new Error("RESEND_API_KEY oder RESEND_FROM_EMAIL fehlt.");
-  }
-
-  const replyEmail = input.email?.trim();
-  const subjectParts = ["Umfrage: Brauerei-Marketing-Barometer 2026"];
-  if (input.company) subjectParts.push(input.company);
-  if (input.wantsPersonalAnalysis === "ja") subjectParts.push("Analyse-Interesse");
-
-  const text = [
-    `Brauerei: ${input.company || "(keine Angabe)"}`,
-    `E-Mail Teilnehmer: ${replyEmail || "(keine Angabe)"}`,
-    `Auswertung gewünscht: ${input.wantsResults ? "ja" : "nein"}`,
-    `Persönliche Analyse: ${input.wantsPersonalAnalysis || "(keine Angabe)"}`,
-    "",
-    "Antworten:",
-    formatAnswersForEmail(input.answers),
-  ].join("\n");
-
-  const response = await fetch("https://api.resend.com/emails", {
-    method: "POST",
-    headers: {
-      Authorization: `Bearer ${apiKey}`,
-      "Content-Type": "application/json",
-    },
-    body: JSON.stringify({
-      from,
-      to: [UMFRAGE_NOTIFY_EMAIL],
-      ...(replyEmail ? { reply_to: replyEmail } : {}),
-      subject: subjectParts.join(" – "),
-      text,
-    }),
-  });
-
-  if (!response.ok) {
-    const body = await response.text();
-    throw new Error(`Resend failed: ${body}`);
-  }
-}
 
 export async function POST(req: Request) {
   try {
@@ -127,19 +61,8 @@ export async function POST(req: Request) {
       );
     }
 
-    // Mail an umfrage@ – Fehler blockieren die Teilnahme nicht (Antwort ist schon gespeichert).
-    try {
-      await notifyUmfrageInbox({
-        email: email ?? undefined,
-        company: company ?? undefined,
-        wantsResults,
-        wantsPersonalAnalysis,
-        answers,
-      });
-    } catch (err) {
-      console.error("[umfrage] notify failed", err);
-    }
-
+    // E-Mail-Benachrichtigung läuft clientseitig via FormSubmit
+    // (Resend-Domain evglab.com ist aktuell nicht verifiziert).
     return NextResponse.json({ ok: true });
   } catch (err) {
     console.error("[umfrage] unexpected", err);
