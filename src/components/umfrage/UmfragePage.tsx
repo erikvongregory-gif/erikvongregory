@@ -178,7 +178,8 @@ export function UmfragePage() {
 
   const toggleMulti = (q: UmfrageQuestion, optionId: string) => {
     setAnswers((prev) => {
-      const existing = Array.isArray(prev[q.id]) ? ([...prev[q.id]] as string[]) : [];
+      const raw = prev[q.id];
+      const existing = Array.isArray(raw) ? [...raw] : [];
       const idx = existing.indexOf(optionId);
       if (idx >= 0) existing.splice(idx, 1);
       else {
