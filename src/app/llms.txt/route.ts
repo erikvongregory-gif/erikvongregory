@@ -11,9 +11,9 @@ export function GET(): Response {
   const base = SITE.baseUrl;
   const body = `# ${SITE.name}
 
-> ${SITE.productName} is the AI content system for breweries and beverage brands in DACH (Germany, Austria, Switzerland). Focus: AI product photos, campaign visuals, social content, and Google-review support. Two paths: premium one-off packages and a monthly token-based dashboard subscription.
+> ${SITE.productName} is the AI content system for breweries and beverage brands in DACH (Germany, Austria, Switzerland). Focus: AI product photos, campaign visuals, social content, and brand-profile-driven generation in the dashboard. Two paths: premium one-off packages and a monthly token-based dashboard subscription.
 
-> ${SITE.productName} ist ein KI-Content-System für Brauereien und Getränkemarken in DACH. Schwerpunkt: KI-Werbebilder, Kampagnenmotive, Social-Content und Unterstützung bei Google-Bewertungen. Zwei Wege: Premium-Einmallieferung und monatliches Dashboard-Abo.
+> ${SITE.productName} ist ein KI-Content-System für Brauereien und Getränkemarken in DACH. Schwerpunkt: KI-Werbebilder, Kampagnenmotive, Social-Content und Markenprofil-gesteuerte Generierung im Dashboard. Zwei Wege: Premium-Einmallieferung und monatliches Dashboard-Abo.
 
 ## Canonical site
 
@@ -26,6 +26,7 @@ export function GET(): Response {
 - ${base}/ — Home: packages, subscription plans, FAQ, contact
 - ${base}/loesungen — Brewery solutions (seasonal campaigns, gastro promo, beer garden events)
 - ${base}/ratgeber — Interactive quiz / knowledge check for brewery marketers
+- ${base}/umfrage — Brauerei-Marketing-Barometer 2026 industry survey
 - ${base}/ueber-uns — About ${SITE.name}, DACH focus, contact
 
 ## Legal
