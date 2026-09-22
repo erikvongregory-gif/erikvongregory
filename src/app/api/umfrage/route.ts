@@ -4,7 +4,7 @@ import { UMFRAGE_SURVEY_ID } from "@/content/umfrage";
 import { enforceRateLimitPersistent, enforceSameOrigin } from "@/lib/security/requestGuards";
 import { createAdminClient } from "@/lib/supabase/admin";
 
-/** FormSubmit-Ziel nur für Umfrage-Antworten */
+/** Empfänger für Umfrage-Benachrichtigungen */
 const UMFRAGE_NOTIFY_EMAIL = "umfrage@brewai.de";
 
 const payloadSchema = z.object({
@@ -29,30 +29,53 @@ function formatAnswersForEmail(answers: Record<string, unknown>): string {
     .join("\n");
 }
 
-async function notifyViaFormSubmit(input: {
+async function notifyUmfrageInbox(input: {
   email?: string;
   company?: string;
   wantsResults: boolean;
   wantsPersonalAnalysis?: string;
   answers: Record<string, unknown>;
 }) {
+  const apiKey = process.env.RESEND_API_KEY?.trim();
+  const from = (process.env.RESEND_FROM_EMAIL || process.env.ADMIN_2FA_FROM_EMAIL)?.trim();
+  if (!apiKey || !from) {
+    throw new Error("RESEND_API_KEY oder RESEND_FROM_EMAIL fehlt.");
+  }
+
   const replyEmail = input.email?.trim();
   const subjectParts = ["Umfrage: Brauerei-Marketing-Barometer 2026"];
   if (input.company) subjectParts.push(input.company);
   if (input.wantsPersonalAnalysis === "ja") subjectParts.push("Analyse-Interesse");
 
-  await fetch(`https://formsubmit.co/ajax/${UMFRAGE_NOTIFY_EMAIL}`, {
+  const text = [
+    `Brauerei: ${input.company || "(keine Angabe)"}`,
+    `E-Mail Teilnehmer: ${replyEmail || "(keine Angabe)"}`,
+    `Auswertung gewünscht: ${input.wantsResults ? "ja" : "nein"}`,
+    `Persönliche Analyse: ${input.wantsPersonalAnalysis || "(keine Angabe)"}`,
+    "",
+    "Antworten:",
+    formatAnswersForEmail(input.answers),
+  ].join("\n");
+
+  const response = await fetch("https://api.resend.com/emails", {
     method: "POST",
-    headers: { "Content-Type": "application/json", Accept: "application/json" },
+    headers: {
+      Authorization: `Bearer ${apiKey}`,
+      "Content-Type": "application/json",
+    },
     body: JSON.stringify({
-      _subject: subjectParts.join(" – "),
-      ...(replyEmail ? { _replyto: replyEmail, email: replyEmail } : {}),
-      company: input.company || "(keine Angabe)",
-      wants_results: input.wantsResults ? "ja" : "nein",
-      wants_personal_analysis: input.wantsPersonalAnalysis || "(keine Angabe)",
-      answers: formatAnswersForEmail(input.answers),
+      from,
+      to: [UMFRAGE_NOTIFY_EMAIL],
+      ...(replyEmail ? { reply_to: replyEmail } : {}),
+      subject: subjectParts.join(" – "),
+      text,
     }),
   });
+
+  if (!response.ok) {
+    const body = await response.text();
+    throw new Error(`Resend failed: ${body}`);
+  }
 }
 
 export async function POST(req: Request) {
@@ -104,14 +127,18 @@ export async function POST(req: Request) {
       );
     }
 
-    // Notification for Erik – failures must not block the participant success state.
-    void notifyViaFormSubmit({
-      email: email ?? undefined,
-      company: company ?? undefined,
-      wantsResults,
-      wantsPersonalAnalysis,
-      answers,
-    }).catch((err) => console.error("[umfrage] formsubmit notify failed", err));
+    // Mail an umfrage@ – Fehler blockieren die Teilnahme nicht (Antwort ist schon gespeichert).
+    try {
+      await notifyUmfrageInbox({
+        email: email ?? undefined,
+        company: company ?? undefined,
+        wantsResults,
+        wantsPersonalAnalysis,
+        answers,
+      });
+    } catch (err) {
+      console.error("[umfrage] notify failed", err);
+    }
 
     return NextResponse.json({ ok: true });
   } catch (err) {
