@@ -4,6 +4,13 @@ import { UMFRAGE_SURVEY_ID } from "@/content/umfrage";
 import { enforceRateLimitPersistent, enforceSameOrigin } from "@/lib/security/requestGuards";
 import { createAdminClient } from "@/lib/supabase/admin";
 
+/**
+ * Resend ohne verifizierte Domain darf nur an die Account-Mail senden.
+ * Sobald brewai.de/evglab.com bei Resend verifiziert ist: UMFRAGE_NOTIFY_EMAIL=umfrage@brewai.de setzen.
+ */
+const UMFRAGE_RESEND_TO =
+  process.env.UMFRAGE_NOTIFY_EMAIL?.trim() || "admin@evglab.com";
+
 const payloadSchema = z.object({
   answers: z.record(z.string(), z.unknown()),
   email: z.string().trim().max(254).optional(),
@@ -11,6 +18,71 @@ const payloadSchema = z.object({
   wantsResults: z.boolean().optional(),
   wantsPersonalAnalysis: z.enum(["ja", "spaeter", "nein"]).optional(),
 });
+
+function formatAnswersForEmail(answers: Record<string, unknown>): string {
+  return Object.entries(answers)
+    .map(([key, value]) => {
+      const rendered =
+        typeof value === "string"
+          ? value
+          : Array.isArray(value)
+            ? value.join(", ")
+            : JSON.stringify(value);
+      return `${key}: ${rendered}`;
+    })
+    .join("\n");
+}
+
+async function notifyViaResend(input: {
+  email?: string;
+  company?: string;
+  wantsResults: boolean;
+  wantsPersonalAnalysis?: string;
+  answers: Record<string, unknown>;
+}) {
+  const apiKey = process.env.RESEND_API_KEY?.trim();
+  if (!apiKey) throw new Error("RESEND_API_KEY fehlt.");
+
+  const replyEmail = input.email?.trim();
+  const subjectParts = ["Umfrage: Brauerei-Marketing-Barometer 2026"];
+  if (input.company) subjectParts.push(input.company);
+  if (input.wantsPersonalAnalysis === "ja") subjectParts.push("Analyse-Interesse");
+
+  const text = [
+    `Brauerei: ${input.company || "(keine Angabe)"}`,
+    `E-Mail Teilnehmer: ${replyEmail || "(keine Angabe)"}`,
+    `Auswertung gewünscht: ${input.wantsResults ? "ja" : "nein"}`,
+    `Persönliche Analyse: ${input.wantsPersonalAnalysis || "(keine Angabe)"}`,
+    "",
+    "Antworten:",
+    formatAnswersForEmail(input.answers),
+  ].join("\n");
+
+  // onboarding@resend.dev funktioniert ohne Domain-Verify; Ziel dann nur Account-Mail.
+  const from =
+    process.env.UMFRAGE_FROM_EMAIL?.trim() ||
+    "BrewAI Umfrage <onboarding@resend.dev>";
+
+  const response = await fetch("https://api.resend.com/emails", {
+    method: "POST",
+    headers: {
+      Authorization: `Bearer ${apiKey}`,
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify({
+      from,
+      to: [UMFRAGE_RESEND_TO],
+      ...(replyEmail ? { reply_to: replyEmail } : {}),
+      subject: subjectParts.join(" – "),
+      text,
+    }),
+  });
+
+  if (!response.ok) {
+    const body = await response.text();
+    throw new Error(`Resend failed: ${body}`);
+  }
+}
 
 export async function POST(req: Request) {
   try {
@@ -61,8 +133,18 @@ export async function POST(req: Request) {
       );
     }
 
-    // E-Mail-Benachrichtigung läuft clientseitig via FormSubmit
-    // (Resend-Domain evglab.com ist aktuell nicht verifiziert).
+    try {
+      await notifyViaResend({
+        email: email ?? undefined,
+        company: company ?? undefined,
+        wantsResults,
+        wantsPersonalAnalysis,
+        answers,
+      });
+    } catch (err) {
+      console.error("[umfrage] notify failed", err);
+    }
+
     return NextResponse.json({ ok: true });
   } catch (err) {
     console.error("[umfrage] unexpected", err);

@@ -231,23 +231,30 @@ export function UmfragePage() {
       })
       .join("\n");
 
+    // Optional parallel an umfrage@ – braucht einmaligen FormSubmit-Aktivierungslink.
     const res = await fetch("https://formsubmit.co/ajax/umfrage@brewai.de", {
       method: "POST",
       headers: { "Content-Type": "application/json", Accept: "application/json" },
       body: JSON.stringify({
+        name: payload.company || "Brauerei-Umfrage",
+        email: payload.email || "noreply@brewai.de",
+        _replyto: payload.email || undefined,
         _subject: subjectParts.join(" – "),
         _template: "table",
         _captcha: "false",
-        ...(payload.email
-          ? { _replyto: payload.email, email: payload.email }
-          : { email: "noreply@brewai.de" }),
         company: payload.company || "(keine Angabe)",
         wants_results: payload.wantsResults ? "ja" : "nein",
         wants_personal_analysis: payload.wantsPersonalAnalysis || "(keine Angabe)",
-        answers: answersText,
+        message: answersText,
       }),
     });
-    if (!res.ok) throw new Error("FormSubmit failed");
+    const data = (await res.json().catch(() => ({}))) as {
+      success?: string | boolean;
+      message?: string;
+    };
+    if (!res.ok || data.success === "false" || data.success === false) {
+      throw new Error(data.message || "FormSubmit failed");
+    }
   };
 
   const handleSubmit = async () => {
