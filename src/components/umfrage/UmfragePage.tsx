@@ -595,7 +595,8 @@ export function UmfragePage() {
                   </p>
                   {email.trim() ? (
                     <p className="mt-3 max-w-md text-sm text-ink3">
-                      Die Auswertung kommt per E-Mail, sobald genug Brauereien teilgenommen haben.
+                      Die Auswertung schicken wir Ihnen per E-Mail als Link, sobald
+                      genug Brauereien teilgenommen haben.
                     </p>
                   ) : null}
                   <div className="mt-10 sm:max-w-xs">

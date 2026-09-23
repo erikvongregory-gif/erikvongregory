@@ -29,6 +29,8 @@ export const UMFRAGE_META = {
     "Wo liegen aktuell die größten Herausforderungen im Marketing deutscher Brauereien?",
   duration: "3–4 Minuten",
   reportName: "Brauerei-Marketing-Barometer 2026",
+  /** Öffentliche Auswertungsseite – Link später an wants_results-Teilnehmer. */
+  resultsPath: "/umfrage/auswertung",
 } as const;
 
 /** Kurze Funnel-Screens – ein Gedanke pro Klick. */

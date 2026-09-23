@@ -1,4 +1,5 @@
-import { UMFRAGE_QUESTIONS, type UmfrageQuestion } from "@/content/umfrage";
+import { UMFRAGE_META, UMFRAGE_QUESTIONS, type UmfrageQuestion } from "@/content/umfrage";
+import { SITE } from "@/lib/siteConfig";
 
 const LEAD_LABELS: Record<string, string> = {
   ja: "Ja – Interesse an persönlicher Auswertung",
@@ -90,6 +91,8 @@ export function formatUmfrageNotifyText(input: {
     `E-Mail: ${input.email || "(keine Angabe)"}`,
     `Auswertung gewünscht: ${input.wantsResults ? "Ja" : "Nein"}`,
     `Persönliche Analyse: ${analysis}`,
+    "",
+    `Auswertungsseite: ${SITE.baseUrl}${UMFRAGE_META.resultsPath}`,
     "",
     "──── Antworten ────",
     ...rows.map((r) => `\n${r.n}. ${r.title}\n→ ${r.value}`),
