@@ -14,6 +14,20 @@ export const metadata: Metadata = {
     url: `${SITE.baseUrl}/umfrage`,
     locale: "de_DE",
     type: "website",
+    images: [
+      {
+        url: "/og/umfrage-og.gif",
+        width: 1200,
+        height: 630,
+        alt: "Wo verlieren Brauereien Zeit, Geld und Sichtbarkeit? — Branchenumfrage 2026",
+      },
+    ],
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: UMFRAGE_META.title,
+    description: UMFRAGE_META.subtitle,
+    images: ["/og/umfrage-og.gif"],
   },
 };
 
