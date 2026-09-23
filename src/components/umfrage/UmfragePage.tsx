@@ -208,55 +208,6 @@ export function UmfragePage() {
     return out;
   };
 
-  const notifyInbox = async (payload: {
-    answers: Record<string, unknown>;
-    email: string;
-    company: string;
-    wantsResults: boolean;
-    wantsPersonalAnalysis: string;
-  }) => {
-    const subjectParts = ["Umfrage: Brauerei-Marketing-Barometer 2026"];
-    if (payload.company) subjectParts.push(payload.company);
-    if (payload.wantsPersonalAnalysis === "ja") subjectParts.push("Analyse-Interesse");
-
-    const answersText = Object.entries(payload.answers)
-      .map(([key, value]) => {
-        const rendered =
-          typeof value === "string"
-            ? value
-            : Array.isArray(value)
-              ? value.join(", ")
-              : JSON.stringify(value);
-        return `${key}: ${rendered}`;
-      })
-      .join("\n");
-
-    // Parallel an Gmail – FormSubmit schickt einmaligen Aktivierungslink an dieses Postfach.
-    const res = await fetch("https://formsubmit.co/ajax/erikvongregory@gmail.com", {
-      method: "POST",
-      headers: { "Content-Type": "application/json", Accept: "application/json" },
-      body: JSON.stringify({
-        name: payload.company || "Brauerei-Umfrage",
-        email: payload.email || "noreply@brewai.de",
-        _replyto: payload.email || undefined,
-        _subject: subjectParts.join(" – "),
-        _template: "table",
-        _captcha: "false",
-        company: payload.company || "(keine Angabe)",
-        wants_results: payload.wantsResults ? "ja" : "nein",
-        wants_personal_analysis: payload.wantsPersonalAnalysis || "(keine Angabe)",
-        message: answersText,
-      }),
-    });
-    const data = (await res.json().catch(() => ({}))) as {
-      success?: string | boolean;
-      message?: string;
-    };
-    if (!res.ok || data.success === "false" || data.success === false) {
-      throw new Error(data.message || "FormSubmit failed");
-    }
-  };
-
   const handleSubmit = async () => {
     setLoading(true);
     setError(null);
@@ -265,7 +216,6 @@ export function UmfragePage() {
       const payloadEmail = email.trim();
       const payloadCompany = company.trim();
       const payloadWantsResults = wantsResults && Boolean(payloadEmail);
-      const payloadAnalysis = personalAnalysis || "";
 
       const res = await fetch("/api/umfrage", {
         method: "POST",
@@ -280,18 +230,6 @@ export function UmfragePage() {
       });
       const data = (await res.json().catch(() => ({}))) as { error?: string };
       if (!res.ok) throw new Error(data.error || "Senden fehlgeschlagen");
-
-      try {
-        await notifyInbox({
-          answers: payloadAnswers,
-          email: payloadEmail,
-          company: payloadCompany,
-          wantsResults: payloadWantsResults,
-          wantsPersonalAnalysis: payloadAnalysis,
-        });
-      } catch (notifyErr) {
-        console.error("[umfrage] inbox notify failed", notifyErr);
-      }
 
       go(() => setPhase("done"), 1);
     } catch (err) {

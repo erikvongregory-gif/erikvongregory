@@ -5,13 +5,11 @@ import { enforceRateLimitPersistent, enforceSameOrigin } from "@/lib/security/re
 import { createAdminClient } from "@/lib/supabase/admin";
 
 /**
- * Resend ohne verifizierte Domain darf nur an die Account-Mail senden.
- * Production: UMFRAGE_NOTIFY_EMAIL=admin@evglab.com
- * Mehrere Empfänger: komma-getrennt.
- * Sobald brewai.de bei Resend verifiziert ist: from + to auf @brewai.de umstellen.
+ * brewai.de ist bei Resend verifiziert → From + To auf @brewai.de.
+ * Mehrere Empfänger: UMFRAGE_NOTIFY_EMAIL komma-getrennt.
  */
 const UMFRAGE_RESEND_TO = (
-  process.env.UMFRAGE_NOTIFY_EMAIL?.trim() || "admin@evglab.com"
+  process.env.UMFRAGE_NOTIFY_EMAIL?.trim() || "umfrage@brewai.de"
 )
   .split(",")
   .map((e) => e.trim())
@@ -64,10 +62,9 @@ async function notifyViaResend(input: {
     formatAnswersForEmail(input.answers),
   ].join("\n");
 
-  // onboarding@resend.dev funktioniert ohne Domain-Verify; Ziel dann nur Account-Mail.
   const from =
     process.env.UMFRAGE_FROM_EMAIL?.trim() ||
-    "BrewAI Umfrage <onboarding@resend.dev>";
+    "BrewAI Umfrage <umfrage@brewai.de>";
 
   const response = await fetch("https://api.resend.com/emails", {
     method: "POST",
