@@ -231,8 +231,8 @@ export function UmfragePage() {
       })
       .join("\n");
 
-    // Optional parallel an umfrage@ – braucht einmaligen FormSubmit-Aktivierungslink.
-    const res = await fetch("https://formsubmit.co/ajax/umfrage@brewai.de", {
+    // Parallel an Gmail – FormSubmit schickt einmaligen Aktivierungslink an dieses Postfach.
+    const res = await fetch("https://formsubmit.co/ajax/erikvongregory@gmail.com", {
       method: "POST",
       headers: { "Content-Type": "application/json", Accept: "application/json" },
       body: JSON.stringify({
@@ -326,7 +326,7 @@ export function UmfragePage() {
         <header className="mb-6 shrink-0">
           <div className="flex items-center justify-between gap-3">
             <p className="font-mono-hero text-[10px] uppercase tracking-[1.5px] text-amber sm:text-[11px]">
-              EvGlab / BrewAI
+              BrewAI
             </p>
             {phase !== "done" ? (
               <p className="font-mono-hero text-[10px] uppercase tracking-wide text-ink3">

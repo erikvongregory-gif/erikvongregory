@@ -208,7 +208,7 @@ export default function DatenschutzPage() {
               eine E-Mail-Adresse und den Unternehmensnamen angeben, um die Auswertung zu
               erhalten oder eine persönliche Einschätzung anzufordern. Zusätzlich kann eine
               Benachrichtigung an uns per E-Mail (Resend an admin@evglab.com; optional zusätzlich
-              FormSubmit an umfrage@brewai.de nach Aktivierung).
+              FormSubmit an eine von uns hinterlegte Inbox nach Aktivierung).
             </p>
             <p className="mt-3">
               <strong>Rechtsgrundlage:</strong> Art. 6 Abs. 1 lit. f DSGVO (berechtigtes

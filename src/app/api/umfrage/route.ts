@@ -6,10 +6,16 @@ import { createAdminClient } from "@/lib/supabase/admin";
 
 /**
  * Resend ohne verifizierte Domain darf nur an die Account-Mail senden.
- * Sobald brewai.de/evglab.com bei Resend verifiziert ist: UMFRAGE_NOTIFY_EMAIL=umfrage@brewai.de setzen.
+ * Production: UMFRAGE_NOTIFY_EMAIL=admin@evglab.com
+ * Mehrere Empfänger: komma-getrennt.
+ * Sobald brewai.de bei Resend verifiziert ist: from + to auf @brewai.de umstellen.
  */
-const UMFRAGE_RESEND_TO =
-  process.env.UMFRAGE_NOTIFY_EMAIL?.trim() || "admin@evglab.com";
+const UMFRAGE_RESEND_TO = (
+  process.env.UMFRAGE_NOTIFY_EMAIL?.trim() || "admin@evglab.com"
+)
+  .split(",")
+  .map((e) => e.trim())
+  .filter(Boolean);
 
 const payloadSchema = z.object({
   answers: z.record(z.string(), z.unknown()),
@@ -71,7 +77,7 @@ async function notifyViaResend(input: {
     },
     body: JSON.stringify({
       from,
-      to: [UMFRAGE_RESEND_TO],
+      to: UMFRAGE_RESEND_TO,
       ...(replyEmail ? { reply_to: replyEmail } : {}),
       subject: subjectParts.join(" – "),
       text,
@@ -141,11 +147,16 @@ export async function POST(req: Request) {
         wantsPersonalAnalysis,
         answers,
       });
+      return NextResponse.json({ ok: true, notified: true });
     } catch (err) {
       console.error("[umfrage] notify failed", err);
+      // Antwort ist gespeichert – Mail-Fehler nicht als totalen Fail anzeigen.
+      return NextResponse.json({
+        ok: true,
+        notified: false,
+        notifyError: err instanceof Error ? err.message : "notify failed",
+      });
     }
-
-    return NextResponse.json({ ok: true });
   } catch (err) {
     console.error("[umfrage] unexpected", err);
     return NextResponse.json(
