@@ -1,6 +1,10 @@
 import { NextResponse } from "next/server";
 import { z } from "zod";
 import { UMFRAGE_SURVEY_ID } from "@/content/umfrage";
+import {
+  formatUmfrageNotifyHtml,
+  formatUmfrageNotifyText,
+} from "@/lib/umfrageNotifyFormat";
 import { enforceRateLimitPersistent, enforceSameOrigin } from "@/lib/security/requestGuards";
 import { createAdminClient } from "@/lib/supabase/admin";
 
@@ -23,20 +27,6 @@ const payloadSchema = z.object({
   wantsPersonalAnalysis: z.enum(["ja", "spaeter", "nein"]).optional(),
 });
 
-function formatAnswersForEmail(answers: Record<string, unknown>): string {
-  return Object.entries(answers)
-    .map(([key, value]) => {
-      const rendered =
-        typeof value === "string"
-          ? value
-          : Array.isArray(value)
-            ? value.join(", ")
-            : JSON.stringify(value);
-      return `${key}: ${rendered}`;
-    })
-    .join("\n");
-}
-
 async function notifyViaResend(input: {
   email?: string;
   company?: string;
@@ -52,15 +42,8 @@ async function notifyViaResend(input: {
   if (input.company) subjectParts.push(input.company);
   if (input.wantsPersonalAnalysis === "ja") subjectParts.push("Analyse-Interesse");
 
-  const text = [
-    `Brauerei: ${input.company || "(keine Angabe)"}`,
-    `E-Mail Teilnehmer: ${replyEmail || "(keine Angabe)"}`,
-    `Auswertung gewünscht: ${input.wantsResults ? "ja" : "nein"}`,
-    `Persönliche Analyse: ${input.wantsPersonalAnalysis || "(keine Angabe)"}`,
-    "",
-    "Antworten:",
-    formatAnswersForEmail(input.answers),
-  ].join("\n");
+  const text = formatUmfrageNotifyText(input);
+  const html = formatUmfrageNotifyHtml(input);
 
   const from =
     process.env.UMFRAGE_FROM_EMAIL?.trim() ||
@@ -78,6 +61,7 @@ async function notifyViaResend(input: {
       ...(replyEmail ? { reply_to: replyEmail } : {}),
       subject: subjectParts.join(" – "),
       text,
+      html,
     }),
   });
 
