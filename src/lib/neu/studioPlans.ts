@@ -26,7 +26,7 @@ function formatPlanImageEstimate(monthlyTokens: number): string {
 }
 
 function formatPlanVideoEstimate(monthlyTokens: number): string {
-  const standardCost = 100; // Seedance 2 · 720p · 5 s · Audio
+  const standardCost = 100; // Seedance 2.5 · 720p · 5 s · Audio
   const longCost = 240; // 720p · 12 s · Audio
   const maxVideos = Math.max(1, Math.floor(monthlyTokens / standardCost));
   const minVideos = Math.max(1, Math.floor(monthlyTokens / longCost));
@@ -38,7 +38,7 @@ function buildFeatures(planId: keyof typeof TOKENS, teamLine: string, supportLin
   return [
     `${tokens.toLocaleString("de-DE")} Tokens / Monat`,
     `${formatPlanImageEstimate(tokens)} · ${formatPlanVideoEstimate(tokens)}`,
-    "Videos Erstellen (Seedance 2)",
+    "Videos erstellen mit Seedance 2.5",
     teamLine,
     supportLine,
     CARRY_FEATURE,
