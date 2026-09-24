@@ -90,7 +90,7 @@ export const NEU_STUDIO_PLANS: NeuStudioPlan[] = [
     features: buildFeatures(
       "enterprise",
       "25 Teamplätze (Inhaber inklusive)",
-      "Dedizierter Success-Manager + SLA",
+      "Direkter Ansprechpartner für euer Team",
     ),
   },
 ];

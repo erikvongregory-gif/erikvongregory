@@ -207,7 +207,7 @@ const DASHBOARD_SUBSCRIPTION_PACKAGES: PricingPackageDef[] = [
       "20.000 Tokens / Monat",
       "ca. 1.175–6.600 Bilder · ca. 83–200 Videos",
       "25 Teammitglieder inklusive",
-      "Dedizierter Success-Manager + SLA",
+      "Direkter Ansprechpartner für euer Team",
       "Ungenutzte Tokens 3 Monate übertragbar",
     ],
   },

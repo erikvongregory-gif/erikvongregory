@@ -128,7 +128,7 @@ export const MOBILE_PRICING_TRACKS: { manufaktur: Tier[]; werkstatt: Tier[] } = 
         "20.000 Tokens / Monat",
         "ca. 1.175–6.600 Bilder · ca. 83–200 Videos",
         "25 Teammitglieder",
-        "Dedizierter Success-Manager + SLA",
+        "Direkter Ansprechpartner für euer Team",
         "Ungenutzte Tokens 3 Monate übertragbar",
       ],
       cta: "Plan wählen",
