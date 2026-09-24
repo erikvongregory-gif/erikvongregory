@@ -14,6 +14,7 @@ import {
   ChevronRight,
   Layers,
   MessageSquareText,
+  Building2,
   Sparkles,
   TrendingUp,
 } from "lucide-react";
@@ -152,7 +153,7 @@ const DASHBOARD_SUBSCRIPTION_PACKAGES: PricingPackageDef[] = [
       "ca. 70–400 Bilder · ca. 5–12 Videos",
       "1 Teammitglied inklusive",
       "E-Mail-Support",
-      "Ungenutzte Tokens 1 Monat übertragbar",
+      "Keine Übertragung ungenutzter Tokens",
     ],
   },
   {
@@ -189,7 +190,25 @@ const DASHBOARD_SUBSCRIPTION_PACKAGES: PricingPackageDef[] = [
       "ca. 440–2.500 Bilder · ca. 31–75 Videos",
       "10 Teammitglieder inklusive",
       "Fast-Lane Rendering + Premium-Support",
-      "Ungenutzte Tokens 1 Monat übertragbar",
+      "Ungenutzte Tokens 2 Monate übertragbar",
+    ],
+  },
+  {
+    planIcon: Building2,
+    name: "Brauerei Enterprise",
+    fit: "Für Gruppen und Agenturen",
+    outcome: "Skalierung über Marken und Teams",
+    startIn: "Sofort nach Checkout",
+    description: "Für Gruppen, Verbünde und Agenturen mit hohem Volumen.",
+    price: "599 €",
+    cta: "Plan wählen",
+    checkoutPlanKey: "enterprise",
+    features: [
+      "20.000 Tokens / Monat",
+      "ca. 1.175–6.600 Bilder · ca. 83–200 Videos",
+      "25 Teammitglieder inklusive",
+      "Dedizierter Success-Manager + SLA",
+      "Ungenutzte Tokens 3 Monate übertragbar",
     ],
   },
 ];
@@ -197,12 +216,13 @@ const DASHBOARD_SUBSCRIPTION_PACKAGES: PricingPackageDef[] = [
 /** Desktop: von günstig nach teuer (teuerste Karte rechts) — Mobile: Reihenfolge im Array. */
 const PRICING_DESKTOP_ORDER = [0, 1, 2] as const;
 /** Desktop: von günstig nach teuer (teuerste Karte rechts) — Mobile: Reihenfolge im Array. */
-const DASHBOARD_DESKTOP_ORDER = [0, 1, 2] as const;
+const DASHBOARD_DESKTOP_ORDER = [0, 1, 2, 3] as const;
 
 const DASHBOARD_PLAN_SLIDE_INDEX: Record<SubscriptionPlanKey, number> = {
   start: 0,
   growth: 1,
   pro: 2,
+  enterprise: 3,
 };
 
 const ADDONS: AddonRow[] = [

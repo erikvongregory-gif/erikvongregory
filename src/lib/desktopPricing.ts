@@ -69,6 +69,6 @@ export const DESKTOP_PREIS_MODE_COPY = {
     toggle: `Option 2 · ${werkstattOpt.label} (${werkstattOpt.sublabel})`,
     headline: "Du nutzt mein Abo-Tool",
     body: "Günstiger und flexibel. Du generierst Bilder selbst im Dashboard, bleibst schnell handlungsfähig und steuerst deinen Output eigenständig.",
-    disclaimer: "Alle Preise gemäß § 19 UStG ohne Umsatzsteuer · Monatlich kündbar · Ungenutzte Tokens 1 Monat übertragbar",
+    disclaimer: "Alle Preise gemäß § 19 UStG ohne Umsatzsteuer · Monatlich kündbar · Token-Übertrag je nach Plan",
   },
 } as const;

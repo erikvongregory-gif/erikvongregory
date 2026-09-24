@@ -1,24 +1,26 @@
 /**
  * Spiegel der Studio-Pläne aus app.brewai.de (`lib/billing/planCatalog.ts`).
- * Preise/Tokens hier halten — gleiche Logik wie im Dashboard.
  */
 
 export type NeuStudioPlan = {
-  id: "start" | "growth" | "pro";
+  id: "start" | "growth" | "pro" | "enterprise";
   tag: string;
   name: string;
-  /** Aktions-Monatspreis bei Jahresabo */
   monthly: number;
-  /** Listenpreis Monatsabo */
   compareAtMonthly: number;
   recommended?: boolean;
   features: string[];
 };
 
-const TOKENS = { start: 1200, growth: 3000, pro: 7500 } as const;
-const CARRY_FEATURE = "Ungenutzte Tokens 1 Monat übertragbar";
+const TOKENS = { start: 1200, growth: 3000, pro: 7500, enterprise: 20000 } as const;
 
-/** Spiegel `generationTokenCost.ts` — Bild 3–17 Tokens, Video 720p 5s/12s mit Audio. */
+const CARRY: Record<keyof typeof TOKENS, string> = {
+  start: "Keine Übertragung ungenutzter Tokens",
+  growth: "Ungenutzte Tokens 1 Monat übertragbar",
+  pro: "Ungenutzte Tokens 2 Monate übertragbar",
+  enterprise: "Ungenutzte Tokens 3 Monate übertragbar",
+};
+
 function formatPlanImageEstimate(monthlyTokens: number): string {
   const min = Math.max(1, Math.floor(monthlyTokens / 17));
   const max = Math.max(min, Math.floor(monthlyTokens / 3));
@@ -26,14 +28,18 @@ function formatPlanImageEstimate(monthlyTokens: number): string {
 }
 
 function formatPlanVideoEstimate(monthlyTokens: number): string {
-  const standardCost = 100; // Seedance 2.5 · 720p · 5 s · Audio
-  const longCost = 240; // 720p · 12 s · Audio
+  const standardCost = 100;
+  const longCost = 240;
   const maxVideos = Math.max(1, Math.floor(monthlyTokens / standardCost));
   const minVideos = Math.max(1, Math.floor(monthlyTokens / longCost));
   return `ca. ${minVideos.toLocaleString("de-DE")}–${maxVideos.toLocaleString("de-DE")} Videos`;
 }
 
-function buildFeatures(planId: keyof typeof TOKENS, teamLine: string, supportLine: string): string[] {
+function buildFeatures(
+  planId: keyof typeof TOKENS,
+  teamLine: string,
+  supportLine: string,
+): string[] {
   const tokens = TOKENS[planId];
   return [
     `${tokens.toLocaleString("de-DE")} Tokens / Monat`,
@@ -41,7 +47,7 @@ function buildFeatures(planId: keyof typeof TOKENS, teamLine: string, supportLin
     "Videos erstellen mit Seedance 2.5",
     teamLine,
     supportLine,
-    CARRY_FEATURE,
+    CARRY[planId],
   ];
 }
 
@@ -75,9 +81,20 @@ export const NEU_STUDIO_PLANS: NeuStudioPlan[] = [
       "Fast-Lane Rendering + Premium-Support",
     ),
   },
+  {
+    id: "enterprise",
+    tag: "Für Gruppen, Verbünde und Agenturen",
+    name: "Brauerei Enterprise",
+    monthly: 599,
+    compareAtMonthly: 799,
+    features: buildFeatures(
+      "enterprise",
+      "25 Teamplätze (Inhaber inklusive)",
+      "Dedizierter Success-Manager + SLA",
+    ),
+  },
 ];
 
-/** Wie Dashboard: jährlich = Aktionspreis, monatlich = Listenpreis. */
 export function getNeuPlanDisplayMonthlyPrice(plan: NeuStudioPlan, yearlyBilling: boolean): number {
   return yearlyBilling ? plan.monthly : plan.compareAtMonthly;
 }

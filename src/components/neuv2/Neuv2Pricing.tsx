@@ -17,7 +17,7 @@ export function Neuv2Pricing() {
           </p>
         </div>
 
-        <div className="nv-container grid grid-cols-1 gap-8 sm:grid-cols-2 lg:grid-cols-3">
+        <div className="nv-container grid grid-cols-1 gap-8 sm:grid-cols-2 xl:grid-cols-4">
           {NEU_STUDIO_PLANS.map((plan) => {
             const featured = Boolean(plan.recommended);
             return (
