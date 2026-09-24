@@ -149,10 +149,10 @@ const DASHBOARD_SUBSCRIPTION_PACKAGES: PricingPackageDef[] = [
     checkoutPlanKey: "start",
     features: [
       "1.200 Tokens / Monat",
-      "ca. 60-120 Bilder",
+      "ca. 70–400 Bilder · ca. 5–12 Videos",
       "1 Teammitglied inklusive",
       "E-Mail-Support",
-      "Nicht genutzte Tokens: 30 Tage übertragbar",
+      "Ungenutzte Tokens 1 Monat übertragbar",
     ],
   },
   {
@@ -167,10 +167,10 @@ const DASHBOARD_SUBSCRIPTION_PACKAGES: PricingPackageDef[] = [
     checkoutPlanKey: "growth",
     features: [
       "3.000 Tokens / Monat",
-      "ca. 150-300 Bilder",
+      "ca. 175–1.000 Bilder · ca. 12–30 Videos",
       "3 Teammitglieder inklusive",
       "Priorisierter Support",
-      "Nicht genutzte Tokens: 60 Tage übertragbar",
+      "Ungenutzte Tokens 1 Monat übertragbar",
     ],
   },
   {
@@ -186,10 +186,10 @@ const DASHBOARD_SUBSCRIPTION_PACKAGES: PricingPackageDef[] = [
     highlight: true,
     features: [
       "7.500 Tokens / Monat",
-      "ca. 375-750 Bilder",
+      "ca. 440–2.500 Bilder · ca. 31–75 Videos",
       "10 Teammitglieder inklusive",
       "Fast-Lane Rendering + Premium-Support",
-      "Nicht genutzte Tokens: 90 Tage übertragbar",
+      "Ungenutzte Tokens 1 Monat übertragbar",
     ],
   },
 ];

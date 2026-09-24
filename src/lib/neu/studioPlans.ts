@@ -15,36 +15,33 @@ export type NeuStudioPlan = {
   features: string[];
 };
 
+const TOKENS = { start: 1200, growth: 3000, pro: 7500 } as const;
+const CARRY_FEATURE = "Ungenutzte Tokens 1 Monat übertragbar";
+
+/** Spiegel `generationTokenCost.ts` — Bild 3–17 Tokens, Video 720p 5s/12s mit Audio. */
 function formatPlanImageEstimate(monthlyTokens: number): string {
-  const min = Math.max(1, Math.floor(monthlyTokens / 35));
-  const max = Math.max(min, Math.floor(monthlyTokens / 10));
+  const min = Math.max(1, Math.floor(monthlyTokens / 17));
+  const max = Math.max(min, Math.floor(monthlyTokens / 3));
   return `ca. ${min.toLocaleString("de-DE")}–${max.toLocaleString("de-DE")} Bilder`;
 }
 
 function formatPlanVideoEstimate(monthlyTokens: number): string {
-  const standardCost = 90;
-  const longCost = 106;
+  const standardCost = 100; // Seedance 2 · 720p · 5 s · Audio
+  const longCost = 240; // 720p · 12 s · Audio
   const maxVideos = Math.max(1, Math.floor(monthlyTokens / standardCost));
   const minVideos = Math.max(1, Math.floor(monthlyTokens / longCost));
   return `ca. ${minVideos.toLocaleString("de-DE")}–${maxVideos.toLocaleString("de-DE")} Videos`;
 }
 
-const TOKENS = { start: 1200, growth: 3000, pro: 7500 } as const;
-
-function buildFeatures(
-  planId: keyof typeof TOKENS,
-  carryDays: string,
-  teamLine: string,
-  supportLine: string,
-): string[] {
+function buildFeatures(planId: keyof typeof TOKENS, teamLine: string, supportLine: string): string[] {
   const tokens = TOKENS[planId];
   return [
     `${tokens.toLocaleString("de-DE")} Tokens / Monat`,
     `${formatPlanImageEstimate(tokens)} · ${formatPlanVideoEstimate(tokens)}`,
-    "Videos Erstellen (in Vorbereitung)",
+    "Videos Erstellen (Seedance 2)",
     teamLine,
     supportLine,
-    carryDays,
+    CARRY_FEATURE,
   ];
 }
 
@@ -55,12 +52,7 @@ export const NEU_STUDIO_PLANS: NeuStudioPlan[] = [
     name: "Brauerei Start",
     monthly: 79,
     compareAtMonthly: 100,
-    features: buildFeatures(
-      "start",
-      "Tokens 30 Tage übertragbar",
-      "1 Teamplatz (Inhaber inklusive)",
-      "E-Mail-Support",
-    ),
+    features: buildFeatures("start", "1 Teamplatz (Inhaber inklusive)", "E-Mail-Support"),
   },
   {
     id: "growth",
@@ -69,12 +61,7 @@ export const NEU_STUDIO_PLANS: NeuStudioPlan[] = [
     monthly: 149,
     compareAtMonthly: 200,
     recommended: true,
-    features: buildFeatures(
-      "growth",
-      "Tokens 60 Tage übertragbar",
-      "3 Teamplätze (Inhaber inklusive)",
-      "Priorisierter Support",
-    ),
+    features: buildFeatures("growth", "3 Teamplätze (Inhaber inklusive)", "Priorisierter Support"),
   },
   {
     id: "pro",
@@ -84,7 +71,6 @@ export const NEU_STUDIO_PLANS: NeuStudioPlan[] = [
     compareAtMonthly: 400,
     features: buildFeatures(
       "pro",
-      "Tokens 90 Tage übertragbar",
       "10 Teamplätze (Inhaber inklusive)",
       "Fast-Lane Rendering + Premium-Support",
     ),

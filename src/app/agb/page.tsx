@@ -174,11 +174,13 @@ export default function AgbPage() {
               erworben werden.
             </p>
             <p className="mt-3">
-              (3) Nicht genutzte Abo-Tokens sind nur im ausdrücklich kommunizierten Umfang übertragbar.
-              Nach Ablauf der jeweiligen Übertragungsfrist verfallen sie. Separat gekaufte Token-Pakete
-              bleiben nach Kündigung des Abos nutzbar, solange das Nutzerkonto besteht, und verfallen
-              spätestens 12 Monate nach Kauf, sofern nicht anders ausgewiesen. Ein Anspruch auf
-              Auszahlung oder Übertragung auf Dritte besteht nicht.
+              (3) Nicht genutzte Abo-Tokens aus einem Abrechnungszeitraum können einmalig in den
+              unmittelbar folgenden Abrechnungszeitraum übertragen werden (höchstens ein
+              Monats-Kontingent). Eine weitere Übertragung in spätere Zeiträume ist ausgeschlossen;
+              danach verfallen ungenutzte Tokens. Separat gekaufte Token-Pakete bleiben nach Kündigung
+              des Abos nutzbar, solange das Nutzerkonto besteht, und verfallen spätestens 12 Monate
+              nach Kauf, sofern nicht anders ausgewiesen. Ein Anspruch auf Auszahlung oder Übertragung
+              auf Dritte besteht nicht.
             </p>
           </section>
 
