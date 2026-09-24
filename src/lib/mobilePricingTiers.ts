@@ -2,7 +2,7 @@ import type { SubscriptionPlanKey } from "@/lib/billing/tokenState";
 
 export type PricingTrack = "manufaktur" | "werkstatt";
 
-export type TierName = "Start" | "Wachstum" | "Premium";
+export type TierName = "Start" | "Wachstum" | "Premium" | "Enterprise";
 
 export const WERKSTATT_PROMO_BADGE = "Im Angebot";
 

@@ -11,12 +11,14 @@ const MANUFAKTUR_NAMES: Record<TierName, string> = {
   Start: "Starter Paket",
   Wachstum: "Wachstumspaket",
   Premium: "Brauerei Premium",
+  Enterprise: "Brauerei Enterprise",
 };
 
 const WERKSTATT_NAMES: Record<TierName, string> = {
   Start: "Brauerei Start",
   Wachstum: "Brauerei Wachstum",
   Premium: "Brauerei Pro",
+  Enterprise: "Brauerei Enterprise",
 };
 
 function featuresToDeliverables(features: string[], extra?: string[]): PricingDeliverable[] {

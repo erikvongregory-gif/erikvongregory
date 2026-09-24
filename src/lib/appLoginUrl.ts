@@ -1,4 +1,5 @@
 import { SITE } from "@/lib/siteConfig";
+import type { SubscriptionPlanKey } from "@/lib/billing/tokenState";
 
 /**
  * Basis-URL der Dashboard-App (getrennt von der Marketing-Site).
@@ -59,7 +60,7 @@ export function buildAppLoginUrl(params?: Record<string, string>): string {
   }
 }
 
-export type AppCheckoutPlanKey = "start" | "growth" | "pro";
+export type AppCheckoutPlanKey = SubscriptionPlanKey;
 
 const HOMEPAGE_CHECKOUT_SOURCE = "homepage_pricing";
 

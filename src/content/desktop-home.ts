@@ -43,7 +43,7 @@ export type PricingTier = {
   deliverables: PricingDeliverable[];
   cta: string;
   highlight?: boolean;
-  checkoutPlanKey?: "start" | "growth" | "pro";
+  checkoutPlanKey?: "start" | "growth" | "pro" | "enterprise";
   /** Durchgestrichener Regulärpreis (Werkstatt-Aktion) */
   anchor?: string;
   /** Kontakt-Funnel-Paketname (Manufaktur) */

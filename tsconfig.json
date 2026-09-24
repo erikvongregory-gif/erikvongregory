@@ -37,6 +37,11 @@
     ".next/dev/types/**/*.ts"
   ],
   "exclude": [
-    "node_modules"
+    "node_modules",
+    "remotion-ad",
+    ".tmp-evglab-zip",
+    ".tmp-launch-ui",
+    "evglab-apple-promo",
+    "tmp"
   ]
 }
