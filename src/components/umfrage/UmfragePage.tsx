@@ -2,13 +2,15 @@
 
 import { useEffect, useMemo, useRef, useState } from "react";
 import Link from "next/link";
-import { AnimatePresence, motion } from "motion/react";
+import { AnimatePresence, motion } from "framer-motion";
 import {
   UMFRAGE_INTRO_STEPS,
   UMFRAGE_META,
   UMFRAGE_QUESTIONS,
   type UmfrageQuestion,
 } from "@/content/umfrage";
+import { CheckIcon } from "@/components/neu/parlo/ParloUi";
+import { EASE } from "@/components/neu-motion/motion-utils";
 import { cn } from "@/lib/utils";
 
 type AnswerValue = string | string[] | number;
@@ -16,9 +18,9 @@ type Answers = Record<string, AnswerValue>;
 type Phase = "intro" | "questions" | "contact" | "done";
 
 const slide = {
-  enter: (dir: number) => ({ x: dir > 0 ? 28 : -28, opacity: 0 }),
-  center: { x: 0, opacity: 1 },
-  exit: (dir: number) => ({ x: dir > 0 ? -20 : 20, opacity: 0 }),
+  enter: (dir: number) => ({ x: dir > 0 ? 36 : -36, opacity: 0, filter: "blur(8px)" }),
+  center: { x: 0, opacity: 1, filter: "blur(0px)" },
+  exit: (dir: number) => ({ x: dir > 0 ? -24 : 24, opacity: 0, filter: "blur(6px)" }),
 };
 
 function isVisible(q: UmfrageQuestion, answers: Answers): boolean {
@@ -58,13 +60,22 @@ function OptionButton({
       type="button"
       onClick={onClick}
       className={cn(
-        "w-full rounded-2xl border px-4 py-3.5 text-left text-[15px] transition-all duration-200",
+        "flex w-full items-center gap-3 rounded-2xl border px-4 py-3.5 text-left text-[15px] transition-colors duration-200",
         selected
-          ? "border-amber bg-amber3/70 text-ink scale-[1.01] shadow-[0_10px_28px_-18px_rgba(198,105,30,0.65)]"
-          : "border-ink/10 bg-white/80 text-ink2 hover:border-ink/20 hover:bg-white hover:text-ink",
+          ? "border-foreground bg-foreground text-background"
+          : "border-border bg-card/70 text-foreground/80 hover:border-foreground/25 hover:bg-card hover:text-foreground",
       )}
     >
-      {children}
+      <span
+        className={cn(
+          "nm-check inline-flex size-5 shrink-0 items-center justify-center rounded-full border",
+          selected ? "is-on border-background/40 bg-background/15" : "border-foreground/20",
+        )}
+        aria-hidden
+      >
+        {selected ? <CheckIcon className="size-3" /> : null}
+      </span>
+      <span className="min-w-0 flex-1">{children}</span>
     </button>
   );
 }
@@ -86,7 +97,7 @@ function PrimaryButton({
       onClick={onClick}
       disabled={disabled}
       className={cn(
-        "w-full rounded-2xl bg-[#c65a20] px-5 py-3.5 text-sm font-semibold text-white transition-all duration-200 hover:bg-[#d46830] hover:shadow-[0_12px_32px_-12px_rgba(224,122,64,0.55)] disabled:cursor-not-allowed disabled:opacity-40 disabled:hover:bg-[#c65a20] disabled:hover:shadow-none focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#e07a40]/55",
+        "inline-flex h-11 w-full items-center justify-center rounded-full bg-foreground px-5 text-sm font-medium text-background transition-opacity hover:opacity-90 disabled:cursor-not-allowed disabled:opacity-40",
         className,
       )}
     >
@@ -94,6 +105,9 @@ function PrimaryButton({
     </button>
   );
 }
+
+const fieldClass =
+  "w-full rounded-2xl border border-border bg-card/70 px-4 py-3.5 text-[15px] text-foreground outline-none transition-colors placeholder:text-muted-foreground focus:border-foreground/30";
 
 export function UmfragePage() {
   const [phase, setPhase] = useState<Phase>("intro");
@@ -251,33 +265,25 @@ export function UmfragePage() {
   const intro = UMFRAGE_INTRO_STEPS[introStep];
 
   return (
-    <main
-      id="main"
-      className="relative z-20 min-h-[100dvh] overflow-hidden bg-paper text-ink pt-[var(--mobile-top-header-offset)] lg:pt-[var(--site-header-offset)]"
-    >
-      <div
-        className="pointer-events-none absolute inset-0 bg-[radial-gradient(ellipse_at_top,_rgba(198,105,30,0.08),_transparent_55%)]"
-        aria-hidden
-      />
-
-      <div className="relative mx-auto flex min-h-[calc(100dvh-var(--mobile-top-header-offset))] max-w-xl flex-col px-5 pb-10 pt-8 sm:min-h-[calc(100dvh-var(--site-header-offset))] sm:px-6 sm:pt-12 lg:min-h-[calc(100dvh-var(--site-header-offset))]">
+    <main id="main" className="relative z-20 min-h-[100dvh] overflow-hidden pt-20">
+      <div className="relative mx-auto flex min-h-[calc(100dvh-5rem)] max-w-xl flex-col px-5 pb-16 pt-8 sm:px-6 sm:pt-12">
         <header className="mb-6 shrink-0">
           <div className="flex items-center justify-between gap-3">
-            <p className="font-mono-hero text-[10px] uppercase tracking-[1.5px] text-amber sm:text-[11px]">
+            <p className="font-mono text-[10px] uppercase tracking-[1.5px] text-muted-foreground sm:text-[11px]">
               BrewAI
             </p>
             {phase !== "done" ? (
-              <p className="font-mono-hero text-[10px] uppercase tracking-wide text-ink3">
+              <p className="font-mono text-[10px] uppercase tracking-wide text-muted-foreground">
                 {Math.round(progress * 100)}%
               </p>
             ) : null}
           </div>
           {phase !== "done" ? (
-            <div className="mt-3 h-1 overflow-hidden rounded-full bg-ink/10" aria-hidden>
+            <div className="mt-3 h-px overflow-hidden bg-border" aria-hidden>
               <motion.div
-                className="h-full rounded-full bg-gradient-to-r from-[#c65a20] to-[#e07a40]"
-                animate={{ width: `${Math.max(6, progress * 100)}%` }}
-                transition={{ type: "spring", stiffness: 120, damping: 20 }}
+                className="h-px origin-left bg-foreground"
+                animate={{ scaleX: Math.max(0.06, progress) }}
+                transition={{ duration: 0.7, ease: EASE.draw }}
               />
             </div>
           ) : null}
@@ -292,18 +298,18 @@ export function UmfragePage() {
               initial="enter"
               animate="center"
               exit="exit"
-              transition={{ duration: 0.32, ease: [0.22, 1, 0.36, 1] }}
+              transition={{ duration: 0.5, ease: EASE.rise }}
               className="w-full"
             >
               {phase === "intro" && intro ? (
-                <section className="text-center sm:text-left">
-                  <p className="font-mono-hero text-[11px] uppercase tracking-[1.4px] text-amber">
+                <section>
+                  <p className="font-mono text-[11px] uppercase tracking-[1.4px] text-muted-foreground">
                     {intro.eyebrow}
                   </p>
-                  <h1 className="mt-4 font-serif-hero text-[2.15rem] font-medium leading-[1.08] tracking-[-0.045em] text-ink sm:text-[2.75rem]">
+                  <h1 className="mt-4 text-[2.15rem] font-medium leading-[1.08] tracking-tight text-foreground sm:text-[2.75rem]">
                     {intro.title}
                   </h1>
-                  <p className="mx-auto mt-5 max-w-md text-[16px] leading-relaxed text-ink2 sm:mx-0 sm:text-[17px]">
+                  <p className="mt-5 max-w-md text-[16px] leading-relaxed text-foreground/80 sm:text-[17px]">
                     {intro.body}
                   </p>
                   <div className="mt-10 flex flex-col gap-3 sm:max-w-xs">
@@ -325,7 +331,7 @@ export function UmfragePage() {
                       <button
                         type="button"
                         onClick={() => go(() => setIntroStep((s) => s - 1), -1)}
-                        className="text-sm font-medium text-ink3 transition-colors hover:text-ink"
+                        className="text-sm font-medium text-muted-foreground transition-colors hover:text-foreground"
                       >
                         Zurück
                       </button>
@@ -336,14 +342,14 @@ export function UmfragePage() {
 
               {phase === "questions" && current ? (
                 <section>
-                  <p className="font-mono-hero text-[11px] uppercase tracking-[1.3px] text-amber">
+                  <p className="font-mono text-[11px] uppercase tracking-[1.3px] text-muted-foreground">
                     Frage {step + 1} von {visible.length}
                   </p>
-                  <h2 className="mt-3 font-serif-hero text-[1.55rem] font-medium leading-[1.12] tracking-[-0.035em] text-ink sm:text-[1.95rem]">
+                  <h2 className="mt-3 text-[1.55rem] font-medium leading-[1.12] tracking-tight text-foreground sm:text-[1.95rem]">
                     {current.title}
                   </h2>
                   {current.hint ? (
-                    <p className="mt-2 text-sm text-ink3">{current.hint}</p>
+                    <p className="mt-2 text-sm text-muted-foreground">{current.hint}</p>
                   ) : null}
 
                   <div className="mt-7 space-y-2.5">
@@ -360,11 +366,7 @@ export function UmfragePage() {
                                 selected={Boolean(selected)}
                                 onClick={() =>
                                   current.type === "single"
-                                    ? setSingle(
-                                        current.id,
-                                        opt.id,
-                                        !opt.allowText,
-                                      )
+                                    ? setSingle(current.id, opt.id, !opt.allowText)
                                     : toggleMulti(current, opt.id)
                                 }
                               >
@@ -382,7 +384,7 @@ export function UmfragePage() {
                                     }))
                                   }
                                   placeholder="Bitte kurz ergänzen …"
-                                  className="mt-2 w-full rounded-2xl border border-ink/10 bg-white/70 px-4 py-3 text-sm text-ink outline-none transition-colors focus:border-amber"
+                                  className={cn(fieldClass, "mt-2")}
                                 />
                               ) : null}
                             </div>
@@ -401,11 +403,9 @@ export function UmfragePage() {
                             selected={answers[current.id] === n}
                             onClick={() => setScale(current.id, n)}
                           >
-                            <span className="inline-flex h-7 w-7 items-center justify-center rounded-full bg-ink/[0.06] text-sm font-semibold text-ink">
-                              {n}
-                            </span>
-                            <span className="ml-3 text-ink2">
-                              {current.scaleLabels?.[n] ?? ""}
+                            <span className="inline-flex items-center">
+                              <span className="font-mono text-sm">{n}</span>
+                              <span className="ml-3">{current.scaleLabels?.[n] ?? ""}</span>
                             </span>
                           </OptionButton>
                         ))}
@@ -427,7 +427,7 @@ export function UmfragePage() {
                         }
                         rows={4}
                         placeholder={current.placeholder}
-                        className="w-full rounded-2xl border border-ink/10 bg-white/70 px-4 py-3 text-[15px] text-ink outline-none transition-colors focus:border-amber"
+                        className={fieldClass}
                       />
                     ) : null}
                   </div>
@@ -436,7 +436,7 @@ export function UmfragePage() {
                     <button
                       type="button"
                       onClick={goPrevQuestion}
-                      className="rounded-xl px-3 py-2.5 text-sm font-medium text-ink3 transition-colors hover:text-ink"
+                      className="rounded-xl px-3 py-2.5 text-sm font-medium text-muted-foreground transition-colors hover:text-foreground"
                     >
                       Zurück
                     </button>
@@ -452,7 +452,7 @@ export function UmfragePage() {
                           : "Weiter"}
                       </PrimaryButton>
                     ) : (
-                      <p className="text-xs text-ink3">Antwort tippen — geht automatisch weiter</p>
+                      <p className="text-xs text-muted-foreground">Antwort tippen — geht automatisch weiter</p>
                     )}
                   </div>
                 </section>
@@ -460,27 +460,21 @@ export function UmfragePage() {
 
               {phase === "contact" && contactStep === 0 ? (
                 <section>
-                  <p className="font-mono-hero text-[11px] uppercase tracking-[1.4px] text-amber">
+                  <p className="font-mono text-[11px] uppercase tracking-[1.4px] text-muted-foreground">
                     Fast geschafft
                   </p>
-                  <h2 className="mt-3 font-serif-hero text-[1.7rem] font-medium leading-[1.1] tracking-[-0.035em] text-ink sm:text-[2.1rem]">
+                  <h2 className="mt-3 text-[1.7rem] font-medium leading-[1.1] tracking-tight text-foreground sm:text-[2.1rem]">
                     Möchten Sie die Auswertung erhalten?
                   </h2>
-                  <p className="mt-3 text-[15px] leading-relaxed text-ink2">
+                  <p className="mt-3 text-[15px] leading-relaxed text-foreground/80">
                     Kostenlos, anonymisiert, nach Abschluss der Befragung.
                   </p>
 
                   <div className="mt-7 space-y-2.5">
-                    <OptionButton
-                      selected={wantsResults}
-                      onClick={() => setWantsResults(true)}
-                    >
+                    <OptionButton selected={wantsResults} onClick={() => setWantsResults(true)}>
                       Ja, Auswertung bitte zusenden
                     </OptionButton>
-                    <OptionButton
-                      selected={!wantsResults}
-                      onClick={() => setWantsResults(false)}
-                    >
+                    <OptionButton selected={!wantsResults} onClick={() => setWantsResults(false)}>
                       Nein, nur teilnehmen
                     </OptionButton>
                   </div>
@@ -491,14 +485,14 @@ export function UmfragePage() {
                         type="email"
                         value={email}
                         onChange={(e) => setEmail(e.target.value)}
-                        className="w-full rounded-2xl border border-ink/10 bg-white/70 px-4 py-3.5 text-[15px] outline-none focus:border-amber"
+                        className={fieldClass}
                         placeholder="Ihre E-Mail"
                       />
                       <input
                         type="text"
                         value={company}
                         onChange={(e) => setCompany(e.target.value.slice(0, 200))}
-                        className="w-full rounded-2xl border border-ink/10 bg-white/70 px-4 py-3.5 text-[15px] outline-none focus:border-amber"
+                        className={fieldClass}
                         placeholder="Brauerei (optional)"
                       />
                     </div>
@@ -513,15 +507,13 @@ export function UmfragePage() {
                           setStep(visible.length - 1);
                         }, -1)
                       }
-                      className="rounded-xl px-3 py-2.5 text-sm font-medium text-ink3 hover:text-ink"
+                      className="rounded-xl px-3 py-2.5 text-sm font-medium text-muted-foreground hover:text-foreground"
                     >
                       Zurück
                     </button>
                     <PrimaryButton
                       className="w-auto min-w-[140px] px-6"
-                      disabled={
-                        wantsResults && !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email.trim())
-                      }
+                      disabled={wantsResults && !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email.trim())}
                       onClick={() => go(() => setContactStep(1), 1)}
                     >
                       Weiter
@@ -532,13 +524,13 @@ export function UmfragePage() {
 
               {phase === "contact" && contactStep === 1 ? (
                 <section>
-                  <p className="font-mono-hero text-[11px] uppercase tracking-[1.4px] text-amber">
+                  <p className="font-mono text-[11px] uppercase tracking-[1.4px] text-muted-foreground">
                     Optional
                   </p>
-                  <h2 className="mt-3 font-serif-hero text-[1.7rem] font-medium leading-[1.1] tracking-[-0.035em] text-ink sm:text-[2.1rem]">
+                  <h2 className="mt-3 text-[1.7rem] font-medium leading-[1.1] tracking-tight text-foreground sm:text-[2.1rem]">
                     Persönliche Einschätzung?
                   </h2>
-                  <p className="mt-3 text-[15px] leading-relaxed text-ink2">
+                  <p className="mt-3 text-[15px] leading-relaxed text-foreground/80">
                     Welche Marketingprozesse sich bei Ihnen schon heute vereinfachen lassen.
                   </p>
 
@@ -560,13 +552,13 @@ export function UmfragePage() {
                     ))}
                   </div>
 
-                  {error ? <p className="mt-4 text-sm text-red-700">{error}</p> : null}
+                  {error ? <p className="mt-4 text-sm text-destructive">{error}</p> : null}
 
                   <div className="mt-8 flex items-center justify-between gap-3">
                     <button
                       type="button"
                       onClick={() => go(() => setContactStep(0), -1)}
-                      className="rounded-xl px-3 py-2.5 text-sm font-medium text-ink3 hover:text-ink"
+                      className="rounded-xl px-3 py-2.5 text-sm font-medium text-muted-foreground hover:text-foreground"
                     >
                       Zurück
                     </button>
@@ -582,19 +574,19 @@ export function UmfragePage() {
               ) : null}
 
               {phase === "done" ? (
-                <section className="text-center sm:text-left">
-                  <p className="font-mono-hero text-[11px] uppercase tracking-[1.4px] text-amber">
+                <section>
+                  <p className="font-mono text-[11px] uppercase tracking-[1.4px] text-muted-foreground">
                     Danke
                   </p>
-                  <h1 className="mt-4 font-serif-hero text-[2.2rem] font-medium leading-[1.08] tracking-[-0.045em] text-ink sm:text-[2.6rem]">
+                  <h1 className="mt-4 text-[2.2rem] font-medium leading-[1.08] tracking-tight text-foreground sm:text-[2.6rem]">
                     Ihre Stimme zählt.
                   </h1>
-                  <p className="mt-5 max-w-md text-[16px] leading-relaxed text-ink2">
+                  <p className="mt-5 max-w-md text-[16px] leading-relaxed text-foreground/80">
                     Die Antworten fließen in den Branchenreport und in BrewAI – die
                     Marketingplattform speziell für Brauereien.
                   </p>
                   {email.trim() ? (
-                    <p className="mt-3 max-w-md text-sm text-ink3">
+                    <p className="mt-3 max-w-md text-sm text-muted-foreground">
                       Die Auswertung schicken wir Ihnen per E-Mail als Link, sobald
                       genug Brauereien teilgenommen haben.
                     </p>
@@ -602,7 +594,7 @@ export function UmfragePage() {
                   <div className="mt-10 sm:max-w-xs">
                     <Link
                       href="/"
-                      className="inline-flex w-full items-center justify-center rounded-2xl bg-[#c65a20] px-5 py-3.5 text-sm font-semibold text-white transition-all hover:bg-[#d46830] hover:shadow-[0_12px_32px_-12px_rgba(224,122,64,0.55)]"
+                      className="inline-flex h-11 w-full items-center justify-center rounded-full bg-foreground px-5 text-sm font-medium text-background transition-opacity hover:opacity-90"
                     >
                       Mehr über BrewAI
                     </Link>
@@ -614,7 +606,7 @@ export function UmfragePage() {
         </div>
 
         {phase === "intro" ? (
-          <p className="mt-8 text-center font-mono-hero text-[10px] uppercase tracking-[1.2px] text-ink3">
+          <p className="mt-8 text-center font-mono text-[10px] uppercase tracking-[1.2px] text-muted-foreground">
             {UMFRAGE_META.title}
           </p>
         ) : null}

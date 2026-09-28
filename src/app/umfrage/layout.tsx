@@ -1,0 +1,28 @@
+import { Geist_Mono, Syne } from "next/font/google";
+import { ParloThemeProvider } from "@/components/neu/parlo/ParloTheme";
+import { UmfrageChrome } from "@/components/umfrage/UmfrageChrome";
+import "@/components/neu/parlo/ParloTheme.css";
+import "@/components/neu-motion/neu-motion.css";
+
+const syne = Syne({
+  subsets: ["latin"],
+  variable: "--font-parlo-sans",
+  display: "swap",
+  weight: ["400", "500", "600", "700", "800"],
+});
+
+const geistMono = Geist_Mono({
+  subsets: ["latin"],
+  variable: "--font-parlo-mono",
+  display: "swap",
+});
+
+export default function UmfrageLayout({ children }: { children: React.ReactNode }) {
+  return (
+    <div className={`${syne.variable} ${geistMono.variable}`}>
+      <ParloThemeProvider>
+        <UmfrageChrome>{children}</UmfrageChrome>
+      </ParloThemeProvider>
+    </div>
+  );
+}

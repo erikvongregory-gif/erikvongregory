@@ -44,16 +44,17 @@ export function AppShell({ children }: AppShellProps) {
   const isDashboardRoute = pathname?.startsWith("/dashboard") ?? false;
   const isAdminRoute = pathname?.startsWith("/admin") ?? false;
   const isHome = pathname === "/";
+  const isUmfrage = pathname?.startsWith("/umfrage") ?? false;
   const isPreviewMarketing =
     (pathname?.startsWith("/neu-motion") ?? false) ||
     (pathname?.startsWith("/neuv2") ?? false);
   const skipShell = isDashboardRoute || isAdminRoute;
 
-  if (isHome || isPreviewMarketing) {
+  if (isHome || isPreviewMarketing || isUmfrage) {
     return (
       <FreeTrialDemoProvider>
         {isHome && deferChrome ? <ContactFunnel /> : null}
-        {isHome && deferChrome ? <CookieBanner /> : null}
+        {(isHome || isUmfrage) && deferChrome ? <CookieBanner /> : null}
         {children}
       </FreeTrialDemoProvider>
     );

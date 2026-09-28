@@ -7,12 +7,12 @@ export const APP_URL = SITE.appBaseUrl;
 export const LOGO_SRC = "/brewai-logo-mark.png";
 
 export const NAV_LINKS = [
-  { href: "#product", label: "Produkt" },
-  { href: "#how-it-works", label: "So funktioniert’s" },
-  { href: "#formats", label: "Motive" },
-  { href: "#features", label: "Funktionen" },
-  { href: "#pricing", label: "Preise" },
-  { href: "#faqs", label: "FAQ" },
+  { href: "/#product", label: "Produkt" },
+  { href: "/#how-it-works", label: "So funktioniert’s" },
+  { href: "/#formats", label: "Motive" },
+  { href: "/#features", label: "Funktionen" },
+  { href: "/#pricing", label: "Preise" },
+  { href: "/#faqs", label: "FAQ" },
 ] as const;
 
 /** Marquee hinter der Sidebar-Card — BrewAI-Motive */
@@ -330,9 +330,9 @@ export const FOOTER_COLUMNS = [
     title: "Produkt",
     links: [
       { label: "Dashboard", href: APP_URL },
-      { label: "Preise", href: "#pricing" },
-      { label: "Funktionen", href: "#features" },
-      { label: "FAQ", href: "#faqs" },
+      { label: "Preise", href: "/#pricing" },
+      { label: "Funktionen", href: "/#features" },
+      { label: "FAQ", href: "/#faqs" },
     ],
   },
   {
