@@ -14,6 +14,7 @@ const nextConfig: NextConfig = {
   async redirects() {
     return [
       { source: "/neu", destination: "/", permanent: true },
+      { source: "/neu-motion", destination: "/", permanent: true },
       { source: "/alt", destination: "/", permanent: true },
     ];
   },

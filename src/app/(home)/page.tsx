@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import { ParloPage } from "@/components/neu/parlo/ParloPage";
+import { MotionPage } from "@/components/neu-motion/MotionPage";
 import { FAQS } from "@/components/neu/parlo/data";
 import { SITE } from "@/lib/siteConfig";
 
@@ -156,7 +156,7 @@ export default function Home() {
         type="application/ld+json"
         dangerouslySetInnerHTML={{ __html: JSON.stringify(siteNavigationJsonLd) }}
       />
-      <ParloPage />
+      <MotionPage />
     </>
   );
 }

@@ -17,7 +17,9 @@ export async function middleware(request: NextRequest) {
     pathname === "/alt" ||
     pathname === "/alt/" ||
     pathname === "/neu" ||
-    pathname === "/neu/"
+    pathname === "/neu/" ||
+    pathname === "/neu-motion" ||
+    pathname === "/neu-motion/"
   ) {
     const redirectUrl = request.nextUrl.clone();
     redirectUrl.pathname = "/";

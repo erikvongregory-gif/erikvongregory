@@ -1,6 +1,7 @@
 import { Geist_Mono, Syne } from "next/font/google";
 import { ParloThemeProvider } from "@/components/neu/parlo/ParloTheme";
 import "@/components/neu/parlo/ParloTheme.css";
+import "@/components/neu-motion/neu-motion.css";
 
 const syne = Syne({
   subsets: ["latin"],

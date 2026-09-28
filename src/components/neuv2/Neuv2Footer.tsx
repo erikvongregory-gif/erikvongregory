@@ -27,9 +27,6 @@ export function Neuv2Footer() {
             <Link href="/" className="text-sm text-[var(--muted-foreground)]">
               Startseite
             </Link>
-            <Link href="/neu-motion" className="text-sm text-[var(--muted-foreground)]">
-              Motion-Prototyp
-            </Link>
           </div>
           <div className="flex flex-col gap-2">
             <h3 className="pt-1 font-semibold">Legal</h3>

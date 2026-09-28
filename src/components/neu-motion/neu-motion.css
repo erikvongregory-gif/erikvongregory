@@ -1,0 +1,167 @@
+/* /neu-motion — Motion-Schicht über dem Parlo-Theme. Keine neuen Farben/Fonts. */
+
+.neu-motion {
+  --nm-ease-micro: cubic-bezier(0.2, 0, 0, 1);
+  --nm-ease-snap: cubic-bezier(0.3, 0, 0, 1);
+  --nm-ease-rise: cubic-bezier(0.16, 1, 0.3, 1);
+  --nm-ease-draw: cubic-bezier(0.65, 0, 0.35, 1);
+  --nm-ease-morph: cubic-bezier(0.76, 0, 0.24, 1);
+}
+
+/* Hero-Perlage: weich an Nav und Divider auslaufen */
+.neu-motion .nm-perlage-canvas {
+  -webkit-mask-image: linear-gradient(to bottom, transparent 0, #000 14%, #000 86%, transparent 100%);
+  mask-image: linear-gradient(to bottom, transparent 0, #000 14%, #000 86%, transparent 100%);
+}
+
+/* ─── Linie vor Fläche ─── */
+
+/* Browser-Frame zeichnet sich (SVG rect, pathLength=1) */
+.neu-motion .nm-frame-draw rect {
+  stroke-dasharray: 1;
+  stroke-dashoffset: 1;
+}
+.neu-motion .nm-frame-draw.is-on rect {
+  stroke-dashoffset: 0;
+  transition: stroke-dashoffset 800ms var(--nm-ease-draw);
+}
+
+.neu-motion .nm-line-x,
+.neu-motion .nm-line-y {
+  transition: transform var(--nm-d, 700ms) var(--nm-ease-draw) var(--nm-delay, 0ms);
+}
+.neu-motion .nm-line-x {
+  transform: scaleX(0);
+  transform-origin: left center;
+}
+.neu-motion .nm-line-y {
+  transform: scaleY(0);
+  transform-origin: center top;
+}
+.neu-motion .is-in .nm-line-x,
+.neu-motion .nm-line-x.is-in {
+  transform: scaleX(1);
+}
+.neu-motion .is-in .nm-line-y,
+.neu-motion .nm-line-y.is-in {
+  transform: scaleY(1);
+}
+
+/* ─── Einrasten ─── */
+
+.neu-motion .nm-check path {
+  stroke-dasharray: 1;
+  stroke-dashoffset: 1;
+}
+.neu-motion .nm-check.is-on path {
+  stroke-dashoffset: 0;
+  transition: stroke-dashoffset 280ms var(--nm-ease-snap);
+}
+
+/* Auto-Demo-Fortschritt (Haarlinie) */
+@keyframes nm-progress {
+  from {
+    transform: scaleX(0);
+  }
+  to {
+    transform: scaleX(1);
+  }
+}
+.neu-motion .nm-progress {
+  transform-origin: left center;
+  animation: nm-progress var(--nm-progress-ms, 6000ms) linear forwards;
+}
+
+/* ─── CTA: Strahlen atmen ─── */
+@keyframes nm-breathe {
+  0%,
+  100% {
+    opacity: 0.3;
+  }
+  50% {
+    opacity: 0.42;
+  }
+}
+.neu-motion .nm-rays {
+  opacity: 0.35;
+}
+.neu-motion .nm-rays.is-on {
+  animation: nm-breathe 8s ease-in-out infinite;
+}
+
+/* ─── Reduced Motion ─── */
+@media (prefers-reduced-motion: reduce) {
+  .neu-motion .animate-star-btn,
+  .neu-motion .cta-model-marquee,
+  .neu-motion .nm-rays.is-on,
+  .neu-motion .nm-progress {
+    animation: none !important;
+  }
+  .neu-motion .cta-model-marquee {
+    transform: translateX(var(--cta-marquee-position-4));
+  }
+  .neu-motion .nm-frame-draw rect,
+  .neu-motion .nm-check path {
+    stroke-dashoffset: 0 !important;
+    transition: none !important;
+  }
+  .neu-motion .nm-line-x,
+  .neu-motion .nm-line-y {
+    transform: none !important;
+    transition: none !important;
+  }
+  .neu-motion .nm-progress {
+    display: none;
+  }
+}
+
+/* Eingabe-Cursor in der „Bilder erstellen“-Demo */
+@keyframes nm-caret {
+  0%,
+  45% {
+    opacity: 1;
+  }
+  55%,
+  100% {
+    opacity: 0;
+  }
+}
+.neu-motion .nm-caret {
+  animation: nm-caret 1s steps(1, end) infinite;
+}
+@media (prefers-reduced-motion: reduce) {
+  .neu-motion .nm-caret {
+    animation: none;
+  }
+}
+
+/* Hero: Bernstein-Schimmer von unten (Brand-Amber #D46830), blendet mit dem Anstich ein */
+.neu-motion .nm-underglow {
+  background: radial-gradient(
+    ellipse 58% 75% at 50% 112%,
+    color-mix(in oklab, #d46830 16%, transparent) 0%,
+    color-mix(in oklab, #d46830 5%, transparent) 45%,
+    transparent 72%
+  );
+}
+.parlo.light .neu-motion .nm-underglow {
+  background: radial-gradient(
+    ellipse 58% 75% at 50% 112%,
+    color-mix(in oklab, #d46830 12%, transparent) 0%,
+    color-mix(in oklab, #d46830 4%, transparent) 45%,
+    transparent 72%
+  );
+}
+@keyframes nm-underglow-in {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+@media (prefers-reduced-motion: no-preference) {
+  .neu-motion .nm-underglow {
+    animation: nm-underglow-in 1600ms cubic-bezier(0.22, 1, 0.36, 1) 300ms both;
+  }
+}
