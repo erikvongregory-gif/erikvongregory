@@ -43,14 +43,20 @@ export function AppShell({ children }: AppShellProps) {
   const deferChrome = useDeferNonCritical(2000);
   const isDashboardRoute = pathname?.startsWith("/dashboard") ?? false;
   const isAdminRoute = pathname?.startsWith("/admin") ?? false;
-  // /neu Preview und /neuv2 — kein Live-Header/Footer (Root = alte Home)
-  const isNeuMarketing =
-    (pathname?.startsWith("/neu") ?? false) ||
+  const isHome = pathname === "/";
+  const isPreviewMarketing =
+    (pathname?.startsWith("/neu-motion") ?? false) ||
     (pathname?.startsWith("/neuv2") ?? false);
   const skipShell = isDashboardRoute || isAdminRoute;
 
-  if (isNeuMarketing) {
-    return <FreeTrialDemoProvider>{children}</FreeTrialDemoProvider>;
+  if (isHome || isPreviewMarketing) {
+    return (
+      <FreeTrialDemoProvider>
+        {isHome && deferChrome ? <ContactFunnel /> : null}
+        {isHome && deferChrome ? <CookieBanner /> : null}
+        {children}
+      </FreeTrialDemoProvider>
+    );
   }
 
   if (skipShell) {

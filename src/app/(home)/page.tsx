@@ -1,11 +1,12 @@
 import type { Metadata } from "next";
-import { ResponsiveHomeLayout } from "@/components/ResponsiveHomeLayout";
-import { HomeMobileOnlySections } from "@/components/HomeMobileOnlySections";
+import { ParloPage } from "@/components/neu/parlo/ParloPage";
+import { FAQS } from "@/components/neu/parlo/data";
 import { SITE } from "@/lib/siteConfig";
-import { TRESENGESPRAECH_FAQS } from "@/lib/tresengespraechFaqs";
 
 export const metadata: Metadata = {
-  title: "KI-Marketing für Brauereien: Bilder & Social-Content | BrewAI",
+  title: {
+    absolute: "KI-Marketing für Brauereien: Bilder & Social-Content | BrewAI",
+  },
   description:
     "KI-generierte Werbebilder und Social-Content für Brauereien — selbst im Dashboard oder fertig geliefert. Ab 79 €/Monat. Jetzt testen.",
   keywords: [
@@ -72,7 +73,7 @@ export default function Home() {
   const faqJsonLd = {
     "@context": "https://schema.org",
     "@type": "FAQPage",
-    mainEntity: TRESENGESPRAECH_FAQS.map((faq) => ({
+    mainEntity: FAQS.map((faq) => ({
       "@type": "Question",
       name: faq.q,
       acceptedAnswer: {
@@ -89,38 +90,38 @@ export default function Home() {
       {
         "@type": "SiteNavigationElement",
         position: 1,
-        name: "Warum",
-        url: `${SITE.baseUrl}/#warum`,
+        name: "Produkt",
+        url: `${SITE.baseUrl}/#product`,
       },
       {
         "@type": "SiteNavigationElement",
         position: 2,
-        name: "Ablauf",
-        url: `${SITE.baseUrl}/#prozess`,
+        name: "So funktioniert’s",
+        url: `${SITE.baseUrl}/#how-it-works`,
       },
       {
         "@type": "SiteNavigationElement",
         position: 3,
-        name: "Leistungen",
-        url: `${SITE.baseUrl}/#loesungen`,
+        name: "Motive",
+        url: `${SITE.baseUrl}/#formats`,
       },
       {
         "@type": "SiteNavigationElement",
         position: 4,
-        name: "Preise",
-        url: `${SITE.baseUrl}/#pakete`,
+        name: "Funktionen",
+        url: `${SITE.baseUrl}/#features`,
       },
       {
         "@type": "SiteNavigationElement",
         position: 5,
-        name: "Fragen",
-        url: `${SITE.baseUrl}/#fragen`,
+        name: "Preise",
+        url: `${SITE.baseUrl}/#pricing`,
       },
       {
         "@type": "SiteNavigationElement",
         position: 6,
-        name: "Praxis",
-        url: `${SITE.baseUrl}/#beispiele`,
+        name: "FAQ",
+        url: `${SITE.baseUrl}/#faqs`,
       },
       {
         "@type": "SiteNavigationElement",
@@ -139,15 +140,6 @@ export default function Home() {
 
   return (
     <>
-      {/* LCP: Mobile-Hero-Poster (Video folgt nach LCP). Desktop lädt DesktopHero. */}
-      <link
-        rel="preload"
-        as="image"
-        href="/optimized/hero-poster-reel.webp"
-        type="image/webp"
-        fetchPriority="high"
-        media="(max-width: 1023px)"
-      />
       <h1 className="sr-only">
         KI-Marketing für Brauereien in Deutschland, Österreich und der Schweiz — Werbebilder und Social-Content
         mit {SITE.name}
@@ -164,11 +156,7 @@ export default function Home() {
         type="application/ld+json"
         dangerouslySetInnerHTML={{ __html: JSON.stringify(siteNavigationJsonLd) }}
       />
-      {/* Eigener Hero-Band: auch wenn dynamische Layouts noch laden, bleibt #pakete unterhalb des ersten Viewports. */}
-      <div className="min-h-[100dvh] w-full min-w-0">
-        <ResponsiveHomeLayout />
-      </div>
-      <HomeMobileOnlySections />
+      <ParloPage />
     </>
   );
 }

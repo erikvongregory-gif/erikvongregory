@@ -25,10 +25,10 @@ export function Neuv2Footer() {
           <div className="flex flex-col gap-2">
             <h3 className="pt-1 font-semibold">Vergleich</h3>
             <Link href="/" className="text-sm text-[var(--muted-foreground)]">
-              Live (/)
+              Startseite
             </Link>
-            <Link href="/alt" className="text-sm text-[var(--muted-foreground)]">
-              Archiv (/alt)
+            <Link href="/neu-motion" className="text-sm text-[var(--muted-foreground)]">
+              Motion-Prototyp
             </Link>
           </div>
           <div className="flex flex-col gap-2">

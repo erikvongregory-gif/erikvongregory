@@ -1,4 +1,3 @@
-import type { Metadata } from "next";
 import { Geist_Mono, Syne } from "next/font/google";
 import { ParloThemeProvider } from "@/components/neu/parlo/ParloTheme";
 import "@/components/neu/parlo/ParloTheme.css";
@@ -16,14 +15,7 @@ const geistMono = Geist_Mono({
   display: "swap",
 });
 
-export const metadata: Metadata = {
-  title: "BrewAI — KI-Content für Brauereien",
-  description:
-    "Markenprofil, Produktbilder und Social-Motive im Dashboard — Tokens, Mediathek und BrewAI-Chat für Brauereien in DACH.",
-  robots: { index: false, follow: false },
-};
-
-export default function NeuLayout({ children }: { children: React.ReactNode }) {
+export default function HomeLayout({ children }: { children: React.ReactNode }) {
   return (
     <div className={`${syne.variable} ${geistMono.variable}`}>
       <ParloThemeProvider>{children}</ParloThemeProvider>

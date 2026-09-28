@@ -17,7 +17,7 @@ export const GLOW_NAV_ITEMS: HomeNavItem[] = [
   {
     icon: Home,
     label: "Start",
-    href: "#start",
+    href: "/",
     gradient:
       "radial-gradient(circle, rgba(20,83,45,0.16) 0%, rgba(34,197,94,0.07) 50%, rgba(34,197,94,0) 100%)",
     iconColor: "text-emerald-700",
@@ -25,8 +25,8 @@ export const GLOW_NAV_ITEMS: HomeNavItem[] = [
   },
   {
     icon: HelpCircle,
-    label: "Warum",
-    href: "#warum",
+    label: "Produkt",
+    href: "#product",
     gradient:
       "radial-gradient(circle, rgba(198,90,32,0.2) 0%, rgba(212,104,48,0.09) 50%, rgba(198,90,32,0) 100%)",
     iconColor: "text-[#c65a20]",
@@ -35,7 +35,7 @@ export const GLOW_NAV_ITEMS: HomeNavItem[] = [
   {
     icon: Route,
     label: "Ablauf",
-    href: "#prozess",
+    href: "#how-it-works",
     mobileOnly: true,
     gradient:
       "radial-gradient(circle, rgba(20,120,100,0.18) 0%, rgba(16,100,80,0.08) 50%, rgba(16,100,80,0) 100%)",
@@ -44,8 +44,8 @@ export const GLOW_NAV_ITEMS: HomeNavItem[] = [
   },
   {
     icon: Layers,
-    label: "Leistungen",
-    href: "#loesungen",
+    label: "Motive",
+    href: "#formats",
     gradient:
       "radial-gradient(circle, rgba(59,130,246,0.18) 0%, rgba(37,99,235,0.07) 50%, rgba(29,78,216,0) 100%)",
     iconColor: "text-blue-600",
@@ -54,7 +54,7 @@ export const GLOW_NAV_ITEMS: HomeNavItem[] = [
   {
     icon: Package,
     label: "Preise",
-    href: "#pakete",
+    href: "#pricing",
     gradient:
       "radial-gradient(circle, rgba(224,122,64,0.24) 0%, rgba(198,90,32,0.14) 50%, rgba(184,77,21,0) 100%)",
     iconColor: "text-[#c65a20]",
@@ -62,8 +62,8 @@ export const GLOW_NAV_ITEMS: HomeNavItem[] = [
   },
   {
     icon: MessageCircle,
-    label: "Fragen",
-    href: "#fragen",
+    label: "FAQ",
+    href: "#faqs",
     gradient:
       "radial-gradient(circle, rgba(99,102,241,0.16) 0%, rgba(79,70,229,0.07) 50%, rgba(79,70,229,0) 100%)",
     iconColor: "text-indigo-600",
@@ -71,8 +71,8 @@ export const GLOW_NAV_ITEMS: HomeNavItem[] = [
   },
   {
     icon: Sparkles,
-    label: "Praxis",
-    href: "#beispiele",
+    label: "Funktionen",
+    href: "#features",
     gradient:
       "radial-gradient(circle, rgba(168,85,247,0.18) 0%, rgba(147,51,234,0.07) 50%, rgba(126,34,206,0) 100%)",
     iconColor: "text-violet-600",
@@ -100,22 +100,16 @@ export const GLOW_NAV_ITEMS: HomeNavItem[] = [
 
 /** Nav-Anchor (ohne #) → DOM-ID für Mobile-Scroll-Spy. */
 export const SECTION_SPY_ELEMENT_ID: Record<string, string> = {
-  start: "start",
-  warum: "section-2",
-  prozess: "section-3",
-  loesungen: "section-4",
-  pakete: "pakete-preise",
-  preise: "pakete-preise",
-  fragen: "section-fragen",
-  faq: "section-fragen",
-  beispiele: "section-7",
+  product: "product",
+  "how-it-works": "how-it-works",
+  formats: "formats",
+  features: "features",
+  pricing: "pricing",
+  faqs: "faqs",
   contact: "contact",
 };
 
-export const SECTION_SPY_DESKTOP_OVERRIDE: Partial<Record<string, string>> = {
-  prozess: "desktop-prozess",
-  start: "desktop-hero",
-};
+export const SECTION_SPY_DESKTOP_OVERRIDE: Partial<Record<string, string>> = {};
 
 export function navItemsForMenu(mobile: boolean): GlowMenuItem[] {
   return GLOW_NAV_ITEMS.filter((item) => !item.mobileOnly || mobile);

@@ -357,6 +357,7 @@ export const FOOTER_COLUMNS = [
     links: [
       { label: "Impressum", href: "/impressum" },
       { label: "Datenschutz", href: "/datenschutz" },
+      { label: "AGB", href: "/agb" },
       { label: "Widerruf", href: "/widerruf" },
     ],
   },

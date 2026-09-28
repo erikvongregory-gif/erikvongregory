@@ -11,6 +11,12 @@ const nextConfig: NextConfig = {
   experimental: {
     optimizePackageImports: ["lucide-react", "framer-motion", "motion", "react-icons"],
   },
+  async redirects() {
+    return [
+      { source: "/neu", destination: "/", permanent: true },
+      { source: "/alt", destination: "/", permanent: true },
+    ];
+  },
 };
 
 export default nextConfig;

@@ -12,7 +12,7 @@ export function ParloCta() {
     theme === "light" ? "rgb(120, 120, 120)" : "rgb(190, 190, 190)";
 
   return (
-    <section className="relative overflow-hidden">
+    <section id="contact" className="relative overflow-hidden">
       <ParloSnakeDivider />
 
       <div className="mx-[30px] border-x border-border">

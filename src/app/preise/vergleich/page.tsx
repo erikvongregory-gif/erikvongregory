@@ -3,7 +3,7 @@ import Link from "next/link";
 import { MOBILE_PRICING_TRACKS, tierDisplayName } from "@/lib/mobilePricingTiers";
 import { SITE } from "@/lib/siteConfig";
 
-const canonical = `${SITE.baseUrl}/#pakete-preise`;
+const canonical = `${SITE.baseUrl}/#pricing`;
 
 export const metadata: Metadata = {
   title: "Alle 6 Pakete im Vergleich | BrewAI",
@@ -71,7 +71,7 @@ export default function PreiseVergleichPage() {
       ))}
 
       <p className="mt-10 text-center">
-        <Link href="/#pakete-preise" className="font-semibold text-ink underline-offset-2 hover:underline">
+        <Link href="/#pricing" className="font-semibold text-ink underline-offset-2 hover:underline">
           Zurück zur Startseite
         </Link>
         {" · "}

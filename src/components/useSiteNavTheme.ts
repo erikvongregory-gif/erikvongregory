@@ -3,7 +3,6 @@
 import { usePathname } from "next/navigation";
 import { useLayoutEffect, useState } from "react";
 
-const HOME_DARK_SECTIONS = ["desktop-hero", "desktop-prozess", "desktop-beispiele", "desktop-footer"];
 const ABOUT_DARK_SECTIONS = ["about-hero", "about-hugo", "about-closing"];
 const RATGEBER_DARK_SECTIONS = ["ratgeber-recommendation"];
 
@@ -20,15 +19,13 @@ function isNavOverSection(el: HTMLElement, navBottom = NAV_BOTTOM_PX): boolean {
   return r.top <= navBottom && r.bottom > navBottom;
 }
 
-function resolveSectionIds(pathname: string, isDesktop: boolean): string[] {
-  if (pathname === "/") return isDesktop ? HOME_DARK_SECTIONS : [];
+function resolveSectionIds(pathname: string, _isDesktop: boolean): string[] {
   if (pathname === "/ratgeber") return RATGEBER_DARK_SECTIONS;
   if (pathname === "/ueber-uns") return ABOUT_DARK_SECTIONS;
   return [];
 }
 
 function fallbackDarkWhenSectionsMissing(pathname: string, isDesktop: boolean): boolean {
-  if (pathname === "/") return isDesktop;
   if (pathname === "/ratgeber") return false;
   if (pathname === "/ueber-uns") return true;
   return false;
@@ -43,7 +40,7 @@ export function useSiteNavTheme() {
   const [isDark, setIsDark] = useState(() => navThemeInitial(pathname));
 
   useLayoutEffect(() => {
-    if (pathname !== "/" && pathname !== "/ueber-uns" && pathname !== "/ratgeber") {
+    if (pathname !== "/ueber-uns" && pathname !== "/ratgeber") {
       setIsDark(false);
       return;
     }

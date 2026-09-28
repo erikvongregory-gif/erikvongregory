@@ -1,5 +1,8 @@
+"use client";
+
 import Image from "next/image";
 import { FOOTER_COLUMNS, LOGO_SRC } from "./data";
+import { openCookieSettings } from "@/lib/cookieConsent";
 import { SITE } from "@/lib/siteConfig";
 
 export function ParloFooter() {
@@ -58,9 +61,12 @@ export function ParloFooter() {
 
         <div className="flex flex-col gap-3 border-t border-border px-6 py-6 text-xs text-muted-foreground sm:flex-row sm:items-center sm:justify-between">
           <p>© {new Date().getFullYear()} {SITE.name}. Alle Rechte vorbehalten.</p>
-          <div className="flex gap-4">
+          <div className="flex flex-wrap gap-4">
             <a href="/datenschutz" className="hover:text-foreground">
               Datenschutz
+            </a>
+            <a href="/agb" className="hover:text-foreground">
+              AGB
             </a>
             <a href="/impressum" className="hover:text-foreground">
               Impressum
@@ -68,6 +74,9 @@ export function ParloFooter() {
             <a href="/widerruf" className="hover:text-foreground">
               Widerruf
             </a>
+            <button type="button" onClick={() => openCookieSettings()} className="hover:text-foreground">
+              Cookies
+            </button>
           </div>
         </div>
       </div>

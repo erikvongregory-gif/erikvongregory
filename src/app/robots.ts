@@ -17,6 +17,8 @@ const disallow = [
   "/alt/",
   "/neu",
   "/neu/",
+  "/neu-motion",
+  "/neu-motion/",
   "/neuv2",
   "/neuv2/",
 ] as const;

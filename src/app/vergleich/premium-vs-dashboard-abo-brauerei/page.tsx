@@ -11,7 +11,7 @@ export const metadata: Metadata = {
     follow: true,
     googleBot: { index: false, follow: true },
   },
-  alternates: { canonical: `${SITE.baseUrl}/#pakete-preise` },
+  alternates: { canonical: `${SITE.baseUrl}/#pricing` },
   openGraph: {
     title: "Premium vs. Dashboard-Abo | BrewAI",
     description: "Entscheidungshilfe für Brauereien: Premium-Lieferung oder Self-Service mit Tokens.",
@@ -121,7 +121,7 @@ export default function VergleichPremiumDashboardPage() {
               Wenn du <strong>maximale Ruhe und klare Lieferobjekte</strong> willst, starte mit Premium. Wenn du{" "}
               <strong>laufend</strong> viele Varianten brauchst und ein Team hast, das gerne im Dashboard arbeitet, ist
               das Abo die effizientere Basis. Technische Details und aktuelle Pakete findest du auf der{" "}
-              <Link href="/#pakete" className="text-[#b45309] hover:underline">
+              <Link href="/#pricing" className="text-[#b45309] hover:underline">
                 Startseite unter Pakete &amp; Abos
               </Link>
               . Zum Einordnen:{" "}

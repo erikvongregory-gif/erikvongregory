@@ -21,12 +21,12 @@ import drawerStyles from "@/components/mobile-drawer-nav.module.css";
 const DRAWER_EXIT_MS = 420;
 
 const MOBILE_DRAWER_NAV = [
-  { label: "Start", tag: "Home", href: "#start" },
-  { label: "Warum", tag: "Vorteile", href: "#warum" },
-  { label: "Ablauf", tag: "Prozess", href: "#prozess" },
-  { label: "Leistungen", tag: "Services", href: "#loesungen" },
-  { label: "Preise", tag: "Pakete", href: "#pakete" },
-  { label: "Praxis", tag: "Beispiele", href: "#beispiele" },
+  { label: "Start", tag: "Home", href: "/" },
+  { label: "Produkt", tag: "Dashboard", href: "#product" },
+  { label: "Ablauf", tag: "So geht’s", href: "#how-it-works" },
+  { label: "Motive", tag: "Formate", href: "#formats" },
+  { label: "Preise", tag: "Pakete", href: "#pricing" },
+  { label: "FAQ", tag: "Fragen", href: "#faqs" },
   { label: "Über uns", tag: "Team", href: "/ueber-uns#ueber-intro" },
   { label: "Kontakt", tag: "Schreib uns", href: "#contact" },
 ] as const;
@@ -196,6 +196,11 @@ export function MobileSiteHeader() {
   ).map((item) => item.href);
 
   const handleNavClick = (href: string) => {
+    if (href === "/") {
+      router.push("/");
+      setDropdownOpen(false);
+      return;
+    }
     if (href.startsWith("/ueber-uns")) {
       const target = href.includes("#") ? href : "/ueber-uns#ueber-intro";
       if (pathname === "/ueber-uns") {
