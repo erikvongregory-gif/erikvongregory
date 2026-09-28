@@ -27,7 +27,7 @@ export function MotionCta() {
     <section id="contact" className="relative overflow-hidden">
       <ScanDivider />
 
-      <div className="mx-[30px] border-x border-border">
+      <div className="md:mx-[30px] md:border-x border-border">
         <div className="relative isolate overflow-hidden bg-background px-6 py-20 md:py-[120px]">
           <div
             aria-hidden

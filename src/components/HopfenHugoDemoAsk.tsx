@@ -29,7 +29,7 @@ function nextId() {
 }
 
 const WELCOME_TEXT =
-  "Hallo, ich bin Hopfen Hugo. Ich helfe nur bei KI-Bildern in BrewAI: Prompts, Stil, Markenlook, Formate, Mediathek und Token fürs Generieren. Fragt mich hier testweise zu eurem nächsten Motiv — Rezepte oder allgemeines Brauwissen gehören nicht dazu.";
+  "Hallo, ich bin BrewAI. Ich helfe bei KI-Bildern: Prompts, Stil, Markenlook, Formate, Mediathek und Token fürs Generieren. Fragt mich hier testweise zu eurem nächsten Motiv — Rezepte oder allgemeines Brauwissen gehören nicht dazu.";
 
 export function HopfenHugoDemoAsk({ className }: { className?: string }) {
   const titleId = useId();
@@ -102,14 +102,14 @@ export function HopfenHugoDemoAsk({ className }: { className?: string }) {
         body: JSON.stringify({
           question: text,
           currentTab: "Über uns (Demo-Chat)",
-          assistantPersona: "hopfen-hugo",
+          assistantPersona: "BrewAI",
         }),
       });
       const data = (await res.json().catch(() => ({}))) as { answer?: string; error?: string };
 
       if (!res.ok) {
         const errText =
-          data.error ?? "Hopfen Hugo konnte gerade nicht antworten. Bitte später noch einmal versuchen.";
+          data.error ?? "BrewAI konnte gerade nicht antworten. Bitte später noch einmal versuchen.";
         setMessages((prev) => [
           ...prev,
           { id: nextId(), role: "assistant", text: errText, variant: "error" },
@@ -157,7 +157,7 @@ export function HopfenHugoDemoAsk({ className }: { className?: string }) {
             <div className="min-w-0 flex-1">
               <h3 className="font-display text-lg font-semibold tracking-tight text-zinc-900">Demo-Chat</h3>
               <p className="mt-2 text-pretty text-sm leading-relaxed text-zinc-600">
-                Wie im Dashboard: erst öffnen, dann mit Hopfen Hugo zu Prompts und Bild-Setup schreiben — hier im Browser
+                Wie im Dashboard: erst öffnen, dann mit BrewAI zu Prompts und Bild-Setup schreiben — hier im Browser
                 testweise.
               </p>
             </div>
@@ -169,7 +169,7 @@ export function HopfenHugoDemoAsk({ className }: { className?: string }) {
             onClick={() => setOpen(true)}
           >
             <HopfenHugoIcon className="mr-2 h-4 w-4" />
-            Chat mit Hopfen Hugo öffnen
+            Chat mit BrewAI öffnen
           </Button>
         </div>
       </div>
@@ -201,7 +201,7 @@ export function HopfenHugoDemoAsk({ className }: { className?: string }) {
             )}
             <div className="min-w-0">
               <h3 id={titleId} className="truncate font-semibold tracking-tight text-zinc-900">
-                Hopfen Hugo
+                BrewAI
               </h3>
               <p className="truncate text-xs text-zinc-500">Demo · nur Bildgenerierung</p>
             </div>
@@ -263,7 +263,7 @@ export function HopfenHugoDemoAsk({ className }: { className?: string }) {
               >
                 {m.role === "assistant" && m.variant !== "error" ? (
                   <p className="mb-1 text-[10px] font-semibold uppercase tracking-wide text-[#b45309]/90">
-                    Hopfen Hugo
+                    BrewAI
                   </p>
                 ) : null}
                 <p className="whitespace-pre-wrap">{m.text}</p>
@@ -292,13 +292,13 @@ export function HopfenHugoDemoAsk({ className }: { className?: string }) {
         }}
       >
         <label htmlFor={inputId} className="sr-only">
-          Nachricht an Hopfen Hugo
+          Nachricht an BrewAI
         </label>
         <div className="flex items-end gap-2">
           <textarea
             ref={textareaRef}
             id={inputId}
-            name="hopfen-hugo-chat"
+            name="BrewAI-chat"
             rows={1}
             maxLength={1200}
             value={draft}

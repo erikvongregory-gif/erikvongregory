@@ -176,16 +176,16 @@ export function HugoChatMockup({
   return (
     <div
       className="overflow-hidden rounded-[18px] border border-[#2C2519] bg-gradient-to-b from-[#1F1A13] to-[#1A1610] shadow-[0_30px_80px_-30px_rgba(0,0,0,0.7),0_14px_40px_-20px_rgba(199,105,30,0.18)]"
-      aria-label="Beispiel-Konversation mit Hopfen Hugo"
+      aria-label="Beispiel-Konversation mit BrewAI"
     >
       <div className="flex items-center justify-between gap-3 border-b border-[#2C2519] bg-[#15110C] p-[14px_18px]">
         <div className="flex items-center gap-3">
           <span className="flex h-8 w-8 items-center justify-center rounded-lg bg-gradient-to-br from-amber to-amber2 font-serif-hero text-lg italic text-[#15110C] md:h-8 md:w-8">
-            H
+            B
           </span>
           <div>
             <p className={cn("font-serif-hero font-medium text-paper", compact ? "text-sm" : "text-base")}>
-              Hopfen Hugo
+              BrewAI
             </p>
             <p className="font-mono-hero text-[9px] text-[#8C7E68]">Demo · {APP_DISPLAY_HOST}/chat</p>
           </div>
@@ -215,7 +215,7 @@ export function HugoChatMockup({
                   m.offTopic ? "text-[#8C7E68]" : "text-amber2",
                 )}
               >
-                Hopfen Hugo · {m.meta}
+                BrewAI · {m.meta}
               </span>
             ) : null}
             <p
@@ -235,12 +235,12 @@ export function HugoChatMockup({
         ))}
         <li className="flex items-center gap-2">
           <span className="evg-live-dot h-1.5 w-1.5 rounded-full bg-amber2" aria-hidden />
-          <span className="font-mono-hero text-[10px] text-[#8C7E68]">Hugo schreibt…</span>
+          <span className="font-mono-hero text-[10px] text-[#8C7E68]">BrewAI schreibt…</span>
         </li>
       </ul>
       <div className="flex gap-2.5 border-t border-[#2C2519] bg-[#15110C] p-[14px_18px]">
         <div className="flex-1 rounded-[10px] border border-[#2C2519] bg-[#1A150E] p-[12px_14px] font-sans-tight text-sm text-[#8C7E68]">
-          Frage Hugo zu Prompts, Motiven, Formaten…
+          Frage BrewAI zu Prompts, Motiven, Formaten…
         </div>
         <span className="flex items-center justify-center rounded-[10px] bg-amber px-4 font-mono-hero text-sm font-semibold text-[#15110C]">
           ↵

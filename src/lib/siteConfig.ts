@@ -144,7 +144,7 @@ export const SITE = {
     productName,
   ],
   locale: "de_DE",
-  ogImage: "/og/evglab-og.jpg", // 1200×630 für WhatsApp, LinkedIn, Twitter etc.
+  ogImage: "/og/brewai-og.jpg", // 1200×630 für WhatsApp, LinkedIn, Twitter etc.
 
   /** Anzeige im Footer / Kontakt; Chat über WhatsApp Business */
   contactPhoneDisplay: "+49 15565 602176",

@@ -266,9 +266,9 @@ export function AboutDesktop() {
             <DesktopRevealStagger className="flex items-end justify-between gap-16 border-b border-[rgba(244,239,230,0.08)] pb-16" softEntrance>
               <DesktopRevealItem>
                 <div>
-                  <SectionEyebrow dark>Dashboard · Hopfen Hugo</SectionEyebrow>
+                  <SectionEyebrow dark>Dashboard · BrewAI</SectionEyebrow>
                   <h2 id="about-hugo-h2" className="font-serif-hero text-[72px] font-normal leading-[0.98] tracking-[-2px]">
-                    Hopfen Hugo —
+                    BrewAI —
                     <br />
                     euer <em className="italic text-amber2">Chat-Assistent</em>
                     <br />
@@ -288,7 +288,7 @@ export function AboutDesktop() {
               <DesktopRevealItem>
                 <div>
                 <p className="mb-[18px] font-mono-hero text-[10px] uppercase tracking-wider text-[#8C7E68]">
-                  Wofür Hugo da ist · Wofür nicht
+                  Wofür BrewAI da ist · Wofür nicht
                 </p>
                 <div className="overflow-hidden rounded-2xl border border-[#2C2519] bg-[#1A150E]">
                   <div className="p-[22px_24px]">
@@ -333,7 +333,7 @@ export function AboutDesktop() {
                   onClick={() => openFreeTrialDemo()}
                   className="mt-7 inline-flex items-center gap-2 rounded-xl bg-amber px-6 py-3.5 font-sans-tight text-sm font-semibold text-[#15110C] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-[3px] focus-visible:outline-amber"
                 >
-                  Chat mit Hopfen Hugo öffnen →
+                  Chat mit BrewAI öffnen →
                 </button>
                 </div>
               </DesktopRevealItem>

@@ -37,7 +37,7 @@ export function MotionPricing() {
 
   return (
     <section id="pricing" className="scroll-mt-24">
-      <div className="mx-[30px] border-x border-border py-16 md:py-20">
+      <div className="md:mx-[30px] md:border-x border-border py-16 md:py-20">
         <div className="mx-auto max-w-7xl px-6">
           <motion.div
             initial={{ opacity: 0, y: 16 }}

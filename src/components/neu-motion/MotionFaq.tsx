@@ -11,7 +11,7 @@ export function MotionFaq() {
 
   return (
     <section id="faqs" className="scroll-mt-24">
-      <div className="mx-[30px] border-x border-border py-16 md:py-24">
+      <div className="md:mx-[30px] md:border-x border-border py-16 md:py-24">
         <div className="mx-auto max-w-3xl px-6">
           <p className="text-center text-sm text-muted-foreground">Fragen & Antworten</p>
           <h2 className="mt-3 text-balance text-center text-3xl font-medium tracking-tight text-foreground md:text-5xl">

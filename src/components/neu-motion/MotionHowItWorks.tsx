@@ -151,7 +151,7 @@ export function MotionHowItWorks() {
 
   return (
     <section id="how-it-works" ref={sectionRef} className="scroll-mt-24">
-      <div className="mx-[30px] border-x border-border py-16 md:py-24">
+      <div className="md:mx-[30px] md:border-x border-border py-16 md:py-24">
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           whileInView={{ opacity: 1, y: 0 }}

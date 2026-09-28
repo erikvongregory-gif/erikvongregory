@@ -10,7 +10,7 @@ export function ParloPricing() {
 
   return (
     <section id="pricing" className="scroll-mt-24">
-      <div className="mx-[30px] border-x border-border py-16 md:py-20">
+      <div className="md:mx-[30px] md:border-x border-border py-16 md:py-20">
         <div className="mx-auto max-w-7xl px-6">
           <div className="flex flex-col gap-6 sm:flex-row sm:items-end sm:justify-between">
             <div className="max-w-md space-y-6">

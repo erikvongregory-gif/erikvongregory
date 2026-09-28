@@ -13,7 +13,7 @@ export function ParloNavbar() {
   return (
     <>
       <nav className="fixed inset-x-0 top-0 z-50 bg-transparent">
-        <div className="mx-[30px] flex h-14 items-center justify-between border-x border-transparent px-4 md:px-6">
+        <div className="flex h-14 items-center justify-between border-transparent px-4 md:mx-[30px] md:border-x md:px-6">
           <a href="/" aria-label="BrewAI" className="relative z-10 shrink-0">
             <Image
               src={LOGO_SRC}
@@ -67,7 +67,7 @@ export function ParloNavbar() {
 
       {open && (
         <div className="fixed inset-0 z-40 bg-background pt-14 lg:hidden">
-          <div className="mx-[30px] flex h-full flex-col border-x border-border px-6 py-8">
+          <div className="flex h-full flex-col border-border px-6 py-8 md:mx-[30px] md:border-x">
             <div className="flex flex-col gap-1">
               {NAV_LINKS.map((link) => (
                 <a

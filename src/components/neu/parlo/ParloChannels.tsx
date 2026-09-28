@@ -108,7 +108,7 @@ function FormatsMock() {
 export function ParloChannels() {
   return (
     <section id="formats" className="scroll-mt-24">
-      <div className="mx-[30px] border-x border-border py-16 md:py-24">
+      <div className="md:mx-[30px] md:border-x border-border py-16 md:py-24">
         <div className="mx-auto max-w-3xl px-6 text-center">
           <h2 className="text-balance text-3xl font-medium tracking-tight text-foreground md:text-5xl">
             Ein Dashboard — viele Motive.

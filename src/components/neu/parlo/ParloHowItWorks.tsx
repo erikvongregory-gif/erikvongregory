@@ -46,7 +46,7 @@ export function ParloHowItWorks() {
 
   return (
     <section id="how-it-works" className="scroll-mt-24">
-      <div className="mx-[30px] border-x border-border py-16 md:py-24">
+      <div className="md:mx-[30px] md:border-x border-border py-16 md:py-24">
         <div className="mx-auto max-w-3xl px-6 text-center">
           <span className="inline-flex items-center gap-2 rounded-full border border-border bg-surface px-3 py-1 text-xs text-muted-foreground">
             <Image

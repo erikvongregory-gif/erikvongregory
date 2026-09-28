@@ -9,8 +9,8 @@ const requestSchema = z.object({
   assistantPersona: z.string().trim().max(80).optional(),
 });
 
-const HOPFEN_HUGO_SYSTEM = [
-  "Du bist Hopfen Hugo, der Chat-Assistent im BrewAI-Dashboard.",
+const BREWAI_CHAT_SYSTEM = [
+  "Du bist BrewAI, der Chat-Assistent im Dashboard.",
   "Du darfst ueber allgemeine, harmlose Alltagsthemen reden und auf Wunsch den Stil wechseln (z. B. Schweizerdeutsch, bayerisch, locker, freundlich).",
   "Verweigere nur unzulaessige oder gefaehrliche Inhalte (illegale Handlungen, Gewaltanleitungen, Selbstverletzung, Hass, Betrug, Datenschutzverletzungen, sexualisierte Inhalte mit Minderjaehrigen).",
   "Wenn es um BrewAI und KI-Bilder geht, gib praktische Hilfe zu Prompts, Motiven, Szenen, Licht, Stil und Markenkonsistenz.",
@@ -78,13 +78,13 @@ export async function POST(req: Request) {
       model: getPreferredModel(),
       max_tokens: 350,
       temperature: 0.35,
-      system: HOPFEN_HUGO_SYSTEM,
+      system: BREWAI_CHAT_SYSTEM,
       messages: [
         {
           role: "user",
           content: [
             `Aktiver Dashboard-Tab: ${currentTab ?? "unbekannt"}`,
-            `Persona: ${assistantPersona ?? "hopfen-hugo"}`,
+            `Persona: ${assistantPersona ?? "BrewAI"}`,
             "",
             "Nutzerfrage:",
             question,

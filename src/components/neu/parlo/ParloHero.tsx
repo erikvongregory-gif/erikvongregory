@@ -32,12 +32,12 @@ export function ParloHero() {
       <div className="relative flex flex-col items-center justify-center gap-5 px-4 pb-16 pt-28 sm:pb-20 md:pt-32">
         <div
           aria-hidden
-          className="pointer-events-none absolute inset-0 -z-[1] size-full overflow-hidden"
+          className="pointer-events-none absolute inset-0 -z-[1] hidden size-full overflow-hidden md:block"
         >
-          <div className="absolute inset-y-0 left-4 w-px bg-linear-to-b from-transparent via-border to-border md:left-8" />
-          <div className="absolute inset-y-0 right-4 w-px bg-linear-to-b from-transparent via-border to-border md:right-8" />
-          <div className="absolute inset-y-0 left-8 w-px bg-linear-to-b from-transparent via-border/50 to-border/50 md:left-12" />
-          <div className="absolute inset-y-0 right-8 w-px bg-linear-to-b from-transparent via-border/50 to-border/50 md:right-12" />
+          <div className="absolute inset-y-0 left-8 w-px bg-linear-to-b from-transparent via-border to-border" />
+          <div className="absolute inset-y-0 right-8 w-px bg-linear-to-b from-transparent via-border to-border" />
+          <div className="absolute inset-y-0 left-12 w-px bg-linear-to-b from-transparent via-border/50 to-border/50" />
+          <div className="absolute inset-y-0 right-12 w-px bg-linear-to-b from-transparent via-border/50 to-border/50" />
         </div>
 
         <a

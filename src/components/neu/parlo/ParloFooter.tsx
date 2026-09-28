@@ -8,7 +8,7 @@ import { SITE } from "@/lib/siteConfig";
 export function ParloFooter() {
   return (
     <footer className="border-t border-border">
-      <div className="mx-[30px] border-x border-border">
+      <div className="md:mx-[30px] md:border-x border-border">
         <div className="mx-auto grid max-w-7xl gap-10 px-6 py-16 md:grid-cols-[1.2fr_2fr]">
           <div>
             <Image

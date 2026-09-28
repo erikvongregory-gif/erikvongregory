@@ -169,7 +169,7 @@ export function AboutMobile() {
         <section id="about-hugo" className="bg-[#0F0C08] px-[22px] py-10 text-paper">
           <ScrollRevealStagger softEntrance staggerMs={80}>
             <div className="mobile-scroll-reveal-item">
-              <MobileEyebrow>Hopfen Hugo</MobileEyebrow>
+              <MobileEyebrow>BrewAI</MobileEyebrow>
               <h2 className="font-serif-hero text-[36px] leading-tight">
                 Euer <em className="italic text-amber2">Chat-Assistent</em> für KI-Bilder.
               </h2>
@@ -199,7 +199,7 @@ export function AboutMobile() {
               onClick={() => openFreeTrialDemo()}
               className="mobile-scroll-reveal-item mt-6 w-full rounded-xl bg-amber py-3.5 font-sans-tight text-sm font-semibold text-[#15110C]"
             >
-              Chat mit Hopfen Hugo öffnen →
+              Chat mit BrewAI öffnen →
             </button>
           </ScrollRevealStagger>
         </section>
