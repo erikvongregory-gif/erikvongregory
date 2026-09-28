@@ -7,7 +7,7 @@ import { AboutMobile } from "@/components/ueber-uns/AboutMobile";
 /** Über-uns: Mobile/Desktop per CSS (kein JS-Flash, keine „unsichtbare“ falsche Variante). */
 export function AboutPage() {
   return (
-    <main id="main" className="about-page relative z-20 min-h-[100dvh] bg-paper text-ink">
+    <main id="main" className="about-page relative z-20 min-h-[100dvh]">
       <UeberUnsMountScroll />
       <div className="lg:hidden">
         <AboutMobile />

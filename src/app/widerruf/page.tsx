@@ -55,7 +55,7 @@ export default function WiderrufPage() {
             <p className="mt-4">
               <a
                 href={mailtoHref}
-                className="inline-flex rounded-lg bg-[#c65a20] px-4 py-2.5 text-sm font-semibold text-white transition hover:bg-[#b14f1c]"
+                className="inline-flex h-11 items-center justify-center rounded-full bg-foreground px-5 text-sm font-medium text-background transition-opacity hover:opacity-90"
               >
                 Widerruf per E-Mail senden
               </a>
@@ -70,7 +70,7 @@ export default function WiderrufPage() {
               (Wenn Sie den Vertrag widerrufen wollen, dann füllen Sie bitte dieses Formular aus und
               senden Sie es zurück.)
             </p>
-            <div className="rounded-xl border border-white/15 bg-black/20 p-4 text-sm md:border-zinc-200 md:bg-zinc-50 md:text-zinc-800">
+            <div className="rounded-xl border border-border bg-card p-4 text-sm text-foreground/80">
               <p>
                 An {LEGAL.name}, {LEGAL.street}, {LEGAL.city}, E-Mail: {LEGAL.email}
               </p>

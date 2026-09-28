@@ -6,6 +6,7 @@ import { usePathname } from "next/navigation";
 import { SiteHeader } from "@/components/SiteHeader";
 import { LegalPageTheme } from "@/components/LegalPageTheme";
 import { SiteFooter } from "@/components/SiteFooter";
+import { ParloSiteFrame } from "@/components/neu-motion/ParloSiteFrame";
 import { FreeTrialDemoProvider } from "@/context/FreeTrialDemoContext";
 
 const CookieBanner = dynamic(() => import("@/components/CookieBanner").then((m) => m.CookieBanner), {
@@ -45,6 +46,14 @@ export function AppShell({ children }: AppShellProps) {
   const isAdminRoute = pathname?.startsWith("/admin") ?? false;
   const isHome = pathname === "/";
   const isUmfrage = pathname?.startsWith("/umfrage") ?? false;
+  const isParloSubpage =
+    (pathname?.startsWith("/impressum") ?? false) ||
+    (pathname?.startsWith("/datenschutz") ?? false) ||
+    (pathname?.startsWith("/agb") ?? false) ||
+    (pathname?.startsWith("/widerruf") ?? false) ||
+    (pathname?.startsWith("/ueber-uns") ?? false) ||
+    (pathname?.startsWith("/ratgeber") ?? false) ||
+    (pathname?.startsWith("/loesungen") ?? false);
   const isPreviewMarketing =
     (pathname?.startsWith("/neu-motion") ?? false) ||
     (pathname?.startsWith("/neuv2") ?? false);
@@ -56,6 +65,17 @@ export function AppShell({ children }: AppShellProps) {
         {isHome && deferChrome ? <ContactFunnel /> : null}
         {(isHome || isUmfrage) && deferChrome ? <CookieBanner /> : null}
         {children}
+      </FreeTrialDemoProvider>
+    );
+  }
+
+  if (isParloSubpage) {
+    return (
+      <FreeTrialDemoProvider>
+        {deferChrome ? <CookieBanner /> : null}
+        <ParloSiteFrame perlage={pathname?.startsWith("/loesungen") ? "hero" : "cta"}>
+          {children}
+        </ParloSiteFrame>
       </FreeTrialDemoProvider>
     );
   }

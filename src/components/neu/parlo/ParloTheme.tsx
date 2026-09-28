@@ -66,7 +66,10 @@ export function ParloThemeProvider({ children }: { children: React.ReactNode }) 
 
   return (
     <ParloThemeContext.Provider value={value}>
-      <div className={`parlo min-h-screen antialiased ${theme === "dark" ? "dark" : "light"}`}>
+      <div
+        className={`parlo min-h-screen antialiased ${theme === "dark" ? "dark" : "light"}`}
+        suppressHydrationWarning
+      >
         {children}
       </div>
     </ParloThemeContext.Provider>

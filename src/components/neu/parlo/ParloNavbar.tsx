@@ -37,7 +37,7 @@ export function ParloNavbar() {
             ))}
           </div>
 
-          <div className="hidden items-center gap-2 sm:flex">
+          <div className="hidden items-center gap-2 lg:flex">
             <ParloThemeToggle />
             <ParloPillButton
               href={APP_URL}

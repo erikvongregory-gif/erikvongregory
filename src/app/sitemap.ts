@@ -13,6 +13,9 @@ type Entry = {
 const PAGES: Entry[] = [
   { path: "", changeFrequency: "weekly", priority: 1 },
   { path: "/loesungen", changeFrequency: "weekly", priority: 0.9 },
+  { path: "/loesungen/saisonkampagne-brauerei", changeFrequency: "monthly", priority: 0.7 },
+  { path: "/loesungen/biergarten-event-marketing", changeFrequency: "monthly", priority: 0.7 },
+  { path: "/loesungen/haendler-gastro-promotion", changeFrequency: "monthly", priority: 0.7 },
   { path: "/ueber-uns", changeFrequency: "monthly", priority: 0.85 },
   { path: "/ratgeber", changeFrequency: "weekly", priority: 0.8 },
   { path: "/umfrage", changeFrequency: "weekly", priority: 0.75 },

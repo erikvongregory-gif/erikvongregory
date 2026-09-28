@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import { LoesungenIndex } from "@/components/loesungen/LoesungViews";
 import { SITE } from "@/lib/siteConfig";
 
 export const metadata: Metadata = {
@@ -24,36 +25,6 @@ export const metadata: Metadata = {
   },
 };
 
-const pages = [
-  {
-    title: "Saisonkampagnen für Brauereien",
-    summary: "Kampagnenmotive und Serien für Frühlings-, Sommer- und Winteraktionen.",
-  },
-  {
-    title: "Biergarten- & Event-Marketing",
-    summary: "Planbare Visuals für Ausschanktage, Events und lokale Aktionen.",
-  },
-  {
-    title: "Händler- & Gastro-Promotion",
-    summary: "Co-Branding-Motive für Handel, Gastro und Partnernetzwerke.",
-  },
-] as const;
-
 export default function LoesungenPage() {
-  return (
-    <main className="relative z-20 mx-auto max-w-5xl px-4 pb-16 pt-[calc(68px+3rem)] text-zinc-900">
-      <h1 className="text-3xl font-bold sm:text-4xl">Lösungen für Brauereien</h1>
-      <p className="mt-4 max-w-3xl text-zinc-700">
-        Diese Seite bündelt die wichtigsten BrewAI-Szenarien für Brauereien auf einer einzigen Seite.
-      </p>
-      <div className="mt-8 grid gap-4 md:grid-cols-3">
-        {pages.map((page) => (
-          <article key={page.title} className="rounded-xl border border-zinc-200 bg-white p-4">
-            <h2 className="text-lg font-semibold text-zinc-900">{page.title}</h2>
-            <p className="mt-2 text-sm text-zinc-600">{page.summary}</p>
-          </article>
-        ))}
-      </div>
-    </main>
-  );
+  return <LoesungenIndex />;
 }

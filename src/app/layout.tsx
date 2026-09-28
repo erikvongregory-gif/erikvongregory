@@ -6,6 +6,7 @@ import { SiteSmoothScroll } from "@/components/site-smooth-scroll";
 import { LoadingProvider } from "@/context/LoadingContext";
 import { JsonLd } from "@/components/JsonLd";
 import { SITE } from "@/lib/siteConfig";
+import { parloFontClass } from "@/lib/parloFonts";
 import "./globals.css";
 
 /** Kritische Faces preloaden; Rest swap ohne Preload. Mono → System. */
@@ -108,7 +109,7 @@ export default function RootLayout({
   return (
     <html
       lang="de"
-      className={`${newsreader.variable} ${interTight.variable}`}
+      className={`${newsreader.variable} ${interTight.variable} ${parloFontClass}`}
     >
       <body className="bg-paper text-neutral-900 antialiased">
         <SiteSmoothScroll />

@@ -165,3 +165,64 @@
     animation: nm-underglow-in 1600ms cubic-bezier(0.22, 1, 0.36, 1) 300ms both;
   }
 }
+
+/* Unterseiten: altes Papier/Amber ins Parlo-Theme ziehen, ohne jede Datei umzuschreiben */
+.parlo .about-page,
+.parlo .ratgeber-page {
+  --color-paper: var(--background);
+  --color-paper2: var(--surface);
+  --color-ink: var(--foreground);
+  --color-ink2: color-mix(in oklab, var(--foreground) 72%, transparent);
+  --color-ink3: var(--muted-foreground);
+  --color-amber: var(--foreground);
+  --color-amber2: var(--muted-foreground);
+  --color-amber3: var(--surface);
+  background: var(--background);
+  color: var(--foreground);
+}
+.parlo .about-page .bg-white,
+.parlo .ratgeber-page .bg-white {
+  background-color: var(--card);
+}
+.parlo .about-page .hover\:bg-\[\#FAF6EE\]:hover,
+.parlo .ratgeber-page .hover\:bg-\[\#FAF6EE\]:hover {
+  background-color: var(--muted);
+}
+
+.parlo .legal-page {
+  background: transparent !important;
+  color: var(--foreground);
+  padding-top: 6rem !important;
+}
+.parlo .legal-page h1,
+.parlo .legal-page h2,
+.parlo .legal-page h3 {
+  color: var(--foreground) !important;
+}
+.parlo .legal-page .legal-content p,
+.parlo .legal-page .legal-content li {
+  color: color-mix(in oklab, var(--foreground) 78%, transparent) !important;
+}
+.parlo .legal-page a,
+.parlo .legal-page .legal-back,
+.parlo .legal-page nav a {
+  color: var(--foreground) !important;
+  text-decoration-color: color-mix(in oklab, var(--foreground) 35%, transparent);
+}
+.parlo .legal-page a:hover,
+.parlo .legal-page .legal-back:hover,
+.parlo .legal-page nav a:hover {
+  color: var(--foreground) !important;
+  opacity: 0.82;
+}
+.parlo .legal-article {
+  border-color: var(--border) !important;
+  background: transparent !important;
+  box-shadow: none !important;
+  color: var(--foreground);
+}
+.parlo .legal-page .border-white\/10,
+.parlo .legal-page .border-white\/15,
+.parlo .legal-page nav {
+  border-color: var(--border) !important;
+}

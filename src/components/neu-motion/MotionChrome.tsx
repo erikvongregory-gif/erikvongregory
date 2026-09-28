@@ -7,7 +7,13 @@ import { ParloFooter } from "@/components/neu/parlo/ParloFooter";
 import { PerlageField } from "@/components/neu-motion/PerlageField";
 import { ScanDivider } from "@/components/neu-motion/ScanDivider";
 
-export function UmfrageChrome({ children }: { children: React.ReactNode }) {
+export function MotionChrome({
+  children,
+  perlage = "hero",
+}: {
+  children: React.ReactNode;
+  perlage?: "hero" | "cta";
+}) {
   const guardRef = useRef<HTMLDivElement>(null);
 
   return (
@@ -21,7 +27,7 @@ export function UmfrageChrome({ children }: { children: React.ReactNode }) {
         <ParloNavbar />
         <div className="relative isolate">
           <div aria-hidden className="nm-underglow pointer-events-none absolute inset-0 -z-20" />
-          <PerlageField variant="hero" guardRef={guardRef} className="-z-10" />
+          <PerlageField variant={perlage} guardRef={guardRef} className="-z-10" />
           <div ref={guardRef}>{children}</div>
         </div>
         <ScanDivider />
