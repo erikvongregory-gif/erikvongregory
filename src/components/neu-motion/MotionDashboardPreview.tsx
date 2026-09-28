@@ -16,10 +16,8 @@ import {
   type LucideIcon,
   MessageSquareText,
   Palette,
-  Pencil,
   Settings2,
   Sparkles,
-  Upload,
   Users,
 } from "lucide-react";
 import NumberFlow from "@number-flow/react";
@@ -28,6 +26,7 @@ import { useCallback, useEffect, useRef, useState } from "react";
 import { SITE } from "@/lib/siteConfig";
 import { cn } from "@/lib/utils";
 import { CheckIcon, ParloStarButton } from "@/components/neu/parlo/ParloUi";
+import { BrandProfileDemo } from "./BrandProfileDemo";
 import { DitherMotif } from "./DitherMotif";
 import { ImagesDemo } from "./ImagesDemo";
 import { RECENT_SLOTS } from "./motifs";
@@ -438,149 +437,6 @@ function ScreenLibrary() {
 }
 
 /** Markenprofil — Struktur wie BrandProfileView */
-function ScreenBrand() {
-  const colors = ["C7691E", "1A1208", "F4EFE6", "1F3D2B"];
-  const tones = ["handwerklich", "warm", "modern", "regional"];
-
-  return (
-    <div className="space-y-6 p-4 md:p-6">
-      <div className="flex items-start justify-between gap-3">
-        <div>
-          <p className="text-[11px] font-medium uppercase tracking-[0.08em] text-muted-foreground">
-            Markenprofil · aktiv
-          </p>
-          <h3 className="mt-1 text-xl font-semibold tracking-tight text-foreground">
-            Testbrauerei
-          </h3>
-          <p className="mt-1 text-sm text-muted-foreground">
-            Diese Vorgaben fließen automatisch in jede Generierung ein.
-          </p>
-        </div>
-        <span className="inline-flex shrink-0 items-center gap-1 rounded-lg border border-border px-2.5 py-1.5 text-[11px] text-muted-foreground">
-          <Pencil className="size-3" />
-          Neu einlesen
-        </span>
-      </div>
-
-      <div className="grid gap-4 md:grid-cols-2">
-        <div className="overflow-hidden rounded-xl bg-[#1c1c1c] p-5 text-white shadow-sm">
-          <p className="text-[10px] font-medium uppercase tracking-wider text-white/40">
-            Branding
-          </p>
-          <p className="mt-1 text-sm text-white/70">Typography</p>
-          <p className="mt-4 text-4xl font-semibold tracking-tight">
-            Aa<span className="text-white/40">Bb</span>
-          </p>
-          <p className="mt-2 text-xs text-white/45">Work Sans</p>
-        </div>
-
-        <div className="flex min-h-[140px] flex-col overflow-hidden rounded-xl border border-border bg-surface shadow-sm">
-          <div className="flex min-h-0 flex-1">
-            {colors.map((c) => (
-              <div
-                key={c}
-                className="flex flex-1 items-end justify-center pb-2"
-                style={{ backgroundColor: `#${c}` }}
-              >
-                <span
-                  className={cn(
-                    "text-[9px] font-medium tracking-wider opacity-0 md:opacity-70",
-                    c === "F4EFE6" ? "text-neutral-800" : "text-white",
-                  )}
-                >
-                  {c}
-                </span>
-              </div>
-            ))}
-          </div>
-          <div className="flex items-center justify-between gap-2 px-3 py-2.5 text-[11px] text-muted-foreground">
-            <span className="truncate">testbrauerei.de · Zuletzt analysiert · gerade eben</span>
-            <span className="shrink-0 text-[10px] font-medium uppercase tracking-wider text-emerald-600 dark:text-emerald-400">
-              Verbunden
-            </span>
-          </div>
-        </div>
-
-        <div className="flex flex-col items-center justify-center rounded-xl border border-dashed border-border bg-surface px-4 py-6 text-center md:col-span-2 md:col-start-1 md:row-start-2 md:max-w-[calc(50%-0.5rem)]">
-          <Upload className="size-5 text-muted-foreground" strokeWidth={1.5} />
-          <p className="mt-2 text-sm font-medium text-foreground">Schrift hochladen</p>
-          <p className="mt-1 text-[11px] text-muted-foreground">
-            .woff2, .woff, .ttf, .otf · max. 2 MB
-          </p>
-        </div>
-      </div>
-
-      <div className="max-w-md space-y-2">
-        <div className="flex items-center justify-between text-xs">
-          <span className="rounded-full bg-emerald-500/15 px-2 py-0.5 font-medium text-emerald-700 dark:text-emerald-400">
-            Sehr stark
-          </span>
-          <span className="tabular-nums text-muted-foreground">94%</span>
-        </div>
-        <div className="h-2 overflow-hidden rounded-full bg-muted">
-          <div className="h-full w-[94%] rounded-full bg-emerald-500" />
-        </div>
-      </div>
-
-      <div className="grid gap-4 lg:grid-cols-[minmax(0,1fr)_220px]">
-        <div className="rounded-2xl border border-border bg-surface p-4 shadow-sm sm:p-5">
-          <p className="text-[11px] font-medium uppercase tracking-[0.08em] text-muted-foreground">
-            Tonalität
-          </p>
-          <p className="mt-1 text-sm text-foreground">Stimme der Marke</p>
-          <div className="mt-3 flex flex-wrap gap-2">
-            {tones.map((t) => (
-              <span
-                key={t}
-                className="rounded-full border border-foreground/15 bg-foreground/[0.06] px-3 py-1 text-xs text-foreground"
-              >
-                {t}
-              </span>
-            ))}
-          </div>
-        </div>
-
-        <aside className="rounded-2xl border border-border bg-surface p-4 shadow-sm">
-          <p className="text-sm font-medium text-foreground">Brand-Lock</p>
-          <p className="mt-1 text-[11px] leading-relaxed text-muted-foreground">
-            Wie streng BrewAI sich an dein Markenprofil hält.
-          </p>
-          <div className="mt-3 space-y-2">
-            {[
-              { id: "strict", label: "Strict", sub: "Maximale Markenbindung", on: true },
-              { id: "balanced", label: "Balanced", sub: "Stil + kreativer Spielraum", on: false },
-              { id: "loose", label: "Frei", sub: "Profil als lose Inspiration", on: false },
-            ].map((opt) => (
-              <div
-                key={opt.id}
-                className={cn(
-                  "rounded-xl bg-muted/50 p-2.5",
-                  opt.on && "ring-1 ring-foreground/20",
-                )}
-              >
-                <div className="flex items-center gap-2">
-                  <span
-                    className={cn(
-                      "size-3.5 rounded-full border",
-                      opt.on
-                        ? "border-foreground bg-foreground"
-                        : "border-muted-foreground/40",
-                    )}
-                  />
-                  <span className="text-xs font-medium text-foreground">{opt.label}</span>
-                </div>
-                <p className="mt-0.5 pl-5 text-[10px] text-muted-foreground">{opt.sub}</p>
-              </div>
-            ))}
-          </div>
-        </aside>
-      </div>
-
-      <PreviewHint>Readonly-Vorschau — bearbeiten geht nur eingeloggt im Dashboard.</PreviewHint>
-    </div>
-  );
-}
-
 function ScreenTeam() {
   return (
     <div className="space-y-4 p-4 md:p-6">
@@ -655,7 +511,17 @@ function ScreenSettings() {
   );
 }
 
-function ActiveScreen({ active, dash }: { active: NavKey; dash: DashState }) {
+function ActiveScreen({
+  active,
+  dash,
+  onBrandSettled,
+  brandInterrupt,
+}: {
+  active: NavKey;
+  dash: DashState;
+  onBrandSettled?: () => void;
+  brandInterrupt: boolean;
+}) {
   switch (active) {
     case "dashboard":
       return <ScreenDashboard dash={dash} />;
@@ -674,7 +540,14 @@ function ActiveScreen({ active, dash }: { active: NavKey; dash: DashState }) {
     case "library":
       return <ScreenLibrary />;
     case "brand":
-      return <ScreenBrand />;
+      return (
+        <BrandProfileDemo
+          reduced={dash.tier.reduced}
+          mobile={dash.tier.mobile}
+          onSettled={onBrandSettled}
+          allowInterrupt={brandInterrupt}
+        />
+      );
     case "team":
       return <ScreenTeam />;
     case "billing":
@@ -702,6 +575,8 @@ export function MotionDashboardPreview() {
   const [tokens, setTokens] = useState(842);
   const [motifs, setMotifs] = useState(27);
   const [played, setPlayed] = useState(false);
+  /** Nav + Demo erst bedienbar, wenn Markenprofil einmal durchgelaufen ist */
+  const [flowDone, setFlowDone] = useState(false);
   const [slots, setSlots] = useState<SlotState[]>(() =>
     RECENT_SLOTS.map(() => ({ poolIdx: 0, gen: 1 })),
   );
@@ -711,6 +586,7 @@ export function MotionDashboardPreview() {
     if (tier.reduced) {
       setStage(3);
       setPlayed(true);
+      setFlowDone(true);
       return;
     }
     if (!seen) return;
@@ -731,21 +607,50 @@ export function MotionDashboardPreview() {
     return () => ro.disconnect();
   }, []);
 
-  /* Nach der Erst-Sequenz einmal selbstständig zu „Bilder erstellen“ wechseln —
-     nur wenn niemand im Mockup geklickt hat und es sichtbar ist */
+  /* Auto-Tour: Dashboard → Markenprofil → Bilder —
+     währenddessen Nav gesperrt, bis Markenprofil einmal fertig ist */
   const inView = useInView(rootRef, { threshold: 0.35 });
   const touchedRef = useRef(false);
-  const touredRef = useRef(false);
+  const brandTouredRef = useRef(false);
+  const imagesTouredRef = useRef(false);
+  const flowLocked = !flowDone;
+
   useEffect(() => {
-    if (!played || tier.reduced || !inView || touredRef.current || touchedRef.current) return;
+    if (!played || tier.reduced || !inView || brandTouredRef.current || touchedRef.current) return;
     if (active !== "dashboard") return;
     const id = window.setTimeout(() => {
       if (touchedRef.current) return;
-      touredRef.current = true;
-      setActive("images");
+      brandTouredRef.current = true;
+      setActive("brand");
     }, 2800);
     return () => clearTimeout(id);
   }, [played, tier.reduced, inView, active]);
+
+  const onBrandSettled = useCallback(() => {
+    setFlowDone(true);
+    if (imagesTouredRef.current || touchedRef.current || tier.reduced) return;
+    window.setTimeout(() => {
+      if (touchedRef.current || imagesTouredRef.current) return;
+      imagesTouredRef.current = true;
+      setActive("images");
+    }, 2200);
+  }, [tier.reduced]);
+
+  /* Fallback: falls die Demo nie settelt (Tab weg, Visibility), Nav nicht ewig sperren */
+  useEffect(() => {
+    if (!played || flowDone || tier.reduced) return;
+    const id = window.setTimeout(() => setFlowDone(true), 40000);
+    return () => clearTimeout(id);
+  }, [played, flowDone, tier.reduced]);
+
+  const selectNav = useCallback(
+    (key: NavKey) => {
+      if (flowLocked) return;
+      touchedRef.current = true;
+      setActive(key);
+    },
+    [flowLocked],
+  );
 
   const onGenerated = useCallback(() => {
     setTokens((t) => Math.max(0, t - 1));
@@ -784,6 +689,7 @@ export function MotionDashboardPreview() {
     <div
       ref={rootRef}
       onPointerDownCapture={() => {
+        if (flowLocked) return;
         touchedRef.current = true;
       }}
       className={cn(
@@ -855,11 +761,14 @@ export function MotionDashboardPreview() {
             <button
               key={item.key}
               type="button"
-              onClick={() => setActive(item.key)}
+              disabled={flowLocked}
+              aria-disabled={flowLocked}
+              onClick={() => selectNav(item.key)}
               className={cn(
                 "relative inline-flex shrink-0 items-center gap-1.5 rounded-full px-3 py-1.5 text-xs transition-colors duration-200",
                 on ? "text-background" : "border border-border bg-surface text-muted-foreground",
                 item.badge === "soon" && !on && "opacity-60",
+                flowLocked && "cursor-default opacity-70",
               )}
             >
               {on ? (
@@ -905,12 +814,15 @@ export function MotionDashboardPreview() {
                   <button
                     key={item.key}
                     type="button"
-                    onClick={() => setActive(item.key)}
+                    disabled={flowLocked}
+                    aria-disabled={flowLocked}
+                    onClick={() => selectNav(item.key)}
                     style={riseStyle(delay)}
                     className={cn(
                       "relative flex h-8 w-full items-center gap-2.5 rounded-lg px-2.5 text-left transition-colors",
-                      !on && "hover:bg-foreground/[0.04]",
+                      !on && !flowLocked && "hover:bg-foreground/[0.04]",
                       item.badge === "soon" && "opacity-55",
+                      flowLocked && "cursor-default",
                     )}
                   >
                     {on ? (
@@ -960,7 +872,12 @@ export function MotionDashboardPreview() {
               exit={{ opacity: 0, y: -4 }}
               transition={{ duration: 0.22, ease: EASE.micro }}
             >
-              <ActiveScreen active={active} dash={dash} />
+              <ActiveScreen
+                active={active}
+                dash={dash}
+                onBrandSettled={onBrandSettled}
+                brandInterrupt={flowDone}
+              />
             </motion.div>
           </AnimatePresence>
         </div>

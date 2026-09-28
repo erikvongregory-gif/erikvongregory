@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import Image from "next/image";
 import { Menu, X } from "lucide-react";
 import { APP_URL, LOGO_SRC, NAV_LINKS } from "./data";
@@ -10,9 +10,28 @@ import { ParloThemeToggle } from "./ParloThemeToggle";
 export function ParloNavbar() {
   const [open, setOpen] = useState(false);
 
+  useEffect(() => {
+    if (!open) return;
+    const prev = document.body.style.overflow;
+    document.body.style.overflow = "hidden";
+    const onKey = (e: KeyboardEvent) => {
+      if (e.key === "Escape") setOpen(false);
+    };
+    window.addEventListener("keydown", onKey);
+    return () => {
+      document.body.style.overflow = prev;
+      window.removeEventListener("keydown", onKey);
+    };
+  }, [open]);
+
   return (
     <>
-      <nav className="fixed inset-x-0 top-0 z-50 bg-transparent">
+      <nav
+        className={[
+          "fixed inset-x-0 top-0 z-50 transition-colors",
+          open ? "bg-background" : "bg-transparent",
+        ].join(" ")}
+      >
         <div className="flex h-14 items-center justify-between border-transparent px-4 md:mx-[30px] md:border-x md:px-6">
           <a href="/" aria-label="BrewAI" className="relative z-10 shrink-0">
             <Image
@@ -57,6 +76,8 @@ export function ParloNavbar() {
               type="button"
               className="inline-flex size-9 items-center justify-center rounded-full border border-border text-foreground"
               aria-label={open ? "Menü schließen" : "Menü öffnen"}
+              aria-expanded={open}
+              aria-controls="parlo-mobile-nav"
               onClick={() => setOpen((v) => !v)}
             >
               {open ? <X className="size-4" /> : <Menu className="size-4" />}
@@ -65,32 +86,43 @@ export function ParloNavbar() {
         </div>
       </nav>
 
-      {open && (
-        <div className="fixed inset-0 z-40 bg-background pt-14 lg:hidden">
-          <div className="flex h-full flex-col border-border px-6 py-8 md:mx-[30px] md:border-x">
-            <div className="flex flex-col gap-1">
-              {NAV_LINKS.map((link) => (
-                <a
-                  key={link.href}
-                  href={link.href}
-                  className="rounded-lg px-2 py-3 text-2xl font-medium tracking-tight text-foreground"
-                  onClick={() => setOpen(false)}
-                >
-                  {link.label}
-                </a>
-              ))}
-            </div>
-            <div className="mt-auto flex flex-col gap-3 pb-8">
-              <ParloPillButton href={APP_URL} variant="solid" className="h-11 w-full">
-                Anmelden
-              </ParloPillButton>
-              <ParloStarButton href={APP_URL} fullWidth>
-                Dashboard öffnen
-              </ParloStarButton>
-            </div>
+      <div
+        id="parlo-mobile-nav"
+        role="dialog"
+        aria-modal="true"
+        aria-hidden={!open}
+        inert={!open || undefined}
+        className={[
+          "fixed inset-0 z-40 flex flex-col bg-background pt-14 lg:hidden",
+          "transition-[opacity,transform] duration-300 ease-out",
+          open
+            ? "pointer-events-auto translate-y-0 opacity-100"
+            : "pointer-events-none -translate-y-2 opacity-0",
+        ].join(" ")}
+      >
+        <div className="flex min-h-0 flex-1 flex-col px-6 py-8 md:mx-[30px] md:border-x md:border-border">
+          <div className="flex flex-col gap-1">
+            {NAV_LINKS.map((link) => (
+              <a
+                key={link.href}
+                href={link.href}
+                className="rounded-lg px-2 py-3 text-2xl font-medium tracking-tight text-foreground"
+                onClick={() => setOpen(false)}
+              >
+                {link.label}
+              </a>
+            ))}
+          </div>
+          <div className="mt-auto flex flex-col gap-3 pb-8">
+            <ParloPillButton href={APP_URL} variant="solid" className="h-11 w-full">
+              Anmelden
+            </ParloPillButton>
+            <ParloStarButton href={APP_URL} fullWidth>
+              Dashboard öffnen
+            </ParloStarButton>
           </div>
         </div>
-      )}
+      </div>
     </>
   );
 }

@@ -347,7 +347,7 @@ export function ScrollHeader() {
 
   const logoSizes = "h-10 w-auto sm:h-11 md:h-[3.25rem]";
 
-  /** Wellen-Logo mit transparentem Hintergrund; Nav-Pille wechselt bei overMedia. */
+  /** BrewAI-Logo mit transparentem Hintergrund; Nav-Pille wechselt bei overMedia. */
   const headerLogo = (
     <div className="flex flex-col items-start gap-px">
       <Link

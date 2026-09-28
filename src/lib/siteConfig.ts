@@ -115,10 +115,10 @@ export const SITE = {
   legacyHosts,
 
   /** Absolut-URL des Markenlogos (JSON-LD, Rich Results) */
-  brandLogoUrl: `${marketingBaseUrl}/brewai-logo.svg` as const,
-  /** Zwei terrakotta Wellen, transparenter Hintergrund */
-  brandLogoPath: "/brewai-logo.svg" as const,
-  brandLogoAlt: `${siteName} Wellen-Mark` as const,
+  brandLogoUrl: `${marketingBaseUrl}/brewai-logo-mark.png` as const,
+  /** BrewAI B-Markenzeichen (transparent) */
+  brandLogoPath: "/brewai-logo-mark.png" as const,
+  brandLogoAlt: `${siteName} Logo` as const,
   defaultTitle: `Das KI-Content-System für Brauereien | ${productName}`,
   defaultDescription: `${productName} ist das KI-Content-System für Brauereien: planbare Produktbilder, Kampagnen und Social-Content für mehr Sichtbarkeit, Wiedererkennung und Anfragen.`,
   keywords: [

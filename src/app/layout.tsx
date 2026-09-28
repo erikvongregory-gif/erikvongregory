@@ -27,7 +27,7 @@ const interTight = Inter_Tight({
   preload: false,
 });
 
-const ICON_VERSION = "20260918b";
+const ICON_VERSION = "20260928a";
 
 export const viewport = {
   width: "device-width",
