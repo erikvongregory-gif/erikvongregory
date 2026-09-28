@@ -8,7 +8,7 @@ const IMAGE_Y = -10;
 const NAME_FIRST = "Erik";
 const NAME_LAST = "von Gregory";
 
-/** Organische „Liquid“-Silhouette per SVG clipPath; Foto aus `/public/ueber-uns-hintergrund.png`. */
+/** Organische „Liquid“-Silhouette per SVG clipPath; Foto aus `/ueber-uns-portrait.webp`. */
 export function UeberUnsLiquidPortrait({ className }: { className?: string }) {
   const clipId = "ueber-uns-liquid-portrait-clip";
   const fadeId = "ueber-uns-liquid-portrait-name-fade";

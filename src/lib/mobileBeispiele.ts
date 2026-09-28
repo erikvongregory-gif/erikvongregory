@@ -1,4 +1,4 @@
-import { KI_BEISPIEL_VIDEO_16X9, KI_BEISPIEL_VIDEOS_9X16 } from "@/lib/kiBeispiele";
+const M = "/neu-motion/motifs";
 
 export type BeispielFormat = "1:1" | "4:5" | "9:16" | "16:9";
 
@@ -16,84 +16,85 @@ export type Beispiel = {
 export const BEISPIELE_IMAGES: Beispiel[] = [
   {
     id: "i1",
-    title: "Junge Frau mit Pils",
+    title: "Produktfoto Flasche",
     occasion: "Sommerkampagne · Mai",
     format: "1:1",
-    src: "/ki-beispiel-praxis-8.webp",
-    alt: "Junge Frau mit Pils — Sommerkampagne Mai",
+    src: `${M}/produkt-flasche.webp`,
+    alt: "Produktfoto Flasche — Sommerkampagne",
   },
   {
     id: "i2",
-    title: "Junger Mann am Hafen",
+    title: "Event am Hafen",
     occasion: "Reels-Hook · Juni",
     format: "4:5",
-    src: "/ki-beispiel-hafen.webp",
-    alt: "Junger Mann am Hafen Lübeck — Reels-Hook Juni",
+    src: `${M}/event-hafen.webp`,
+    alt: "Event-Motiv am Hafen — Reels-Hook",
   },
   {
     id: "i3",
-    title: "Junger Mann am Strand",
+    title: "Story Biergarten",
     occasion: "Produktseite · Hero",
-    format: "4:5",
-    src: "/ki-beispiel-strand.webp",
-    alt: "Junger Mann am Strand — Produktseite Hero",
+    format: "9:16",
+    src: `${M}/story-biergarten.webp`,
+    alt: "Story Biergarten — Produktseite Hero",
   },
   {
     id: "i4",
-    title: "Weizen am Bach",
+    title: "Weizen Studio",
     occasion: "Saisonkampagne · Winter",
     format: "1:1",
-    src: "/ki-beispiel-praxis-7.webp",
-    alt: "Weizen am Bach — Saisonkampagne Winter",
+    src: `${M}/produkt-weizen.webp`,
+    alt: "Weizen-Produktmotiv — Saisonkampagne",
   },
 ];
 
+/** Legacy-Videos entfernt — nur Still-Motive. */
 export const BEISPIELE_VIDEOS: Beispiel[] = [
   {
     id: "v1",
-    title: "Eisbox am See",
+    title: "Story Eis",
     occasion: "Reel · Sommer",
     format: "9:16",
-    src: KI_BEISPIEL_VIDEOS_9X16[0]!.src,
-    poster: KI_BEISPIEL_VIDEOS_9X16[0]!.poster,
+    src: `${M}/story-eis.webp`,
+    poster: `${M}/story-eis.webp`,
     duration: "0:12",
-    alt: "Eisbox am See — Reel Sommer",
+    alt: "Story Eis — Reel Sommer",
   },
   {
     id: "v2",
-    title: "Eisbox am Abend",
+    title: "Story Kühlbox",
     occasion: "Story · Event",
     format: "9:16",
-    src: KI_BEISPIEL_VIDEOS_9X16[1]!.src,
-    poster: KI_BEISPIEL_VIDEOS_9X16[1]!.poster,
+    src: `${M}/story-kuehlbox.webp`,
+    poster: `${M}/story-kuehlbox.webp`,
     duration: "0:08",
-    alt: "Eisbox am Abend — Story Event",
+    alt: "Story Kühlbox — Event",
   },
   {
     id: "v3",
-    title: "Hanseat am See",
-    occasion: "Story · Winterhelles",
-    format: "9:16",
-    src: KI_BEISPIEL_VIDEOS_9X16[2]!.src,
-    poster: KI_BEISPIEL_VIDEOS_9X16[2]!.poster,
+    title: "Event Festzelt",
+    occasion: "Story · Saison",
+    format: "16:9",
+    src: `${M}/event-festzelt.webp`,
+    poster: `${M}/event-festzelt.webp`,
     duration: "0:15",
-    alt: "Hanseat am See — Story Winterhelles",
+    alt: "Event Festzelt — Saison",
   },
   {
     id: "v4",
-    title: "Brauerei-Imagefilm",
-    occasion: "Website · YouTube",
+    title: "Reportage Skatepark",
+    occasion: "Website · Social",
     format: "16:9",
-    src: KI_BEISPIEL_VIDEO_16X9.src,
-    poster: KI_BEISPIEL_VIDEO_16X9.poster,
+    src: `${M}/reportage-skatepark.webp`,
+    poster: `${M}/reportage-skatepark.webp`,
     duration: "0:24",
-    alt: "Brauerei-Imagefilm — Website YouTube",
+    alt: "Reportage Skatepark — Website Social",
   },
 ];
 
 export const BEISPIELE_MODE_OPTIONS = [
   { key: "images" as const, label: "Bilder", sublabel: "04 MOTIVE" },
-  { key: "videos" as const, label: "Videos", sublabel: "03 REELS · 01 WEB" },
+  { key: "videos" as const, label: "Videos", sublabel: "04 MOTIVE" },
 ];
 
 export function durationToSeconds(duration?: string): number {

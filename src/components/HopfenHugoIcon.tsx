@@ -6,11 +6,11 @@ type Props = {
   title?: string;
 };
 
-/** Hopfen-Hugo-Maskottchen (`/hopfenhugo.svg`) — ohne zusätzliche UI-Box, nur das Asset. */
+/** BrewAI-Markenzeichen — Fallback für Legacy-Hugo-UI. */
 export function HopfenHugoIcon({ className, title }: Props) {
   return (
     <img
-      src="/hopfenhugo.svg"
+      src="/brewai-mark-icon.png"
       alt={title ?? ""}
       width={256}
       height={256}

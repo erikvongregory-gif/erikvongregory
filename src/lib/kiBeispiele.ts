@@ -1,36 +1,37 @@
 /**
- * KI-Beispielbilder – gleiche Quellen für Section 7 (Demo) und Desktop-Hero (Parallax).
+ * KI-Beispielbilder — aktuelle Motive unter `/neu-motion/motifs/`.
  */
+const M = "/neu-motion/motifs";
+
 export const KI_BEISPIELE = [
-  { src: "/ki-beispiel-3.svg", alt: "Lünebräu KI-Werbemotiv: Markenauftritt mit KI erstellt" },
-  { src: "/hero-brauerei-live-bg.png", alt: "Lünebräu – Produktfoto mit Zitrone und Hopfen" },
-  { src: "/optimized/hero-polaroid-hafen.webp", alt: "Lünebräu – Lifestyle-Foto am Hafen Lübeck" },
-  { src: "/optimized/hero-thumb-strand.webp", alt: "Lünebräu – Lifestyle-Foto am Strand" },
-  { src: "/optimized/hero-poster-biergarten.webp", alt: "Lünebräu – Lifestyle-Foto im Biergarten" },
+  { src: `${M}/kampagne-anstossen.webp`, alt: "Kampagnenmotiv: Anstoßen im Markenlook" },
+  { src: `${M}/produkt-flasche.webp`, alt: "Produktfoto Flasche" },
+  { src: `${M}/event-hafen.webp`, alt: "Event-Motiv am Hafen" },
+  { src: `${M}/story-biergarten.webp`, alt: "Story-Motiv Biergarten" },
+  { src: `${M}/premium-biergarten.webp`, alt: "Premium-Motiv Biergarten" },
 ] as const;
 
-/** Desktop-Hero-Studio-Mockup: zwei fertige 9:16-Varianten + Rendering-Slot. */
+/** Desktop-Hero-Studio-Mockup: zwei fertige Varianten. */
 export const KI_HERO_MOCKUP_THUMBS = [
   {
-    src: "/optimized/hero-thumb-kampagne.webp",
-    alt: "Kampagnenmotiv am Hafen — Mann mit Flasche, goldene Stunde",
+    src: `${M}/kampagne-hyperreal-hafen.webp`,
+    alt: "Kampagnenmotiv am Hafen — goldene Stunde",
   },
   KI_BEISPIELE[1],
 ] as const;
 
-/** Karussell „Echte Beispiele“ – lokale Assets, gemischte Formate. */
+/** Karussell „Echte Beispiele“. */
 export const KI_CAROUSEL = [
-  { src: "/ki-beispiel-1.svg", alt: "KI-generiertes Werbebild Brauerei: Bierflasche im Biergarten" },
-  { src: "/ki-beispiel-2.svg", alt: "KI-Produktbild Bier: Glas mit Schaumkrone im Sonnenlicht" },
-  { src: "/ki-beispiel-3.svg", alt: "Lünebräu KI-Werbemotiv: Markenauftritt mit KI erstellt" },
-  { src: "/ki-beispiel-hafen.webp", alt: "Lünebräu – Lifestyle am Hafen Lübeck" },
-  { src: "/ki-beispiel-strand.webp", alt: "Lünebräu – Lifestyle am Strand" },
-  { src: "/ki-beispiel-praxis-6.webp", alt: "Bierflasche in der Hand im Biergarten bei Abendlicht" },
-  { src: "/ki-beispiel-praxis-7.webp", alt: "Weißbier-Flasche und Glas am Bergfluss als echtes Praxisbeispiel" },
-  { src: "/ki-beispiel-praxis-8.webp", alt: "Praxisbeispiel: Person mit Bierflasche im Biergarten bei Sonnenschein" },
+  { src: `${M}/produkt-flasche.webp`, alt: "Produktfoto Flasche" },
+  { src: `${M}/feed-pils.webp`, alt: "Feed-Motiv Pils" },
+  { src: `${M}/kampagne-anstossen.webp`, alt: "Kampagnenmotiv Anstoßen" },
+  { src: `${M}/event-hafen.webp`, alt: "Event-Motiv Hafen" },
+  { src: `${M}/story-biergarten.webp`, alt: "Story Biergarten" },
+  { src: `${M}/produkt-studio.webp`, alt: "Studio-Produktmotiv" },
+  { src: `${M}/produkt-weizen.webp`, alt: "Weizen-Produktmotiv" },
+  { src: `${M}/reportage-luna-barrels.webp`, alt: "Reportage Fässer" },
 ] as const;
 
-/** Vertikale Video-Beispiele (9:16) — Dateien unter `public/videos/`. */
 export type KiBeispielVideoPortrait = {
   src: string;
   title: string;
@@ -38,7 +39,6 @@ export type KiBeispielVideoPortrait = {
   poster?: string;
 };
 
-/** Breites Video (16:9) — eine Zeile darunter. */
 export type KiBeispielVideoLandscape = {
   src: string;
   title: string;
@@ -46,31 +46,12 @@ export type KiBeispielVideoLandscape = {
   poster?: string;
 };
 
-/** Reels / Stories (9:16) — SEO-Dateinamen: ki-werbevideo-brauerei-reels-motiv-*-vertical-9x16.mp4 */
-export const KI_BEISPIEL_VIDEOS_9X16: readonly KiBeispielVideoPortrait[] = [
-  {
-    src: "/videos/ki-werbevideo-brauerei-reels-motiv-1-vertical-9x16.mp4",
-    poster: "/videos/ki-werbevideo-brauerei-reels-motiv-1-vertical-9x16-poster.webp",
-    title: "9:16 – Reel / Story (Beispiel 1)",
-    caption: "Hochformat für Instagram Stories, Reels und vertikale Ads.",
-  },
-  {
-    src: "/videos/ki-werbevideo-brauerei-reels-motiv-2-vertical-9x16.mp4",
-    poster: "/videos/ki-werbevideo-brauerei-reels-motiv-2-vertical-9x16-poster.webp",
-    title: "9:16 – Reel / Story (Beispiel 2)",
-    caption: "Zweites Motiv im gleichen Format — ideal für Serien oder A/B-Tests im Feed.",
-  },
-  {
-    src: "/videos/ki-werbevideo-brauerei-reels-motiv-3-vertical-9x16.mp4",
-    poster: "/videos/ki-werbevideo-brauerei-reels-motiv-3-vertical-9x16-poster.webp",
-    title: "9:16 – Reel / Story (Beispiel 3)",
-    caption: "Drittes Hochformat-Motiv — z. B. für Content-Serien, saisonale Posts oder wechselnde CTA-Varianten.",
-  },
-];
+/** Legacy-Videos entfernt — leere Listen, damit alte Imports nicht crashen. */
+export const KI_BEISPIEL_VIDEOS_9X16: readonly KiBeispielVideoPortrait[] = [];
 
 export const KI_BEISPIEL_VIDEO_16X9: KiBeispielVideoLandscape = {
-  src: "/videos/ki-werbevideo-brauerei-werbespot-web-youtube-16x9.mp4",
-  title: "16:9 – Web, YouTube & Social (Querformat)",
-  caption: "Klassisches Breitformat für Website, YouTube und Feed-Posts im Querformat.",
-  poster: "/ki-werbevideo-16x9-poster.webp",
+  src: `${M}/reportage-skatepark.webp`,
+  title: "16:9 – Beispielmotiv",
+  caption: "Platzhalter nach Entfernung der Legacy-Videos.",
+  poster: `${M}/reportage-skatepark.webp`,
 };

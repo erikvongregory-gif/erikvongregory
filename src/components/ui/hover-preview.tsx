@@ -11,20 +11,20 @@ export type HoverPreviewEntry = {
   subtitle: string;
 };
 
-/** Vorschau-Kacheln für die Über-uns-Story (lokale Assets unter /public). */
+/** Vorschau-Kacheln für die Über-uns-Story (Motive unter /neu-motion/motifs). */
 export const EVGLAB_HOVER_PREVIEWS: Record<string, HoverPreviewEntry> = {
   kiBilder: {
-    image: "/ki-beispiel-hafen.webp",
+    image: "/neu-motion/motifs/event-hafen.webp",
     title: "KI-Werbebilder",
     subtitle: "Motivation für Flasche, Gastro und Saison — in deinem Markenlook",
   },
   premium: {
-    image: "/hero-brauerei-live-bg.png",
+    image: "/neu-motion/motifs/produkt-flasche.webp",
     title: "Premium-Pakete",
     subtitle: "Fertige Bilder & Texte nach Briefing — wenig interner Aufwand",
   },
   dashboard: {
-    image: "/onboarding/dashboard-overview.svg",
+    image: "/neu/dashboard/dashboard-full.webp",
     title: "Dashboard & Tokens",
     subtitle: "Selbst generieren, planen und wiederverwenden — monatlich skalierbar",
   },
