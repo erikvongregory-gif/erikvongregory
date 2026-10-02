@@ -1,37 +1,11 @@
 import type { Metadata } from "next";
-import { RatgeberPage } from "@/components/ratgeber/RatgeberPage";
-import { SITE } from "@/lib/siteConfig";
+import { notFound } from "next/navigation";
 
 export const metadata: Metadata = {
-  title: "Ratgeber: BrewAI-Wissenscheck für Brauereien",
-  description:
-    "Interaktiver Ratgeber-Quiz für Brauereien: finde in fünf Fragen heraus, ob Dashboard oder Premium-Umsetzung besser zu deinem Team passt.",
-  alternates: { canonical: `${SITE.baseUrl}/ratgeber` },
-  openGraph: {
-    title: "Ratgeber: BrewAI-Wissenscheck",
-    description:
-      "Klickbarer Entscheidungs-Quiz für Brauereien in DACH mit direkter Empfehlung: Dashboard, Mixed oder Premium.",
-    url: `${SITE.baseUrl}/ratgeber`,
-    locale: "de_DE",
-    type: "website",
-  },
+  robots: { index: false, follow: false },
 };
 
-const ratgeberJsonLd = {
-  "@context": "https://schema.org",
-  "@type": "WebPage",
-  name: "BrewAI Ratgeber — Wissenscheck",
-  description:
-    "Fünf Fragen zu Zeit, Workflow und Zielbild — mit Empfehlung für Dashboard oder Premium-Umsetzung.",
-  url: `${SITE.baseUrl}/ratgeber`,
-  isPartOf: { "@type": "WebSite", name: SITE.name, url: SITE.baseUrl },
-};
-
+/** Vorübergehend offline — Inhalt bleibt im Repo, Route antwortet mit 404. */
 export default function RatgeberIndexPage() {
-  return (
-    <>
-      <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(ratgeberJsonLd) }} />
-      <RatgeberPage />
-    </>
-  );
+  notFound();
 }

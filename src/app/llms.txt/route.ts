@@ -25,7 +25,6 @@ export function GET(): Response {
 
 - ${base}/ — Home: packages, subscription plans, FAQ, contact
 - ${base}/loesungen — Brewery solutions (seasonal campaigns, gastro promo, beer garden events)
-- ${base}/ratgeber — Interactive quiz / knowledge check for brewery marketers
 - ${base}/umfrage — Brauerei-Marketing-Barometer 2026 industry survey
 
 ## Legal

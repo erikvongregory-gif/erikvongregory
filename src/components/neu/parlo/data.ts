@@ -347,7 +347,6 @@ export const FOOTER_COLUMNS = [
   {
     title: "Unternehmen",
     links: [
-      { label: "Ratgeber", href: "/ratgeber" },
       { label: "Kontakt", href: SITE.contactMailto },
     ],
   },

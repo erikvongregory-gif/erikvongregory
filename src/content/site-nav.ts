@@ -6,7 +6,6 @@ export const SITE_NAV_LINKS = [
   { label: "Funktionen", href: "#features" },
   { label: "Preise", href: "#pricing" },
   { label: "FAQ", href: "#faqs" },
-  { label: "Ratgeber", href: "/ratgeber" },
   { label: "Kontakt", href: "#contact" },
 ] as const;
 

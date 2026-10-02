@@ -161,7 +161,6 @@ export function JsonLd() {
       { "@type": "SiteNavigationElement", position: 7, name: "FAQ", url: `${SITE.baseUrl}/#faqs` },
       { "@type": "SiteNavigationElement", position: 8, name: "Kontakt", url: `${SITE.baseUrl}/#contact` },
       { "@type": "SiteNavigationElement", position: 9, name: "Lösungen", url: `${SITE.baseUrl}/loesungen` },
-      { "@type": "SiteNavigationElement", position: 10, name: "Ratgeber", url: `${SITE.baseUrl}/ratgeber` },
     ],
   };
 

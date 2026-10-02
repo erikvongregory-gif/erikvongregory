@@ -123,12 +123,6 @@ export default function Home() {
         name: "FAQ",
         url: `${SITE.baseUrl}/#faqs`,
       },
-      {
-        "@type": "SiteNavigationElement",
-        position: 7,
-        name: "Ratgeber Wissenscheck",
-        url: `${SITE.baseUrl}/ratgeber`,
-      },
     ],
   };
 

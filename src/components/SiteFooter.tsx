@@ -57,7 +57,6 @@ const FOOTER_COLS: { title: string; rows: FooterRow[] }[] = [
     title: "Mehr",
     rows: [
       { key: "Lösungen", value: "/loesungen", href: "/loesungen" },
-      { key: "Wissens-Quiz", value: "/ratgeber", href: "/ratgeber" },
     ],
   },
 ];
@@ -124,7 +123,7 @@ export function SiteFooter({ className, footerId = "site-footer" }: SiteFooterPr
                         {row.href ? (
                           row.href.startsWith("/") ? (
                             <Link href={row.href} className="shrink-0 text-[#E8DFCB] hover:text-amber2">
-                              {row.href === "/ratgeber" ? "→ Quiz" : "→ Seite"}
+                              → Seite
                             </Link>
                           ) : (
                             <a

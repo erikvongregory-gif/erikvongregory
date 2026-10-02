@@ -124,10 +124,6 @@ export default function VergleichPremiumDashboardPage() {
               <Link href="/#pricing" className="text-[#b45309] hover:underline">
                 Startseite unter Pakete &amp; Abos
               </Link>
-              . Zum Einordnen:{" "}
-              <Link href="/ratgeber" className="text-[#b45309] hover:underline">
-                interaktiver Ratgeber-Wissenscheck
-              </Link>
               .
             </p>
           </section>
