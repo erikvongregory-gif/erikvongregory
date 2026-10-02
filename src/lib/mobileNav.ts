@@ -1,7 +1,6 @@
 import {
   HelpCircle,
   Home,
-  Info,
   Layers,
   Mail,
   MessageCircle,
@@ -77,15 +76,6 @@ export const GLOW_NAV_ITEMS: HomeNavItem[] = [
       "radial-gradient(circle, rgba(168,85,247,0.18) 0%, rgba(147,51,234,0.07) 50%, rgba(126,34,206,0) 100%)",
     iconColor: "text-violet-600",
     iconHoverClass: "group-hover:text-violet-600",
-  },
-  {
-    icon: Info,
-    label: "Über uns",
-    href: "/ueber-uns#ueber-intro",
-    gradient:
-      "radial-gradient(circle, rgba(82,82,91,0.2) 0%, rgba(113,113,122,0.09) 50%, rgba(63,63,70,0) 100%)",
-    iconColor: "text-zinc-600",
-    iconHoverClass: "group-hover:text-zinc-800",
   },
   {
     icon: Mail,

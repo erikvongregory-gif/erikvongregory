@@ -12,7 +12,7 @@ export function JsonLd() {
     "@context": "https://schema.org",
     "@type": "Person",
     name: LEGAL.name,
-    url: `${SITE.baseUrl}/ueber-uns`,
+    url: SITE.baseUrl,
     email: LEGAL.email,
     jobTitle: `Gründer ${SITE.name}`,
     description: SITE.defaultDescription,
@@ -162,7 +162,6 @@ export function JsonLd() {
       { "@type": "SiteNavigationElement", position: 8, name: "Kontakt", url: `${SITE.baseUrl}/#contact` },
       { "@type": "SiteNavigationElement", position: 9, name: "Lösungen", url: `${SITE.baseUrl}/loesungen` },
       { "@type": "SiteNavigationElement", position: 10, name: "Ratgeber", url: `${SITE.baseUrl}/ratgeber` },
-      { "@type": "SiteNavigationElement", position: 11, name: "Über uns", url: `${SITE.baseUrl}/ueber-uns` },
     ],
   };
 

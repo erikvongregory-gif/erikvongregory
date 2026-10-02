@@ -58,7 +58,6 @@ const FOOTER_COLS: { title: string; rows: FooterRow[] }[] = [
     rows: [
       { key: "Lösungen", value: "/loesungen", href: "/loesungen" },
       { key: "Wissens-Quiz", value: "/ratgeber", href: "/ratgeber" },
-      { key: "Über uns", value: "/ueber-uns", href: "/ueber-uns" },
     ],
   },
 ];

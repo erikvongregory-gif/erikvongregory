@@ -27,7 +27,6 @@ const MOBILE_DRAWER_NAV = [
   { label: "Motive", tag: "Formate", href: "#formats" },
   { label: "Preise", tag: "Pakete", href: "#pricing" },
   { label: "FAQ", tag: "Fragen", href: "#faqs" },
-  { label: "Über uns", tag: "Team", href: "/ueber-uns#ueber-intro" },
   { label: "Kontakt", tag: "Schreib uns", href: "#contact" },
 ] as const;
 

@@ -129,12 +129,6 @@ export default function Home() {
         name: "Ratgeber Wissenscheck",
         url: `${SITE.baseUrl}/ratgeber`,
       },
-      {
-        "@type": "SiteNavigationElement",
-        position: 8,
-        name: "Über uns",
-        url: `${SITE.baseUrl}/ueber-uns`,
-      },
     ],
   };
 
