@@ -123,7 +123,7 @@ export const DACH_GLOBE_MARKERS: PolaroidMarker[] = [
   {
     id: "at-wien",
     location: [48.2082, 16.3738],
-    image: "/neu-motion/motifs/premium-biergarten.webp",
+    image: "/neu-motion/motifs/produkt-flasche.webp",
     caption: "Österreich",
     rotate: 4,
   },

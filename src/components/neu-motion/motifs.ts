@@ -27,7 +27,7 @@ const motif = (file: string, ratio: keyof typeof RATIO): Motif => ({
  */
 export const RECENT_SLOTS = [
   { label: "Kampagne", pool: [motif("kampagne-anstossen", "4:5")] },
-  { label: "Premium", pool: [motif("premium-biergarten", "4:5")] },
+  { label: "Premium", pool: [motif("produkt-flasche", "4:5")] },
   { label: "Reportage", pool: [motif("reportage-skatepark", "16:9")] },
   { label: "Kampagne · Hyperreal", pool: [motif("kampagne-hyperreal-hafen", "4:5")] },
 ] as const;

@@ -8,7 +8,7 @@ export const KI_BEISPIELE = [
   { src: `${M}/produkt-flasche.webp`, alt: "Produktfoto Flasche" },
   { src: `${M}/event-hafen.webp`, alt: "Event-Motiv am Hafen" },
   { src: `${M}/story-biergarten.webp`, alt: "Story-Motiv Biergarten" },
-  { src: `${M}/premium-biergarten.webp`, alt: "Premium-Motiv Biergarten" },
+  { src: `${M}/produkt-flasche.webp`, alt: "Premium-Motiv Produktflasche" },
 ] as const;
 
 /** Desktop-Hero-Studio-Mockup: zwei fertige Varianten. */
