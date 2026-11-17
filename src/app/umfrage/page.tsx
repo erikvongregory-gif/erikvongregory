@@ -6,7 +6,7 @@ import { SITE } from "@/lib/siteConfig";
 export const metadata: Metadata = {
   title: `${UMFRAGE_META.title} | ${SITE.name}`,
   description:
-    "Kurze Branchenumfrage: Wo verlieren Brauereien heute Zeit, Geld und Sichtbarkeit im Marketing? Ca. 3–4 Minuten. Ergebnisse anonymisiert als Barometer 2026.",
+    "Kurze Umfrage unter Brauereien: Wie läuft Ihr Marketing heute, was kostet es und was würde wirklich helfen? Ca. 10 Minuten, anonym, kein Verkauf.",
   alternates: { canonical: `${SITE.baseUrl}/umfrage` },
   openGraph: {
     title: UMFRAGE_META.title,

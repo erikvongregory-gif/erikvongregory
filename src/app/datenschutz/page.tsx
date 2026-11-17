@@ -199,15 +199,16 @@ export default function DatenschutzPage() {
 
           <section>
             <h2 className="mb-3 text-lg font-semibold text-white md:text-zinc-900">
-              5a. Branchenumfrage (Brauerei-Marketing-Barometer)
+              5a. Branchenumfrage (Marketing in Brauereien)
             </h2>
             <p>
               Über die Seite /umfrage können Sie an unserer anonymisierten Branchenumfrage
               teilnehmen. Dabei werden Ihre Antworten zu Marketingprozessen in Brauereien
-              erhoben und in unserer Datenbank (Supabase) gespeichert. Optional können Sie
-              eine E-Mail-Adresse und den Unternehmensnamen angeben, um die Auswertung zu
-              erhalten oder eine persönliche Einschätzung anzufordern. Zusätzlich kann eine
-              Benachrichtigung an uns per E-Mail (Resend an umfrage@brewai.de).
+              erhoben und in unserer Datenbank (Supabase) gespeichert. Optional und nur mit
+              Ihrer Einwilligung können Sie Name, Brauerei sowie Telefonnummer oder E-Mail-Adresse
+              angeben, damit wir Ihnen ein Beispielmotiv schicken oder uns für ein Gespräch melden
+              können. Zusätzlich erhalten wir eine Benachrichtigung per E-Mail (Resend an
+              umfrage@brewai.de).
             </p>
             <p className="mt-3">
               <strong>Rechtsgrundlage:</strong> Art. 6 Abs. 1 lit. f DSGVO (berechtigtes

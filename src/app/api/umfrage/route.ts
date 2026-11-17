@@ -4,6 +4,7 @@ import { UMFRAGE_SURVEY_ID } from "@/content/umfrage";
 import {
   formatUmfrageNotifyHtml,
   formatUmfrageNotifyText,
+  type UmfrageNotifyInput,
 } from "@/lib/umfrageNotifyFormat";
 import { enforceRateLimitPersistent, enforceSameOrigin } from "@/lib/security/requestGuards";
 import { createAdminClient } from "@/lib/supabase/admin";
@@ -21,29 +22,23 @@ const UMFRAGE_RESEND_TO = (
 
 const payloadSchema = z.object({
   answers: z.record(z.string(), z.unknown()),
-  email: z.string().trim().max(254).optional(),
+  name: z.string().trim().max(120).optional(),
   company: z.string().trim().max(200).optional(),
-  wantsResults: z.boolean().optional(),
-  wantsPersonalAnalysis: z.enum(["ja", "spaeter", "nein"]).optional(),
+  /** Telefon oder E-Mail (Papierbogen: ein Feld). */
+  contact: z.string().trim().max(254).optional(),
+  consent: z.boolean().optional(),
 });
 
-async function notifyViaResend(input: {
-  email?: string;
-  company?: string;
-  wantsResults: boolean;
-  wantsPersonalAnalysis?: string;
-  answers: Record<string, unknown>;
-}) {
+const isEmail = (s: string) => /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(s);
+
+async function notifyViaResend(input: UmfrageNotifyInput) {
   const apiKey = process.env.RESEND_API_KEY?.trim();
   if (!apiKey) throw new Error("RESEND_API_KEY fehlt.");
 
-  const replyEmail = input.email?.trim();
-  const subjectParts = ["Umfrage: Brauerei-Marketing-Barometer 2026"];
+  const subjectParts = ["Umfrage: Marketing in Brauereien"];
   if (input.company) subjectParts.push(input.company);
-  if (input.wantsPersonalAnalysis === "ja") subjectParts.push("Analyse-Interesse");
-
-  const text = formatUmfrageNotifyText(input);
-  const html = formatUmfrageNotifyHtml(input);
+  if (input.answers.gespraech === "ja" && input.contact) subjectParts.push("Gespräch ja");
+  else if (input.answers.beispielmotiv === "ja" && input.contact) subjectParts.push("Beispielmotiv");
 
   const from =
     process.env.UMFRAGE_FROM_EMAIL?.trim() ||
@@ -58,10 +53,10 @@ async function notifyViaResend(input: {
     body: JSON.stringify({
       from,
       to: UMFRAGE_RESEND_TO,
-      ...(replyEmail ? { reply_to: replyEmail } : {}),
+      ...(input.email ? { reply_to: input.email } : {}),
       subject: subjectParts.join(" – "),
-      text,
-      html,
+      text: formatUmfrageNotifyText(input),
+      html: formatUmfrageNotifyHtml(input),
     }),
   });
 
@@ -88,19 +83,36 @@ export async function POST(req: Request) {
       return NextResponse.json({ error: "Ungültige Angaben." }, { status: 400 });
     }
 
-    const emailRaw = parsed.data.email?.trim() || "";
-    const email = emailRaw || null;
-    if (email && !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
+    const answers = { ...parsed.data.answers };
+    // Kontaktfelder nur mit Einwilligung speichern (Papierbogen: Checkbox unter Frage 30).
+    const consent = parsed.data.consent === true;
+    const name = consent ? parsed.data.name?.trim() || null : null;
+    const company = consent ? parsed.data.company?.trim() || null : null;
+    const contact = consent ? parsed.data.contact?.trim() || null : null;
+
+    if (contact && contact.includes("@") && !isEmail(contact)) {
       return NextResponse.json({ error: "Bitte eine gültige E-Mail-Adresse angeben." }, { status: 400 });
     }
-    const company = parsed.data.company?.trim() || null;
-    const wantsResults = Boolean(parsed.data.wantsResults && email);
-    const wantsPersonalAnalysis = parsed.data.wantsPersonalAnalysis;
-    const answers = parsed.data.answers;
 
     if (Object.keys(answers).length < 5) {
       return NextResponse.json({ error: "Bitte beantworten Sie die Fragen vollständig." }, { status: 400 });
     }
+
+    const email = contact && isEmail(contact) ? contact : null;
+    const phone = contact && !email ? contact : null;
+
+    // Bestehende Tabelle ohne Migration: Name/Telefon liegen im answers-JSON unter _kontakt.
+    if (name || phone) {
+      answers._kontakt = { ...(name ? { name } : {}), ...(phone ? { telefon: phone } : {}) };
+    }
+
+    const beispielmotiv = answers.beispielmotiv;
+    const gespraech = answers.gespraech;
+    const wantsResults = Boolean(
+      contact && (beispielmotiv === "ja" || beispielmotiv === "vielleicht"),
+    );
+    const wantsPersonalAnalysis =
+      gespraech === "ja" ? "ja" : gespraech === "nein" ? "nein" : null;
 
     const admin = createAdminClient();
     const { error } = await admin.from("survey_responses").insert({
@@ -109,7 +121,7 @@ export async function POST(req: Request) {
       email,
       company,
       wants_results: wantsResults,
-      wants_personal_analysis: wantsPersonalAnalysis ?? null,
+      wants_personal_analysis: wantsPersonalAnalysis,
     });
 
     if (error) {
@@ -122,21 +134,17 @@ export async function POST(req: Request) {
 
     try {
       await notifyViaResend({
-        email: email ?? undefined,
+        name: name ?? undefined,
         company: company ?? undefined,
-        wantsResults,
-        wantsPersonalAnalysis,
+        contact: contact ?? undefined,
+        email: email ?? undefined,
         answers,
       });
       return NextResponse.json({ ok: true, notified: true });
     } catch (err) {
       console.error("[umfrage] notify failed", err);
       // Antwort ist gespeichert – Mail-Fehler nicht als totalen Fail anzeigen.
-      return NextResponse.json({
-        ok: true,
-        notified: false,
-        notifyError: err instanceof Error ? err.message : "notify failed",
-      });
+      return NextResponse.json({ ok: true, notified: false });
     }
   } catch (err) {
     console.error("[umfrage] unexpected", err);

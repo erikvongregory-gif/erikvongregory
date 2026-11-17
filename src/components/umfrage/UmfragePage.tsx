@@ -4,16 +4,22 @@ import { useEffect, useMemo, useRef, useState } from "react";
 import Link from "next/link";
 import { AnimatePresence, motion } from "framer-motion";
 import {
+  UMFRAGE_CONSENT_TEXT,
+  UMFRAGE_FINAL_NOTE,
   UMFRAGE_INTRO_STEPS,
   UMFRAGE_META,
+  UMFRAGE_PART_COUNT,
+  UMFRAGE_PARTS,
   UMFRAGE_QUESTIONS,
+  UMFRAGE_VARIANTS,
+  type UmfrageOption,
   type UmfrageQuestion,
 } from "@/content/umfrage";
 import { CheckIcon } from "@/components/neu/parlo/ParloUi";
 import { EASE } from "@/components/neu-motion/motion-utils";
 import { cn } from "@/lib/utils";
 
-type AnswerValue = string | string[] | number;
+type AnswerValue = string | string[] | Record<string, string>;
 type Answers = Record<string, AnswerValue>;
 type Phase = "intro" | "questions" | "contact" | "done";
 
@@ -26,8 +32,9 @@ const slide = {
 function isVisible(q: UmfrageQuestion, answers: Answers): boolean {
   if (!q.showIf) return true;
   const current = answers[q.showIf.questionId];
-  if (typeof current !== "string") return false;
-  return q.showIf.values.includes(current);
+  if (typeof current === "string") return q.showIf.values.includes(current);
+  if (Array.isArray(current)) return current.some((v) => q.showIf!.values.includes(v));
+  return false;
 }
 
 function getVisibleQuestions(answers: Answers) {
@@ -36,17 +43,61 @@ function getVisibleQuestions(answers: Answers) {
 
 function isAnswered(q: UmfrageQuestion, answers: Answers): boolean {
   const value = answers[q.id];
-  if (q.type === "single") return typeof value === "string" && value.length > 0;
-  if (q.type === "multi") return Array.isArray(value) && value.length > 0;
-  if (q.type === "scale") return typeof value === "number";
+  if (q.type === "info") return true;
   if (q.type === "text") {
     if (!q.required) return true;
     return typeof value === "string" && value.trim().length > 0;
   }
+  if (!q.required) return true;
+  if (q.type === "single") return typeof value === "string" && value.length > 0;
+  if (q.type === "multi" || q.type === "rank") return Array.isArray(value) && value.length > 0;
+  if (q.type === "groups") {
+    if (!value || typeof value !== "object" || Array.isArray(value)) return false;
+    return (q.groups ?? []).every((g) => Boolean((value as Record<string, string>)[g.id]));
+  }
   return false;
 }
 
+const isEmail = (s: string) => /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(s);
+
 function OptionButton({
+  selected,
+  onClick,
+  children,
+  badge,
+}: {
+  selected: boolean;
+  onClick: () => void;
+  children: React.ReactNode;
+  badge?: React.ReactNode;
+}) {
+  return (
+    <button
+      type="button"
+      onClick={onClick}
+      aria-pressed={selected}
+      className={cn(
+        "flex w-full items-center gap-3 rounded-2xl border px-4 py-3.5 text-left text-[15px] transition-colors duration-200",
+        selected
+          ? "border-foreground bg-foreground text-background"
+          : "border-border bg-card/70 text-foreground/80 hover:border-foreground/25 hover:bg-card hover:text-foreground",
+      )}
+    >
+      <span
+        className={cn(
+          "nm-check inline-flex size-5 shrink-0 items-center justify-center rounded-full border font-mono text-[11px]",
+          selected ? "is-on border-background/40 bg-background/15" : "border-foreground/20",
+        )}
+        aria-hidden
+      >
+        {badge ?? (selected ? <CheckIcon className="size-3" /> : null)}
+      </span>
+      <span className="min-w-0 flex-1">{children}</span>
+    </button>
+  );
+}
+
+function ChipButton({
   selected,
   onClick,
   children,
@@ -59,23 +110,15 @@ function OptionButton({
     <button
       type="button"
       onClick={onClick}
+      aria-pressed={selected}
       className={cn(
-        "flex w-full items-center gap-3 rounded-2xl border px-4 py-3.5 text-left text-[15px] transition-colors duration-200",
+        "rounded-full border px-3.5 py-2 text-[14px] transition-colors duration-200",
         selected
           ? "border-foreground bg-foreground text-background"
-          : "border-border bg-card/70 text-foreground/80 hover:border-foreground/25 hover:bg-card hover:text-foreground",
+          : "border-border bg-card/70 text-foreground/80 hover:border-foreground/25 hover:text-foreground",
       )}
     >
-      <span
-        className={cn(
-          "nm-check inline-flex size-5 shrink-0 items-center justify-center rounded-full border",
-          selected ? "is-on border-background/40 bg-background/15" : "border-foreground/20",
-        )}
-        aria-hidden
-      >
-        {selected ? <CheckIcon className="size-3" /> : null}
-      </span>
-      <span className="min-w-0 flex-1">{children}</span>
+      {children}
     </button>
   );
 }
@@ -106,8 +149,24 @@ function PrimaryButton({
   );
 }
 
+function BackButton({ onClick }: { onClick: () => void }) {
+  return (
+    <button
+      type="button"
+      onClick={onClick}
+      className="rounded-xl px-3 py-2.5 text-sm font-medium text-muted-foreground transition-colors hover:text-foreground"
+    >
+      Zurück
+    </button>
+  );
+}
+
 const fieldClass =
   "w-full rounded-2xl border border-border bg-card/70 px-4 py-3.5 text-[15px] text-foreground outline-none transition-colors placeholder:text-muted-foreground focus:border-foreground/30";
+
+const eyebrowClass = "font-mono text-[11px] uppercase tracking-[1.3px] text-muted-foreground";
+const questionTitleClass =
+  "mt-3 text-[1.45rem] font-medium leading-[1.15] tracking-tight text-foreground sm:text-[1.85rem]";
 
 export function UmfragePage() {
   const [phase, setPhase] = useState<Phase>("intro");
@@ -116,11 +175,13 @@ export function UmfragePage() {
   const [contactStep, setContactStep] = useState(0);
   const [dir, setDir] = useState(1);
   const [answers, setAnswers] = useState<Answers>({});
-  const [otherTexts, setOtherTexts] = useState<Record<string, string>>({});
-  const [email, setEmail] = useState("");
+  /** Freitexte zu Optionen („Sonstiges:“) und Zusatzfelder, Schlüssel = Antwort-Key. */
+  const [texts, setTexts] = useState<Record<string, string>>({});
+  const [name, setName] = useState("");
   const [company, setCompany] = useState("");
-  const [wantsResults, setWantsResults] = useState(true);
-  const [personalAnalysis, setPersonalAnalysis] = useState<"ja" | "spaeter" | "nein" | "">("");
+  const [contact, setContact] = useState("");
+  const [consent, setConsent] = useState(false);
+  const [finalNote, setFinalNote] = useState("");
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const autoAdvanceRef = useRef<ReturnType<typeof setTimeout> | null>(null);
@@ -128,8 +189,7 @@ export function UmfragePage() {
   const visible = useMemo(() => getVisibleQuestions(answers), [answers]);
   const current = visible[step];
 
-  const totalFunnel =
-    UMFRAGE_INTRO_STEPS.length + visible.length + 2; /* contact + done placeholder */
+  const totalFunnel = UMFRAGE_INTRO_STEPS.length + visible.length + 2;
   const funnelIndex =
     phase === "intro"
       ? introStep
@@ -180,66 +240,114 @@ export function UmfragePage() {
     autoAdvanceRef.current = setTimeout(() => goNextQuestion(), 280);
   };
 
-  const setSingle = (qid: string, optionId: string, auto = true) => {
-    setAnswers((prev) => ({ ...prev, [qid]: optionId }));
-    if (auto) scheduleAdvance();
+  const setSingle = (q: UmfrageQuestion, opt: UmfrageOption) => {
+    setAnswers((prev) => ({ ...prev, [q.id]: opt.id }));
+    if (!opt.allowText && !q.extra) scheduleAdvance();
   };
 
-  const setScale = (qid: string, n: number) => {
-    setAnswers((prev) => ({ ...prev, [qid]: n }));
-    scheduleAdvance();
-  };
-
-  const toggleMulti = (q: UmfrageQuestion, optionId: string) => {
+  const toggleMulti = (q: UmfrageQuestion, opt: UmfrageOption) => {
     setAnswers((prev) => {
       const raw = prev[q.id];
-      const existing = Array.isArray(raw) ? [...raw] : [];
-      const idx = existing.indexOf(optionId);
-      if (idx >= 0) existing.splice(idx, 1);
-      else {
+      let existing = Array.isArray(raw) ? [...raw] : [];
+      const idx = existing.indexOf(opt.id);
+      if (idx >= 0) {
+        existing.splice(idx, 1);
+      } else if (opt.exclusive) {
+        existing = [opt.id];
+      } else {
+        const exclusiveIds = new Set(
+          (q.options ?? []).filter((o) => o.exclusive).map((o) => o.id),
+        );
+        existing = existing.filter((id) => !exclusiveIds.has(id));
         if (q.maxSelect && existing.length >= q.maxSelect) return prev;
-        existing.push(optionId);
+        existing.push(opt.id);
       }
       return { ...prev, [q.id]: existing };
     });
   };
 
+  const setGroup = (q: UmfrageQuestion, groupId: string, optionId: string) => {
+    setAnswers((prev) => {
+      const raw = prev[q.id];
+      const base =
+        raw && typeof raw === "object" && !Array.isArray(raw) ? { ...raw } : {};
+      base[groupId] = optionId;
+      return { ...prev, [q.id]: base };
+    });
+  };
+
+  const setText = (key: string, value: string, max = 2000) =>
+    setTexts((prev) => ({ ...prev, [key]: value.slice(0, max) }));
+
   const canAdvance = current ? isAnswered(current, answers) : false;
-  const selectedIsOther =
+  const selectedSingleNeedsText =
     current?.type === "single" &&
     typeof answers[current.id] === "string" &&
     Boolean(current.options?.find((o) => o.id === answers[current.id])?.allowText);
   const showNextButton =
-    current?.type === "multi" || current?.type === "text" || selectedIsOther;
+    current?.type !== "single" || selectedSingleNeedsText || Boolean(current?.extra);
+
+  const isSelected = (q: UmfrageQuestion, optId: string) => {
+    const v = answers[q.id];
+    if (q.type === "single") return v === optId;
+    return Array.isArray(v) && v.includes(optId);
+  };
 
   const buildPayloadAnswers = () => {
-    const out: Record<string, unknown> = { ...answers };
-    for (const [qid, text] of Object.entries(otherTexts)) {
-      const trimmed = text.trim();
-      if (!trimmed) continue;
-      out[`${qid}_sonstiges`] = trimmed;
+    const out: Record<string, unknown> = {};
+    for (const q of visible) {
+      if (q.type === "info") continue;
+      const value = answers[q.id];
+      if (q.type === "text") {
+        const t = typeof value === "string" ? value.trim() : "";
+        if (t) out[q.id] = t;
+        continue;
+      }
+      if (value === undefined) continue;
+      out[q.id] = value;
+
+      const selectedOpts = (q.options ?? []).filter((o) => isSelected(q, o.id));
+      if (selectedOpts.some((o) => o.allowText)) {
+        const t = (texts[`${q.id}_sonstiges`] ?? "").trim();
+        if (t) out[`${q.id}_sonstiges`] = t;
+      }
+      if (q.extra) {
+        const key = `${q.id}_${q.extra.id}`;
+        const t = (texts[key] ?? "").trim();
+        if (t) out[key] = t;
+      }
     }
+    const note = finalNote.trim();
+    if (note) out[UMFRAGE_FINAL_NOTE.id] = note;
     return out;
   };
+
+  const contactFilled = Boolean(name.trim() || company.trim() || contact.trim());
+  const contactInvalid =
+    contact.trim().includes("@") && !isEmail(contact.trim());
+  const contactRequested =
+    answers.beispielmotiv === "ja" ||
+    answers.beispielmotiv === "vielleicht" ||
+    answers.gespraech === "ja";
 
   const handleSubmit = async () => {
     setLoading(true);
     setError(null);
     try {
-      const payloadAnswers = buildPayloadAnswers();
-      const payloadEmail = email.trim();
-      const payloadCompany = company.trim();
-      const payloadWantsResults = wantsResults && Boolean(payloadEmail);
-
+      const withContact = contactFilled && consent;
       const res = await fetch("/api/umfrage", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
-          answers: payloadAnswers,
-          email: payloadEmail,
-          company: payloadCompany,
-          wantsResults: payloadWantsResults,
-          wantsPersonalAnalysis: personalAnalysis || undefined,
+          answers: buildPayloadAnswers(),
+          ...(withContact
+            ? {
+                name: name.trim(),
+                company: company.trim(),
+                contact: contact.trim(),
+                consent: true,
+              }
+            : {}),
         }),
       });
       const data = (await res.json().catch(() => ({}))) as { error?: string };
@@ -262,7 +370,14 @@ export function UmfragePage() {
           ? `contact-${contactStep}`
           : "done";
 
+  // Lange Fragen: bei jedem Schrittwechsel wieder oben anfangen.
+  useEffect(() => {
+    window.scrollTo({ top: 0 });
+  }, [animKey]);
+
   const intro = UMFRAGE_INTRO_STEPS[introStep];
+  const part = current ? UMFRAGE_PARTS[current.part] : undefined;
+  const isFirstInPart = current ? visible[step - 1]?.part !== current.part : false;
 
   return (
     <main id="main" className="relative z-20 min-h-[100dvh] overflow-hidden pt-20">
@@ -270,7 +385,9 @@ export function UmfragePage() {
         <header className="mb-6 shrink-0">
           <div className="flex items-center justify-between gap-3">
             <p className="font-mono text-[10px] uppercase tracking-[1.5px] text-muted-foreground sm:text-[11px]">
-              BrewAI
+              {phase === "questions" && part
+                ? `Teil ${current!.part} von ${UMFRAGE_PART_COUNT} · ${part.title}`
+                : "BrewAI"}
             </p>
             {phase !== "done" ? (
               <p className="font-mono text-[10px] uppercase tracking-wide text-muted-foreground">
@@ -312,6 +429,18 @@ export function UmfragePage() {
                   <p className="mt-5 max-w-md text-[16px] leading-relaxed text-foreground/80 sm:text-[17px]">
                     {intro.body}
                   </p>
+                  {intro.chips.length ? (
+                    <ul className="mt-6 flex flex-wrap gap-2">
+                      {intro.chips.map((chip) => (
+                        <li
+                          key={chip}
+                          className="rounded-full border border-border bg-card/70 px-3 py-1.5 text-[13px] text-foreground/80"
+                        >
+                          {chip}
+                        </li>
+                      ))}
+                    </ul>
+                  ) : null}
                   <div className="mt-10 flex flex-col gap-3 sm:max-w-xs">
                     <PrimaryButton
                       onClick={() =>
@@ -342,32 +471,64 @@ export function UmfragePage() {
 
               {phase === "questions" && current ? (
                 <section>
-                  <p className="font-mono text-[11px] uppercase tracking-[1.3px] text-muted-foreground">
-                    Frage {step + 1} von {visible.length}
-                  </p>
-                  <h2 className="mt-3 text-[1.55rem] font-medium leading-[1.12] tracking-tight text-foreground sm:text-[1.95rem]">
-                    {current.title}
-                  </h2>
-                  {current.hint ? (
-                    <p className="mt-2 text-sm text-muted-foreground">{current.hint}</p>
+                  {isFirstInPart && part ? (
+                    <p className="mb-4 text-sm italic text-muted-foreground">{part.subtitle}</p>
                   ) : null}
+
+                  {current.type === "info" ? (
+                    <>
+                      <h2 className={questionTitleClass}>{current.title}</h2>
+                      {current.hint ? (
+                        <p className="mt-2 text-[15px] leading-relaxed text-foreground/80">
+                          {current.hint}
+                        </p>
+                      ) : null}
+                      <div className="mt-6 grid gap-3">
+                        {UMFRAGE_VARIANTS.map((v) => (
+                          <article
+                            key={v.key}
+                            className="rounded-2xl border border-border bg-card/70 px-4 py-4"
+                          >
+                            <p className="font-mono text-[10px] uppercase tracking-[1.4px] text-muted-foreground">
+                              {v.eyebrow}
+                            </p>
+                            <h3 className="mt-1 text-[17px] font-medium text-foreground">
+                              {v.title}
+                            </h3>
+                            <ul className="mt-3 space-y-1.5 text-[14px] leading-snug text-foreground/80">
+                              {v.points.map((p) => (
+                                <li key={p} className="flex gap-2">
+                                  <span aria-hidden className="mt-[7px] size-1 shrink-0 rounded-full bg-foreground/50" />
+                                  <span>{p}</span>
+                                </li>
+                              ))}
+                            </ul>
+                          </article>
+                        ))}
+                      </div>
+                    </>
+                  ) : (
+                    <>
+                      <p className={eyebrowClass}>Frage {current.n}</p>
+                      <h2 className={questionTitleClass}>{current.title}</h2>
+                      {current.hint ? (
+                        <p className="mt-2 text-sm text-muted-foreground">{current.hint}</p>
+                      ) : null}
+                    </>
+                  )}
 
                   <div className="mt-7 space-y-2.5">
                     {current.type === "single" || current.type === "multi"
                       ? current.options?.map((opt) => {
-                          const selected =
-                            current.type === "single"
-                              ? answers[current.id] === opt.id
-                              : Array.isArray(answers[current.id]) &&
-                                (answers[current.id] as string[]).includes(opt.id);
+                          const selected = isSelected(current, opt.id);
                           return (
                             <div key={opt.id}>
                               <OptionButton
-                                selected={Boolean(selected)}
+                                selected={selected}
                                 onClick={() =>
                                   current.type === "single"
-                                    ? setSingle(current.id, opt.id, !opt.allowText)
-                                    : toggleMulti(current, opt.id)
+                                    ? setSingle(current, opt)
+                                    : toggleMulti(current, opt)
                                 }
                               >
                                 {opt.label}
@@ -376,12 +537,9 @@ export function UmfragePage() {
                                 <input
                                   type="text"
                                   autoFocus
-                                  value={otherTexts[current.id] || ""}
+                                  value={texts[`${current.id}_sonstiges`] || ""}
                                   onChange={(e) =>
-                                    setOtherTexts((prev) => ({
-                                      ...prev,
-                                      [current.id]: e.target.value,
-                                    }))
+                                    setText(`${current.id}_sonstiges`, e.target.value, 500)
                                   }
                                   placeholder="Bitte kurz ergänzen …"
                                   className={cn(fieldClass, "mt-2")}
@@ -392,25 +550,53 @@ export function UmfragePage() {
                         })
                       : null}
 
-                    {current.type === "scale" && current.scaleMin && current.scaleMax ? (
-                      <div className="grid gap-2">
-                        {Array.from(
-                          { length: current.scaleMax - current.scaleMin + 1 },
-                          (_, i) => current.scaleMin! + i,
-                        ).map((n) => (
-                          <OptionButton
-                            key={n}
-                            selected={answers[current.id] === n}
-                            onClick={() => setScale(current.id, n)}
-                          >
-                            <span className="inline-flex items-center">
-                              <span className="font-mono text-sm">{n}</span>
-                              <span className="ml-3">{current.scaleLabels?.[n] ?? ""}</span>
-                            </span>
-                          </OptionButton>
-                        ))}
-                      </div>
-                    ) : null}
+                    {current.type === "rank"
+                      ? current.options?.map((opt) => {
+                          const order = Array.isArray(answers[current.id])
+                            ? (answers[current.id] as string[])
+                            : [];
+                          const pos = order.indexOf(opt.id);
+                          return (
+                            <OptionButton
+                              key={opt.id}
+                              selected={pos >= 0}
+                              onClick={() => toggleMulti(current, opt)}
+                              badge={pos >= 0 && !opt.exclusive ? pos + 1 : undefined}
+                            >
+                              {opt.label}
+                            </OptionButton>
+                          );
+                        })
+                      : null}
+
+                    {current.type === "groups"
+                      ? current.groups?.map((g) => {
+                          const value = answers[current.id];
+                          const chosen =
+                            value && typeof value === "object" && !Array.isArray(value)
+                              ? (value as Record<string, string>)[g.id]
+                              : undefined;
+                          return (
+                            <div
+                              key={g.id}
+                              className="rounded-2xl border border-border bg-card/40 px-4 py-3.5"
+                            >
+                              <p className="text-sm font-medium text-foreground">{g.label}</p>
+                              <div className="mt-2.5 flex flex-wrap gap-2">
+                                {g.options.map((opt) => (
+                                  <ChipButton
+                                    key={opt.id}
+                                    selected={chosen === opt.id}
+                                    onClick={() => setGroup(current, g.id, opt.id)}
+                                  >
+                                    {opt.label}
+                                  </ChipButton>
+                                ))}
+                              </div>
+                            </div>
+                          );
+                        })
+                      : null}
 
                     {current.type === "text" ? (
                       <textarea
@@ -430,16 +616,47 @@ export function UmfragePage() {
                         className={fieldClass}
                       />
                     ) : null}
+
+                    {current.extra ? (
+                      <label className="block pt-3">
+                        <span className="mb-1.5 block text-sm text-muted-foreground">
+                          {current.extra.label}
+                        </span>
+                        {current.extra.multiline ? (
+                          <textarea
+                            rows={3}
+                            value={texts[`${current.id}_${current.extra.id}`] || ""}
+                            onChange={(e) =>
+                              setText(`${current.id}_${current.extra!.id}`, e.target.value)
+                            }
+                            placeholder={current.extra.placeholder}
+                            className={fieldClass}
+                          />
+                        ) : (
+                          <span className="flex items-center gap-3">
+                            <input
+                              type="text"
+                              inputMode={current.extra.inputMode}
+                              value={texts[`${current.id}_${current.extra.id}`] || ""}
+                              onChange={(e) =>
+                                setText(`${current.id}_${current.extra!.id}`, e.target.value, 40)
+                              }
+                              placeholder={current.extra.placeholder}
+                              className={cn(fieldClass, "max-w-[180px]")}
+                            />
+                            {current.extra.suffix ? (
+                              <span className="text-sm text-muted-foreground">
+                                {current.extra.suffix}
+                              </span>
+                            ) : null}
+                          </span>
+                        )}
+                      </label>
+                    ) : null}
                   </div>
 
                   <div className="mt-8 flex items-center justify-between gap-3">
-                    <button
-                      type="button"
-                      onClick={goPrevQuestion}
-                      className="rounded-xl px-3 py-2.5 text-sm font-medium text-muted-foreground transition-colors hover:text-foreground"
-                    >
-                      Zurück
-                    </button>
+                    <BackButton onClick={goPrevQuestion} />
                     {showNextButton ? (
                       <PrimaryButton
                         className="w-auto min-w-[140px] px-6"
@@ -452,7 +669,7 @@ export function UmfragePage() {
                           : "Weiter"}
                       </PrimaryButton>
                     ) : (
-                      <p className="text-xs text-muted-foreground">Antwort tippen — geht automatisch weiter</p>
+                      <p className="text-xs text-muted-foreground">Antwort tippen, geht automatisch weiter</p>
                     )}
                   </div>
                 </section>
@@ -460,63 +677,72 @@ export function UmfragePage() {
 
               {phase === "contact" && contactStep === 0 ? (
                 <section>
-                  <p className="font-mono text-[11px] uppercase tracking-[1.4px] text-muted-foreground">
-                    Fast geschafft
-                  </p>
+                  <p className={eyebrowClass}>Kontakt · freiwillig</p>
                   <h2 className="mt-3 text-[1.7rem] font-medium leading-[1.1] tracking-tight text-foreground sm:text-[2.1rem]">
-                    Möchten Sie die Auswertung erhalten?
+                    {contactRequested ? "Wie erreiche ich Sie?" : "Möchten Sie Kontakt hinterlassen?"}
                   </h2>
                   <p className="mt-3 text-[15px] leading-relaxed text-foreground/80">
-                    Kostenlos, anonymisiert, nach Abschluss der Befragung.
+                    {contactRequested
+                      ? "Damit ich Ihnen das Beispielmotiv schicken oder mich für das Gespräch melden kann."
+                      : "Nur wenn Sie möchten. Ohne Angaben bleibt die Umfrage komplett anonym."}
                   </p>
 
-                  <div className="mt-7 space-y-2.5">
-                    <OptionButton selected={wantsResults} onClick={() => setWantsResults(true)}>
-                      Ja, Auswertung bitte zusenden
-                    </OptionButton>
-                    <OptionButton selected={!wantsResults} onClick={() => setWantsResults(false)}>
-                      Nein, nur teilnehmen
-                    </OptionButton>
+                  <div className="mt-6 space-y-3">
+                    <input
+                      type="text"
+                      autoComplete="name"
+                      value={name}
+                      onChange={(e) => setName(e.target.value.slice(0, 120))}
+                      className={fieldClass}
+                      placeholder="Name"
+                    />
+                    <input
+                      type="text"
+                      autoComplete="organization"
+                      value={company}
+                      onChange={(e) => setCompany(e.target.value.slice(0, 200))}
+                      className={fieldClass}
+                      placeholder="Brauerei"
+                    />
+                    <input
+                      type="text"
+                      autoComplete="email"
+                      value={contact}
+                      onChange={(e) => setContact(e.target.value.slice(0, 254))}
+                      className={fieldClass}
+                      placeholder="Telefon oder E-Mail"
+                    />
+                    {contactInvalid ? (
+                      <p className="text-sm text-destructive">Bitte eine gültige E-Mail-Adresse angeben.</p>
+                    ) : null}
+                    {contactFilled ? (
+                      <label className="flex cursor-pointer items-start gap-3 pt-1 text-sm leading-relaxed text-foreground/80">
+                        <input
+                          type="checkbox"
+                          checked={consent}
+                          onChange={(e) => setConsent(e.target.checked)}
+                          className="mt-1 size-4 shrink-0 accent-current"
+                        />
+                        <span>{UMFRAGE_CONSENT_TEXT}</span>
+                      </label>
+                    ) : null}
                   </div>
 
-                  {wantsResults ? (
-                    <div className="mt-6 space-y-3">
-                      <input
-                        type="email"
-                        value={email}
-                        onChange={(e) => setEmail(e.target.value)}
-                        className={fieldClass}
-                        placeholder="Ihre E-Mail"
-                      />
-                      <input
-                        type="text"
-                        value={company}
-                        onChange={(e) => setCompany(e.target.value.slice(0, 200))}
-                        className={fieldClass}
-                        placeholder="Brauerei (optional)"
-                      />
-                    </div>
-                  ) : null}
-
                   <div className="mt-8 flex items-center justify-between gap-3">
-                    <button
-                      type="button"
+                    <BackButton
                       onClick={() =>
                         go(() => {
                           setPhase("questions");
                           setStep(visible.length - 1);
                         }, -1)
                       }
-                      className="rounded-xl px-3 py-2.5 text-sm font-medium text-muted-foreground hover:text-foreground"
-                    >
-                      Zurück
-                    </button>
+                    />
                     <PrimaryButton
                       className="w-auto min-w-[140px] px-6"
-                      disabled={wantsResults && !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email.trim())}
+                      disabled={contactFilled && (!consent || contactInvalid)}
                       onClick={() => go(() => setContactStep(1), 1)}
                     >
-                      Weiter
+                      {contactFilled ? "Weiter" : "Überspringen"}
                     </PrimaryButton>
                   </div>
                 </section>
@@ -524,47 +750,29 @@ export function UmfragePage() {
 
               {phase === "contact" && contactStep === 1 ? (
                 <section>
-                  <p className="font-mono text-[11px] uppercase tracking-[1.4px] text-muted-foreground">
-                    Optional
-                  </p>
+                  <p className={eyebrowClass}>Zum Schluss · optional</p>
                   <h2 className="mt-3 text-[1.7rem] font-medium leading-[1.1] tracking-tight text-foreground sm:text-[2.1rem]">
-                    Persönliche Einschätzung?
+                    {UMFRAGE_FINAL_NOTE.title}
                   </h2>
                   <p className="mt-3 text-[15px] leading-relaxed text-foreground/80">
-                    Welche Marketingprozesse sich bei Ihnen schon heute vereinfachen lassen.
+                    {UMFRAGE_FINAL_NOTE.hint}
                   </p>
 
-                  <div className="mt-7 space-y-2.5">
-                    {(
-                      [
-                        ["ja", "Ja, gerne"],
-                        ["spaeter", "Vielleicht später"],
-                        ["nein", "Nein, danke"],
-                      ] as const
-                    ).map(([id, label]) => (
-                      <OptionButton
-                        key={id}
-                        selected={personalAnalysis === id}
-                        onClick={() => setPersonalAnalysis(id)}
-                      >
-                        {label}
-                      </OptionButton>
-                    ))}
-                  </div>
+                  <textarea
+                    value={finalNote}
+                    onChange={(e) => setFinalNote(e.target.value.slice(0, 3000))}
+                    rows={5}
+                    placeholder="Ihre Gedanken …"
+                    className={cn(fieldClass, "mt-6")}
+                  />
 
                   {error ? <p className="mt-4 text-sm text-destructive">{error}</p> : null}
 
                   <div className="mt-8 flex items-center justify-between gap-3">
-                    <button
-                      type="button"
-                      onClick={() => go(() => setContactStep(0), -1)}
-                      className="rounded-xl px-3 py-2.5 text-sm font-medium text-muted-foreground hover:text-foreground"
-                    >
-                      Zurück
-                    </button>
+                    <BackButton onClick={() => go(() => setContactStep(0), -1)} />
                     <PrimaryButton
                       className="w-auto min-w-[160px] px-6"
-                      disabled={loading || !personalAnalysis}
+                      disabled={loading}
                       onClick={handleSubmit}
                     >
                       {loading ? "Einen Moment …" : "Absenden"}
@@ -579,24 +787,23 @@ export function UmfragePage() {
                     Danke
                   </p>
                   <h1 className="mt-4 text-[2.2rem] font-medium leading-[1.08] tracking-tight text-foreground sm:text-[2.6rem]">
-                    Ihre Stimme zählt.
+                    Prost und vielen Dank!
                   </h1>
                   <p className="mt-5 max-w-md text-[16px] leading-relaxed text-foreground/80">
-                    Die Antworten fließen in den Branchenreport und in BrewAI – die
-                    Marketingplattform speziell für Brauereien.
+                    {contactFilled && consent && contactRequested
+                      ? "Ich melde mich bei Ihnen, wie gewünscht."
+                      : "Ihre Antworten helfen mir sehr."}
                   </p>
-                  {email.trim() ? (
-                    <p className="mt-3 max-w-md text-sm text-muted-foreground">
-                      Die Auswertung schicken wir Ihnen per E-Mail als Link, sobald
-                      genug Brauereien teilgenommen haben.
-                    </p>
-                  ) : null}
+                  <p className="mt-3 max-w-md text-sm text-muted-foreground">
+                    {UMFRAGE_META.privacyNote}
+                  </p>
+                  <p className="mt-6 text-sm text-foreground/80">{UMFRAGE_META.author}</p>
                   <div className="mt-10 sm:max-w-xs">
                     <Link
                       href="/"
                       className="inline-flex h-11 w-full items-center justify-center rounded-full bg-foreground px-5 text-sm font-medium text-background transition-opacity hover:opacity-90"
                     >
-                      Mehr über BrewAI
+                      Zur Startseite
                     </Link>
                   </div>
                 </section>
@@ -607,7 +814,7 @@ export function UmfragePage() {
 
         {phase === "intro" ? (
           <p className="mt-8 text-center font-mono text-[10px] uppercase tracking-[1.2px] text-muted-foreground">
-            {UMFRAGE_META.title}
+            {UMFRAGE_META.reportName}
           </p>
         ) : null}
       </div>
