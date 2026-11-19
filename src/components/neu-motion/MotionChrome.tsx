@@ -10,9 +10,12 @@ import { ScanDivider } from "@/components/neu-motion/ScanDivider";
 export function MotionChrome({
   children,
   perlage = "hero",
+  hideNav = false,
 }: {
   children: React.ReactNode;
   perlage?: "hero" | "cta";
+  /** Ohne Logo-Leiste (z. B. Umfrage, damit der Produktname nicht auftaucht). */
+  hideNav?: boolean;
 }) {
   const guardRef = useRef<HTMLDivElement>(null);
 
@@ -24,7 +27,7 @@ export function MotionChrome({
         <div className="parlo-frame-line right-[22px]" aria-hidden />
         <div className="parlo-frame-line right-[30px]" aria-hidden />
 
-        <ParloNavbar />
+        {hideNav ? null : <ParloNavbar />}
         <div className="relative isolate">
           <div aria-hidden className="nm-underglow pointer-events-none absolute inset-0 -z-20" />
           <PerlageField variant={perlage} guardRef={guardRef} className="-z-10" />

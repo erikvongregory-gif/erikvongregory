@@ -8,7 +8,7 @@ export default function UmfrageLayout({ children }: { children: React.ReactNode 
   return (
     <div className={parloFontClass}>
       <ParloThemeProvider>
-        <MotionChrome perlage="hero">{children}</MotionChrome>
+        <MotionChrome perlage="hero" hideNav>{children}</MotionChrome>
       </ParloThemeProvider>
     </div>
   );

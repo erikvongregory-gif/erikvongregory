@@ -1,6 +1,7 @@
 /**
  * Fragebogen „Wie läuft das Marketing in Ihrer Brauerei?“
- * 1:1 nach der Papierfassung (Fragebogen Brauereien.pdf, 30 Fragen in 7 Teilen).
+ * 1:1 nach der Papierfassung (Fragebogen Brauereien_v2.pdf, 31 Fragen in 7 Teilen).
+ * Der Produktname wird bewusst nicht genannt (Frage 27 fragt nach einem Namensvorschlag).
  * Neue Survey-ID, damit Antworten nicht mit dem alten Barometer vermischt werden.
  */
 export const UMFRAGE_SURVEY_ID = "brauerei-marketing-fragebogen-2026" as const;
@@ -428,10 +429,12 @@ export const UMFRAGE_QUESTIONS: UmfrageQuestion[] = [
     required: true,
     options: [
       { id: "0", label: "0 €" },
-      { id: "unter_100", label: "unter 100 €" },
-      { id: "100_500", label: "100–500 €" },
-      { id: "500_2000", label: "500–2.000 €" },
-      { id: "ueber_2000", label: "über 2.000 €" },
+      { id: "unter_250", label: "unter 250 €" },
+      { id: "250_1000", label: "250–1.000 €" },
+      { id: "1000_2500", label: "1.000–2.500 €" },
+      { id: "2500_5000", label: "2.500–5.000 €" },
+      { id: "5000_10000", label: "5.000–10.000 €" },
+      { id: "ueber_10000", label: "über 10.000 €" },
       { id: "weiss_nicht", label: "weiß nicht" },
     ],
   },
@@ -633,11 +636,20 @@ export const UMFRAGE_QUESTIONS: UmfrageQuestion[] = [
     placeholder: "Ihre Antwort …",
     required: false,
   },
+  {
+    id: "app_name",
+    n: "27",
+    part: 6,
+    type: "text",
+    title: "Wenn es so eine App geben würde, welchen Namen würden Sie dieser App geben?",
+    placeholder: "Ihr Namensvorschlag …",
+    required: false,
+  },
 
   // ── Teil 7: Wie geht es weiter? ──────────────────────────────────────
   {
     id: "test_79",
-    n: "27",
+    n: "28",
     part: 7,
     type: "single",
     title:
@@ -652,7 +664,7 @@ export const UMFRAGE_QUESTIONS: UmfrageQuestion[] = [
   },
   {
     id: "beispielmotiv",
-    n: "28",
+    n: "29",
     part: 7,
     type: "single",
     title: "Mein Dankeschön: Möchten Sie ein kostenloses Beispielmotiv mit Ihrem echten Etikett?",
@@ -666,7 +678,7 @@ export const UMFRAGE_QUESTIONS: UmfrageQuestion[] = [
   },
   {
     id: "empfehlung",
-    n: "29",
+    n: "30",
     part: 7,
     type: "text",
     title: "Wen in der Branche sollte ich unbedingt auch noch fragen?",
@@ -675,7 +687,7 @@ export const UMFRAGE_QUESTIONS: UmfrageQuestion[] = [
   },
   {
     id: "gespraech",
-    n: "30",
+    n: "31",
     part: 7,
     type: "single",
     title: "Darf ich mich für ein Gespräch von etwa 20 Minuten bei Ihnen melden?",

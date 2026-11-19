@@ -387,7 +387,7 @@ export function UmfragePage() {
             <p className="font-mono text-[10px] uppercase tracking-[1.5px] text-muted-foreground sm:text-[11px]">
               {phase === "questions" && part
                 ? `Teil ${current!.part} von ${UMFRAGE_PART_COUNT} · ${part.title}`
-                : "BrewAI"}
+                : "Brauerei-Umfrage 2026"}
             </p>
             {phase !== "done" ? (
               <p className="font-mono text-[10px] uppercase tracking-wide text-muted-foreground">

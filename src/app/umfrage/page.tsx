@@ -4,7 +4,7 @@ import { UMFRAGE_META } from "@/content/umfrage";
 import { SITE } from "@/lib/siteConfig";
 
 export const metadata: Metadata = {
-  title: `${UMFRAGE_META.title} | ${SITE.name}`,
+  title: { absolute: UMFRAGE_META.title },
   description:
     "Kurze Umfrage unter Brauereien: Wie läuft Ihr Marketing heute, was kostet es und was würde wirklich helfen? Ca. 10 Minuten, anonym, kein Verkauf.",
   alternates: { canonical: `${SITE.baseUrl}/umfrage` },
@@ -37,7 +37,6 @@ const umfrageJsonLd = {
   name: UMFRAGE_META.title,
   description: UMFRAGE_META.subtitle,
   url: `${SITE.baseUrl}/umfrage`,
-  isPartOf: { "@type": "WebSite", name: SITE.name, url: SITE.baseUrl },
 };
 
 export default function UmfrageRoutePage() {
