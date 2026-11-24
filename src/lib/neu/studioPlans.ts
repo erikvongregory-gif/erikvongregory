@@ -12,7 +12,7 @@ export type NeuStudioPlan = {
   features: string[];
 };
 
-const TOKENS = { start: 1200, growth: 3000, pro: 7500, enterprise: 20000 } as const;
+const TOKENS = { start: 400, growth: 1500, pro: 4500, enterprise: 12000 } as const;
 
 const CARRY: Record<keyof typeof TOKENS, string> = {
   start: "Keine Übertragung ungenutzter Tokens",
@@ -28,8 +28,9 @@ function formatPlanImageEstimate(monthlyTokens: number): string {
 }
 
 function formatPlanVideoEstimate(monthlyTokens: number): string {
-  const standardCost = 100;
-  const longCost = 240;
+  // wie app.brewai.de: 5 s 720p Seedance 2 = 50 Tokens, 12 s Seedance 2.5 = 180 Tokens
+  const standardCost = 50;
+  const longCost = 180;
   const maxVideos = Math.max(1, Math.floor(monthlyTokens / standardCost));
   const minVideos = Math.max(1, Math.floor(monthlyTokens / longCost));
   return `ca. ${minVideos.toLocaleString("de-DE")}–${maxVideos.toLocaleString("de-DE")} Videos`;
@@ -56,16 +57,16 @@ export const NEU_STUDIO_PLANS: NeuStudioPlan[] = [
     id: "start",
     tag: "Für kleine Teams, die regelmäßig posten",
     name: "Brauerei Start",
-    monthly: 79,
-    compareAtMonthly: 100,
+    monthly: 24,
+    compareAtMonthly: 29,
     features: buildFeatures("start", "1 Teamplatz (Inhaber inklusive)", "E-Mail-Support"),
   },
   {
     id: "growth",
     tag: "Für aktive Brauereien mit Saisonkampagnen",
     name: "Brauerei Wachstum",
-    monthly: 149,
-    compareAtMonthly: 200,
+    monthly: 65,
+    compareAtMonthly: 79,
     recommended: true,
     features: buildFeatures("growth", "3 Teamplätze (Inhaber inklusive)", "Priorisierter Support"),
   },
@@ -73,8 +74,8 @@ export const NEU_STUDIO_PLANS: NeuStudioPlan[] = [
     id: "pro",
     tag: "Für Marken mit hohem Content-Bedarf",
     name: "Brauerei Pro",
-    monthly: 299,
-    compareAtMonthly: 400,
+    monthly: 165,
+    compareAtMonthly: 199,
     features: buildFeatures(
       "pro",
       "10 Teamplätze (Inhaber inklusive)",
@@ -85,8 +86,8 @@ export const NEU_STUDIO_PLANS: NeuStudioPlan[] = [
     id: "enterprise",
     tag: "Für Gruppen, Verbünde und Agenturen",
     name: "Brauerei Enterprise",
-    monthly: 599,
-    compareAtMonthly: 799,
+    monthly: 415,
+    compareAtMonthly: 499,
     features: buildFeatures(
       "enterprise",
       "25 Teamplätze (Inhaber inklusive)",
