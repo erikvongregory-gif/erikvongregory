@@ -31,7 +31,7 @@ export const TAPS: TapWallItem[] = [
     shortLabel: "BETR",
     title: "Content im Dashboard — monatlich",
     body: "Laufend Motive im Werkstatt-Abo erzeugen: Tokens, Team-Zugänge und Support — ohne Einzelprojekt pro Kampagne.",
-    deliv: "Werkstatt Start · ab 79 €/Mo.",
+    deliv: "Werkstatt Start · ab 24 €/Mo.",
   },
   {
     n: "04",

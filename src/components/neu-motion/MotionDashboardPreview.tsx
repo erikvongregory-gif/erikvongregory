@@ -475,11 +475,11 @@ function ScreenBilling() {
       <div className="rounded-xl border border-border bg-surface p-4">
         <p className="text-xs text-muted-foreground">Aktueller Plan</p>
         <p className="mt-1 text-xl font-medium text-foreground">Brauerei Wachstum</p>
-        <p className="mt-1 text-sm text-muted-foreground">3.000 Tokens / Monat · 3 Teamplätze</p>
+        <p className="mt-1 text-sm text-muted-foreground">1.500 Tokens / Monat · 3 Teamplätze</p>
         <div className="mt-4 h-2 overflow-hidden rounded-full bg-muted">
           <div className="h-full w-[28%] rounded-full bg-foreground/70" />
         </div>
-        <p className="mt-2 text-[11px] text-muted-foreground">842 von 3.000 Tokens übrig</p>
+        <p className="mt-2 text-[11px] text-muted-foreground">842 von 1.500 Tokens übrig</p>
       </div>
       <ParloStarButton href={SITE.appBaseUrl} className="h-9">
         Plan im Dashboard wählen

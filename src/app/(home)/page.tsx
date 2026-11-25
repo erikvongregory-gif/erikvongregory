@@ -8,7 +8,7 @@ export const metadata: Metadata = {
     absolute: "KI-Marketing für Brauereien: Bilder & Social-Content | BrewAI",
   },
   description:
-    "KI-generierte Werbebilder und Social-Content für Brauereien — selbst im Dashboard oder fertig geliefert. Ab 79 €/Monat. Jetzt testen.",
+    "KI-generierte Werbebilder und Social-Content für Brauereien — selbst im Dashboard oder fertig geliefert. Ab 24 €/Monat. Jetzt testen.",
   keywords: [
     "KI Marketing für Brauereien",
     "KI Marketing Agentur",
@@ -23,7 +23,7 @@ export const metadata: Metadata = {
   openGraph: {
     title: "KI-Marketing für Brauereien | BrewAI",
     description:
-      "KI-Bilder und Social-Content für Brauereien — ab 79 €/Monat. Selbst im Dashboard oder fertig geliefert.",
+      "KI-Bilder und Social-Content für Brauereien — ab 24 €/Monat. Selbst im Dashboard oder fertig geliefert.",
     url: SITE.baseUrl,
     type: "website",
     locale: "de_DE",
@@ -39,7 +39,7 @@ export const metadata: Metadata = {
   twitter: {
     card: "summary_large_image",
     title: "KI-Marketing für Brauereien | BrewAI",
-    description: "KI-Bilder und Social-Content für Brauereien — ab 79 €/Monat.",
+    description: "KI-Bilder und Social-Content für Brauereien — ab 24 €/Monat.",
     images: [`${SITE.baseUrl}${SITE.ogImage}`],
   },
 };

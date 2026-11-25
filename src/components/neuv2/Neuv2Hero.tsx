@@ -10,7 +10,7 @@ export function Neuv2Hero() {
           <div className="nv-appear inline-flex items-center gap-2 rounded-full border border-[color-mix(in_oklch,var(--border)_15%,transparent)] px-3 py-1 text-sm text-[var(--muted-foreground)]">
             KI-Content für Brauereien
             <a href="#pricing" className="inline-flex items-center gap-1 font-medium text-[var(--foreground)]">
-              Ab 79 € <ArrowRight className="size-3" />
+              Ab 24 € <ArrowRight className="size-3" />
             </a>
           </div>
 
